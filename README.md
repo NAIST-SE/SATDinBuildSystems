@@ -2,8 +2,7 @@
 
 https://github.com/NAIST-SE/SATDinBuildSytem
 
-This is a research artifact for the paper: **Characterizing and Mitigating Self-Admitted Technical Debt in Build System**. This artifact is a repository consisting of our
-500 SATD comments dataset and 'ready-to-be-addressed' SATD comments. The purposes of this artifact are to enable researchers to reuse the dataset for further software engineering research.
+This is a research artifact for the paper: **Characterizing and Mitigating Self-Admitted Technical Debt in Build Systems**. This artifact is a replication repository consisting of the manually labeled dataset and the scripts for reproducing our analyses. The purposes of this artifact are to enable researchers to reuse the dataset for further software engineering research.
 
 ## Contents
 * `Dataset` - a directory of the dataset
