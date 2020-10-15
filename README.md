@@ -28,8 +28,12 @@ This is a research artifact for the paper: **Characterizing and Mitigating Self-
 		* `Submitting approach` - the approach to report SATD comment to the developers.
 		* `Pull request/Issue link` - the hyperlink where we report SATD comment.
 		* `Status` - the current status of the pull request or issue.
-* `Visualization` - a directory of the visualization.
+	* `keywords_list.txt` - our adopated list of SATD keywords which are merged from [Huang et al.](https://doi.org/10.1007/s10664-017-9522-4) and [Potdar and Shihab](10.1109/ICSME.2014.31).
+	* `Revision_list.csv` - the list of HEAD revisions extract from DP1.
+* `Scripts` - a directory of Scripts.
+	* `README.md` - a readme file for Scripts directory.
 	* `parallel_categories_diagram.ipynb` - the parallel categories diagram among location, reason, and purpose.
+	* `identify_SATD_comments.py` - the script which is used to detect SATD comments.
 * `LICENSE` - [CC0 1.0 Universal.](https://creativecommons.org/publicdomain/zero/1.0/)
 * `README.md` - this file.
 ## Authors
