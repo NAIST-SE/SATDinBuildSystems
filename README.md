@@ -1,4 +1,4 @@
-# Research Artifact: Characterizing and Mitigating Self-Admitted Technical Debt in Build System
+# Research Artifact: Characterizing and Mitigating Self-Admitted Technical Debt in Build Systems
 
 https://github.com/NAIST-SE/SATDinBuildSytem
 
