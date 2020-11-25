@@ -5,4 +5,9 @@
 
 * `Step 2`: We use identify_SATD_comments.py and keywords_list.txt to identify SATD comments from Maven reporistoryes (DP1).
 
-* `Step 3`: We use [Ice]() to build models for automaticly classify SATD comments in aspects of rationals.
+* `Step 3`: We use parallel_categories_diagram.ipynb to create parallel ctegories diagram for visulization.
+
+* `Step 4`: We use [Ngram classification](https://github.com/rungroj-m/ngram_classification) to build models for automaticly classify SATD comments in aspects of rationals.
+
+
+
