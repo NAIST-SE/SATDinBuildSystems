@@ -46,4 +46,4 @@ for file in files:
 
                                     break
 
-SATD_comments.to_excel(root + '/Results/SATD_comments.xlsx', index=None, header=True)
+SATD_comments.to_excel(root + '/Results/SABD_comments.xlsx', index=None, header=True)
