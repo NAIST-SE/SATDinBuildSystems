@@ -1,6 +1,6 @@
 # Research Artifact: Characterizing and Mitigating Self-Admitted Build Debt
 
-https://github.com/NAIST-SE/SABDinBuildSytem
+https://github.com/NAIST-SE/SABD
 
 This is a research artifact for the paper: **Characterizing and Mitigating Self-Admitted Build Debt**. This artifact is a repository consisting of our 500 SABD comments dataset and 'ready-to-be-addressed' SABD comments. The purposes of this artifact are to enable researchers to reuse the dataset for further software engineering research.
 
