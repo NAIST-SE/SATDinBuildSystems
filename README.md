@@ -48,7 +48,7 @@ Our work presents the first step towards understanding technical debt in build s
 	* `README.md` - a readme file for Scripts directory.
 	* `parallel_categories_diagram.ipynb` - the parallel categories diagram among location, reason, and purpose.
 	* `identify_SABD_comments.py` - the script which is used to detect SABD comments.
-* `POM_files_used_in_paper` - a directory of POM files that used in paper.
+* `POM_files_used_in_paper` - a directory of POM files that used in paper. Filename represents the link to orginal POM file shown in the paper.
 * `LICENSE` - [CC0 1.0 Universal.](https://creativecommons.org/publicdomain/zero/1.0/)
 * `README.md` - this file.
 ## Authors
