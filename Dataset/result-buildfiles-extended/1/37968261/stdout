@@ -1,0 +1,543 @@
+{
+  "Repository" : "37968261",
+  "Revision" : "HEAD",
+  "ObjectId" : "8b7dc3094f4133fa671954f6d63d0ddf002448f8",
+  "CommitTime" : "2018-03-27T02:17:48Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "8eaaf2ea5b5a0ac563fc841b6e36d972817b4fd7",
+      "LastModified" : "2017-10-25T09:13:06Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2016 VMware, Inc. All Rights Reserved.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#    http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile has 2 purposes:\n\n#   - convenience: redirects targets to ./client_plugin so 'make'\n\n#                  can be run from the top\n\n#   - drone invariant: defines deb/rpm/build/testasroot targets so drone.yml\n\n#                   can be kept as-is\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# kill switch for UI\n\n# To override default here export env variable before make\n\n# export INCLUDE_UI=true\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# default target, build ui then build vib, rpm, deb\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# build vfile plugin\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# clean inside docker run to avoid sudo make clean\n\n# dev builds are inside docker which creates folders\n\n# as root.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Non dockerized build, used by CI\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Forward to UI inside docker run\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# redirect all\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# if we do not recognize the target, just pass it on to client_plugin Makefile\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "client_plugin/Makefile" : {
+      "ObjectId" : "e49c01c449307fef7ebb5bb33771683b38897fb3",
+      "LastModified" : "2017-12-15T23:58:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2016-2017 VMware, Inc. All Rights Reserved.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#    http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Makefile for Docker data volume plugin\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Exporting common constants\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# PKG_VERSION is either set externally as part of a build off a tag or\n\n# suffixed with a sha1 of the most recent commit to the prefix of the\n\n# most recent tag. Tagged builds use the externally defined version,\n\n# developer builds use last tagged release and sha1 of the most recent commit.\n\n# Format: <last tagged release>.<last commit hash>\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Location for scripts\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Packaging variables\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Scripts to deploy and control services - used from Makefile and from Drone CI\n\n#\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# esx service for docker volume ops\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#  binaries location\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# all binaries for VMs - plugin and tests\n\n# PLUGIN_BIN - VDVS plugin binary\n\n# $(BIN)/$(VMDKOPS_TEST_MODULE).test - Running mock esx test\n\n# $(BIN)/$(PLUGNAME).test - Running sanity test\n\n# $(BIN)/$(INSTRUMENTED_PLUGIN_BIN) - Instrumented VDVS plugin binary for capturing code coverage\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# plugin name, for go build\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# test location, picking up E2E tests\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# make sure we rebuild of vmkdops or Dockerfile change (since we develop them together)\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# All sources. We rebuild if anything changes here\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Canned recipe\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# The default build is using a prebuilt docker image that has all dependencies.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The non docker build.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# VDVS binary to capture code coverage\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# GO Code quality checks.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Build the linux distro packages\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# FPM should be installed for target deb\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Upstart needed for older versions of Ubuntu\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Target to build for rpm based systems. Due to variations in how docker is packaged between RHEL and Photon,\n\n# skip dependency check vs building 2 different rpm packages.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#\n\n# 'make deploy'\n\n# ----------\n\n# temporary goal to simplify my deployments and sanity check test (create/delete)\n\n#\n\n# expectations:\n\n#   Need target machines (ESX/Guest) to have proper ~/.ssh/authorized_keys\n\n#\n\n# You can\n\n#   set ESX and VM (and VM1 / VM2 / WIN_VM1) as env. vars,\n\n# or pass on command line\n\n# \tmake deploy-esx ESX=10.20.105.54\n\n# \tmake deploy-vm  VM=10.20.105.121\n\n# \tmake testremote  ESX=10.20.105.54 VM1=10.20.105.121 VM2=10.20.105.122\n",
+        "Line" : 272,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# bin locations on target guest\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# script sources live here. All scripts are copied to test VM during deployment\n\n# scripts started locally to deploy to and clean up test machines\n",
+        "Line" : 302,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#\n\n# Deploy to existing testbed, Expects ESX VM1 and VM2 env vars\n\n#\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# This target is added to run upgrade test\n",
+        "Line" : 323,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# CAUTION: FOR NOW, RUN testremote DIRECTLY VIA 'make'. DO NOT run via './build.sh'\n\n#  reason: ssh keys for accessing remote hosts are not in container used by ./build.sh\n\n# ----------\n",
+        "Line" : 357,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# this is a set of unit tests run on build machine\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# does sanity check of create/remove docker volume on the guest\n",
+        "Line" : 374,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# test-vm runs GO unit tests and plugin test suite on a guest VM\n\n# expects binaries to be deployed ot the VM and ESX (see deploy-all target)\n",
+        "Line" : 387,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# test-esx is a quick unittest for ESX Python code.\n",
+        "Line" : 396,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# capture coverage of VDVS driver code.\n",
+        "Line" : 404,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# An end-to-end test target for vSphere Docker Volume Driver\n",
+        "Line" : 409,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# An end-to-end windows test target for vSphere Docker Volume Driver\n",
+        "Line" : 415,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# An end-to-end target for vFile Docker Volume Driver\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "#\n\n# E2E test target to control test run on CI.\n\n# We have 2 ESXs on CI testbed and 2 datastore type each (VMFS/VSAN).\n\n# test-e2e-runalways: makes sure to run test always\n\n# test-e2e-runonce: makes sure to run test *once per ESX*\n\n# test-e2e-runonce-windows: makes sure to run windows tests *once per ESX*\n\n# test-e2e-runonce-vfile: makes sure to run vfile tests *once per ESX*\n\n#\n",
+        "Line" : 425,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# rm ALL containers and volumes. Useful for post-failure force cleanup\n",
+        "Line" : 460,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# full circle\n",
+        "Line" : 473,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# if we do not recognize the target, warn and keep going.\n",
+        "Line" : 477,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 41
+    },
+    "esx_service/Makefile" : {
+      "ObjectId" : "846c0cf697d253e3c222e1900db3625a73dea681",
+      "LastModified" : "2017-12-10T01:24:05Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2016 VMware, Inc. All Rights Reserved.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#    http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Makefile for ESX \"vmdkops\" service - host part of \"vmware/vmdkops\" Go package\n\n#\n\n# Prepares payload folder for vibauthor and builds/places neede stuff there\n\n# We expect the actual vibauthor to be run via dedicated container upstair\n\n#\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Release version needed for vib\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Shared lib. Note that it is referred by name from vmci_srv.py\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Source code - all .py stuff which is not tests\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# exclude __init__.py to avoid clash with __init__.py from parent\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# xml based esxcli extension file\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Build both a 32-bit and a 64-bit library for vmci.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Vib layout descriptor\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# vibauthor definitions\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Payload root\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Location on ESX where the stuff needs to go\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Location in VIB staging (\"payload\")\n\n# 'vmdkops' name under payloads should match payloads.name in descriptor.xml\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# build the docker-volume-plugin\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# this is used from a Makefile upstairs, and could be used manually\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# What needs to be placed in payloads:\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# SQLITE python libs. We need that on ESX before 6.0 U2\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# copy files to staging area and then build the VIB\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Run pylint on python source. Currently this is run manually and\n\n# needs pylint and dependent packages to be installed.\n\n# TODO: Automate.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# we will incrementally start failing on issues issue. For now, ignore ALL but errors.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# test-esx is a quick unittest for ESX Python code.\n\n# Deploys, runs and clean unittests (i.e. all files *_test.py) on ESX\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# By default, we run all *_test.py. Use TEST_PATTERN to narrow the test set, e.g.\n\n# e.g. make test-esx TEST_PATTERN='*admin*'\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#$(SSH) root@$(ESX) rm -rf $(TMP_LOC)\n",
+        "Line" : 201,
+        "CharPositionInLine" : 1
+      },
+      "23" : {
+        "Text" : "# binary for python coverage\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# vmdkops service manager\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# check if coverage package exists on ESX\n\n# This target is Invoked from drone script on CI to capture coverage after the tests end.\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "esx_service/vmodl/Makefile" : {
+      "ObjectId" : "fc94bd31d89f06ad77fb041fa7f15f4306c39e26",
+      "LastModified" : "2017-12-15T23:58:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2016 VMware, Inc. All Rights Reserved.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#    http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n\n# Basic makefile to validate and package python stuff\n\n#\n\n# Example:\n\n# ESX=10.132.15.22 make test # deploys to ESX, runs *_test.py files to validate the stuff\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# SSH/SCP commands. Use 'DEBUG=echo make' to print info instead of copying files or running ssh\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Site libraries for Python 2 and Python 3\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Find the target location for the correct python version\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Note: in ESX source, here are the location:\n\n#bora/vsan/<component>/esx/pyMo (Impl and __init)\n\n#bora/vsan/pyvmodl (model)\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Testing. Note that vsanmgmtd neeeds a second or two between 'restart' returns\n\n# and the daemon start to really listen\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "plugin_dockerbuild/Makefile" : {
+      "ObjectId" : "ff1822a540467fd0cc602fa1405603bb2e8544ae",
+      "LastModified" : "2017-12-15T23:58:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2016 VMware, Inc. All Rights Reserved.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#    http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Makefile for Docker data volume *managed* plugin.\n\n#\n\n# This Makefile assumes it's in ./plugin in the tree and the binaries are already built\n\n# Eventually we will throw away deb/rpm build from ../client_plugin/Makefile and will use only\n\n# managed plugin\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Makefile names the plugin simlarly to this (for example) 'msterin/vsphere-storage-for-docker:0.13-dev'\n\n#\n\n# Make targets:\n\n#    info (helpful info), clean (remove build artefacts), plugin, (build plugin), push (push to dockerhub)\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Exporting common constants\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Binaries we want to pick up from the actual build\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Dockerfile templates\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Network Type\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Sock Type\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Mount Point\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Name\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Version\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Tmp docker image used to construct rootfs + our binaries\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Tmp container used for exporting rootfs from it\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Tmp location on local FS to manipulate plugin files\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# default target\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# unconditionally run those\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "ui/Makefile" : {
+      "ObjectId" : "ba13c570a1006542071875251d28b22e637c600c",
+      "LastModified" : "2017-12-15T23:58:19Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 6
+  },
+  "ElapsedTime" : 2404
+}

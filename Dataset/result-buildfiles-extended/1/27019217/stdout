@@ -1,0 +1,616 @@
+{
+  "Repository" : "27019217",
+  "Revision" : "HEAD",
+  "ObjectId" : "dfcc586ea428d8f208180bdec6e2ba6c9932fb90",
+  "CommitTime" : "2018-12-15T09:38:23Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "08e323cb5b5e55798f761864836d36c3082d50b6",
+      "LastModified" : "2018-11-08T17:50:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Turn on the ability to create folders to organize projects (.vcproj)\n\n# It creates \"CMakePredefinedTargets\" folder by default and adds CMake\n\n# defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set compiler flags and options. \n\n# Here it is setting the Visual Studio warning level to 4\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Force to always compile with W4\n",
+        "Line" : 13,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Sub-directories where more CMakeLists.txt exist\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "backend_sfml/CMakeLists.txt" : {
+      "ObjectId" : "9ef6c7dd4e0cad22fc97f619441106243fbd160d",
+      "LastModified" : "2018-05-25T06:51:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#Patch for testing\n\n#TO DO: Remove it (use a variable)\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Detect and add SFML\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#Set fallback directory for SFML\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#Find any version 2.X of SFML\n\n#See the FindSFML.cmake file for additional details and instructions\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake_modules/Catch.cmake" : {
+      "ObjectId" : "486e323318cb16a7a65bcf4e26244086d8497617",
+      "LastModified" : "2018-05-25T06:51:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#[=======================================================================[.rst:\nCatch\n-----\n\nThis module defines a function to help use the Catch test framework.\n\nThe :command:`catch_discover_tests` discovers tests by asking the compiled test\nexecutable to enumerate its tests.  This does not require CMake to be re-run\nwhen tests change.  However, it may not work in a cross-compiling environment,\nand setting test properties is less convenient.\n\nThis command is intended to replace use of :command:`add_test` to register\ntests, and will create a separate CTest test for each Catch test case.  Note\nthat this is in some cases less efficient, as common set-up and tear-down logic\ncannot be shared by multiple test cases executing in the same instance.\nHowever, it provides more fine-grained pass/fail information to CTest, which is\nusually considered as more beneficial.  By default, the CTest test name is the\nsame as the Catch name; see also ``TEST_PREFIX`` and ``TEST_SUFFIX``.\n\n.. command:: catch_discover_tests\n\n  Automatically add tests with CTest by querying the compiled test executable\n  for available tests::\n\n    catch_discover_tests(target\n                         [TEST_SPEC arg1...]\n                         [EXTRA_ARGS arg1...]\n                         [WORKING_DIRECTORY dir]\n                         [TEST_PREFIX prefix]\n                         [TEST_SUFFIX suffix]\n                         [PROPERTIES name1 value1...]\n                         [TEST_LIST var]\n    )\n\n  ``catch_discover_tests`` sets up a post-build command on the test executable\n  that generates the list of tests by parsing the output from running the test\n  with the ``--list-test-names-only`` argument.  This ensures that the full\n  list of tests is obtained.  Since test discovery occurs at build time, it is\n  not necessary to re-run CMake when the list of tests changes.\n  However, it requires that :prop_tgt:`CROSSCOMPILING_EMULATOR` is properly set\n  in order to function in a cross-compiling environment.\n\n  Additionally, setting properties on tests is somewhat less convenient, since\n  the tests are not available at CMake time.  Additional test properties may be\n  assigned to the set of tests as a whole using the ``PROPERTIES`` option.  If\n  more fine-grained test control is needed, custom content may be provided\n  through an external CTest script using the :prop_dir:`TEST_INCLUDE_FILES`\n  directory property.  The set of discovered tests is made accessible to such a\n  script via the ``<target>_TESTS`` variable.\n\n  The options are:\n\n  ``target``\n    Specifies the Catch executable, which must be a known CMake executable\n    target.  CMake will substitute the location of the built executable when\n    running the test.\n\n  ``TEST_SPEC arg1...``\n    Specifies test cases, wildcarded test cases, tags and tag expressions to\n    pass to the Catch executable with the ``--list-test-names-only`` argument.\n\n  ``EXTRA_ARGS arg1...``\n    Any extra arguments to pass on the command line to each test case.\n\n  ``WORKING_DIRECTORY dir``\n    Specifies the directory in which to run the discovered test cases.  If this\n    option is not provided, the current binary directory is used.\n\n  ``TEST_PREFIX prefix``\n    Specifies a ``prefix`` to be prepended to the name of each discovered test\n    case.  This can be useful when the same test executable is being used in\n    multiple calls to ``catch_discover_tests()`` but with different\n    ``TEST_SPEC`` or ``EXTRA_ARGS``.\n\n  ``TEST_SUFFIX suffix``\n    Similar to ``TEST_PREFIX`` except the ``suffix`` is appended to the name of\n    every discovered test case.  Both ``TEST_PREFIX`` and ``TEST_SUFFIX`` may\n    be specified.\n\n  ``PROPERTIES name1 value1...``\n    Specifies additional properties to be set on all tests discovered by this\n    invocation of ``catch_discover_tests``.\n\n  ``TEST_LIST var``\n    Make the list of tests available in the variable ``var``, rather than the\n    default ``<target>_TESTS``.  This can be useful when the same test\n    executable is being used in multiple calls to ``catch_discover_tests()``.\n    Note that this variable is only available in CTest.\n\n#]=======================================================================]",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#------------------------------------------------------------------------------\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## Generate a unique name based on the extra arguments\n",
+        "Line" : 112,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Define rule to generate test list for aforementioned test executable\n",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Add discovered tests to directory TEST_INCLUDE_FILES\n",
+        "Line" : 151,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Add discovered tests as directory TEST_INCLUDE_FILE if possible\n",
+        "Line" : 156,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "###############################################################################\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake_modules/CatchAddTests.cmake" : {
+      "ObjectId" : "c68921e4f83b0c7eb5038cf6744a437c7060d880",
+      "LastModified" : "2018-05-25T06:51:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# form a bracket_argument\n",
+        "Line" : 17,
+        "CharPositionInLine" : 44
+      },
+      "2" : {
+        "Text" : "# Run test executable to get list of available tests\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Catch --list-test-names-only reports the number of tests, so 0 is... surprising\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Parse output\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Test name; strip spaces to get just the name...\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# ...and add to script\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Create a list of all discovered tests, which users may use to e.g. set\n\n# properties on the tests\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Write CTest script\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "cmake_modules/FindSFML.cmake" : {
+      "ObjectId" : "871f8662fae354d8d8ef2f7b904e6f4f02a8a644",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This script locates the SFML library\n\n# ------------------------------------\n\n#\n\n# Usage\n\n# -----\n\n#\n\n# When you try to locate the SFML libraries, you must specify which modules you want to use (system, window, graphics, network, audio, main).\n\n# If none is given, the SFML_LIBRARIES variable will be empty and you'll end up linking to nothing.\n\n# example:\n\n#   find_package(SFML COMPONENTS graphics window system) // find the graphics, window and system modules\n\n#\n\n# You can enforce a specific version, either MAJOR.MINOR or only MAJOR.\n\n# If nothing is specified, the version won't be checked (i.e. any version will be accepted).\n\n# example:\n\n#   find_package(SFML COMPONENTS ...)     // no specific version required\n\n#   find_package(SFML 2 COMPONENTS ...)   // any 2.x version\n\n#   find_package(SFML 2.4 COMPONENTS ...) // version 2.4 or greater\n\n#\n\n# By default, the dynamic libraries of SFML will be found. To find the static ones instead,\n\n# you must set the SFML_STATIC_LIBRARIES variable to TRUE before calling find_package(SFML ...).\n\n# Since you have to link yourself all the SFML dependencies when you link it statically, the following\n\n# additional variables are defined: SFML_XXX_DEPENDENCIES and SFML_DEPENDENCIES (see their detailed\n\n# description below).\n\n# In case of static linking, the SFML_STATIC macro will also be defined by this script.\n\n# example:\n\n#   set(SFML_STATIC_LIBRARIES TRUE)\n\n#   find_package(SFML 2 COMPONENTS network system)\n\n#\n\n# On Mac OS X if SFML_STATIC_LIBRARIES is not set to TRUE then by default CMake will search for frameworks unless\n\n# CMAKE_FIND_FRAMEWORK is set to \"NEVER\" for example. Please refer to CMake documentation for more details.\n\n# Moreover, keep in mind that SFML frameworks are only available as release libraries unlike dylibs which\n\n# are available for both release and debug modes.\n\n#\n\n# If SFML is not installed in a standard path, you can use the SFML_ROOT CMake (or environment) variable\n\n# to tell CMake where SFML is.\n\n#\n\n# Output\n\n# ------\n\n#\n\n# This script defines the following variables:\n\n# - For each specified module XXX (system, window, graphics, network, audio, main):\n\n#   - SFML_XXX_LIBRARY_DEBUG:   the name of the debug library of the xxx module (set to SFML_XXX_LIBRARY_RELEASE is no debug version is found)\n\n#   - SFML_XXX_LIBRARY_RELEASE: the name of the release library of the xxx module (set to SFML_XXX_LIBRARY_DEBUG is no release version is found)\n\n#   - SFML_XXX_LIBRARY:         the name of the library to link to for the xxx module (includes both debug and optimized names if necessary)\n\n#   - SFML_XXX_FOUND:           true if either the debug or release library of the xxx module is found\n\n#   - SFML_XXX_DEPENDENCIES:    the list of libraries the module depends on, in case of static linking\n\n# - SFML_LIBRARIES:    the list of all libraries corresponding to the required modules\n\n# - SFML_FOUND:        true if all the required modules are found\n\n# - SFML_INCLUDE_DIR:  the path where SFML headers are located (the directory containing the SFML/Config.hpp file)\n\n# - SFML_DEPENDENCIES: the list of libraries SFML depends on, in case of static linking\n\n#\n\n# example:\n\n#   find_package(SFML 2 COMPONENTS system window graphics audio REQUIRED)\n\n#   include_directories(${SFML_INCLUDE_DIR})\n\n#   add_executable(myapp ...)\n\n#   target_link_libraries(myapp ${SFML_LIBRARIES})\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define the SFML_STATIC macro if static build was chosen\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# define the list of search paths for headers and libraries\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# find the SFML include directory\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# check the version number\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# extract the major and minor version numbers from SFML/Config.hpp\n\n# we have to handle framework a little bit differently:\n",
+        "Line" : 84,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# if we could extract them, compare with the requested version number\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# transform version numbers to an integer\n",
+        "Line" : 102,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# compare them\n",
+        "Line" : 105,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# SFML version is < 2.0\n",
+        "Line" : 110,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# find the requested modules\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# will be set to false if one of the required modules is not found\n",
+        "Line" : 121,
+        "CharPositionInLine" : 21
+      },
+      "12" : {
+        "Text" : "# no suffix for sfml-main, it is always a static library\n",
+        "Line" : 127,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# release library\n",
+        "Line" : 129,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# debug library\n",
+        "Line" : 135,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# static release library\n",
+        "Line" : 141,
+        "CharPositionInLine" : 8
+      },
+      "16" : {
+        "Text" : "# static debug library\n",
+        "Line" : 147,
+        "CharPositionInLine" : 8
+      },
+      "17" : {
+        "Text" : "# dynamic release library\n",
+        "Line" : 153,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# dynamic debug library\n",
+        "Line" : 159,
+        "CharPositionInLine" : 8
+      },
+      "19" : {
+        "Text" : "# choose the entries that fit the requested link type\n",
+        "Line" : 165,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "# library found\n",
+        "Line" : 184,
+        "CharPositionInLine" : 8
+      },
+      "21" : {
+        "Text" : "# if both are found, set SFML_XXX_LIBRARY to contain both\n",
+        "Line" : 187,
+        "CharPositionInLine" : 8
+      },
+      "22" : {
+        "Text" : "# if only one debug/release variant is found, set the other to be equal to the found one\n",
+        "Line" : 193,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# debug and not release\n",
+        "Line" : 195,
+        "CharPositionInLine" : 12
+      },
+      "24" : {
+        "Text" : "# release and not debug\n",
+        "Line" : 200,
+        "CharPositionInLine" : 12
+      },
+      "25" : {
+        "Text" : "# library not found\n",
+        "Line" : 205,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# mark as advanced\n",
+        "Line" : 212,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "# add to the global list of libraries\n",
+        "Line" : 221,
+        "CharPositionInLine" : 4
+      },
+      "28" : {
+        "Text" : "# in case of static linking, we must also define the list of all the dependencies of SFML libraries\n",
+        "Line" : 225,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# detect the OS\n",
+        "Line" : 228,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "# start with an empty list\n",
+        "Line" : 239,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "# macro that searches for a 3rd-party library\n",
+        "Line" : 243,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# No lookup in environment variables (PATH on Windows), as they may contain wrong library versions\n",
+        "Line" : 245,
+        "CharPositionInLine" : 8
+      },
+      "33" : {
+        "Text" : "# sfml-system\n",
+        "Line" : 253,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "# update the list -- these are only system libraries, no need to find them\n",
+        "Line" : 257,
+        "CharPositionInLine" : 8
+      },
+      "35" : {
+        "Text" : "# sfml-network\n",
+        "Line" : 270,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# update the list -- these are only system libraries, no need to find them\n",
+        "Line" : 274,
+        "CharPositionInLine" : 8
+      },
+      "37" : {
+        "Text" : "# sfml-window\n",
+        "Line" : 281,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# find libraries\n",
+        "Line" : 285,
+        "CharPositionInLine" : 8
+      },
+      "39" : {
+        "Text" : "# update the list\n",
+        "Line" : 298,
+        "CharPositionInLine" : 8
+      },
+      "40" : {
+        "Text" : "# sfml-graphics\n",
+        "Line" : 311,
+        "CharPositionInLine" : 4
+      },
+      "41" : {
+        "Text" : "# find libraries\n",
+        "Line" : 315,
+        "CharPositionInLine" : 8
+      },
+      "42" : {
+        "Text" : "# update the list\n",
+        "Line" : 319,
+        "CharPositionInLine" : 8
+      },
+      "43" : {
+        "Text" : "# sfml-audio\n",
+        "Line" : 324,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "# find libraries\n",
+        "Line" : 328,
+        "CharPositionInLine" : 8
+      },
+      "45" : {
+        "Text" : "# update the list\n",
+        "Line" : 336,
+        "CharPositionInLine" : 8
+      },
+      "46" : {
+        "Text" : "# handle errors\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# SFML version not ok\n",
+        "Line" : 345,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "# include directory or library not found\n",
+        "Line" : 352,
+        "CharPositionInLine" : 4
+      },
+      "49" : {
+        "Text" : "# fatal error\n",
+        "Line" : 357,
+        "CharPositionInLine" : 8
+      },
+      "50" : {
+        "Text" : "# error but continue\n",
+        "Line" : 360,
+        "CharPositionInLine" : 8
+      },
+      "51" : {
+        "Text" : "# handle success\n",
+        "Line" : 365,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 52
+    },
+    "cmake_modules/ParseAndAddCatchTests.cmake" : {
+      "ObjectId" : "cb2846d0a36afb8fd31d736e258c0162484b5b28",
+      "LastModified" : "2018-05-25T06:51:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#==================================================================================================#\n\n#  supported macros                                                                                #\n\n#    - TEST_CASE,                                                                                  #\n\n#    - SCENARIO,                                                                                   #\n\n#    - TEST_CASE_METHOD,                                                                           #\n\n#    - CATCH_TEST_CASE,                                                                            #\n\n#    - CATCH_SCENARIO,                                                                             #\n\n#    - CATCH_TEST_CASE_METHOD.                                                                     #\n\n#                                                                                                  #\n\n#  Usage                                                                                           #\n\n# 1. make sure this module is in the path or add this otherwise:                                   #\n\n#    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} \"${CMAKE_SOURCE_DIR}/cmake.modules/\")              #\n\n# 2. make sure that you've enabled testing option for the project by the call:                     #\n\n#    enable_testing()                                                                              #\n\n# 3. add the lines to the script for testing target (sample CMakeLists.txt):                       #\n\n#        project(testing_target)                                                                   #\n\n#        set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} \"${CMAKE_SOURCE_DIR}/cmake.modules/\")          #\n\n#        enable_testing()                                                                          #\n\n#                                                                                                  #\n\n#        find_path(CATCH_INCLUDE_DIR \"catch.hpp\")                                                  #\n\n#        include_directories(${INCLUDE_DIRECTORIES} ${CATCH_INCLUDE_DIR})                          #\n\n#                                                                                                  #\n\n#        file(GLOB SOURCE_FILES \"*.cpp\")                                                           #\n\n#        add_executable(${PROJECT_NAME} ${SOURCE_FILES})                                           #\n\n#                                                                                                  #\n\n#        include(ParseAndAddCatchTests)                                                            #\n\n#        ParseAndAddCatchTests(${PROJECT_NAME})                                                    #\n\n#                                                                                                  #\n\n# The following variables affect the behavior of the script:                                       #\n\n#                                                                                                  #\n\n#    PARSE_CATCH_TESTS_VERBOSE (Default OFF)                                                       #\n\n#    -- enables debug messages                                                                     #\n\n#    PARSE_CATCH_TESTS_NO_HIDDEN_TESTS (Default OFF)                                               #\n\n#    -- excludes tests marked with [!hide], [.] or [.foo] tags                                     #\n\n#    PARSE_CATCH_TESTS_ADD_FIXTURE_IN_TEST_NAME (Default ON)                                       #\n\n#    -- adds fixture class name to the test name                                                   #\n\n#    PARSE_CATCH_TESTS_ADD_TARGET_IN_TEST_NAME (Default ON)                                        #\n\n#    -- adds cmake target name to the test name                                                    #\n\n#    PARSE_CATCH_TESTS_ADD_TO_CONFIGURE_DEPENDS (Default OFF)                                      #\n\n#    -- causes CMake to rerun when file with tests changes so that new tests will be discovered    #\n\n#                                                                                                  #\n\n#==================================================================================================#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This removes the contents between\n\n#  - block comments (i.e. /* ... */)\n\n#  - full line comments (i.e. // ... )\n\n# contents have been read into '${CppCode}'.\n\n# !keep partial line comments\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Worker function\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# According to CMake docs EXISTS behavior is well-defined only for full paths.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Remove block and fullline comments\n",
+        "Line" : 85,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Find definition of test names\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Strip newlines\n",
+        "Line" : 101,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Get test type and fixture if applicable\n",
+        "Line" : 104,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Get string parts of test definition\n",
+        "Line" : 109,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Strip wrapping quotation marks\n",
+        "Line" : 112,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Validate that a test name and tags have been provided\n",
+        "Line" : 116,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# Assign name and tags\n",
+        "Line" : 122,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# add target to labels to enable running all tests added from this target\n",
+        "Line" : 135,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# remove target from labels if the test is hidden\n",
+        "Line" : 140,
+        "CharPositionInLine" : 12
+      },
+      "14" : {
+        "Text" : "# Add the test and set its properties\n",
+        "Line" : 167,
+        "CharPositionInLine" : 12
+      },
+      "15" : {
+        "Text" : "# entry point\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "lib/CMakeLists.txt" : {
+      "ObjectId" : "14ed67c8d2bf9b9c2e7f248b91c79f8b54518705",
+      "LastModified" : "2018-10-04T09:36:24Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/tests/CMakeLists.txt" : {
+      "ObjectId" : "126cbdc1431b47c1858fbcff13ec15091523efea",
+      "LastModified" : "2018-11-14T15:32:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add_test( NAME all COMMAND CTest)\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "librun/CMakeLists.txt" : {
+      "ObjectId" : "b970ce3b32bd7866b5748a1dffaaeda883574614",
+      "LastModified" : "2018-12-14T15:12:45Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Detect and add lib\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# now comes everything we need, to create a package\n\n# there are a lot more variables you can set, and some\n\n# you need to set for some package types, but we want to\n\n# be minimal here\n\n#set(CPACK_PACKAGE_NAME \"LibRun\")\n\n#SET(CPACK_PACKAGE_VENDOR \"LeDYoM\")\n\n#set(CPACK_PACKAGE_VERSION \"1.0.0\")\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# we don't want to split our program up into several things\n\n#set(CPACK_MONOLITHIC_INSTALL 1)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This must be last except tests\n\n#include(CPack)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "librun/tests/CMakeLists.txt" : {
+      "ObjectId" : "036e84a6dd6ca1ea42427482d2b5e98bb3f0ac2c",
+      "LastModified" : "2018-12-13T17:09:46Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add_test( NAME all COMMAND CTest)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "loader/CMakeLists.txt" : {
+      "ObjectId" : "fda4ebf04648ae5e27b3040dfe882f6de17b80a4",
+      "LastModified" : "2017-12-15T15:04:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "mtypes/CMakeLists.txt" : {
+      "ObjectId" : "2d1930238c7d1cec4c9fe9b4672137c91ff4fe20",
+      "LastModified" : "2018-12-13T17:09:46Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "mtypes/tests/CMakeLists.txt" : {
+      "ObjectId" : "8cf09894846250715d72a9672a2ba55deec44210",
+      "LastModified" : "2018-12-13T17:09:46Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add_test( NAME all COMMAND CTest)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "zoper_game/CMakeLists.txt" : {
+      "ObjectId" : "97c35a68c73bf175b41940319a2f44679374c29b",
+      "LastModified" : "2018-12-13T17:09:46Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Detect and add lib\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# now comes everything we need, to create a package\n\n# there are a lot more variables you can set, and some\n\n# you need to set for some package types, but we want to\n\n# be minimal here\n\n#set(CPACK_PACKAGE_NAME \"Zoper\")\n\n#SET(CPACK_PACKAGE_VENDOR \"LeDYoM\")\n\n#set(CPACK_PACKAGE_VERSION \"1.0.0\")\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# we don't want to split our program up into several things\n\n#set(CPACK_MONOLITHIC_INSTALL 1)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This must be last\n\n#include(CPack)\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 14
+  },
+  "ElapsedTime" : 1342
+}

@@ -1,0 +1,269 @@
+{
+  "Repository" : "46780121",
+  "Revision" : "HEAD",
+  "ObjectId" : "a676e5ff01053eea91b483908fb81451fdc28b24",
+  "CommitTime" : "2019-04-18T10:48:48Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "cc56a6ac61fc54e828421b2851b9848ae6768477",
+      "LastModified" : "2019-04-11T17:19:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This Makefile builds Felix and packages it in various forms:\n\n#\n\n#                                                                      Go install\n\n#                                                                         Glide\n\n#                                                                           |\n\n#                                                                           |\n\n#                                                                           |\n\n#                                                    +-------+              v\n\n#                                                    | Felix |   +---------------------+\n\n#                                                    |  Go   |   | calico/go-build     |\n\n#                                                    |  code |   +---------------------+\n\n#                                                    +-------+         /\n\n#                                                           \\         /\n\n#                                                            \\       /\n\n#                                                             \\     /\n\n#                                                             go build\n\n#                                                                 \\\n#                                                                  \\\n#                                                                   \\\n# +----------------------+                                           :\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# | calico-build/centos7 |                                           v\n\n# | calico-build/xenial  |                                 +------------------+\n\n# | calico-build/trusty  |                                 | bin/calico-felix |\n\n# +----------------------+                                 +------------------+\n\n#                     \\                                          /   /\n\n#                      \\             .--------------------------'   /\n\n#                       \\           /                              /\n\n#                        \\         /                      .-------'\n\n#                         \\       /                      /\n\n#                     rpm/build-rpms                    /\n\n#                   debian/build-debs                  /\n\n#                           |                         /\n\n#                           |                   docker build\n\n#                           v                         |\n\n#            +----------------------------+           |\n\n#            |  RPM packages for Centos7  |           |\n\n#            |  RPM packages for Centos6  |           v\n\n#            | Debian packages for Xenial |    +--------------+\n\n#            | Debian packages for Trusty |    | calico/felix |\n\n#            +----------------------------+    +--------------+\n\n#\n\n#\n\n#\n\n###############################################################################\n\n# Shortcut targets\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## Build binary for current platform\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## Run the tests for the current platform/architecture\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "###############################################################################\n\n# Both native and cross architecture builds are supported.\n\n# The target architecture is select by setting the ARCH variable.\n\n# When ARCH is undefined it is set to the detected host architecture.\n\n# When ARCH differs from the host architecture a crossbuild will be performed.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# BUILDARCH is the host architecture\n\n# ARCH is the target architecture\n\n# we need to keep track of them separately\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# canonicalized names for host architecture\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# unless otherwise set, I am building for my own architecture, i.e. not cross-compiling\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# canonicalized names for target architecture\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Build mounts for running in \"local build\" mode. Mount in libcalico, but null out\n\n# the vendor directory. This allows an easy build using local development code,\n\n# assuming that there is a local checkout of libcalico in the same directory as this repo.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# we want to be able to run the same recipe on multiple targets keyed on the image name\n\n# to do that, we would use the entire image name, e.g. calico/node:abcdefg, as the stem, or '%', in the target\n\n# however, make does **not** allow the usage of invalid filename characters - like / and : - in a stem, and thus errors out\n\n# to get around that, we \"escape\" those characters by converting all : to --- and all / to ___ , so that we can use them\n\n# in the target, we then unescape them back\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# these macros create a list of valid architectures for pushing manifests\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Targets used when cross building.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Enable binfmt adding support for miscellaneous binary formats.\n\n# This is only needed when running non-native binaries.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# list of arches *not* to build when doing *-all\n\n#    until s390x works correctly\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "###############################################################################\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# If this is a release, also tag and push additional images.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# remove from the list to push to manifest any registries that do not support multi-arch\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# location of docker credentials to push manifests\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# For building, we use the go-build image for the *host* architecture, even if the target is different\n\n# the one for the host should contain all the necessary cross-compilation tools\n\n# we do not need to use the arch since go-build:v0.15 now is multi-arch manifest\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# If building on amd64 omit the arch in the container name.  Fixme!\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Total number of ginkgo batches to run.  The CI system sets this according to the number\n\n# of jobs that it divides the FVs into.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Space-delimited list of FV batches to run in parallel.  Defaults to running all batches\n\n# in parallel on this host.  The CI system runs a subset of batches in each parallel job.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Figure out version information.  To support builds from release tarballs, we default to\n\n# <unknown> if this isn't a git checkout.\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Calculate a timestamp for any build artefacts.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Linker flags for building Felix.\n\n#\n\n# We use -X to insert the version information into the placeholder variables\n\n# in the buildinfo package.\n\n#\n\n# We use -B to insert a build ID note into the executable, without which, the\n\n# RPM build tools complain.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# List of Go files that are generated by the build process.  Builds should\n\n# depend on these, clean removes them.\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# All Felix go files.\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Figure out the users UID/GID.  These are needed to run docker containers\n\n# as the current user and ensure that files built inside containers are\n\n# owned by the current user.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Allow libcalico-go and the ssh auth sock to be mapped into the build container.\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "###############################################################################\n\n# Building the binary\n\n###############################################################################\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Update the vendored dependencies with the latest upstream versions matching\n\n# our glide.yaml.  If there area any changes, this updates glide.lock\n\n# as a side effect.  Unless you're adding/updating a dependency, you probably\n\n# want to use the vendor target to install the versions from glide.lock.\n",
+        "Line" : 265,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Optimization: since glide up does the job of glide install, flag to the\n\n# vendor target that it doesn't need to do anything.\n",
+        "Line" : 275,
+        "CharPositionInLine" : 1
+      },
+      "33" : {
+        "Text" : "# vendor is a shortcut for force rebuilding the go vendor directory.\n",
+        "Line" : 279,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Default the typha repo and version but allow them to be overridden\n",
+        "Line" : 288,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "## Update typha pin in glide.yaml\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Changelog\" > release-notes-$(VERSION)\n",
+        "Line" : 806,
+        "CharPositionInLine" : 7
+      },
+      "37" : {
+        "Text" : "## Pushes a github release and release artifacts produced by `make release-build`.\n",
+        "Line" : 809,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Push the git tag.\n",
+        "Line" : 811,
+        "CharPositionInLine" : 1
+      },
+      "39" : {
+        "Text" : "# Push images.\n\n# Disabling for now since no-one is consuming the images.\n\n# $(MAKE) push-all IMAGETAG=$(VERSION)\n",
+        "Line" : 814,
+        "CharPositionInLine" : 1
+      },
+      "40" : {
+        "Text" : "# Push binaries to GitHub release.\n\n# Requires ghr: https://github.com/tcnksm/ghr\n\n# Requires GITHUB_TOKEN environment variable set.\n",
+        "Line" : 818,
+        "CharPositionInLine" : 1
+      },
+      "41" : {
+        "Text" : "# WARNING: Only run this target if this release is the latest stable release. Do NOT\n\n# run this target for alpha / beta / release candidate builds, or patches to earlier Calico versions.\n\n## Pushes `latest` release images. WARNING: Only run this for latest stable releases.\n",
+        "Line" : 837,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Check latest versions match.\n",
+        "Line" : 841,
+        "CharPositionInLine" : 1
+      },
+      "43" : {
+        "Text" : "# Disabling for now since no-one is consuming the images.\n\n# $(MAKE) push-all IMAGETAG=latest\n",
+        "Line" : 852,
+        "CharPositionInLine" : 1
+      },
+      "44" : {
+        "Text" : "# release-prereqs checks that the environment is configured properly to create a release.\n",
+        "Line" : 855,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "###############################################################################\n\n# Developer helper scripts (not used by build or test)\n\n###############################################################################\n",
+        "Line" : 870,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Launch a browser with Go coverage stats for the whole project.\n",
+        "Line" : 883,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Print the coverage.  We use sed to remove the verbose prefix and trim down\n\n# the whitespace.\n",
+        "Line" : 890,
+        "CharPositionInLine" : 1
+      },
+      "48" : {
+        "Text" : "# Generate a diagram of Felix's internal calculation graph.\n",
+        "Line" : 913,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Install or update the tools used by the build\n",
+        "Line" : 917,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 50,
+      "Errorlog" : "line 297:109 token recognition error at: '\"version:\\s'\nline 297:121 token recognition error at: '\\K'\nline 297:125 token recognition error at: '\\s'\n"
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 1
+  },
+  "ElapsedTime" : 705
+}

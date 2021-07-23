@@ -1,0 +1,294 @@
+{
+  "Repository" : "32265776",
+  "Revision" : "HEAD",
+  "ObjectId" : "5abf83f95d89cf6ba104b4c70d42d5c7c678b630",
+  "CommitTime" : "2019-04-16T12:19:43Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "b44f2cce73d00f668a4fa947842d4bbe69a66ab1",
+      "LastModified" : "2019-04-16T12:19:43Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2014-2019 The Khronos Group Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Vulkan Specification makefile\n\n#\n\n# To build the spec with a specific version included, set the\n\n# $(VERSIONS) variable on the make command line to a space-separated\n\n# list of version names (e.g. VK_VERSION_1_1) *including all previous\n\n# versions of the API* (e.g. VK_VERSION_1_1 must also include\n\n# VK_VERSION_1_0). $(VERSIONS) is converted into asciidoc and generator\n\n# script arguments $(VERSIONATTRIBS) and $(VERSIONOPTIONS)\n\n#\n\n# To build the specification and reference pages with optional\n\n# extensions included, set the $(EXTENSIONS) variable on the make\n\n# command line to a space-separated list of extension names. The\n\n# VK_KHR_sampler_mirror_clamp_to_edge extension which is a required part\n\n# of Vulkan 1.0, is always included. $(EXTENSIONS) is converted into\n\n# asciidoc and generator script arguments $(EXTATTRIBS) and\n\n# $(EXTOPTIONS).\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If a recipe fails, delete its target file. Without this cleanup, the leftover\n\n# file from the failed recipe can falsely satisfy dependencies on subsequent\n\n# runs of `make`.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# APITITLE can be set to extra text to append to the document title,\n\n# normally used when building with extensions included.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# IMAGEOPTS is normally set to generate inline SVG images, but can be\n\n# overridden to an empty string, since the inline option doesn't work\n\n# well with our HTML diffs.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The default 'all' target builds the following sub-targets:\n\n#  html - HTML single-page API specification\n\n#  pdf - PDF single-page API specification\n\n#  styleguide - HTML5 single-page \"Documentation and Extensions\" guide\n\n#  registry - HTML5 single-page XML Registry Schema documentation\n\n#  manhtml - HTML5 single-page reference guide - NOT SUPPORTED\n\n#  manpdf - PDF reference guide - NOT SUPPORTED\n\n#  manhtmlpages - HTML5 separate per-feature reference pages\n\n#  allchecks - Python sanity checker for script markup and macro use\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Note that the := assignments below are immediate, not deferred, and\n\n# are therefore order-dependent in the Makefile\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Path to Python scripts used in generation\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Target directories for output files\n\n# HTMLDIR - 'html' target\n\n# PDFDIR - 'pdf' target\n\n# CHECKDIR - 'allchecks' target\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# PDF Equations are written to SVGs, this dictates the location to store those files (temporary)\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Set VERBOSE to -v to see what asciidoc is doing.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# asciidoc attributes to set (defaults are usually OK)\n\n# NOTEOPTS sets options controlling which NOTEs are generated\n\n# PATCHVERSION must equal VK_HEADER_VERSION from vk.xml\n\n# ATTRIBOPTS sets the API revision and enables KaTeX generation\n\n# VERSIONATTRIBS sets attributes for enabled API versions (set above\n\n#\t     based on $(VERSIONS))\n\n# EXTATTRIBS sets attributes for enabled extensions (set above based on\n\n#\t     $(EXTENSIONS))\n\n# EXTRAATTRIBS sets additional attributes, if passed to make\n\n# ADOCMISCOPTS miscellaneous options controlling error behavior, etc.\n\n# ADOCEXTS asciidoctor extensions to load\n\n# ADOCOPTS options for asciidoc->HTML5 output\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Spell out ISO 8601 format as not all date commands support --rfc-3339\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Generate Asciidoc attributes for spec remark\n\n# Could use `git log -1 --format=\"%cd\"` to get branch commit date\n\n# This used to be a dependency in the spec html/pdf targets,\n\n# but that's likely to lead to merge conflicts. Just regenerate\n\n# when pushing a new spec for review to the sandbox.\n\n# The dependency on HEAD is per the suggestion in\n\n# http://neugierig.org/software/blog/2014/11/binary-revisions.html\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Some of the attributes used in building all spec documents:\n\n#   chapters - absolute path to chapter sources\n\n#   images - absolute path to images\n\n#   generated - absolute path to generated sources\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# ADOCHTMLOPTS relies on the relative runtime path from the output HTML\n\n# file to the katex scripts being set with KATEXDIR. This is overridden\n\n# by some targets.\n\n# ADOCHTMLOPTS also relies on the absolute build-time path to the\n\n# 'stylesdir' containing our custom CSS.\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Images used by the spec. These are included in generated HTML now.\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Top-level spec source file\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Static files making up sections of the API spec.\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Shorthand for where different types generated files go.\n\n# All can be relocated by overriding GENERATED in the make invocation.\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Dynamically generated markers when many generated files are made at once\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# All generated dependencies\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# All non-format-specific dependencies\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Install katex in $(OUTDIR)/katex for reference by all HTML targets\n\n# README.md is a proxy for all the katex files that need to be installed\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Spec targets\n\n# There is some complexity to try and avoid short virtual targets like 'html'\n\n# causing specs to *always* be regenerated.\n",
+        "Line" : 220,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Only the $(ROSWELL) step is required unless the search index is to be\n\n# generated and incorporated into the chunked spec.\n\n#\n\n# Dropped $(QUIET) for now\n\n# Should set NODE_PATH=/usr/local/lib/node_modules or wherever, outside Makefile\n\n# Copying chunked.js into target avoids a warning from the chunker\n",
+        "Line" : 227,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Vulkan Documentation and Extensions, a.k.a. \"Style Guide\" documentation\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Vulkan API Registry (XML Schema) documentation\n\n# Currently does not use latexmath / KaTeX\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Reflow text in spec sources\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Clean generated and output files\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Ref page targets for individual pages\n",
+        "Line" : 339,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# These lists should be autogenerated\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Ref page sources, split up by core API (CORE), KHR extensions (KHR), and\n\n# other extensions (VEN). This is a hacky approach to ref page generation\n\n# now that the single-branch model is in place, and there are outstanding\n\n# issues to resolve it. For now, always build all reference pages.\n\n# Changing MANSOURCES to e.g. $(CORESOURCES) will restore older behavior.\n",
+        "Line" : 345,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Generation of ref page asciidoctor sources by extraction from the\n\n# specification.\n\n#\n\n# Should have a proper dependency causing the man page sources to be\n\n# generated by running genRef (once), but adding $(MANSOURCES) to the\n\n# targets causes genRef to run once/target.\n\n#\n\n# Should pass in $(EXTOPTIONS) to determine which pages to generate.\n\n# For now, all core and extension ref pages are extracted by genRef.py.\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# These targets are HTML5 ref pages\n\n#\n\n# The recursive $(MAKE) is an apparently unavoidable hack, since the\n\n# actual list of man page sources isn't known until after\n\n# man/apispec.txt is generated. $(GENDEPENDS) is generated before\n\n# running the recursive make, so it doesn't trigger twice\n",
+        "Line" : 372,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# The 'manhtml' and 'manpdf' targets are NO LONGER SUPPORTED by Khronos.\n\n# They generate HTML5 and PDF single-file versions of the ref pages.\n\n# The generated ref page sources are included by man/apispec.txt, and\n\n# are always generated along with man/apispec.txt. Therefore there's no\n\n# need for a recursive $(MAKE) or a $(MANHTML) dependency, unlike the\n\n# manhtmlpages target.\n",
+        "Line" : 390,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Targets generated from the XML and registry processing scripts\n\n#   $(SCRIPTS)/vkapi.py - Python encoding of the registry\n\n# The $(...DEPEND) targets are files named 'timeMarker' in generated\n\n# target directories. They serve as proxies for the multiple generated\n\n# files written for each target:\n\n#   apiinc / proxy $(APIDEPEND) - API interface include files in $(APIPATH)\n\n#   hostsyncinc / proxy $(HOSTSYNCDEPEND) - host sync table include files in $(HOSTSYNCPATH)\n\n#   validinc / proxy $(VALIDITYDEPEND) - API validity include files in $(VALIDITYPATH)\n\n#   extinc / proxy $(METADEPEND) - extension appendix metadata include files in $(METAPATH)\n\n#\n\n# $(VERSIONOPTIONS) specifies the core API versions which are included\n\n# in these targets, and is set above based on $(VERSIONS)\n\n#\n\n# $(EXTOPTIONS) specifies the extensions which are included in these\n\n# targets, and is set above based on $(EXTENSIONS).\n\n#\n\n# $(GENVKEXTRA) are extra options that can be passed to genvk.py, e.g.\n\n# '-diag diag'\n",
+        "Line" : 419,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Debugging aid - generate all files from registry XML\n\n# This leaves out config/extDependency.sh intentionally as it only\n\n# needs to be updated when the extension dependencies in vk.xml change.\n",
+        "Line" : 471,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Extension dependencies derived from vk.xml\n\n# Both Bash and Python versions are generated\n",
+        "Line" : 477,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "xml/Makefile" : {
+      "ObjectId" : "a89f1585af91e218033bf812669c5cfdd66fade1",
+      "LastModified" : "2019-04-08T03:17:23Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2013-2019 The Khronos Group Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If a recipe fails, delete its target file. Without this cleanup, the leftover\n\n# file from the failed recipe can falsely satisfy dependencies on subsequent\n\n# runs of `make`.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generator scripts and options\n\n# GENOPTS can be e.g. '-noprotect'\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Generate Vulkan header from XML. Many other files can be generated\n\n# from vk.xml using the scripts, but they are all generated in ../ as\n\n# part of the process of building the Specification.\n\n#\n\n# Targets:\n\n#\n\n# default / install - regenerate headers in ../include/vulkan/.\n\n# validate - run XML validator on vk.xml against the schema.\n\n# test - check if vulkan_core.h compiles.\n\n# clean_dirt - remove intermediate files.\n\n# clean - remove installed and intermediate files.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Vulkan platform-specific headers\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "################################################\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Autogenerate vulkan header from XML API description\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Python and XML files on which vulkan_core.h depends\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Verify registry XML file against the schema\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Test that vulkan_core.h compiles\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Platforms to test\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "################################################\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Files to clean up\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Clean intermediate files\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Clean generated targets as well as intermediates.\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 1702
+}

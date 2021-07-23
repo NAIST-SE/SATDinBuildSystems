@@ -1,0 +1,1156 @@
+{
+  "Repository" : "18477139",
+  "Revision" : "HEAD",
+  "ObjectId" : "7659ff743638781f847e37500b8a7093fb49a2f8",
+  "CommitTime" : "2019-02-01T15:31:59Z",
+  "Files" : {
+    "devel/Makefile" : {
+      "ObjectId" : "e496bc004ec253fe653455eeb8ff54d660e8822f",
+      "LastModified" : "2018-01-18T10:42:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n# \n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n# \n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile contains targets for building, testing, and debugging\n\n# mod_pagespeed during develoment.  Useful targets:\n\n#\n\n# apache_debug\n\n# apache_release\n\n#  - Build a development (debug), or release (optimized), version of\n\n#    mod_pagespeed.\n\n#\n\n# apache_debug_psol\n\n#  - Build a development version of PSOL, as '.a' file suitable for\n\n#    ngx_pagespeed to link against.\n\n#\n\n# apache_test\n\n#  - Run all unit tests.  You can also run the tests in halves with:\n\n#    - mod_pagespeed_test\n\n#      - Run unit tests under test.gyp:mod_pagespeed_test\n\n#    - pagespeed_automatic_test\n\n#      - Run unit tests under test.gyp:pagespeed_automatic_test\n\n#  - You can run a specific unit test by setting TEST=test_name.\n\n#    For example:\n\n#      TEST=SerfUrlAsyncFetcherTest.FetchOneURLWithGzip\n\n#    You can also run a subset of tests, using wildcards:\n\n#      TEST=SerfUrlAsyncFetcherTest.* make apache_test\n\n#    What you give to TEST is passed to googletest with --gtest_filter, so for\n\n#    more details see the doc there:\n\n#      https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md#running-a-subset-of-the-tests\n\n#\n\n# apache_release_test\n\n#  - Run all unit test with a release (non-debug) build.\n\n#\n\n# apache_root_test\n\n#  - Currently broken test that builds install tarball, installs it as the root\n\n#    apache on port 80 (requires sudo password) and runs most of our system\n\n#    tests to make sure filters are working and rewritten resources are served.\n\n#\n\n# (This file also pulls in the contents of Makefile.tests, so some useful\n\n#  targets are defined there instead.  To run system tests, for example, you can\n\n#  run apache_debug_smoke_test.)\n\n#\n\n# apache_install_conf\n\n#  - Copy install/debug.conf.template to your development apache directory,\n\n#    making substitutions for @@VARS@@ and, depending on how OPTIONS is set,\n\n#    uncommenting some #TESTVAR lines.\n\n#  - When running tests this target is run automatically, but you may need to\n\n#    run it manually during debugging.\n\n#\n\n# apache_debug_install\n\n# apache_release_install\n\n#  - Install the debug/release version of mod_pagespeed into the build of apache\n\n#    that build_development_apache.sh created.\n\n#  - This is another command that you probably only need when debugging\n\n#    manually.\n\n#\n\n# apache_debug_start\n\n# apache_debug_stop\n\n# apache_debug_restart\n\n#  - Start, stop, and restart the development apache instance.  This also\n\n#    includes a few other potentially useful maintenance tasks, like cleaning up\n\n#    temp files and rotating logs.\n\n#  - Unless you specify FAST_RESTART=1, apache_debug_restart runs\n\n#    apache_debug_install to make sure you're running the module you built and\n\n#    not an earlier version.\n\n#\n\n# apache_debug_slurp\n\n#  - mod_pagespeed can be run in \"slurp\" mode, where it is configured as a\n\n#    forward proxy that saves a copy of everything that runs through it.  Later\n\n#    on the slurp can be served in read-only mode, to serve the cached copy of\n\n#    whatever was visited.  This is intended for testing and debugging, and is\n\n#    what the load test uses.\n\n#\n\n# apache_debug_leak_test\n\n#  - Run the unit tests and system tests under valgrind, to check for memory\n\n#    errors and leaks.\n\n#\n\n# update_gyp_manifest\n\n#  - If you add or remove a .gyp or .gypi file, run this target so we know to\n\n#    watch it for changes.\n\n#\n\n# submodule_update\n\n#  - The mod_pagespeed git repo includes its dependencies as git submodules.\n\n#    These dependencies are pinned to a specific git revision.  If someone has\n\n#    upgraded one, you need to run submodule_update to apply those changes.\n\n#\n\n# doxygen\n\n#  - Builds html documentation for PSOL.  It includes everything defined as\n\n#    public in the .h files.  You might ask: how do I know what things are safe\n\n#    to depend on as consumer of PSOL, and which might change?  This is a good\n\n#    question with a bad answer: you can depend on anything, and anything might\n\n#    change.  We don't offer ABI or even API compatibility across versions, even\n\n#    across point releases.\n\n#\n\n# This Makefile also includes various test targets that really should be in\n\n# Makefile.tests:\n\n#  - apache_debug_proxy_test\n\n#  - apache_debug_slurp_test\n\n# TODO(jefftk): move these into Makefile.tests\n\n#\n\n# It also includes other targets that are not indended to be run directly, and\n\n# are either here to support devel/ scripts or to support other targets.\n\n# somewhat redundant with the .gyp files, but helps bridge the gap and automate\n\n# the transition.\n\n#\n\n# You can use the CONF= parameter to change build settings or enable coverage\n\n# testing for debug builds:\n\n#\n\n#    CONF=Debug\n\n#     - default, shouldn't be needed\n\n#    CONF=Coverage\n\n#     - run the test coverage analysis scripts after tests complete\n\n#    CONF=Release\n\n#     - shouldn't be needed; use targets with \"release\" in their name instead.\n\n#    CONF=OptDebug\n\n#     - build optimized binaries with debug info (-O2 -g)\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We need gcc-mozilla/bin to pick up our special gcc 4.8 for old versions of\n\n# ubuntu.  It's ok to have it in the path even if we're on a machine where that\n\n# directory doesn't exist; bash will just move on.\n\n# TODO(jefftk): source ubuntu/make_vars.mk here, then move this there.\n\n# TODO(jefftk): get this Makefile working on other platforms (centos, ubuntu16)\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where binaries go.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# GYP_MANIFEST holds a cached copy of the gyp files in this client.  When we\n\n# first create a new checkout we run update_gyp_manifest, and from then on we\n\n# use the cached copy when we need to know whether to rerun hooks.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# It's ok for this variable to be empty, and it will be empty the first time we\n\n# run in a new checkout.  When it's empty we won't know whether to run gyp\n\n# but on an initial checkout we run them regardless because we won't yet\n\n# have the hook stamp.\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Unset environment variables that can interfere with the make process.\n\n# TODO(vchudnov): Not all of these may be problematic. Narrow down\n\n# this list if possible.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# gcc-mozilla contains /usr/lib/gcc-mozilla/bin/gcc but not\n\n# /usr/lib/gcc-mozilla/bin/cc so if we want to use gcc-mozilla, which we do on\n\n# Ubuntu 12 LTS, then we need to explicitly set CC=gcc.\n\n# TODO(jefftk): do this in a way that lets people explicitly choose to build\n\n# with clang instead of forcing gcc on everyone.\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# By default, precompiled JS files are used. When developing, though, we want to\n\n# enable local compilation of JS, so export the flag that enables use of the\n\n# closure compiler. Note that this var is checked when gyp is run, not at\n\n# compile time.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Run the proxy tests from a host configured via\n\n#\tcd install; ./ubuntu.sh setup_test_machine\n\n# We use 'export' here so that apache/system_test.sh can see it.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# We don't want our targets to be run parallelized, as we want\n\n# various directory maintenance steps to be run in-order\n\n# This prevents that from happening, but still passes -j to actual\n\n# compilation\n",
+        "Line" : 197,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Determine gyp BUILDTYPE and hooks we should run based on the passed in CONF\n\n# TOOD(jefftk): The difference between setting CONF, BUILDTYPE, and running a\n\n# target that sets BUILDTYPE makes it pretty hard to know what BUILDTYPE(s) a\n\n# section of this Makefile might run under.  Clean this up.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# For -O2 -g type builds, we have to build as BUILDTYPE=Release CXXLAGS=-g;\n\n# with BUILDTYPE=Debug CXXFLAGS=\"-O2\" we would get a -O2 -g -O0 out of gyp,\n\n# with the -O0 cancelling the -O2.\n",
+        "Line" : 224,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# We need to make sure to add -g only once (since otherwise recursive\n\n# invocation will end up with something like -g -g -g and force a rebuild)\n",
+        "Line" : 228,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# We'd like to put this in gyp file, but that makes it hard to compile\n\n# on old versions of g++ that do not support this flag.  However we\n\n# can add the flag during development.  Don't add this in if it's\n\n# already present; that causes cxxflags to mismatch adding extra compiles.\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# test to make sure that CXXFLAGS doesn't grow on each recursion\n",
+        "Line" : 247,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Note: these must be distinct from the ports used for apache_root_test.\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# If you add additional ports here, make sure they don't overlap with the test\n\n# ports ngx_pagespeed uses.  Check ngx_pagespeed/test/run_tests.sh for the list.\n",
+        "Line" : 267,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Not used in this Makefile, but needed for some submake/script.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# We want to track borgingssl branch chromium-stable at head, but submodules\n\n# tracks a specific commit ID.\n\n# If we need more deps like this, we should figure out a more generic solution.\n",
+        "Line" : 283,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# These hooks are invoked before/after apache or tests are run\n",
+        "Line" : 288,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We check closure-compiled javascript into git to enable people to use\n\n# closure-compiled output without needing to have a closure compiler dependency\n\n# in the build process.\n",
+        "Line" : 304,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Sets up a development tree, and builds the modules\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Restarts with newest module\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Installs a slurping pagespeed.conf on localhost:8082 and runs a debug\n\n# binary.\n",
+        "Line" : 368,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Stop and start Apache as reliably as possible.\n",
+        "Line" : 375,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Start with an empty cache\n",
+        "Line" : 397,
+        "CharPositionInLine" : 34
+      },
+      "27" : {
+        "Text" : "# Installs the apache debug server and runs a stress test against it.\n\n# This will blow away your existing cache and pagespeed.conf.\n\n#\n\n# Note: this test is obsolete; you probably want mps_load_test.sh or one of the\n\n# siege tests.\n\n#\n\n# TODO(sligocki): Lock Apache.\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# stop old apaches, w/o generating any coverage reports,\n\n# (as we're about to do some new test)\n",
+        "Line" : 416,
+        "CharPositionInLine" : 1
+      },
+      "29" : {
+        "Text" : "# This test checks that when ProxyPass is set on a host with mod_pagespeed\n\n# enabled, URLs are rewritten correctly. (See install/debug.conf.template)\n\n#   See: http://github.com/apache/incubator-pagespeed-mod/issues/74\n\n#\n\n# TODO(sligocki): Lock Apache.\n",
+        "Line" : 422,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Before this was fixed, it would be rewritten as localhost:8081/...\n",
+        "Line" : 436,
+        "CharPositionInLine" : 1
+      },
+      "31" : {
+        "Text" : "# This test checks that we can serve slurped pages, both from requests\n\n# like those sent from a browser-proxy.  We'd also like to test\n\n# requests sent from a fake DNS, like webpagetest, but I haven't\n\n# figured out how to do that yet.  For now we'll just test read-only\n\n# proxying.\n\n#\n\n# In our test flow, we first warm up mod_pagespeed's cache with a\n\n# fetch and a sleep.  Then we test to make sure that we rewrite a\n\n# resource properly, with mps on, and that we don't rewrite it with\n\n# mps off.\n\n#\n\n# TODO(sligocki): Lock Apache.\n",
+        "Line" : 441,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# This is for trace-based stress tests, that operate on recorded URLs\n\n# and slurp databases\n\n# Note: you can pass PAR=, EXP= and RUNS= to stress test targets that\n\n# execute the tests\n",
+        "Line" : 464,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# mod_pagespeed load tests can be started with scripts/mps_load_test.sh.  If\n\n# given an arg 'memcached', then that script will export MEMCACHED=1 and that\n\n# will be passed to target 'apache_install_conf' as indicated below.  Same\n\n# with cache_invalidation and inline_unauthorized_resources (IUR).\n",
+        "Line" : 474,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# TODO(jefftk): figure out if dividing the unit tests into mod_pagespeed_test\n\n# and pagespeed_automatic_test is actually helpful.  Currently it looks like if\n\n# there was once a principled distinction between the targets it has atrophied.\n",
+        "Line" : 518,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# TODO(jefftk): get rid of this and just use apache_debug_psol\n",
+        "Line" : 529,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Builds a binary release tarball, installs it as root (requires sudo password)\n\n# and tests that rewrites occur.\n\n#\n\n# TODO(jmarantz): We are still leaving a bunch of stuff behind in /tmp; organize\n\n# the temp dirs better and clean up.\n",
+        "Line" : 551,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# TODO(jmarantz): This target is not working yet...it fails copying over\n\n# pagespeed_libraries.conf.  Investigate:\n\n#     cat common/pagespeed.load.template | \\\n#\t    sed s~@@APACHE_MODULEDIR@@~/usr/lib/apache2/modules~ | \\\n#     sed s/@@COMMENT_OUT_DEFLATE@@// > /tmp/mod_pagespeed.install/pagespeed.load\n",
+        "Line" : 558,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "#     cp -f /tmp/instaweb.vRV047/mod_pagespeed-test-jmarantz/install/net/instaweb/genfiles/conf/pagespeed_libraries.conf /tmp/mod_pagespeed.install/pagespeed_libraries.conf\n\n#     cp: cannot stat ‘/tmp/instaweb.vRV047/mod_pagespeed-test-jmarantz/install/net/instaweb/genfiles/conf/pagespeed_libraries.conf’: No such file or directory\n\n# TODO(jefftk): this also depends on prepare_release.sh and install-glucid.sh,\n\n# that haven't been open sourced yet.\n\n#apache_root_test :\n\n#\tsudo /etc/init.d/apache2 stop\n\n#\tsudo rm -rf $(TMP_PREFIX) /tmp/mod_pagespeed.install\n\n#\tcd ../.. && devel/prepare_release.sh -force \\\n#\t\t mod_pagespeed-test-$(USER)\n",
+        "Line" : 563,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#\tcd $(OBJDIR) && tar xzf \\\n#\t\t$(TMP_PREFIX)/mod_pagespeed-test-$(USER).tgz\n",
+        "Line" : 572,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#\tcd $(OBJDIR)/mod_pagespeed-test-$(USER) && ./install-glucid.sh\n\n#\trm -rf $(OBJDIR) /tmp/mod_pagespeed-test-$(USER).tgz\n\n#\tsudo rm -rf $(TMP_PREFIX) /tmp/mod_pagespeed.install\n",
+        "Line" : 574,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Configuration root for Apache file-system and cache directories, to\n\n# be written into config file.\n\n#\n\n# Installs a development copy of the the Instaweb server into $APACHE_DEBUG_ROOT\n",
+        "Line" : 585,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Builds the release objects.  This should not be run on its own -- it\n\n# should be run manually via 'make apache_release'.\n",
+        "Line" : 620,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Generates a doxygen tarball in $(DOXYGEN_TARBALL) suitable for\n\n# scp to modpagespeed.com.\n",
+        "Line" : 628,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Using pipefail to ensure grep -v doesn't obscure a gyp failure.\n",
+        "Line" : 655,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Install gperf if it doesn't exist\n",
+        "Line" : 704,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 46
+    },
+    "install/Makefile" : {
+      "ObjectId" : "1ca9afbc690f7e7c7b786c178836d8d37d46992a",
+      "LastModified" : "2018-01-08T15:43:27Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This Makefile is used to help drive the installation of mod_pagespeed into\n\n# an Apache installation.\n\n#\n\n# Note that the location of the Apache configuration files may vary by\n\n# Linux distribution.  For example, we have seen the following installation\n\n# directories for the default Apache install.\n\n#\n\n#     Ubuntu \t\t\t\t/etc/apache2/mods-enabled/*.conf\n\n#     CentOS \t\t\t\t/etc/httpd/conf.d/*.conf\n\n#     Custom Apache build from source\t/usr/local/apache2/conf/extra/\n\n#\n\n# In the case of the custom Apache build, you must also edit\n\n# /usr/local/apache2/conf to add \"Include conf/extra/pagespeed.conf\"\n\n#\n\n# The goal of this Makefile is to help generate basic default\n\n# configuration files that can then be edited to tune the HTML\n\n# performance based on the Apache installation, internet-visible\n\n# hostnames, and the specific needs of the site.\n\n#\n\n# The usage model of this Makefile is that, as an unpriviledged user, you\n\n# create the desired configuration files in /tmp, where you can examine\n\n# them before installing them.  You can then do either of these:\n\n#\n\n#    (a) Run \"make -n install\" to see the recommended installation commands,\n\n#        and execute them by hand\n\n#    (b) Run \"sudo make install\" to install them automatically.\n\n#\n\n#\n\n# To install mod_pagespeed properly, we need to know the locations of\n\n# Apache configuration scripts and binaries.  These can are specified\n\n# as Makefile variables which can be overridden on the command line.\n\n# They have defaults, which will often need to be changed.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The location of the Apache root installation directory.  This helps form\n\n# defaults for other variables, but each of those can be overridden.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The installation directory for modules (mod*.so)\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The root directory Apache uses for serving files.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# /var/www/html doesn't exist, so use /var/www.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# The domain Apache is serving from\n\n#APACHE_DOMAIN        = localhost:8080  # For test-server.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Define the ports used for the root install.  These must be distinct from\n\n# the ones used for debug installs.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# These are set via command-line when run via 'ubuntu.sh', 'centos.sh',\n\n# or 'opensuse.sh'.  However during development we use this Makefile\n\n# directly, so we set defaults from an Ubuntu version on our dev\n\n# boxes (whose Apache lacks 'graceful-stop').\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# For testing proxying of an external domain, this represents the domain we\n\n# are proxying from.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# The installation directory for executables\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# A temp directory to stage generated configuration files.  This must be\n\n# writable by the user, and readable by root.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# The mod_pagespeed module is specified relative to the install directory,\n\n# which is src/install.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Determines where mod_pagespeed should put cache.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Determines where mod_pagespeed should write various logs.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# The username used to run apache.  This is needed to create the directory\n\n# used to store mod_pagespeed files and cache data.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Set this to 1 to enable mod_proxy and mod_rewrite\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Load system-specific make variables. Do this after all the defaults have been\n\n# set above.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# On systems derived from the NCSA configuration files by Rob McCool,\n\n# you enable a module by writing its .conf file into\n\n# $(APACHE_ROOT)/mods-available/pagespeed.conf, and a single Load command into\n\n# $(APACHE_ROOT)/mods-enabled/pagespeed.conf.  So if that exists, then we'll\n\n# try to automate that.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# In some Linux distributions, such as Ubuntu, there are two commands\n\n# in the default root config file:\n\n#    Include /etc/apache2/modes-enabled/*.load\n\n#    Include /etc/apache2/modes-enabled/*.conf\n\n# we need to write a one-line '.load' file and put that and our '.conf' file\n\n# into .../mods-enabled.\n\n#\n\n# In other distributions, such as CentOS, there is an 'Include DIR/*.conf',\n\n# but there is no implicit loading of modules, so we write our Load line\n\n# directly into our config file.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# This is a CentOS-like installation, where there is no explicit .load\n\n# file, and we instead pre-pend the LoadModule command to the .conf file.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# This is an Ubuntu-like installation, where the .load files are placed\n\n# separately into a mods-enabled directory, and the .conf file is loaded\n\n# independently.\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We will generate 'proxy.conf' in the staging area\n\n# unconditiontionally, but we will load it into the\n\n# Apache server only if the user installs with ENABLE_PROXY=1\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Compute the lists of tests that we will retain, by removing the \"#TEST\"\n\n# substring, and will strip, by removing the entire line on which the #TEST\n\n# appears.\n",
+        "Line" : 221,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Special logic for testing of inlining unauthorized resources, where the\n\n# sed substitutions are not exactly aligned with the control-variables.\n",
+        "Line" : 227,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# remove whole explicit domain authorization line\n",
+        "Line" : 231,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# remove prefix for explicit domain authorization line\n",
+        "Line" : 236,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# Compute the patterns to pass to 'sed' for enabling lines by stripping out the\n\n# comments, and to 'egrep -v' for stripping out entire lines.\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# ModPagespeedSlurpDirectory ...@$(APACHE_SLURP_DIR_COMMAND)@g\" \\\n\t    -e \"s@# ModPagespeedSlurpReadOnly on@$(APACHE_SLURP_READ_ONLY_COMMAND)@g\" \\\n\t    -e \"s|@@TMP_SLURP_DIR@@|$(TMP_SLURP_DIR)|g\" \\\n\t    -e \"s|@@MEMCACHED_PORT@@|$(MEMCACHED_PORT)|g\" \\\n\t    -e \"s|@@REDIS_PORT@@|$(REDIS_PORT)|g\" \\\n\t    $(SED_PATTERNS) \\\n\t\t$^ \\\n\t\t| egrep -v \"$(EGREP_V_PATTERN)\" > $@\n",
+        "Line" : 267,
+        "CharPositionInLine" : 11
+      },
+      "28" : {
+        "Text" : "# Make sure we don't have any remaining @@variables@@\n\n# Make sure we don't have any remaining #variables\n",
+        "Line" : 275,
+        "CharPositionInLine" : 20
+      },
+      "29" : {
+        "Text" : "# Generate a configuration file and copy it to the staging area.\n\n# Also copy the example tree, and the built Apache module\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# To install the mod_pagespeed configuration into the system, you must\n\n# run this as root, or under sudo.\n",
+        "Line" : 318,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Starts Apache server\n",
+        "Line" : 341,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# To run a complete iteration, stopping Apache, reconfiguring\n\n# it, and and restarting it, you can run 'make restart [args...]\n",
+        "Line" : 351,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Tests that the installed mod_pagespeed server is working.\n",
+        "Line" : 367,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Now hook in the full integration test suite. It needs to be run as root.\n",
+        "Line" : 372,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Sets up a machine to run as a server for running mod_pagespeed tests.\n\n# The tests include the fetching and proxying of a variety of content,\n\n# including some of the /mod_pagespeed_example directory, plus some other\n\n# content in /do_not_modify and /no_content.\n",
+        "Line" : 377,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# The 'stop' command here is used for the 'install' target in order\n\n# to ensure that apache is shut down when we are adding new debugging\n\n# configuration and updating the binary.  The old binary might not\n\n# be able to start up with new configuration-file commands.\n",
+        "Line" : 392,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Enables a few ports that are needed by system tests.  This is needed on\n\n# CentOS only to work around barriers erected by SELinux.  See\n\n# http://linux.die.net/man/8/semanage\n\n# http://wiki.centos.org/HowTos/\n\n# SELinux#head-ad837f60830442ae77a81aedd10c20305a811388\n\n#\n\n# The port-list below must be kept in sync with debug.conf.template.  1023 is\n\n# used to test connection-refused handling via modpagespeed.com.  We don't\n\n# actually create a VirtualHost on 1023.\n",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Hooks for tests we can only run in development due to needing extensive\n\n# configuration changes in Apache (and potentially different build flags).\n\n# Stubbed out here.\n",
+        "Line" : 429,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39,
+      "Errorlog" : "line 245:48 token recognition error at: '\"s@^\\#$T\\b'\nline 247:60 token recognition error at: '\\b'\n"
+    },
+    "pagespeed/automatic/Makefile" : {
+      "ObjectId" : "afaaccb58b172803a0e09c68103aa899600a372f",
+      "LastModified" : "2017-08-02T18:31:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright 2011 Google Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#      http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n\n# Author: jmarantz@google.com (Joshua Marantz)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile provides a mechanism to generate a Page Speed Automatic\n\n# library (.a) from an already-built mod_pagespeed distribution.  This\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# MOD_PAGESPEED_ROOT should be set to the 'src' directory where mod_pagespeed\n\n# was built.  See:\n\n# https://modpagespeed.com/doc/build_from_source\n\n#\n\n# When running this Makefile from the 'automatic' directory then it will\n\n# be set automatically.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# OUTPUT_ROOT should be set to wherever you want to put output files.  Default\n\n# is to put them in the current directory.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# You can use a Debug or a Release build.  Default is Release.  Feel free\n\n# to set this to Debug to get visibility into Page Speed Automatic code.\n\n#\n\n# Note that this is the same Makefile variable used by the generated Makefiles\n\n# on Linux.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# TODO(jmarantz): this library-list should be automatically generated\n\n# from the 'gyp' flow, rather than hand-entered here.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# The 'gclient' build flow uses 'xcodebuild' on Mac and 'make' on Linux.\n\n# To make matters worse, it puts all the intermediate libraries in the same\n\n# directory on Mac but distributes them over a directory tree on Linux.\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# on MacOS the xcodebuild system puts all the libraries in the same directory\n\n# so we strip it with 'notdir'.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# TODO(jmarantz): here's a potential egrep expression to make the build less\n\n# noisy.\n\n#\t\t| egrep -v '(BUILD NATIVE|Check dependencies|$^|PhaseScriptExecution|BUILD AGGREGATE|.build/Script-|Nothing to be done for|cd /)'\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# TODO(jmarantz): test this on 32-bit systems.  Add fail handler for non-linux\n\n# non-mac.\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Specifying 'build_libraries' as a dependency but recursively making\n\n# 'static_rewriter' allows 'make -j' to work.  This is needed because\n\n# we don't articulate all the dependencies required to build the libraries.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Flags used to compile static_rewriter.cc.  Note that these are not\n\n# the flags used to compile pagespeed_automatic, which is compiled\n\n# with either BUILDTYPE=Release or BUILDTYPE=Debug\n\n#\n\n# These are the same flags as we set in common.gypi, but this Makefile doesn't\n\n# know about gyp.\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Ideally we want the main .o files to depend on all the headers in PSOL,\n\n# but that's not easy to keep up-to-date.  As a proxy for those, recompile\n\n# .o files whenever the library changes.  This is a little conservative\n\n# because the library might change without any header changes, but recompiling\n\n# the .o files is cheap.\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "third_party/css_parser/src/Makefile" : {
+      "ObjectId" : "51208d6cef2ff0e7f42dd89d8aa781b8bc13c025",
+      "LastModified" : "2015-04-06T15:29:33Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# TODO(sligocki): -Wno-error=sign-compare -Wno-error=return-type\n\n# TODO(sligocki): Why is LOG(FATAL) not considered a return?\n\n# TODO(sligocki): Why isn't -fdiagnostics-show-option working?\n\n#GPERF = false  # Must explicitly set GPERF\n\n#GPERF_OPTS = --ignore-case -L C++ -S 1 -t -C -c -E -G -o\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generated files are included, you do not need to build them.\n\n#CSS_GPERFS = $(wildcard webutil/css/*.gperf)\n\n#CSS_GPERF_CC = $(CSS_GPERFS:%.gperf=$(OBJ_DIR)/%.cc)  # Generated files.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# So that build fails if any test fails\n",
+        "Line" : 64,
+        "CharPositionInLine" : 16
+      },
+      "3" : {
+        "Text" : "# TODO(sligocki): Add dep on headers.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 21
+      },
+      "4" : {
+        "Text" : "#$(OBJ_DIR)/webutil/css/property.cc: $(OBJ_DIR)/%.cc: %.gperf $(CSS_HDRS)\n\n#\tmkdir -p `dirname $@`\n\n#\t$(GPERF) $(GPERF_OPTS) -ZPropertyMapper $< > $@\n\n#\n\n#$(OBJ_DIR)/webutil/css/identifier.cc: $(OBJ_DIR)/%.cc: %.gperf $(CSS_HDRS)\n\n#\tmkdir -p `dirname $@`\n\n#\t$(GPERF) $(GPERF_OPTS) -ZIdentifierMapper $< > $@\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Prepare files by adding license and other details needed for open-source.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Prepare webutil/html files (first by adding #include \"string_using.h\")\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#include <string>@\\0\\n#include \"string_using.h\"@' \\\n\t    < original/webutil/html/$$f \\\n\t    >> webutil/html/$$f; \\\n\t  rm -f original/webutil/html/$$f; \\\n\tdone\n",
+        "Line" : 99,
+        "CharPositionInLine" : 10
+      },
+      "8" : {
+        "Text" : "# The rest of the files just need to have licenses added.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "third_party/css_parser/src/third_party/utf/Makefile" : {
+      "ObjectId" : "2823aaa34c2204f01dcc914a4f4274dce084b4d1",
+      "LastModified" : "2015-04-06T15:29:33Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# this works in gnu make\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# this works in bsd make\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# the gnu rules will mess up bsd but not vice versa,\n\n# hence the gnu rules come first.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# for now - we probably should connect this with the Google makefile so\n\n# we use the same compiler at all times...\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "third_party/libjpeg_turbo/yasm/source/config/linux/Makefile" : {
+      "ObjectId" : "6fccce46a99b2efd1168722591c194dfec545ce8",
+      "LastModified" : "2016-09-02T15:15:12Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile.in generated by automake 1.10.1 from Makefile.am.\n\n# Makefile.  Generated from Makefile.in by configure.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,\n\n# 2003, 2004, 2005, 2006, 2007, 2008  Free Software Foundation, Inc.\n\n# This Makefile.in is free software; the Free Software Foundation\n\n# gives unlimited permission to copy and/or distribute it,\n\n# with or without modifications, as long as this notice is preserved.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY, to the extent permitted by law; without\n\n# even the implied warranty of MERCHANTABILITY or FITNESS FOR A\n\n# PARTICULAR PURPOSE.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# $Id: Makefile.am 2184 2009-03-24 05:04:15Z peter $\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# $Id: Makefile.inc 2084 2008-05-09 07:08:17Z peter $\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# $Id: Makefile.inc 1718 2006-12-24 00:13:19Z peter $\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# These utility programs have to be built for BUILD host in cross-build.\n\n# This makes things rather non-standard automake\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# $Id: Makefile.inc 2084 2008-05-09 07:08:17Z peter $\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# These utility programs have to be built for BUILD host in cross-build.\n\n# This makes things rather non-standard automake\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# $Id: Makefile.inc 1939 2007-09-10 07:15:50Z peter $\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# These utility programs have to be built for BUILD host in cross-build.\n\n# This makes things rather non-standard automake\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# $Id: Makefile.inc 1948 2007-09-13 02:53:30Z peter $\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# $Id: Makefile.inc 1951 2007-09-14 05:19:10Z peter $\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# $Id: Makefile.inc 1598 2006-08-10 04:02:59Z peter $\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# $Id: Makefile.inc 1914 2007-08-20 05:13:35Z peter $\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# $Id: Makefile.inc 2111 2008-07-06 22:26:49Z peter $\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# $Id: Makefile.inc 2170 2009-01-14 08:28:13Z peter $\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# $Id: Makefile.inc 2192 2009-03-29 23:25:05Z peter $\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# $Id: Makefile.inc 1776 2007-02-19 02:36:10Z peter $\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# $Id: Makefile.inc 2111 2008-07-06 22:26:49Z peter $\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# $Id: Makefile.inc 1928 2007-09-07 22:03:34Z peter $\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# $Id: Makefile.inc 1152 2004-10-02 06:18:30Z peter $\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# $Id: Makefile.inc 1183 2004-12-01 07:49:18Z peter $\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# $Id: Makefile.inc 2130 2008-10-07 05:38:11Z peter $\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# $Id: Makefile.inc 1783 2007-02-22 03:40:31Z peter $\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# $Id: Makefile.inc 2169 2009-01-02 20:46:57Z peter $\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# $Id$\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# $Id: Makefile.inc 2130 2008-10-07 05:38:11Z peter $\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# $Id: Makefile.inc 2190 2009-03-25 03:40:59Z peter $\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# $Id: Makefile.inc 1137 2004-09-04 01:24:57Z peter $\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# $Id: Makefile.inc 2082 2008-05-09 06:46:02Z peter $\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# $Id: Makefile.inc 2063 2008-04-12 08:30:22Z peter $\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# $Id: Makefile.inc 2063 2008-04-12 08:30:22Z peter $\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# $Id: Makefile.inc 1966 2007-09-20 03:54:36Z peter $\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# $Id: Makefile.inc 2130 2008-10-07 05:38:11Z peter $\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# $Id: Makefile.inc 2185 2009-03-24 06:33:32Z peter $\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# $Id: Makefile.inc 2172 2009-01-27 06:38:14Z peter $\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# $Id: Makefile.inc 2176 2009-03-04 07:39:02Z peter $\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Makefile for cpp module.\n\n# Copied from raw preprocessor module.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# $Id: Makefile.inc 1662 2006-10-21 18:52:29Z peter $\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# $Id: Makefile.inc 1428 2006-03-27 02:15:19Z peter $\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# $Id: Makefile.inc 1378 2006-02-12 01:27:39Z peter $\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# $Id: Makefile.inc 1350 2006-01-29 21:11:03Z peter $\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# $Id: Makefile.inc 1851 2007-05-26 17:56:36Z peter $\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# $Id: Makefile.inc 1617 2006-09-16 05:43:41Z peter $\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# $Id: Makefile.inc 1350 2006-01-29 21:11:03Z peter $\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# $Id: Makefile.inc 1183 2004-12-01 07:49:18Z peter $\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# $Id: Makefile.inc 1183 2004-12-01 07:49:18Z peter $\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# $Id$\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# $Id: Makefile.inc 1732 2007-01-13 19:34:04Z peter $\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# $Id: Makefile.inc 1183 2004-12-01 07:49:18Z peter $\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# $Id: Makefile.inc 2130 2008-10-07 05:38:11Z peter $\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# $Id: Makefile.inc 2010 2007-11-14 08:33:32Z peter $\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# $Id: Makefile.inc 2010 2007-11-14 08:33:32Z peter $\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# $Id: Makefile.inc 1252 2005-09-28 05:50:51Z peter $\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# $Id: Makefile.inc 2036 2008-02-09 04:06:47Z peter $\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# $Id: Makefile.inc 2126 2008-10-03 08:13:00Z peter $\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# $Id: Makefile.inc 2036 2008-02-09 04:06:47Z peter $\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# $Id: Makefile.inc 1168 2004-10-31 01:07:52Z peter $\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# $Id: Makefile.inc 2082 2008-05-09 06:46:02Z peter $\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# $Id: Makefile.inc 1617 2006-09-16 05:43:41Z peter $\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# $Id: Makefile.inc 1732 2007-01-13 19:34:04Z peter $\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# $Id: Makefile.inc 1777 2007-02-19 08:21:17Z peter $\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# $Id: Makefile.inc 1782 2007-02-21 06:45:39Z peter $\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# $Id: Makefile.inc 2108 2008-06-05 08:48:21Z peter $\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# $Id: Makefile.inc 1854 2007-05-31 06:16:49Z peter $\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# $Id: Makefile.inc 2108 2008-06-05 08:48:21Z peter $\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# $Id: Makefile.inc 1653 2006-10-17 06:58:41Z peter $\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# $Id: Makefile.inc 1653 2006-10-17 06:58:41Z peter $\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# $Id: Makefile.inc 1183 2004-12-01 07:49:18Z peter $\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# Assume objfmt_coff is included\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# $Id: Makefile.inc 2166 2009-01-02 08:33:21Z peter $\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# $Id: Makefile.inc 2166 2009-01-02 08:33:21Z peter $\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# $Id: Makefile.inc 1331 2006-01-15 22:48:55Z peter $\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Assume objfmt_coff is included\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# $Id: Makefile.inc 2120 2008-09-04 04:45:30Z peter $\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# $Id: Makefile.inc 2082 2008-05-09 06:46:02Z peter $\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "# $Id: Makefile.inc 1183 2004-12-01 07:49:18Z peter $\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# $Id: Makefile.inc 1851 2007-05-26 17:56:36Z peter $\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# $Id: Makefile.inc 2111 2008-07-06 22:26:49Z peter $\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# $Id: Makefile.inc 2123 2008-09-30 03:56:37Z peter $\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "# $Id: Makefile.inc 2130 2008-10-07 05:38:11Z peter $\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "# $Id: Makefile.inc 1463 2006-04-05 05:39:23Z peter $\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "# $Id: Makefile.inc 1463 2006-04-05 05:39:23Z peter $\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "#am__append_1 = _yasm.pxi yasm.pyx \\\n#\tyasm_python.c python-setup.txt \\\n#\t.python-build\n",
+        "Line" : 328,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "#am__append_2 = PYTHON=${PYTHON}\n\n#am__append_3 = tools/python-yasm/tests/python_test.sh\n",
+        "Line" : 331,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "#!include modules/objfmts/omf/Makefile.inc\n",
+        "Line" : 632,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# Until this gets fixed in automake\n",
+        "Line" : 647,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# Suffix rule for genperf\n",
+        "Line" : 650,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "# configure.lineno doesn't clean up after itself?\n",
+        "Line" : 653,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "# automake doesn't distribute mkinstalldirs?\n\n#!EXTRA_DIST += modules/objfmts/omf/Makefile.inc\n",
+        "Line" : 659,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# libyasm-stdint.h doesn't clean up after itself?\n",
+        "Line" : 1566,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "# genstring build\n",
+        "Line" : 1686,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# Use Pyxelator to generate Pyrex function headers.\n\n#_yasm.pxi: ${HEADERS}\n\n#\t@rm -rf .tmp\n\n#\t@mkdir .tmp\n\n#\t$(PYTHON) $(srcdir)/tools/python-yasm/pyxelator/wrap_yasm.py \\\n#\t\t\"YASM_DIR=${srcdir}\" \"CPP=${CPP}\" \"CPPFLAGS=${CPPFLAGS}\"\n",
+        "Line" : 3684,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "#\t@rm -rf .tmp\n",
+        "Line" : 3690,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "# Need to build a local copy of the main Pyrex input file to include _yasm.pxi\n\n# from the build directory.  Also need to fixup the other .pxi include paths.\n\n#yasm.pyx: $(srcdir)/tools/python-yasm/yasm.pyx\n\n#\tsed -e 's,^include \"\\([^_]\\),include \"${srcdir}/tools/python-yasm/\\1,' \\\n#\t\t$(srcdir)/tools/python-yasm/yasm.pyx > $@\n",
+        "Line" : 3692,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "# Actually run Pyrex\n\n#yasm_python.c: yasm.pyx _yasm.pxi $(PYBINDING_DEPS)\n\n#\t$(PYTHON) -c \"from Pyrex.Compiler.Main import main; main(command_line=1)\" \\\n#\t\t-o $@ yasm.pyx\n",
+        "Line" : 3698,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "# Now the Python build magic...\n\n#python-setup.txt: Makefile\n\n#\techo \"includes=${DEFS} ${DEFAULT_INCLUDES} ${INCLUDES} ${AM_CPPFLAGS} ${CPPFLAGS}\" > python-setup.txt\n\n#\techo \"sources=${libyasm_a_SOURCES}\" >> python-setup.txt\n\n#\techo \"srcdir=${srcdir}\" >> python-setup.txt\n\n#\techo \"gcc=${GCC}\" >> python-setup.txt\n",
+        "Line" : 3703,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "#.python-build: python-setup.txt yasm_python.c ${libyasm_a_SOURCES}\n\n#\t$(PYTHON) `test -f tools/python-yasm/setup.py || echo '$(srcdir)/'`tools/python-yasm/setup.py build\n\n#\ttouch .python-build\n\n#python-build: .python-build\n",
+        "Line" : 3710,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "#python-install: .python-build\n\n#\t$(PYTHON) `test -f tools/python-yasm/setup.py || echo '$(srcdir)/'`tools/python-yasm/setup.py install \"--install-lib=$(DESTDIR)$(pythondir)\"\n",
+        "Line" : 3715,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "#python-uninstall:\n\n#\trm -f `$(PYTHON) -c \"import sys;sys.path.insert(0, '${DESTDIR}${pythondir}'); import yasm; print yasm.__file__\"`\n",
+        "Line" : 3718,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "#x86insn_nasm.gperf: $(srcdir)/x86insn_nasm.gperf\n\n#\t@echo Python must be installed to regenerate x86 instructions files\n\n#\tcp $(srcdir)/x86insn_nasm.gperf $@\n\n#x86insn_gas.gperf: $(srcdir)/x86insn_gas.gperf\n\n#\t@echo Python must be installed to regenerate x86 instructions files\n\n#\tcp $(srcdir)/x86insn_gas.gperf $@\n",
+        "Line" : 3729,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "# Use suffix rules for gperf files\n",
+        "Line" : 3736,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "#EXTRA_DIST += modules/listfmts/nasm/tests/Makefile.inc\n",
+        "Line" : 3750,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "#include modules/listfmts/nasm/tests/Makefile.inc\n",
+        "Line" : 3752,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "#EXTRA_DIST += modules/dbgfmts/codeview/tests/Makefile.inc\n\n#include modules/dbgfmts/codeview/tests/Makefile.inc\n",
+        "Line" : 3779,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# Tell versions [3.59,3.63) of GNU make to not export all variables.\n\n# Otherwise a system limit (for SysV at least) may be exceeded.\n",
+        "Line" : 3820,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 107
+    },
+    "third_party/rdestl/BUILD" : {
+      "ObjectId" : "eecd082ddd6407aee1506eacbf1a33d43355269c",
+      "LastModified" : "2016-09-02T15:15:12Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# -*- mode: python; -*-\n# Copyright 2013 Google Inc.  All rights reserved.\n#\n# Description:\n#   hash_map implementation from rdestl library.  This appears to be more\n#   C++-friendly than dense_hash_map and also performs significantly better\n#   at default settings.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Apache 2.0",
+        "Line" : 18,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 6,
+    "BAZEL" : 1
+  },
+  "ElapsedTime" : 3636
+}

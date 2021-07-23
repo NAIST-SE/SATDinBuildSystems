@@ -1,0 +1,1349 @@
+{
+  "Repository" : "60622",
+  "Revision" : "HEAD",
+  "ObjectId" : "0d64e13ee14d1d8f06c647589cc64892a95e3b07",
+  "CommitTime" : "2019-04-18T07:43:47Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "c8c0bdb078a857bc35012a5e38ea6a33172cf926",
+      "LastModified" : "2019-03-08T09:53:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CMake build script to configure and build CernVM-FS and all it's\n\n# external dependencies, if they are statically linked into the binaries\n\n#\n\n# See externals/CMake-Register_External_Lib.txt for details on external inclusion\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# The version numbers\n\n#\n\n# DON'T DELETE\n\n## CVMFS_VERSION 2.7.0\n\n#---------------------\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# set the path where cmake looks for additional modules\n\n#\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# detect the operating system and the distribution we are compiling on\n\n#\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Set install prefix to /usr by default.\n\n#\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# check if we use Clang\n\n#\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# figure out if we are on a 64bit system\n\n#\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# check if we are compiling on ARM\n\n#\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# define the installation location of the shared library files\n\n# Note: We do not support multi-arch on Debian systems for the time being and\n\n#       hence cannot use GNUInstallDirs as this would assume multi-arch.\n\n#       (https://wiki.debian.org/Multiarch)\n\n#\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# --> Linux\n",
+        "Line" : 99,
+        "CharPositionInLine" : 14
+      },
+      "10" : {
+        "Text" : "# --> RedHat, Fedora, CentOS, SuSE\n",
+        "Line" : 109,
+        "CharPositionInLine" : 29
+      },
+      "11" : {
+        "Text" : "# --> 32 Bit\n",
+        "Line" : 114,
+        "CharPositionInLine" : 21
+      },
+      "12" : {
+        "Text" : "#\n\n# set the system configuration directory depending on CMAKE_INSTALL_PREFIX\n\n# Note: Found here http://osdir.com/ml/kde-commits/2011-05/msg01375.html\n\n#\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# conform to LFSH\n",
+        "Line" : 127,
+        "CharPositionInLine" : 37
+      },
+      "14" : {
+        "Text" : "#\n\n# include file with user-defined options\n\n#\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#\n\n# set some default flags\n\n#\n\n# flags in CMAKE_C**_FLAGS are always passed to the compiler\n\n#\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#\n\n# define where to find the external dependencies\n\n#\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#\n\n# run the bootstrap shellscript (not needed in the distributed version of the source)\n\n#\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Set some environment variables for the bootstrap script\n",
+        "Line" : 162,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Unset environment variables after the bootstrap script was executed\n",
+        "Line" : 192,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# In the case of built-in external libraries, we need to set CMAKE_PREFIX_PATH to\n\n# point to the prefix where the libraries are installed. This path will take precedence\n\n# over the system prefix when find_package(****) is called later\n",
+        "Line" : 203,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "#\n\n# include some common functionality\n\n#\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#\n\n# check existence of include files\n\n#\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# As of attr-2.4.48, the attr/xattr.h header disappeard in favor of sys/xattr.h\n\n#\n\n# Unfortunately, attr/xattr.h fails to compile without including sys/types.h\n\n# before including attr/xattr.h (it uses size_t and ssize_t).\n\n# CMake searches for include files by compiling a minimal *.c file like:\n\n#    #include <${SEARCHED_HEADER_FILE}>\n\n#    int main(int argc, char **argv) { return 0; }\n\n#\n\n# We pre-define the include guard of attr/xattr.h and thus still check, if the\n\n# file is found by the compiler but mitigating the compiler errors caused by\n\n# a standalone inclusion of attr/xattr.h\n",
+        "Line" : 265,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "#\n\n# configure the config.h.in file\n\n#\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#\n\n# set properties for configurable libraries\n\n#\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Required libraries depending on build target\n",
+        "Line" : 312,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Almost all build targets require zlib, sha2/3\n",
+        "Line" : 332,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Most build target require also curl/c-ares, sqlite, uuid, leveldb\n",
+        "Line" : 349,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Client/libcvmfs/preloader only: pacparser, sparsehash\n",
+        "Line" : 384,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Fuse client only\n",
+        "Line" : 402,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# just abstract the difference here... they are compatible\n",
+        "Line" : 407,
+        "CharPositionInLine" : 46
+      },
+      "32" : {
+        "Text" : "# Server only: unzip, libcap, mongoose\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Only micro benchmarks need google bench\n",
+        "Line" : 427,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#\n\n# go for the actual compilation\n\n#\n",
+        "Line" : 435,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "#\n\n# compile the unit tests, if necessary\n\n#\n",
+        "Line" : 444,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "#\n\n# Documentation\n\n#\n",
+        "Line" : 467,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "#\n\n# Generate the documentation using doxygen\n\n#\n",
+        "Line" : 476,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 38
+    },
+    "ci/shrinkwrap/Makefile" : {
+      "ObjectId" : "d590991fd9dffe1d7bdbdd18c1d934a6471f7364",
+      "LastModified" : "2018-10-26T15:00:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Builds the CernVM-FS shrinkwrap Docker container\n\n# Requires a Debian based distribution with\n\n# make, curl, gcc, xz-utils\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindCARES.cmake" : {
+      "ObjectId" : "7da10bdee82cbd1ac842d29242bf96e0baffe4a4",
+      "LastModified" : "2015-08-17T18:08:58Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find cares\n\n# Find the native CARES includes and library\n\n#\n\n#  CARES_INCLUDE_DIRS - where to find cares.h, etc.\n\n#  CARES_LIBRARIES    - List of libraries when using cares.\n\n#  CARES_FOUND        - True if cares found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 10,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set CARES_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Modules/FindFUSE.cmake" : {
+      "ObjectId" : "fb6d0d2445364b2d07dacf0329d415de2fc5a958",
+      "LastModified" : "2012-04-18T15:14:28Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the FUSE includes and library\n\n#\n\n#  FUSE_INCLUDE_DIR - where to find fuse.h, etc.\n\n#  FUSE_LIBRARIES   - List of libraries when using FUSE.\n\n#  FUSE_FOUND       - True if FUSE lib is found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# check if already in cache, be silent\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# find includes\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# find lib\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# check if lib was found and include is present\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# let world know the results\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/Modules/FindGMock.cmake" : {
+      "ObjectId" : "6ff12080118a9f5f664219a17150040cbc3d8a50",
+      "LastModified" : "2018-02-13T17:24:24Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate the Google C++ Mocking Framework.\n\n# (This file is almost an identical copy of the original FindGTest.cmake file,\n\n#  feel free to use it as it is or modify it for your own needs.)\n\n#\n\n#\n\n# Defines the following variables:\n\n#\n\n#   GMOCK_FOUND - Found the Google Testing framework\n\n#   GMOCK_INCLUDE_DIRS - Include directories\n\n#\n\n# Also defines the library variables below as normal\n\n# variables. These contain debug/optimized keywords when\n\n# a debugging library is found.\n\n#\n\n#   GMOCK_BOTH_LIBRARIES - Both libgmock & libgmock-main\n\n#   GMOCK_LIBRARIES - libgmock\n\n#   GMOCK_MAIN_LIBRARIES - libgmock-main\n\n#\n\n# Accepts the following variables as input:\n\n#\n\n#   GMOCK_ROOT - (as a CMake or environment variable)\n\n#                The root directory of the gmock install prefix\n\n#\n\n#   GMOCK_MSVC_SEARCH - If compiling with MSVC, this variable can be set to\n\n#                       \"MD\" or \"MT\" to enable searching a gmock build tree\n\n#                       (defaults: \"MD\")\n\n#\n\n#-----------------------\n\n# Example Usage:\n\n#\n\n#    find_package(GMock REQUIRED)\n\n#    include_directories(${GMOCK_INCLUDE_DIRS})\n\n#\n\n#    add_executable(foo foo.cc)\n\n#    target_link_libraries(foo ${GMOCK_BOTH_LIBRARIES})\n\n#\n\n#=============================================================================\n\n# This file is released under the MIT licence:\n\n#\n\n# Copyright (c) 2011 Matej Svec\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to\n\n# deal in the Software without restriction, including without limitation the\n\n# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or\n\n# sell copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in\n\n# all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\n\n# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\n\n# IN THE SOFTWARE.\n\n#=============================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The provided /MD project files for Google Mock add -md suffixes to the\n\n# library names.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindGOOGLEBENCH.cmake" : {
+      "ObjectId" : "0d406144d105542ce76a6febc4675bffc08801ac",
+      "LastModified" : "2018-02-13T17:24:24Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find GOOGLEBENCH\n\n#\n\n# Once done this will define\n\n#\n\n#  GOOGLEBENCH_FOUND - system has GOOGLEBENCH\n\n#  GOOGLEBENCH_INCLUDE_DIRS - the GOOGLEBENCH include directory\n\n#  GOOGLEBENCH_LIBRARIES - Link these to use GOOGLEBENCH\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindGTest.cmake" : {
+      "ObjectId" : "ef2852a7002cd417bc08c7aae636fa88ee2d8f84",
+      "LastModified" : "2018-02-13T17:24:24Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate the Google C++ Testing Framework.\n\n#\n\n# Defines the following variables:\n\n#\n\n#   GTEST_FOUND - Found the Google Testing framework\n\n#   GTEST_INCLUDE_DIRS - Include directories\n\n#\n\n# Also defines the library variables below as normal\n\n# variables.  These contain debug/optimized keywords when\n\n# a debugging library is found.\n\n#\n\n#   GTEST_BOTH_LIBRARIES - Both libgtest & libgtest-main\n\n#   GTEST_LIBRARIES - libgtest\n\n#   GTEST_MAIN_LIBRARIES - libgtest-main\n\n#\n\n# Accepts the following variables as input:\n\n#\n\n#   GTEST_ROOT - (as a CMake or environment variable)\n\n#                The root directory of the gtest install prefix\n\n#\n\n#   GTEST_MSVC_SEARCH - If compiling with MSVC, this variable can be set to\n\n#                       \"MD\" or \"MT\" to enable searching a GTest build tree\n\n#                       (defaults: \"MD\")\n\n#\n\n#-----------------------\n\n# Example Usage:\n\n#\n\n#    enable_testing()\n\n#    find_package(GTest REQUIRED)\n\n#    include_directories(${GTEST_INCLUDE_DIRS})\n\n#\n\n#    add_executable(foo foo.cc)\n\n#    target_link_libraries(foo ${GTEST_BOTH_LIBRARIES})\n\n#\n\n#    add_test(AllTestsInFoo foo)\n\n#\n\n#-----------------------\n\n#\n\n# If you would like each Google test to show up in CTest as\n\n# a test you may use the following macro.\n\n# NOTE: It will slow down your tests by running an executable\n\n# for each test and test fixture.  You will also have to rerun\n\n# CMake after adding or removing tests or test fixtures.\n\n#\n\n# GTEST_ADD_TESTS(executable extra_args ARGN)\n\n#    executable = The path to the test executable\n\n#    extra_args = Pass a list of extra arguments to be passed to\n\n#                 executable enclosed in quotes (or \"\" for none)\n\n#    ARGN =       A list of source files to search for tests & test\n\n#                 fixtures.\n\n#\n\n#  Example:\n\n#     set(FooTestArgs --foo 1 --bar 2)\n\n#     add_executable(FooTest FooUnitTest.cc)\n\n#     GTEST_ADD_TESTS(FooTest \"${FooTestArgs}\" FooUnitTest.cc)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Kitware, Inc.\n\n# Copyright 2009 Philip Lowman <philip@yhbt.com>\n\n# Copyright 2009 Daniel Blezek <blezek@gmail.com>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n\n#\n\n# Thanks to Daniel Blezek <blezek@gmail.com> for the GTEST_ADD_TESTS code\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The provided /MD project files for Google Test add -md suffixes to the\n\n# library names.\n",
+        "Line" : 136,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindLibArchive.cmake" : {
+      "ObjectId" : "5f3acd2334c771d4965413195622811575a54517",
+      "LastModified" : "2018-05-24T14:00:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# FindLibArchive\n\n# --------------\n\n#\n\n# Find libarchive library and headers\n\n#\n\n# The module defines the following variables:\n\n#\n\n# ::\n\n#\n\n#   LibArchive_FOUND        - true if libarchive was found\n\n#   LibArchive_INCLUDE_DIRS - include search path\n\n#   LibArchive_LIBRARIES    - libraries to link\n\n#   LibArchive_VERSION      - libarchive 3-component version number\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Extract the version number from the header.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The version string appears in one of three known formats in the header:\n\n#  #define ARCHIVE_LIBRARY_VERSION \"libarchive 2.4.12\"\n\n#  #define ARCHIVE_VERSION_STRING \"libarchive 2.8.4\"\n\n#  #define ARCHIVE_VERSION_ONLY_STRING \"3.2.0\"\n\n# Match any format.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindLibCAP.cmake" : {
+      "ObjectId" : "1ed57b89df37c6fae8794ea3199c5c5241bbfbf5",
+      "LastModified" : "2018-02-13T17:24:24Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Looking for libcap\n\n# Found here:\n\n# https://github.com/passy/webscan/blob/master/cmake/FindCAP.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#Functions\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#Is pcap found ?\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Modules/FindLibWebsockets.cmake" : {
+      "ObjectId" : "5eb9f3fd679ab701d2803770a1881c22ef87da6f",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find LibWebsockets\n\n#\n\n# Once done this will define\n\n#\n\n#  LibWebsockets_FOUND - system has LibWebsockets\n\n#  LibWebsockets_INCLUDE_DIRS - the LibWebsockets include directory\n\n#  LibWebsockets_LIBRARIES - Link these to use LibWebsockets\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindMongoose.cmake" : {
+      "ObjectId" : "6b3ba7eaad34b3aa6502bc72c247e442bab227ba",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Mongoose\n\n#\n\n# Once done this will define\n\n#\n\n#  MONGOOSE_FOUND - system has mongoose\n\n#  MONGOOSE_INCLUDE_DIRS - the mongoose include directory\n\n#  MONGOOSE_LIBRARIES - Link these to use mongoose\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindOSXFuse.cmake" : {
+      "ObjectId" : "0571abbfdad9175ed6d73772bfad40b1f6550733",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the osxfuse includes and library\n\n#\n\n#  OSXFUSE_INCLUDE_DIR - where to find fuse.h, etc.\n\n#  OSXFUSE_LIBRARIES   - List of libraries when using osxfuse.\n\n#  OSXFUSE_FOUND       - True if osxfuse lib is found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# check if already in cache, be silent\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# find includes\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# find lib\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# check if lib was found and include is present\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# let world know the results\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/Modules/FindProtobuf.cmake" : {
+      "ObjectId" : "dd3f18638bc1682f850c568c27e04a1bbb3d9a1d",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# FindProtobuf\n\n# ------------\n\n#\n\n# Locate and configure the Google Protocol Buffers library.\n\n#\n\n# The following variables can be set and are optional:\n\n#\n\n# ``PROTOBUF_SRC_ROOT_FOLDER``\n\n#   When compiling with MSVC, if this cache variable is set\n\n#   the protobuf-default VS project build locations\n\n#   (vsprojects/Debug and vsprojects/Release\n\n#   or vsprojects/x64/Debug and vsprojects/x64/Release)\n\n#   will be searched for libraries and binaries.\n\n# ``PROTOBUF_IMPORT_DIRS``\n\n#   List of additional directories to be searched for\n\n#   imported .proto files.\n\n#\n\n# Defines the following variables:\n\n#\n\n# ``PROTOBUF_FOUND``\n\n#   Found the Google Protocol Buffers library\n\n#   (libprotobuf & header files)\n\n# ``PROTOBUF_INCLUDE_DIRS``\n\n#   Include directories for Google Protocol Buffers\n\n# ``PROTOBUF_LIBRARIES``\n\n#   The protobuf libraries\n\n# ``PROTOBUF_PROTOC_LIBRARIES``\n\n#   The protoc libraries\n\n# ``PROTOBUF_LITE_LIBRARIES``\n\n#   The protobuf-lite libraries\n\n#\n\n# The following cache variables are also available to set or use:\n\n#\n\n# ``PROTOBUF_LIBRARY``\n\n#   The protobuf library\n\n# ``PROTOBUF_PROTOC_LIBRARY``\n\n#   The protoc library\n\n# ``PROTOBUF_INCLUDE_DIR``\n\n#   The include directory for protocol buffers\n\n# ``PROTOBUF_PROTOC_EXECUTABLE``\n\n#   The protoc compiler\n\n# ``PROTOBUF_LIBRARY_DEBUG``\n\n#   The protobuf library (debug)\n\n# ``PROTOBUF_PROTOC_LIBRARY_DEBUG``\n\n#   The protoc library (debug)\n\n# ``PROTOBUF_LITE_LIBRARY``\n\n#   The protobuf lite library\n\n# ``PROTOBUF_LITE_LIBRARY_DEBUG``\n\n#   The protobuf lite library (debug)\n\n#\n\n# Example:\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#   find_package(Protobuf REQUIRED)\n\n#   include_directories(${PROTOBUF_INCLUDE_DIRS})\n\n#   include_directories(${CMAKE_CURRENT_BINARY_DIR})\n\n#   protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS foo.proto)\n\n#   protobuf_generate_python(PROTO_PY foo.proto)\n\n#   add_executable(bar bar.cc ${PROTO_SRCS} ${PROTO_HDRS})\n\n#   target_link_libraries(bar ${PROTOBUF_LIBRARIES})\n\n#\n\n# .. note::\n\n#   The ``protobuf_generate_cpp`` and ``protobuf_generate_python``\n\n#   functions and :command:`add_executable` or :command:`add_library`\n\n#   calls only work properly within the same directory.\n\n#\n\n# .. command:: protobuf_generate_cpp\n\n#\n\n#   Add custom commands to process ``.proto`` files to C++::\n\n#\n\n#     protobuf_generate_cpp (<SRCS> <HDRS> [<ARGN>...])\n\n#\n\n#   ``SRCS``\n\n#     Variable to define with autogenerated source files\n\n#   ``HDRS``\n\n#     Variable to define with autogenerated header files\n\n#   ``ARGN``\n\n#     ``.proto`` files\n\n#\n\n# .. command:: protobuf_generate_python\n\n#\n\n#   Add custom commands to process ``.proto`` files to Python::\n\n#\n\n#     protobuf_generate_python (<PY> [<ARGN>...])\n\n#\n\n#   ``PY``\n\n#     Variable to define with autogenerated Python files\n\n#   ``ARGN``\n\n#     ``.proto`` filess\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Kitware, Inc.\n\n# Copyright 2009-2011 Philip Lowman <philip@yhbt.com>\n\n# Copyright 2008 Esben Mose Hansen, Ange Optimization ApS\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Create an include path for each file specified\n",
+        "Line" : 115,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Create an include path for each file specified\n",
+        "Line" : 169,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Internal function: search for normal library as well as a debug one\n\n#    if the debug one is specified also include debug/optimized keywords\n\n#    in *_LIBRARIES variable\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# There is no debug library\n",
+        "Line" : 228,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# There IS a debug library\n",
+        "Line" : 232,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Internal function: find threads library\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# Main.\n\n#\n",
+        "Line" : 251,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# By default have PROTOBUF_GENERATE_CPP macro pass -I to protoc\n\n# for each directory where a proto file is referenced.\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Google's provided vcproj files generate libraries with a \"lib\"\n\n# prefix on Windows\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# The Protobuf library\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#DOC \"The Google Protocol Buffers RELEASE Library\"\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# The Protobuf Protoc Library\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Restore original find library prefixes\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Find the include directory\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Find the protoc Executable\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "cmake/Modules/FindPythonModule.cmake" : {
+      "ObjectId" : "1a29315a894ce0e0369f1c57888b3c603bd02890",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find if a Python module is installed\n\n# Found at http://www.cmake.org/pipermail/cmake/2011-January/041666.html\n\n# To use do: find_python_module(PyQt4 REQUIRED)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# A module's location is usually a directory, but for binary modules\n\n# it's a .so file.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindRapidCheck.cmake" : {
+      "ObjectId" : "06e7617331632e35d6379f902abbf59c0f59391d",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find RapidCheck\n\n#\n\n# Once done this will define\n\n#\n\n#  RAPIDCHECK_FOUND - system has RapidCheck\n\n#  RAPIDCHECK_INCLUDE_DIRS - the RapidCheck include directory\n\n#  RAPIDCHECK_LIBRARIES - Link these to use RapidCheck\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindSHA2.cmake" : {
+      "ObjectId" : "3071c6bee1a1f8a06f8e49ba470490b92ba90c4c",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find SHA2\n\n#\n\n# Once done this will define\n\n#\n\n#  SHA2_FOUND - system has SHA2\n\n#  SHA2_INCLUDE_DIRS - the SHA2 include directory\n\n#  SHA2_LIBRARIES - Link these to use SHA2\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindSHA3.cmake" : {
+      "ObjectId" : "cb72a65fbeebfc9c8ae509fa03ad6eef72f4f28a",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find SHA3\n\n#\n\n# Once done this will define\n\n#\n\n#  SHA3_FOUND - system has SHA3\n\n#  SHA3_INCLUDE_DIRS - the SHA3 include directory\n\n#  SHA3_LIBRARIES - Link these to use SHA3\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindSQLite3.cmake" : {
+      "ObjectId" : "fa99ffa0d6f97a2937de7321e873c203bbecbda5",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Sqlite3\n\n# Once done this will define\n\n#\n\n#  SQLITE3_FOUND - system has Sqlite3\n\n#  SQLITE3_INCLUDE_DIRS - the Sqlite3 include directory\n\n#  SQLITE3_LIBRARIES - Link these to use Sqlite3\n\n#  SQLITE3_DEFINITIONS - Compiler switches required for using Sqlite3\n\n#\n\n#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>\n\n#\n\n#  Redistribution and use is allowed according to the terms of the New\n\n#  BSD license.\n\n#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in cache already\n",
+        "Line" : 17,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 20,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# show the SQLITE3_INCLUDE_DIRS and SQLITE3_LIBRARIES variables only in the advanced view\n",
+        "Line" : 82,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindSparsehash.cmake" : {
+      "ObjectId" : "b1ca8c0919616707f96982ef1e6186582808049a",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Try to find SparseHash\n\n# Once done, this will define\n\n#\n\n# SPARSEHASH_FOUND - system has SparseHash\n\n# SPARSEHASH_INCLUDE_DIR - the SparseHash include directories\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set SPARSEHASH_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindUUID.cmake" : {
+      "ObjectId" : "6d963c07215533aaca20e0059ade6e7b6491c6bd",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find UUID\n\n# Find the native UUID includes and library\n\n# This module defines\n\n#  UUID_INCLUDE_DIR, where to find jpeglib.h, etc.\n\n#  UUID_LIBRARIES, the libraries needed to use UUID.\n\n#  UUID_FOUND, If false, do not try to use UUID.\n\n# also defined, but not for general use are\n\n#  UUID_LIBRARY, where to find the UUID library.\n\n#\n\n#  Copyright (c) 2006-2011 Mathieu Malaterre <mathieu.malaterre@gmail.com>\n\n#\n\n#  Redistribution and use is allowed according to the terms of the New\n\n#  BSD license.\n\n#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# On MacOSX we have:\n\n# $ nm -g /usr/lib/libSystem.dylib | grep uuid_generate\n\n# 000b3aeb T _uuid_generate\n\n# 0003e67e T _uuid_generate_random\n\n# 000b37a1 T _uuid_generate_time\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Linux type:\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Must be *after* the lib itself\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Deprecated declarations.\n\n#set (NATIVE_UUID_INCLUDE_PATH ${UUID_INCLUDE_DIR} )\n\n#get_filename_component (NATIVE_UUID_LIB_PATH ${UUID_LIBRARY} PATH)\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindVJSON.cmake" : {
+      "ObjectId" : "f884b76d91746875230a949b836640aae4ea8d76",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find VJSON\n\n#\n\n# Once done this will define\n\n#\n\n#  VJSON_FOUND - system has VJSON\n\n#  VJSON_INCLUDE_DIRS - the VJSON include directory\n\n#  VJSON_LIBRARIES - Link these to use VJSON\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindVOMS.cmake" : {
+      "ObjectId" : "afa188a118e07f635bfca51554a88b14af93821d",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find VOMS\n\n# Once done this will define\n\n#\n\n#  VOMS_FOUND - system has VOMS\n\n#  VOMS_INCLUDE_DIRS - the VOMS include directory\n\n#  VOMS_LIBRARIES - Link these to use VOMS\n\n#  VOMS_DEFINITIONS - Compiler switches required for using VOMS\n\n#\n\n#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>\n\n#\n\n#  Redistribution and use is allowed according to the terms of the New\n\n#  BSD license.\n\n#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in cache already\n",
+        "Line" : 17,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 20,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# show the VOMS_INCLUDE_DIRS and VOMS_LIBRARIES variables only in the advanced view\n",
+        "Line" : 82,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindValgrind.cmake" : {
+      "ObjectId" : "d01fadaa8fda7b08e642461d67123c6b207df5b0",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find VALGRIND\n\n# Once done this will define\n\n#\n\n#  VALGRIND_FOUND - system has VALGRIND\n\n#  VALGRIND_INCLUDE_DIRS - the VALGRIND include directory\n\n#  VALGRIND_DEFINITIONS - Compiler switches required for using VALGRIND\n\n#\n\n#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>\n\n#\n\n#  Redistribution and use is allowed according to the terms of the New\n\n#  BSD license.\n\n#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in cache already\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() call\n",
+        "Line" : 19,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# show the VALGRIND_INCLUDE_DIRS variables only in the advanced view\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/Findleveldb.cmake" : {
+      "ObjectId" : "755db1160f9de6d3eadcfd80f71de9f6f4f17b01",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Try to find leveldb\n\n# Once done, this will define\n\n#\n\n# LEVELDB_FOUND       - system has leveldb\n\n# LEVELDB_INCLUDE_DIR - the leveldb include directory\n\n# LEVELDB_LIB_DIR     - the leveldb library directory\n\n#\n\n# LEVELDB_DIR may be defined as a hint for where to look\n\n# LEVELDB_LIBRARIES   - the level db library name(s)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/Findpacparser.cmake" : {
+      "ObjectId" : "43578dbd71e6b0490604c62e5f2b18091cbd509b",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# -*- cmake -*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find pacparser\n\n# Find the pacparser includes and library\n\n# This module defines\n\n#  PACPARSER_INCLUDE_DIR, where to find pacparser.h\n\n#  PACPARSER_LIBRARIES, the libraries needed to use pacparser\n\n#  PACPARSER_FOUND, If false, do not try to use pacparser\n\n# also defined, but not for general use are\n\n#  PACPARSER_LIBRARY, where to find the pacparser library.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Deprecated declarations.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Modules/UseDoxygen.cmake" : {
+      "ObjectId" : "eb5db97ada69ed63078d83593b66de9867fd8abe",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Modification of this script made by Jose Molina <jose.molina@cern.ch>\n\n# for the CernVM-FS project (http://cernvm.cern.ch/)\n\n#\n\n# - Run Doxygen\n\n#\n\n# Adds a doxygen target that runs doxygen to generate the html\n\n# and optionally the LaTeX API documentation.\n\n# The doxygen target is added to the doc target as a dependency.\n\n# i.e.: the API documentation is built with:\n\n#  make doc\n\n#\n\n# USAGE: GLOBAL INSTALL\n\n#\n\n# Install it with:\n\n#  cmake ./ && sudo make install\n\n# Add the following to the CMakeLists.txt of your project:\n\n#  include(UseDoxygen OPTIONAL)\n\n# Optionally copy Doxyfile.in in the directory of CMakeLists.txt and edit it.\n\n#\n\n# USAGE: INCLUDE IN PROJECT\n\n#\n\n#  set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})\n\n#  include(UseDoxygen)\n\n# Add the Doxyfile.in and UseDoxygen.cmake files to the projects source directory.\n\n#\n\n#\n\n# CONFIGURATION\n\n#\n\n# To configure Doxygen you can edit Doxyfile.in and set some variables in cmake.\n\n# Variables you may define are:\n\n#  DOXYFILE_SOURCE_DIR - Path where the Doxygen input files are.\n\n#  \tDefaults to the current source directory.\n\n#  DOXYFILE_EXTRA_SOURCES - Additional source diretories/files for Doxygen to scan.\n\n#  \tThe Paths should be in double quotes and separated by space. e.g.:\n\n#  \t \"${CMAKE_CURRENT_BINARY_DIR}/foo.c\" \"${CMAKE_CURRENT_BINARY_DIR}/bar/\"\n\n#\n\n#  DOXYFILE_OUTPUT_DIR - Path where the Doxygen output is stored.\n\n#  \tDefaults to \"${CMAKE_CURRENT_BINARY_DIR}/doc\".\n\n#\n\n#  DOXYFILE_LATEX - ON/OFF; Set to \"ON\" if you want the LaTeX documentation\n\n#  \tto be built.\n\n#  DOXYFILE_LATEX_DIR - Directory relative to DOXYFILE_OUTPUT_DIR where\n\n#  \tthe Doxygen LaTeX output is stored. Defaults to \"latex\".\n\n#\n\n#  DOXYFILE_HTML_DIR - Directory relative to DOXYFILE_OUTPUT_DIR where\n\n#  \tthe Doxygen html output is stored. Defaults to \"html\".\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n#  Copyright (c) 2009, 2010, 2011 Tobias Rautenkranz <tobias@rautenkranz.ch>\n\n#\n\n#  Redistribution and use is allowed according to the terms of the New\n\n#  BSD license.\n\n#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n\n#\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## LaTeX\n",
+        "Line" : 107,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Modules/cvmfs_compiler.cmake" : {
+      "ObjectId" : "2560d231c273e4aa1716e3d5160e1dc2d61580b7",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Workaround for Debian packaging debhelper trying to pass -D_FORTIFY_SOURCE=2\n\n# through CPPFLAGS that is not officially supported by CMake. Hence, debhelper\n\n# appends CPPFLAGS to CFLAGS which breaks the build of the c-ares external.\n\n# This filters out flags that scares c-ares's ./configure script.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# this should better be `unset()` but CMake 2.6.2 doesn't\n\n# support it. Should be changed as soon as SLES 11 brings\n\n# an update for CMake or we drop support for the platform\n",
+        "Line" : 8,
+        "CharPositionInLine" : 23
+      },
+      "2" : {
+        "Text" : "#\n\n# set some default flags\n\n#\n\n# flags in CMAKE_C**_FLAGS are always passed to the compiler\n\n#\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Check for old Linux version that don't have a complete inotify implementation\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/cvmfs_options.cmake" : {
+      "ObjectId" : "a73eeed8e986b91d69238cd3d869b673ab1c5341",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Options provided to the user\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# By default, all the external third-party libraries are built and installed in\n\n# ${CMAKE_SOURCE_DIR}/externals_install. If this variable is set to OFF, these\n\n# libraries are picked up from the system\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cvmfs/CMakeLists.txt" : {
+      "ObjectId" : "4acd323b2be8fad75a0ab07e4e5d98f76fb00a1f",
+      "LastModified" : "2019-04-09T08:14:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Define the sources needed to compile the different\n\n# executables in this directory\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# First .h then .cc is important to avoid races during the build process\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# configure some compiler flags for proper build\n\n#\n",
+        "Line" : 508,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# set some include and linking stuff\n\n#\n",
+        "Line" : 529,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# do the job!\n\n#\n\n# for every target you can define a <targetname>_CFLAGS and <targetname>_LD_FLAGS\n\n# variable to pass some target specific build options.\n\n#\n",
+        "Line" : 535,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# set some properties\n",
+        "Line" : 551,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Note: it would be a good idea to try to unify the next block for macOS and Linux.\n\n#       It may be possible to use libtool on both platforms, including the ability\n\n#       to hide private symbols in the library - which is currently done by the\n\n#       `combine_libs` script, on Linux only.\n",
+        "Line" : 624,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# dummy target to cause merged libcvmfs_cache to be produced\n",
+        "Line" : 645,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Note: it would be a good idea to try to unify the next block for macOS and Linux.\n\n#       It may be possible to use libtool on both platforms, including the ability\n\n#       to hide private symbols in the library - which is currently done by the\n\n#       `combine_libs` script, on Linux only.\n",
+        "Line" : 680,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# dummy target to cause merged libcvmfs to be produced\n",
+        "Line" : 701,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# create targets with corresponding sources and static link libraries\n",
+        "Line" : 752,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# link the stuff (*_LIBRARIES are dynamic link libraries)\n",
+        "Line" : 759,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#\n\n# Generate a bash self-extracting script for the cvmfs_preload target\n\n#\n",
+        "Line" : 798,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# Generate the \"cvmfs_server\" script using \"make_cvmfs_server.sh\"\n\n#\n",
+        "Line" : 810,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#\n\n# installation\n\n#\n",
+        "Line" : 820,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "ducc/CMakeLists.txt" : {
+      "ObjectId" : "aea6da1f1bbbc01227ea56a981d38646c4b1d37a",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "ducc/vendor/github.com/docker/distribution/Makefile" : {
+      "ObjectId" : "4635c6eca8792e46a408b6999b5879f6ecfbe708",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Root directory of the project (absolute path).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Used to populate version variable in main package.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Project packages.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Project binaries.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Allow turning off function inlining and variable registerization\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Go files\n\n#\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Flags passed to `go test`\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# This only needs to be generated by hand when cutting full releases.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## run all linters (TODO: enable \"unused\", \"varcheck\", \"ineffassign\", \"unconvert\", \"staticheck\", \"goimports\", \"structcheck\")\n",
+        "Line" : 51,
+        "CharPositionInLine" : 7
+      },
+      "9" : {
+        "Text" : "## run tests, except integration test with test.short\n",
+        "Line" : 55,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "## run tests, except integration test with test.short and race\n",
+        "Line" : 59,
+        "CharPositionInLine" : 11
+      },
+      "11" : {
+        "Text" : "## run tests, except integration tests\n",
+        "Line" : 63,
+        "CharPositionInLine" : 11
+      },
+      "12" : {
+        "Text" : "## run integration tests\n",
+        "Line" : 67,
+        "CharPositionInLine" : 13
+      },
+      "13" : {
+        "Text" : "## generate coverprofiles from the unit tests\n",
+        "Line" : 71,
+        "CharPositionInLine" : 10
+      },
+      "14" : {
+        "Text" : "# Build a binary from a cmd.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "## build binaries\n",
+        "Line" : 93,
+        "CharPositionInLine" : 22
+      },
+      "16" : {
+        "Text" : "## clean up binaries\n",
+        "Line" : 100,
+        "CharPositionInLine" : 7
+      },
+      "CommentCount" : 17
+    },
+    "ducc/vendor/github.com/gogo/protobuf/proto/Makefile" : {
+      "ObjectId" : "00d65f32773285a817998246cbbfc9a5a21e985c",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Go support for Protocol Buffers - Google's data interchange format\n\n#\n\n# Copyright 2010 The Go Authors.  All rights reserved.\n\n# https://github.com/golang/protobuf\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions are\n\n# met:\n\n#\n\n#     * Redistributions of source code must retain the above copyright\n\n# notice, this list of conditions and the following disclaimer.\n\n#     * Redistributions in binary form must reproduce the above\n\n# copyright notice, this list of conditions and the following disclaimer\n\n# in the documentation and/or other materials provided with the\n\n# distribution.\n\n#     * Neither the name of Google Inc. nor the names of its\n\n# contributors may be used to endorse or promote products derived from\n\n# this software without specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\n# \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n\n# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n\n# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n\n# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n\n# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n\n# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\n# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "externals/sha2/src/Makefile" : {
+      "ObjectId" : "e083abc6e85596a742255fc214bd0738e86a8c79",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "externals/sha3/src/Makefile" : {
+      "ObjectId" : "ffb3c3963939debbfb16c80af707eab7c8740039",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# ARCH = 64opt (set by makeHook.sh)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "externals/sqlite3/src/Makefile" : {
+      "ObjectId" : "7abcab2cdcd1198fc25b69e9282e170ba27e734d",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "externals/vjson/src/Makefile" : {
+      "ObjectId" : "9aec2990960691eca4912011b3f899f397c2f06f",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "mount/CMakeLists.txt" : {
+      "ObjectId" : "60cdb2d0b8b63f1ce460fc443f94b75c00998c7c",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Symlink /etc/(autofs)/auto.cvmfs --> /usr/lib(exec)/cvmfs/auto.cvmfs\n",
+        "Line" : 157,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "packaging/debian/config-default/Makefile" : {
+      "ObjectId" : "5570e04c6a2c24ee61ba158bfd9e7ed3b3b35f51",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/make -f\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This make file takes care of 'installing' the public key files\n\n# and domain configurations while 'building' the cvmfs-config-default deb package\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# nothing to build\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "packaging/debian/config-graphdriver/Makefile" : {
+      "ObjectId" : "c11c396541eeeee9b732ba03fd557266c6bb035d",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/make -f\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This make file takes care of 'installing' the public key files\n\n# and domain configurations while 'building' the cvmfs-config-default deb package\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# nothing to build\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "packaging/debian/config-none/Makefile" : {
+      "ObjectId" : "9c89f57cf1a7a7db0b422d9530eec8a87e36b60e",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/make -f\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This make file takes care of 'installing' the public key files\n\n# and domain configurations while 'building' the cvmfs-config-none deb package\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# nothing to build\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "packaging/debian/config-shrinkwrap/Makefile" : {
+      "ObjectId" : "b5be9b4677c5c06d16d607eed5f0956e5958abd2",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/make -f\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This make file takes care of 'installing' the public key files\n\n# and domain configurations while 'building' the cvmfs-config-default deb package\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# nothing to build\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "packaging/debian/cvmfs-release/Makefile" : {
+      "ObjectId" : "97a44df1df66ed6ea5a0aebe4642d5ff6bb2d493",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/make -f\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This make file takes care of 'installing' the CernVM apt repository\n\n# and the associated gpg public key\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# nothing to build\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "packaging/debian/keys/Makefile" : {
+      "ObjectId" : "fcbc5f335da309eb8b6c3bcc8506362a7154cdd1",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/make -f\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This make file takes care of 'installing' the public key files\n\n# and domain configurations while 'building' the cvmfs-keys deb package\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# nothing to build\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "test/micro-benchmarks/CMakeLists.txt" : {
+      "ObjectId" : "7b72f0d0ce737ddeb2e5efd4a858a92e4e5c4335",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# global micro benchmark configuration\n\n#\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# micro benchmarks files\n\n#\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# unit test source files\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# dependencies\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# First .h then .cc is important to avoid races during the build process\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Compiler and Linker Flags for micro benchmarks\n\n#\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# build CernVM-FS micro benchmarks\n\n#\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# set build flags\n\n#\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# link the stuff (*_LIBRARIES are dynamic link libraries)\n\n#\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "test/quickcheck/CMakeLists.txt" : {
+      "ObjectId" : "2ea9fcd46ad1b4b87b6cb89e2b837eb119b32c39",
+      "LastModified" : "2019-02-15T16:03:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# global micro quickcheck configuration\n\n#\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add the test/common directory to the include path\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# micro quickcheck files\n\n#\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# unit test source files\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# dependencies\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Lower optimization level for this file. Xcode 9.3+ gives different results in Os and above\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# First .h then .cc is important to avoid races during the build process\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# Compiler and Linker Flags for quickcheck tests\n\n#\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# build CernVM-FS quickcheck tests\n\n#\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n# set build flags\n\n#\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# link the stuff (*_LIBRARIES are dynamic link libraries)\n\n#\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "test/unittests/CMakeLists.txt" : {
+      "ObjectId" : "f40d042f2527a07871073d8512177eab00bee11b",
+      "LastModified" : "2019-03-20T15:43:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# global test configuration\n\n#\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add the test/common directory to the include path\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# unit test files\n\n#\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# test steering\n",
+        "Line" : 17,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# test utility functions\n",
+        "Line" : 20,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#\n\n# unit test source files\n\n#\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# test dependencies\n",
+        "Line" : 135,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Lower optimization level for this file. Xcode 9.3+ gives different results in Os and above\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# The FileWatcher unit test only makes sense on macOS or on Linux versions which support inotify (inotify)\n",
+        "Line" : 263,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n# Compiler and Linker Flags for unit tests\n\n#\n",
+        "Line" : 410,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# build CernVM-FS test cases\n\n#\n",
+        "Line" : 422,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#\n\n# set build flags\n\n#\n",
+        "Line" : 454,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#\n\n# link the stuff (*_LIBRARIES are dynamic link libraries)\n\n#\n",
+        "Line" : 471,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# Install the generated unit test binary\n\n#\n",
+        "Line" : 511,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 33,
+    "MAKEFILE" : 13
+  },
+  "ElapsedTime" : 4651
+}

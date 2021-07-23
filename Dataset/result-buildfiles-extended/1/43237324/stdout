@@ -1,0 +1,1115 @@
+{
+  "Repository" : "43237324",
+  "Revision" : "HEAD",
+  "ObjectId" : "1f1d2d9ceedfb9fbe794ce22d1dcda803751aac1",
+  "CommitTime" : "2018-11-07T21:11:58Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "90ee3fcb4eb59a31b1b22fc574884da99d177488",
+      "LastModified" : "2018-10-23T20:32:31Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation. See COPYING file\n\n# Run cmake as:\n\n#  mkdir build\n\n#  cmake -GNinja ..\n\n#  ninja\n\n#\n\n# Common options passed to cmake are:\n\n#  -DIN_PLACE=1\n\n#      Configure the build to be run from the build directory, this results in something\n\n#      that is not installable.\n\n#  -DCMAKE_EXPORT_COMPILE_COMMANDS=1\n\n#      Write a compile_commands.json file for clang tooling\n\n#  -DCMAKE_BUILD_TYPE=RelWithDebInfo\n\n#      Change the optimization level, Debug disables optimization,\n\n#      Release is for packagers\n\n#  -DENABLE_VALGRIND=0 (default enabled)\n\n#      Disable valgrind notations, this has a tiny positive performance impact\n\n#  -DENABLE_RESOLVE_NEIGH=0 (default enabled)\n\n#      Do not link to libnl and do not resolve neighbours internally for Ethernet,\n\n#      and do not build iwpmd.\n\n#  -DENABLE_STATIC=1 (default disabled)\n\n#      Produce static libraries along with the usual shared libraries.\n\n#  -DVERBS_PROVIDER_DIR='' (default /usr/lib.../libibverbs)\n\n#      Use the historical search path for providers, in the standard system library.\n\n#  -DNO_COMPAT_SYMS=1 (default disabled)\n\n#      Do not generate backwards compatibility symbols in the shared\n\n#      libraries. This may is necessary if using a dynmic linker that does\n\n#      not support symbol versions, such as uclibc.\n\n#  -DIOCTL_MODE=both (default write)\n\n#      Enable new kABI ioctl() support and support for the legacy write\n\n#      path. May also be 'ioctl' to disable fallback to write.\n\n#  -DIBACM_SERVER_MODE_DEFAULT (default unix)\n\n#      Selects how clients can connect to this server:\n\n#      open) Allow incoming connections from any TCP client (internal or external).\n\n#      loop) Limit incoming connections for server_port to 127.0.0.1.\n\n#      unix) Use unix-domain sockets, hence limits service to the same machine.\n\n#  -DIBACM_ACME_PLUS_KERNEL_ONLY_DEFAULT (default 0)\n\n#      If non-zero, limit incoming requests to kernel or the ib_acme utility\n\n#      (i.e. do not serve librdmacm requests)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# CMake likes to use -rdynamic too much, they fixed it in 3.4.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# .. but we really do want to opt out.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Make RDMA_CHECK_C_LINKER_FLAG work better\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# See Documentation/versioning.md\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# When this is changed the values in these files need changing too:\n\n#   debian/libibverbs1.symbols\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-------------------------\n\n# Basic standard paths\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Override the CMAKE_INSTALL_ dirs to be under the build/ directory\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# C include root\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Executables\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Libraries\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Static library pre-processing\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Used for IN_PLACE configuration\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Location to find the provider plugin shared library files\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Allow the 'run' dir to be configurable, this historically has been /var/run, but\n\n# some systems now use /run/\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Allow the udev rules.d dir to be configurable, this has historically been\n\n# /lib/udev/rules.d/, but some systems now prefix /usr/\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Location to place provider .driver files\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#-------------------------\n\n# Load CMake components\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#-------------------------\n\n# Setup the basic C compiler\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Require GNU99 mode\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Extra warnings. Turn on -Wextra to keep aware of interesting developments from gcc,\n\n# but turn off some that are not terribly useful for this source.\n\n# FIXME: I wonder how many of the signed compares are bugs?\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# At some point after 4.4 gcc fixed shadow to ignore function vs variable\n\n# conflicts\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# At some point around 5.4 gcc fixed missing-field-initializers to ignore this\n\n# common idiom we use extensively. Since this is a useful warning for\n\n# developers try and leave it on if the compiler supports it.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Check that the compiler supports -fno-strict-aliasing.\n\n# The use of this flag in the source is discouraged\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# The code does not do the racy fcntl if the various CLOEXEC's are not\n\n# supported so it really doesn't work right if this isn't available. Thus hard\n\n# require it.\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# At least uclibc wrongly hides this POSIX constant behind _GNU_SOURCE\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# always_inline is supported\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Linux __u64 is an unsigned long long\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Modern Linux has switched to use ull in all cases, but to avoid disturbing\n\n# userspace some platforms continued to use unsigned long by default. This\n\n# define will cause kernel headers to consistently use unsigned long long\n",
+        "Line" : 277,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# glibc and kernel uapi headers can co-exist\n",
+        "Line" : 283,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# The compiler has working -fstrict-aliasing support, old gcc's do not. If\n\n# broken then globally disable strict aliasing.\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Check if off_t is 64 bits, eg large file support is enabled\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Provide a shim if C11 stdatomic.h is not supported.\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Enable development support features\n\n# Prune unneeded shared libraries during linking\n",
+        "Line" : 329,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Ensure all shared ELFs have fully described linking\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Enable gold linker - gold has different linking checks\n\n#RDMA_AddOptLDFlag(CMAKE_EXE_LINKER_FLAGS SUPPORTS_NO_UNDEFINED \"-fuse-ld=gold\")\n\n#RDMA_AddOptLDFlag(CMAKE_SHARED_LINKER_FLAGS SUPPORTS_NO_UNDEFINED \"-fuse-ld=gold\")\n\n#RDMA_AddOptLDFlag(CMAKE_MODULE_LINKER_FLAGS SUPPORTS_NO_UNDEFINED \"-fuse-ld=gold\")\n",
+        "Line" : 339,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Verify that GNU --version-script and asm(\".symver\") works\n",
+        "Line" : 344,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Look for Python\n",
+        "Line" : 352,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Look for pandoc\n",
+        "Line" : 355,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#-------------------------\n\n# Find libraries\n\n# pthread\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# libnl\n",
+        "Line" : 365,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# FIXME use of pkgconfig is discouraged\n",
+        "Line" : 370,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# Older stuff blows up if these headers are included together\n",
+        "Line" : 379,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# udev\n",
+        "Line" : 391,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Statically determine sizeof(long), this is largely unnecessary, no new code\n\n# should rely on this.\n",
+        "Line" : 395,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Determine if this arch supports cache coherent DMA. This isn't really an\n\n# arch specific property, but for our purposes arches that do not support it\n\n# also do not define wmb/etc which breaks our compile.\n",
+        "Line" : 399,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "#-------------------------\n\n# Apply fixups\n",
+        "Line" : 411,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# We prefer to build with valgrind memcheck.h present, but if not, or the user\n\n# requested valgrind disabled, then replace it with our dummy stub.\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Older glibc does not include librt\n",
+        "Line" : 429,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Check for static_assert\n",
+        "Line" : 441,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "#-------------------------\n\n# Final warning flags\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Old version of cmake used 'main(){..}' as their test program which breaks with -Werror.\n\n# So set this flag last.\n",
+        "Line" : 454,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Old versions of libnl have a duplicated rtnl_route_put, disbale the warning on those\n\n# systems\n",
+        "Line" : 459,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#-------------------------\n\n# Build Prep\n\n# Write out a git ignore file to the build directory if it isn't the source\n\n# directory. For developer convenience\n",
+        "Line" : 476,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Configuration defaults\n",
+        "Line" : 496,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "#-------------------------\n\n# Sub-directories\n",
+        "Line" : 514,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Libraries\n",
+        "Line" : 521,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# Providers\n",
+        "Line" : 529,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# NO SPARSE\n\n# NO SPARSE\n",
+        "Line" : 532,
+        "CharPositionInLine" : 34
+      },
+      "59" : {
+        "Text" : "# NO SPARSE\n",
+        "Line" : 535,
+        "CharPositionInLine" : 34
+      },
+      "60" : {
+        "Text" : "# NO SPARSE\n",
+        "Line" : 541,
+        "CharPositionInLine" : 32
+      },
+      "61" : {
+        "Text" : "# Binaries\n",
+        "Line" : 552,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# NO SPARSE\n",
+        "Line" : 553,
+        "CharPositionInLine" : 24
+      },
+      "63" : {
+        "Text" : "#-------------------------\n\n# Display a summary\n\n# Only report things that are non-ideal.\n",
+        "Line" : 568,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 64
+    },
+    "Documentation/CMakeLists.txt" : {
+      "ObjectId" : "bda16fa3be8c2bd9ea6c51abb2dc7ac285fd6b75",
+      "LastModified" : "2017-12-25T12:07:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "buildlib/FindLDSymVer.cmake" : {
+      "ObjectId" : "48238f2407f4fd0a040ac3177afc7bbf007d10d8",
+      "LastModified" : "2017-06-28T12:24:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n\n# find_package helper to detect symbol version support in the compiler and\n\n# linker. If supported then LDSYMVER_MODE will be set to GNU\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Basic sample GNU style map file\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# See RDMA_CHECK_C_LINKER_FLAG\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# And matching source, this also checks that .symver asm works\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "buildlib/FindSystemd.cmake" : {
+      "ObjectId" : "fbced4028e823e8c55eaa6dba296a13898fe12dc",
+      "LastModified" : "2017-08-03T16:30:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2015 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Older systemd uses a split library\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "buildlib/FindUDev.cmake" : {
+      "ObjectId" : "3a26943772873182a169b818ab9ddafacbc347ec",
+      "LastModified" : "2017-08-03T16:30:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "buildlib/Findpandoc.cmake" : {
+      "ObjectId" : "ca1694ae640eff341c14d96e497e44f70525fa1a",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2017 Mellanox Technologies Ltd\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "buildlib/RDMA_BuildType.cmake" : {
+      "ObjectId" : "0951edadeebf61102c14bef1fe08b1fbe566c4f7",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2015 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the default build type to RelWithDebInfo. Since RDMA is typically used\n\n# in performance contexts it doesn't make much sense to have the default build\n\n# turn off the optimizer.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Release should be used by packagers, it is the same as the default RelWithDebInfo,\n\n# this means it uses -O2 and -DNDEBUG (not -O3)\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# RelWithDebInfo should be used by developers, it is the same as Release but\n\n# with the -DNDEBUG removed\n",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "buildlib/RDMA_DoFixup.cmake" : {
+      "ObjectId" : "cd7d3b2e741da3db3beaeeb11c699fd1763b1fbc",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Execute a header fixup based on NOT_NEEDED for HEADER\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The buildlib includes alternate header file shims for several scenarios, if\n\n# the build system detects a feature is present then it should call RDMA_DoFixup\n\n# with the test as true. If false then the shim header will be installed.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Typically the shim header will replace a missing header with stubs, or it\n\n# will augment an existing header with include_next.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# NO_SHIM lets cmake succeed if the header exists in the system but no\n\n# shim is provided, but this will always fail if the shim is needed but\n\n# does not exist.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "buildlib/RDMA_EnableCStd.cmake" : {
+      "ObjectId" : "16dfe55b4f3af1aa7ba63585b3aed96f5f8f7ef7",
+      "LastModified" : "2018-06-10T19:32:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# cmake does not have way to do this even slightly sanely until CMP0056\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test if the CC compiler supports the linker flag and if so add it to TO_VAR\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Test if the CC compiler supports the flag and if so add it to TO_VAR\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Enable the minimum required gnu11 standard in the compiler\n\n# This was introduced in GCC 4.7\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Sparse doesn't support gnu11, but doesn't fail if the option is present,\n\n# force gnu99 instead.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Check for support of the usual flag\n",
+        "Line" : 48,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Newer cmake can do this internally\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Older compiler, we can work around this by adding -msse instead of\n\n# relying on the function attribute.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 9
+    },
+    "buildlib/RDMA_Sparse.cmake" : {
+      "ObjectId" : "8fcfb758d5284f590b2dac2f4b4086a0356ca459",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2017 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Sparse defines __CHECKER__, but only for the 'sparse pass', which has no\n\n# way to fail the compiler.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Replace various glibc headers with our own versions that have embedded sparse annotations.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Enable endian analysis in sparse\n",
+        "Line" : 31,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "buildlib/publish_headers.cmake" : {
+      "ObjectId" : "5b309861de1547f87d92f066cf49078bb72d3be7",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Same as publish_headers but does not install them during the install phase\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Copy headers from the source directory to the proper place in the\n\n# build/include directory. This also installs them into /usr/include/xx during\n\n# the install phase\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "buildlib/rdma_functions.cmake" : {
+      "ObjectId" : "fa3fed3368ee0f619a6c09fbf1ea8d79d25b02c4",
+      "LastModified" : "2018-10-23T20:32:31Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Obsidian Research Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Helper functions for use in the sub CMakeLists files to make them simpler\n\n# and more uniform.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Global list of tuples of (SHARED STATIC MAP) library target names\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Global list of tuples of (PROVIDER_NAME LIB_NAME)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create a symlink at filename DEST\n\n# If the directory containing DEST does not exist then it is created\n\n# automatically.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Make sure the directory exists, cmake doesn't create target DESTINATION\n\n# directories until everything is finished, do it manually here if necessary\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Newer versions of cmake can use \"${CMAKE_COMMAND}\" \"-E\" \"create_symlink\"\n\n# however it is broken weirdly on older versions.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Install a symlink during 'make install'\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Create a link in the build tree with the right content\n",
+        "Line" : 69,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Have cmake install it. Doing it this way lets cpack work if we ever wish\n\n# to use that.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Wrapper for install() that runs the single file through configure_file first.\n\n# This only works with the basic single file install(FILE file ARGS..) pattern\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Modify shared library target DEST to use VERSION_SCRIPT as the linker map file\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# NOTE: This won't work with ninja prior to cmake 3.4\n",
+        "Line" : 98,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Basic function to produce a standard libary with a GNU LD version script.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Create a static library\n",
+        "Line" : 105,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# Create a shared library\n",
+        "Line" : 112,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Create a special provider with exported symbols in it The shared provider\n\n# exists as a normal system library with the normal shared library SONAME and\n\n# other convections. The system library is symlinked into the\n\n# VERBS_PROVIDER_DIR so it can be dlopened as a provider as well.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Installed driver file\n",
+        "Line" : 128,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Uninstalled driver file\n",
+        "Line" : 132,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Create a static provider library\n",
+        "Line" : 139,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Create the plugin shared library\n",
+        "Line" : 145,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Compute a relative symlink from VERBS_PROVIDER_DIR to LIBDIR\n",
+        "Line" : 158,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# Create a provider shared library for libibverbs\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Installed driver file\n",
+        "Line" : 174,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Uninstalled driver file\n",
+        "Line" : 178,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Create a static provider library\n",
+        "Line" : 185,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Create the plugin shared library\n",
+        "Line" : 191,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Even though these are modules we still want to use Wl,--no-undefined\n",
+        "Line" : 194,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Provider Plugins do not use SONAME versioning, there is no reason to\n\n# create the usual symlinks.\n",
+        "Line" : 201,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# FIXME: This symlink is provided for compat with the old build, but it\n\n# never should have existed in the first place, nothing should use this\n\n# name, we can probably remove it.\n",
+        "Line" : 209,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "# Create an installed executable\n",
+        "Line" : 216,
+        "CharPositionInLine" : 1
+      },
+      "31" : {
+        "Text" : "# Create an installed executable (under sbin)\n",
+        "Line" : 224,
+        "CharPositionInLine" : 1
+      },
+      "32" : {
+        "Text" : "# Create an test executable (not-installed)\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Finalize the setup of the static libraries by copying the meta information\n\n# from the shared to static and setting up the static builder\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# PUBLIC libraries\n",
+        "Line" : 255,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# PRIVATE libraries\n",
+        "Line" : 264,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# Generate a pkg-config file\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# With IN_PLACE=1 the install step is not run, so generate the file in the build dir\n",
+        "Line" : 303,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 38
+    },
+    "buildlib/rdma_man.cmake" : {
+      "ObjectId" : "0db455f0cc60299d9316c2ed38e863cd0cdb95ec",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2017-2018 Mellanox Technologies Ltd\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If pandoc is not installed then we install the man page from the\n\n# pre-built cache directory under buildlib. When the release tar file is\n\n# made the man pages are pre-built and included. This is done via install\n\n# so that ./build.sh never depends on pandoc, only 'ninja install'.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Install man pages. This deduces the section from the trailing integer in the\n\n# filename\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create an alias for a man page, using a symlink.\n\n# Input is a list of pairs of names (MAN_PAGE ALIAS)\n\n# NOTE: The section must currently be the same for both.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "ccan/CMakeLists.txt" : {
+      "ObjectId" : "573aa5a5c272b2e80394b11d25167bb5554f4706",
+      "LastModified" : "2018-06-06T07:26:35Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "ibacm/CMakeLists.txt" : {
+      "ObjectId" : "3a4e2632c203c4a44eeeebfaddf22abafb7973ed",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME: Fixup the include scheme to not require all these -Is\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NOTE: ibacm exports symbols from its own binary for use by ibacm\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FIXME: We should probably list the symbols we want to export..\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This is a plugin module that dynamically links to ibacm\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ACM providers are linked into a subdir so that IN_PLACE can work.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# FIXME: update the .init.in\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "iwpmd/CMakeLists.txt" : {
+      "ObjectId" : "bf538034ea53336c162b8d1d640cf9f680ec445c",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "kernel-boot/CMakeLists.txt" : {
+      "ObjectId" : "936c953ea6148d6f3e8a8a620fcd2fc10e94dde3",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is intended to be customized by the user, so it is installed in\n\n# /etc/\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "kernel-headers/CMakeLists.txt" : {
+      "ObjectId" : "16ba165e8d4511921f77c05f6aa464ec38443d59",
+      "LastModified" : "2018-06-06T07:26:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Older versions of cmake do not create the output directory automatically\n",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# This weird construction is needed to ensure ordering of the build.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Transform the kernel ABIs used by the providers\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "libibumad/CMakeLists.txt" : {
+      "ObjectId" : "1f600a0228a2346489e9ba4cc8c9ee9b7ddcf478",
+      "LastModified" : "2018-09-08T19:08:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# See Documentation/versioning.md\n",
+        "Line" : 12,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "libibumad/man/CMakeLists.txt" : {
+      "ObjectId" : "185584a0369cf25cc08852e10b6e5465c2150639",
+      "LastModified" : "2018-06-06T07:26:35Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libibumad/tests/CMakeLists.txt" : {
+      "ObjectId" : "2092b81a79dfa639f35083537e848ddf689435c2",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libibverbs/CMakeLists.txt" : {
+      "ObjectId" : "ddf5995e7fae317b3a930f924986b405829d76a8",
+      "LastModified" : "2018-10-23T20:32:31Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# See Documentation/versioning.md\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# In static mode the .pc file lists all of the providers for static\n\n# linking. The user should set RDMA_STATIC_PROVIDERS to select which ones\n\n# to include.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "libibverbs/examples/CMakeLists.txt" : {
+      "ObjectId" : "dc4c4978daa316f057412933d5ce181acc8a3ccd",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Shared example files\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libibverbs/man/CMakeLists.txt" : {
+      "ObjectId" : "6efd6713f2aeee21ba98846f067ad8b3412dd33a",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "librdmacm/CMakeLists.txt" : {
+      "ObjectId" : "f71e4076f5395330f3d04798ee5fd453df6b57b2",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# See Documentation/versioning.md\n",
+        "Line" : 12,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# The preload library is a bit special, it needs to be open coded\n\n# Since it is a LD_PRELOAD it has no soname, and is installed in sub dir\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Even though this is a module we still want to use Wl,--no-undefined\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are for compat with old packaging, these name should not be used.\n\n# FIXME: Maybe we can get rid of them?\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "librdmacm/examples/CMakeLists.txt" : {
+      "ObjectId" : "46347b6eaa16beda283db7aca482538f005285d2",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Shared example files\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "librdmacm/man/CMakeLists.txt" : {
+      "ObjectId" : "d016c926d2e21e34a16063d8a3ee9a7ba4b292dc",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/bnxt_re/CMakeLists.txt" : {
+      "ObjectId" : "13ad287c1ddfef73ca321f8f3ce31b9e8b817197",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/cxgb3/CMakeLists.txt" : {
+      "ObjectId" : "a578105e7b2894194cc825dfa40459a7affbe09e",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/cxgb4/CMakeLists.txt" : {
+      "ObjectId" : "a9b6546015efa5eacd6d08a9fe09f79016af1aec",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/hfi1verbs/CMakeLists.txt" : {
+      "ObjectId" : "702bb5e23b3090dbbaba090363a2b8d1c57a9ca7",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/hns/CMakeLists.txt" : {
+      "ObjectId" : "697dbd7e990d9183491c4ab563360bacd951b1c9",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/i40iw/CMakeLists.txt" : {
+      "ObjectId" : "d8a3a3c2c41495f68fbd17fd8b40caa6bb5ec6b5",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/ipathverbs/CMakeLists.txt" : {
+      "ObjectId" : "9031b86d0461d708d76d8ecf65015d56791af4a5",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/mlx4/CMakeLists.txt" : {
+      "ObjectId" : "ad849f105231fe339ab2ea9274225b316c7c31bd",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/mlx4/man/CMakeLists.txt" : {
+      "ObjectId" : "99a751015d4b2250bf3d557f42b7388359c2937f",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/mlx5/CMakeLists.txt" : {
+      "ObjectId" : "1d0961cd4093feed53e7701f3de2e9b4cf1ae5aa",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/mlx5/man/CMakeLists.txt" : {
+      "ObjectId" : "b5398be3dd93e5581f152d02e5449c75cbdcc59d",
+      "LastModified" : "2018-11-02T02:40:15Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/mthca/CMakeLists.txt" : {
+      "ObjectId" : "63d7147041446b1ce2089a24871965fc5ff7c60e",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/nes/CMakeLists.txt" : {
+      "ObjectId" : "0c7fa8fad09fcbac092387b9dd57b63a9c3ec7e8",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/ocrdma/CMakeLists.txt" : {
+      "ObjectId" : "08623adb4a6f29c404b91a25fd7a596be8e0c01d",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/qedr/CMakeLists.txt" : {
+      "ObjectId" : "8d4f3cee6a9972a222a653da8ef122ddfd51d2d8",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/rxe/CMakeLists.txt" : {
+      "ObjectId" : "15dc627e4e67a3d3e681ecc619ddf4c035c95451",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/rxe/man/CMakeLists.txt" : {
+      "ObjectId" : "69e8bd8cf20c527e64392a72d03570aa1d5c6fec",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "providers/vmw_pvrdma/CMakeLists.txt" : {
+      "ObjectId" : "f14629508c5338e165c26d2619655700f8cbc88c",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "rdma-ndd/CMakeLists.txt" : {
+      "ObjectId" : "e8419a6c93116f9c888801d2f389f8e35f26214a",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# COPYRIGHT (c) 2016 Intel Corporation.\n\n# Licensed under BSD (MIT variant) or GPLv2. See COPYING.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME Autogenerate from the .rst\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "srp_daemon/CMakeLists.txt" : {
+      "ObjectId" : "0e7de9594b637503a1b3a3ee3f2fea9bf3bba82b",
+      "LastModified" : "2018-03-20T02:20:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME: Why?\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME: The ib init.d file should really be included in rdma-core as well.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# NOTE: These defaults are for CentOS, packagers should override.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "util/CMakeLists.txt" : {
+      "ObjectId" : "4e9c4f16f30fa9b3f1a67bcf6846d7dc257067f6",
+      "LastModified" : "2018-09-24T15:35:44Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 48
+  },
+  "ElapsedTime" : 1888
+}

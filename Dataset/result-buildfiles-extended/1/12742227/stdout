@@ -1,0 +1,184 @@
+{
+  "Repository" : "12742227",
+  "Revision" : "HEAD",
+  "ObjectId" : "b55a62e32fb57dcef392de4b8db1c7c4c7ceb681",
+  "CommitTime" : "2019-04-15T14:53:19Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "38b2c4ad96276ca9a76da01f588eab82476f08a7",
+      "LastModified" : "2019-04-12T18:23:24Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This file is renamed to \"Makefile.ext\" in release tarballs so that setup.py won't try to\n\n# run it.  If you want setup.py to run \"make\" automatically, rename it back to \"Makefile\".\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The pyvenv multiple runtime support is based on https://github.com/DRMacIver/hypothesis/blob/master/Makefile\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# debugging\n\n#\tpylint --rcfile=.pylintrc --init-hook=\"import sys, code; sys.excepthook = lambda exc, exc_type, tb: print(tb.tb_next.tb_next.tb_next.tb_next.tb_next.tb_next.tb_next.tb_next.tb_next.tb_next.tb_frame.f_locals['self'])\" gevent src/greentest/* || true\n\n# XXX: prospector is failing right now. I can't reproduce locally:\n\n# https://travis-ci.org/gevent/gevent/jobs/345474139\n\n#\t${PYTHON} scripts/gprospector.py -X\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Folding from https://github.com/travis-ci/travis-rubies/blob/9f7962a881c55d32da7c76baefc58b89e3941d91/build.sh#L38-L44\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# In the past, we included all test files that had a reference to 'subprocess'' somewhere in their\n\n# text. The monkey-patched stdlib tests were specifically included here.\n\n# However, we now always also test on AppVeyor (Windows) which only has GEVENT_FILE=thread,\n\n# so we can save a lot of CI time by reducing the set and excluding the stdlib tests without\n\n# losing any coverage.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# because we set parallel=true, each run produces new and different coverage files; they all need\n\n# to be combined\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Managing runtimes\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# First install a newer pip so that it can use the wheel cache\n\n# (only needed until travis upgrades pip to 7.x; note that the 3.5\n\n# environment uses pip 7.1 by default)\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Then start installing our deps so they can be cached. Note that use of --build-options / --global-options / --install-options\n\n# disables the cache.\n\n# We need wheel>=0.26 on Python 3.5. See previous revisions.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "deps/c-ares/Makefile.am" : {
+      "ObjectId" : "3b44b980595edf5c70bf1f18942d1c1118b7be41",
+      "LastModified" : "2018-02-16T15:16:40Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify our include paths here, and do it relative to $(top_srcdir) and\n\n# $(top_builddir), to ensure that these paths which belong to the library\n\n# being currently built and tested are searched before the library which\n\n# might possibly already be installed in the system.\n\n#\n\n# When using the low-level hard-hacking memory leak tracking code from\n\n# libcurl the generated curl/curlbuild.h file must also be reachable.\n\n# Using the libcurl lowlevel code from within c-ares library is ugly and\n\n# only works when c-ares is built and linked with a similarly debug-build\n\n# libcurl, but we do this anyway for convenience.\n\n#\n\n# $(top_builddir)/../include/curl for generated curlbuild.h included from curl.h\n\n# $(top_builddir)/../include is for libcurl's generated curl/curlbuild.h file\n\n# $(top_srcdir)/../include is for libcurl's external include files\n\n# $(top_builddir)/../lib is for libcurl's generated lib/curl_config.h file\n\n# $(top_srcdir)/../lib is for libcurl's lib/setup.h and other \"private\" files\n\n# $(top_builddir) is for c-ares's generated ares_config.h file\n\n# $(top_srcdir) is for c-ares's ares_setup.h and other \"c-ares-private\" files\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# adig and ahost are just sample programs and thus not mentioned with the\n\n# regular sources and headers\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This flag accepts an argument of the form current[:revision[:age]]. So,\n\n# passing -version-info 3:12:1 sets current to 3, revision to 12, and age to\n\n# 1.\n\n#\n\n# If either revision or age are omitted, they default to 0. Also note that age\n\n# must be less than or equal to the current interface number.\n\n#\n\n# Here are a set of rules to help you update your library version information: \n\n#\n\n# 1.Start with version information of 0:0:0 for each libtool library.\n\n#\n\n# 2.Update the version information only immediately before a public release of\n\n# your software. More frequent updates are unnecessary, and only guarantee\n\n# that the current interface number gets larger faster.\n\n#\n\n# 3.If the library source code has changed at all since the last update, then\n\n# increment revision (c:r+1:a)\n\n#\n\n# 4.If any interfaces have been added, removed, or changed since the last\n\n# update, increment current, and set revision to 0. (c+1:r=0:a)\n\n#\n\n# 5.If any interfaces have been added since the last public release, then\n\n# increment age. (c:r:a+1)\n\n#\n\n# 6.If any interfaces have been removed since the last public release, then\n\n# set age to 0. (c:r:a=0)\n\n#\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add -Werror if defined\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Makefile.inc provides the CSOURCES and HHEADERS defines\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# where to install the c-ares headers\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# what headers to install on 'make install':\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Make files named *.dist replace the file without .dist extension\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "deps/libuv/CMakeLists.txt" : {
+      "ObjectId" : "01a7c47e57845271ab27686bf49cc533a3e149d9",
+      "LastModified" : "2019-04-15T11:51:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: determine CMAKE_SYSTEM_NAME on OS/390.  Currently assumes \"OS/390\".\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Android has pthread as part of its c library, not as a separate\n\n# libpthread.so.\n",
+        "Line" : 217,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Now for some gibbering horrors from beyond the stars...\n",
+        "Line" : 374,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "deps/libuv/Makefile.am" : {
+      "ObjectId" : "595a5aea03913dc21ba519d71788441a67affba1",
+      "LastModified" : "2019-04-15T11:51:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2013, Ben Noordhuis <info@bnoordhuis.nl>\n\n#\n\n# Permission to use, copy, modify, and/or distribute this software for any\n\n# purpose with or without fee is hereby granted, provided that the above\n\n# copyright notice and this permission notice appear in all copies.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n\n# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n\n# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n\n# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n\n# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n\n# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n\n# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Can't be turned into a CC_CHECK_CFLAGS in configure.ac, it makes compilers\n\n# on other platforms complain that the argument is unused during compilation.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# WINNT\n",
+        "Line" : 93,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# WINNT\n",
+        "Line" : 118,
+        "CharPositionInLine" : 7
+      },
+      "4" : {
+        "Text" : "# Can't be turned into a CC_CHECK_CFLAGS in configure.ac, it makes compilers\n\n# on other platforms complain that the argument is unused during compilation.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "doc/Makefile" : {
+      "ObjectId" : "d69ca4ce7049cf398833dde27bfbbc4c4bfb1998",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 1,
+    "MAKEFILE" : 2,
+    "AUTOMAKE" : 2
+  },
+  "ElapsedTime" : 2614
+}

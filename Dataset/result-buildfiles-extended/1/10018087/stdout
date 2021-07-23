@@ -1,0 +1,1557 @@
+{
+  "Repository" : "10018087",
+  "Revision" : "HEAD",
+  "ObjectId" : "ff922213fd9fef1ceb09a22aa65720e275dfcdea",
+  "CommitTime" : "2019-04-12T09:41:28Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "ebcbe6f6c7744202ef39f07a10aedd68fcec34ae",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################################\n\n# Minimum CMake version and policies\n\n###############################################################################\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FIXME: This is horrible. With the old behaviour,\n\n# quoted strings like \"MSVC\" in if() conditionals\n\n# get implicitly dereferenced. The NEW behaviour\n\n# doesn't do this but CMP0054 was only introduced\n\n# in CMake 3.1 and we support lower versions as the\n\n# minimum. We could set NEW here but it would be very\n\n# confusing to use NEW for some builds and OLD for others\n\n# which could lead to some subtle bugs. Instead when the\n\n# minimum version is 3.1 change this policy to NEW and remove\n\n# the hacks in place to work around it.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Enable `MACOSX_RPATH` by default.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Disallow reserved target names\n",
+        "Line" : 34,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# This overrides the default flags for the different CMAKE_BUILD_TYPEs\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "###############################################################################\n\n# Project version\n\n###############################################################################\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# If a patch is needed, we can add KLEE_VERSION_PATCH\n\n# set(KLEE_VERSION_PATCH 0)\n\n# set(KLEE_VERSION \"${KLEE_VERSION_MAJOR}.${KLEE_VERSION_MINOR}.${KLEE_VERSION_PATCH}\")\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "################################################################################\n\n# Set various useful variables depending on CMake version\n\n################################################################################\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# In CMake >= 3.2 add_custom_command() supports a ``USES_TERMINAL`` argument\n",
+        "Line" : 67,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# In CMake >= 3.4 ExternalProject_Add_Step() supports a `USES_TERMINAL` argument\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "################################################################################\n\n# Sanity check - Disallow building in source.\n\n# Otherwise we would overwrite the Makefiles of the old build system.\n\n################################################################################\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "################################################################################\n\n# Sanity Check: Check for in source build of the old build system.\n\n# Some build files from the old build system could interfere with our build.\n\n################################################################################\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# This is the only reliable way to fix this.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "################################################################################\n\n# Build type\n\n################################################################################\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Multi-configuration build (e.g. Xcode). Here\n\n# CMAKE_BUILD_TYPE doesn't matter\n",
+        "Line" : 127,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Single configuration generator (e.g. Unix Makefiles, Ninja)\n",
+        "Line" : 131,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Provide drop down menu options in cmake-gui\n",
+        "Line" : 139,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Check the selected build type is valid\n",
+        "Line" : 144,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Reference specific library paths used during linking for install\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "################################################################################\n\n# Add our CMake module directory to the list of module search directories\n\n################################################################################\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "################################################################################\n\n# Compiler flags for KLEE components\n\n# Subsequent commands will append to these. These are used instead of\n\n# directly modifying CMAKE_CXX_FLAGS so that other code can be easily built with\n\n# different flags.\n\n################################################################################\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "################################################################################\n\n# Assertions\n\n################################################################################\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Assume that -DNDEBUG isn't set.\n",
+        "Line" : 180,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "################################################################################\n\n# KLEE timestamps\n\n################################################################################\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "################################################################################\n\n# Include useful CMake functions\n\n################################################################################\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "################################################################################\n\n# Find LLVM\n\n################################################################################\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Certain LLVM debugging macros only work when LLVM was built with asserts\n",
+        "Line" : 233,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# for config.h\n",
+        "Line" : 234,
+        "CharPositionInLine" : 27
+      },
+      "29" : {
+        "Text" : "# for config.h\n",
+        "Line" : 236,
+        "CharPositionInLine" : 27
+      },
+      "30" : {
+        "Text" : "# Warn about mixing build types.\n\n# This is likely a bad idea because some of LLVM's header files use the NDEBUG\n\n# macro which can change things like data layout.\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Find llvm-link\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Find llvm-ar\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Find llvm-as\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "################################################################################\n\n# Find bitcode compiler\n\n################################################################################\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "################################################################################\n\n# C++ version\n\n################################################################################\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "################################################################################\n\n# Warnings\n\n################################################################################\n",
+        "Line" : 303,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "################################################################################\n\n# Solvers\n\n################################################################################\n\n# STP\n",
+        "Line" : 308,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Z3\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# metaSMT\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "###############################################################################\n\n# Exception handling\n\n###############################################################################\n",
+        "Line" : 327,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "###############################################################################\n\n# RTTI\n\n###############################################################################\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "################################################################################\n\n# Support for compressed logs\n\n################################################################################\n",
+        "Line" : 352,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# For config.h\n",
+        "Line" : 365,
+        "CharPositionInLine" : 23
+      },
+      "44" : {
+        "Text" : "# For config.h\n",
+        "Line" : 374,
+        "CharPositionInLine" : 21
+      },
+      "45" : {
+        "Text" : "################################################################################\n\n# TCMalloc support\n\n################################################################################\n",
+        "Line" : 377,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# TCMalloc's documentation says its safest to pass these flags when\n\n# building with gcc because gcc can optimize assuming its using its own\n\n# malloc.\n",
+        "Line" : 401,
+        "CharPositionInLine" : 6
+      },
+      "47" : {
+        "Text" : "################################################################################\n\n# Detect SQLite3\n\n################################################################################\n",
+        "Line" : 418,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "################################################################################\n\n# Detect libcap\n\n################################################################################\n",
+        "Line" : 428,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# On FreeBSD <sys/capability.h> is a different thing\n",
+        "Line" : 437,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "################################################################################\n\n# Detect libutil\n\n################################################################################\n",
+        "Line" : 445,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "################################################################################\n\n# Miscellaneous header file detection\n\n################################################################################\n",
+        "Line" : 463,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# FIXME: This is needed by the runtime not KLEE itself so we are testing the wrong\n\n# compiler.\n",
+        "Line" : 472,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Test what function signature we need to use for SELinux. The signatures\n\n# have changed between 2.2 and 2.3. In particular, the type of the \"security\n\n# context\" parameter was changed from char * to const char *, with this\n\n# patch: [PATCH] Get rid of security_context_t and fix const declarations.\n\n# [http://www.spinics.net/lists/selinux/msg14827.html]\n",
+        "Line" : 479,
+        "CharPositionInLine" : 2
+      },
+      "54" : {
+        "Text" : "################################################################################\n\n# Workarounds\n\n################################################################################\n",
+        "Line" : 512,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "################################################################################\n\n# Global clean target\n\n################################################################################\n\n# CMake already uses the \"clean\" target name but it doesn't clean everything\n\n# unfortunately. We can't modify the target so we provide our own \"clean_all\"\n\n# target that runs clean. Other rules for performing clean up should declare\n\n# that \"clean_all\" depends on those rules.\n",
+        "Line" : 517,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Invoke CMake's own clean target\n",
+        "Line" : 525,
+        "CharPositionInLine" : 2
+      },
+      "57" : {
+        "Text" : "################################################################################\n\n# KLEE runtime support\n\n################################################################################\n\n# This is set here and not in `runtime` because `config.h` needs to be generated.\n",
+        "Line" : 534,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Provide drop down menu options in cmake-gui\n",
+        "Line" : 555,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# Location where KLEE will look for the built runtimes by default.\n",
+        "Line" : 563,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "################################################################################\n\n# KLEE POSIX Runtime Support\n\n################################################################################\n",
+        "Line" : 566,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "################################################################################\n\n# KLEE uclibc support\n\n################################################################################\n",
+        "Line" : 581,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# For config.h\n",
+        "Line" : 587,
+        "CharPositionInLine" : 29
+      },
+      "63" : {
+        "Text" : "# Find the C library bitcode archive\n",
+        "Line" : 596,
+        "CharPositionInLine" : 2
+      },
+      "64" : {
+        "Text" : "# Make a symlink to KLEE_UCLIBC_C_BCA so KLEE can find it where it\n\n# is expected.\n",
+        "Line" : 605,
+        "CharPositionInLine" : 2
+      },
+      "65" : {
+        "Text" : "# Add klee-uclibc to the install target. We install the original\n\n# file rather than the symlink because CMake would just copy the symlink\n\n# rather than the file.\n",
+        "Line" : 615,
+        "CharPositionInLine" : 2
+      },
+      "66" : {
+        "Text" : "# For config.h\n",
+        "Line" : 625,
+        "CharPositionInLine" : 29
+      },
+      "67" : {
+        "Text" : "################################################################################\n\n# KLEE libcxx support\n\n################################################################################\n",
+        "Line" : 628,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# For config.h\n",
+        "Line" : 634,
+        "CharPositionInLine" : 29
+      },
+      "69" : {
+        "Text" : "# Find the library bitcode archive\n",
+        "Line" : 647,
+        "CharPositionInLine" : 2
+      },
+      "70" : {
+        "Text" : "# Check for static first\n",
+        "Line" : 649,
+        "CharPositionInLine" : 2
+      },
+      "71" : {
+        "Text" : "# Check for dynamic so lib\n",
+        "Line" : 653,
+        "CharPositionInLine" : 4
+      },
+      "72" : {
+        "Text" : "# Make a symlink to KLEE_LIBCXX_EXTERNAL_OBJECT so KLEE can find it where it\n\n# is expected.\n",
+        "Line" : 667,
+        "CharPositionInLine" : 2
+      },
+      "73" : {
+        "Text" : "# Add libcxx to the install target. We install the original\n\n# file rather than the symlink because CMake would just copy the symlink\n\n# rather than the file.\n",
+        "Line" : 677,
+        "CharPositionInLine" : 2
+      },
+      "74" : {
+        "Text" : "# For config.h\n",
+        "Line" : 687,
+        "CharPositionInLine" : 29
+      },
+      "75" : {
+        "Text" : "################################################################################\n\n# Sanitizer support\n\n################################################################################\n",
+        "Line" : 690,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "################################################################################\n\n# Generate `config.h`\n\n################################################################################\n",
+        "Line" : 709,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "################################################################################\n\n# Generate `CompileTimeInfo.h`\n\n################################################################################\n",
+        "Line" : 715,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# Get information from git. We use third-party code to do this. The nice\n\n# thing about this code is it will trigger a re-configure if the HEAD changes\n\n# which means when we build KLEE, it should always have the correct git\n\n# information.\n",
+        "Line" : 719,
+        "CharPositionInLine" : 2
+      },
+      "79" : {
+        "Text" : "################################################################################\n\n# Global include directories\n\n################################################################################\n",
+        "Line" : 734,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "################################################################################\n\n# Set default location for targets in the build directory\n\n################################################################################\n",
+        "Line" : 740,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "################################################################################\n\n# Report the value of various variables to aid debugging\n\n################################################################################\n",
+        "Line" : 749,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "################################################################################\n\n# KLEE components\n\n################################################################################\n",
+        "Line" : 758,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "################################################################################\n\n# KLEE tools\n\n################################################################################\n",
+        "Line" : 765,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "################################################################################\n\n# Testing\n\n################################################################################\n",
+        "Line" : 770,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "# This provides a migration path for older build directories that have this\n\n# variable set in their cache. Leaving it behind could lead to confusion so\n\n# removing it is probably a good idea.\n\n# TODO: Remove this eventually (probably next release or something).\n",
+        "Line" : 776,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "# Find lit\n",
+        "Line" : 789,
+        "CharPositionInLine" : 2
+      },
+      "87" : {
+        "Text" : "# Add global test target\n",
+        "Line" : 819,
+        "CharPositionInLine" : 2
+      },
+      "88" : {
+        "Text" : "################################################################################\n\n# Documentation\n\n################################################################################\n",
+        "Line" : 843,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "################################################################################\n\n# Miscellaneous install\n\n################################################################################\n",
+        "Line" : 851,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 90
+    },
+    "cmake/GetGitRevisionDescription.cmake" : {
+      "ObjectId" : "85eae1562fe2011e9800787819b21f30a8898eb4",
+      "LastModified" : "2016-11-07T22:16:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Returns a version string from Git\n\n#\n\n# These functions force a re-configure on each git commit so that you can\n\n# trust the values of the variables in your build system.\n\n#\n\n#  get_git_head_revision(<refspecvar> <hashvar> [<additional arguments to git describe> ...])\n\n#\n\n# Returns the refspec and sha hash of the current head revision\n\n#\n\n#  git_describe(<var> [<additional arguments to git describe> ...])\n\n#\n\n# Returns the results of git describe on the source tree, and adjusting\n\n# the output so that it tests false if an error occurs.\n\n#\n\n#  git_get_exact_tag(<var> [<additional arguments to git describe> ...])\n\n#\n\n# Returns the results of git describe --exact-match on the source tree,\n\n# and adjusting the output so that it tests false if there was no exact\n\n# matching tag.\n\n#\n\n# Requires CMake 2.6 or newer (uses the 'function' command)\n\n#\n\n# Original Author:\n\n# 2009-2010 Ryan Pavlik <rpavlik@iastate.edu> <abiryan@ryand.net>\n\n# http://academic.cleardefinition.com\n\n# Iowa State University HCI Graduate Program/VRAC\n\n#\n\n# Copyright Iowa State University 2009-2010.\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE_1_0.txt or copy at\n\n# http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We must run the following at \"include\" time, not at function call time,\n\n# to find the path to this module rather than the path to a calling list file\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# .git dir not found, search parent directories\n",
+        "Line" : 45,
+        "CharPositionInLine" : 32
+      },
+      "3" : {
+        "Text" : "# We have reached the root directory, we are not in git\n",
+        "Line" : 49,
+        "CharPositionInLine" : 3
+      },
+      "4" : {
+        "Text" : "# check if this is a submodule\n",
+        "Line" : 56,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# TODO sanitize\n\n#if((${ARGN}\" MATCHES \"&&\") OR\n\n#\t(ARGN MATCHES \"||\") OR\n\n#\t(ARGN MATCHES \"\\\\;\"))\n\n#\tmessage(\"Please report the following error to the project!\")\n\n#\tmessage(FATAL_ERROR \"Looks like someone's doing something nefarious with git_describe! Passed arguments ${ARGN}\")\n\n#endif()\n",
+        "Line" : 97,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "#message(STATUS \"Arguments to execute_process: ${ARGN}\")\n",
+        "Line" : 105,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 7
+    },
+    "cmake/add_global_flag.cmake" : {
+      "ObjectId" : "893e1200abcb16d2874db241ef04927ccb2f37c7",
+      "LastModified" : "2016-11-07T22:16:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NOTE: Have to be careful here as CMAKE_CXX_FLAGS is a string\n\n# and not a list.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# NOTE: Have to be careful here as CMAKE_C_FLAGS is a string\n\n# and not a list.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "cmake/c_flags_override.cmake" : {
+      "ObjectId" : "1064022c26c319f4ab9f3eaeb1d646f867a30e3d",
+      "LastModified" : "2016-11-07T22:16:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n\n#\n\n# This file overrides the default compiler flags for CMake's built-in\n\n# configurations (CMAKE_BUILD_TYPE). Most compiler flags should not be set\n\n# here.  The main purpose is to make sure ``-DNDEBUG`` is never set by default.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Taken from Modules/Compiler/GNU.cmake but -DNDEBUG is removed\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake/compiler_warnings.cmake" : {
+      "ObjectId" : "9e6e67efa7b2e81ae919665dd621e15e889d9358",
+      "LastModified" : "2016-11-07T22:16:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################################\n\n# Compiler warnings\n\n#\n\n# NOTE: All these variables should be lists of flags and NOT a single string.\n\n###############################################################################\n\n# FIXME: -Wunused-parameter fires a lot so for now suppress it.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "###############################################################################\n\n# Check which warning flags are supported and use them globally\n\n###############################################################################\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Loop through flags and use the ones which the compiler supports\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Note `add_global_cxx_flag()` is used rather than\n\n# `klee_component_add_cxx_flag()` because warning\n\n# flags are typically useful for building everything.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "###############################################################################\n\n# Warnings as errors\n\n###############################################################################\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/cxx_flags_override.cmake" : {
+      "ObjectId" : "0e3946fe1df3df4b1f69a6104df3a9498c23c95b",
+      "LastModified" : "2016-11-07T22:16:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n\n#\n\n# This file overrides the default compiler flags for CMake's built-in\n\n# configurations (CMAKE_BUILD_TYPE). Most compiler flags should not be set\n\n# here.  The main purpose is to make sure ``-DNDEBUG`` is never set by default.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Taken from Modules/Compiler/GNU.cmake but -DNDEBUG is removed\n",
+        "Line" : 17,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_bitcode_compiler.cmake" : {
+      "ObjectId" : "615931f3c5da260619277a4411c47cc599b51617",
+      "LastModified" : "2016-11-07T22:16:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n\n#\n\n# This file tries to find compilers to build LLVM bitcode.\n\n# It is implicitly dependent on `find_llvm.cmake` already being run in the\n\n# same scope.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Give the LLVM tools directory higher priority than the system directory.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 3
+      },
+      "2" : {
+        "Text" : "# Give the LLVM tools directory higher priority than the system directory.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 3
+      },
+      "3" : {
+        "Text" : "# Check `llvm-dis` is available\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Test compiler\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Check if the LLVM version we are using is compatible\n\n# with this compiler by invoking the `llvm-dis` tool\n\n# on the generated bitcode.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Remove temporary files. It's okay to not remove these on failure\n\n# as they will be useful for developer debugging.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 7
+    },
+    "cmake/find_llvm.cmake" : {
+      "ObjectId" : "02c999601396ea55cc315dd54613150a52a92b9c",
+      "LastModified" : "2019-03-21T12:46:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n\n#\n\n# This file provides multiple methods to detect LLVM.\n\n#\n\n# * llvm-config executable. This method is portable across LLVM build systems\n\n# (i.e. works if LLVM was built with autoconf/Makefile or with CMake).\n\n#\n\n# * find_package(LLVM CONFIG). This method relies on the `LLVMConfig.cmake` file\n\n# generated by LLVM's build system.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Provide function to map LLVM components to libraries.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# HACK: This information is not exported so just pretend its OFF for now.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Use the llvm-config binary to get the information needed.\n\n# Try to detect it in the user's environment. The user can\n\n# force a particular binary by passing `-DLLVM_CONFIG_BINARY=/path/to/llvm-config`\n\n# to CMake.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Get LLVM version\n",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Try x.y.z patern\n",
+        "Line" : 63,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# try x.y pattern\n",
+        "Line" : 82,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Filter out -I flags by only looking for -D flags.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Note we don't rely on `llvm-config --build-mode` because\n\n# that seems broken when LLVM is built with CMake.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "# Filter out -D flags by only looking for -I flags.\n",
+        "Line" : 134,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Provide function to map LLVM components to libraries.\n",
+        "Line" : 145,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Now find the system libs that are needed.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Create an imported target for each LLVM library\n\n# if it doesn't already exist. We need to do this\n\n# so we can tell CMake that these libraries depend\n\n# on the necessary libraries so that CMake\n\n# can get the link order right.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# a bug in llvm-config from LLVM 3.9\n",
+        "Line" : 162,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# DEBUG: message(STATUS \"Creating imported target \\\"${target_name}\\\"\" \" for \\\"${llvm_lib}\\\"\")\n",
+        "Line" : 170,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# Create an imported target for the library\n",
+        "Line" : 177,
+        "CharPositionInLine" : 8
+      },
+      "16" : {
+        "Text" : "# Now state the dependencies of the created imported targets which we\n\n# assume to be for each imported target the libraries which appear after\n\n# the library in `{_llvm_libs_list}` and then finally the system libs.\n\n# It is **essential** that we do this otherwise CMake will get the\n\n# link order of the imported targets wrong.\n",
+        "Line" : 185,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# DEBUG: message(STATUS \"Adding deps for target ${llvm_target_lib}\")\n\n# Find position in `targets_to_return`\n",
+        "Line" : 194,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# Get the target for this index\n",
+        "Line" : 203,
+        "CharPositionInLine" : 12
+      },
+      "19" : {
+        "Text" : "# DEBUG: message(STATUS \"${llvm_target_libs} depends on ${target_for_index}\")\n",
+        "Line" : 205,
+        "CharPositionInLine" : 12
+      },
+      "20" : {
+        "Text" : "# Now finally add the system library dependencies. These must be last.\n",
+        "Line" : 211,
+        "CharPositionInLine" : 8
+      },
+      "21" : {
+        "Text" : "# Filter out `-DNEBUG` from LLVM_DEFINITIONS.  The caller can use\n\n# `LLVM_ENABLE_ASSERTIONS` to decide how to set their defines.\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Skip\n",
+        "Line" : 227,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 23
+    },
+    "cmake/find_metasmt.cmake" : {
+      "ObjectId" : "3dc9fe50a99865cbae0aab17cd16981306cad80e",
+      "LastModified" : "2017-10-17T21:22:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the default so that if the following is true:\n\n# * METASMT was found\n\n# * ENABLE_SOLVER_METASMT is not already set as a cache variable\n\n#\n\n# then the default is set to `ON`. Otherwise set the default to `OFF`.\n\n# A consequence of this is if we fail to detect METASMT the first time\n\n# subsequent calls to CMake will not change the default.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For config.h\n",
+        "Line" : 30,
+        "CharPositionInLine" : 24
+      },
+      "3" : {
+        "Text" : "# FIXME: We should test linking\n",
+        "Line" : 39,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Separate flags and defines from ${metaSMT_CXXFLAGS}\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# This is a define\n",
+        "Line" : 48,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# Regular flag\n",
+        "Line" : 51,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Test the flag and fail if it can't be used\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Check if metaSMT provides an useable backend\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Provide drop down menu options in cmake-gui\n",
+        "Line" : 76,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Check METASMT_DEFAULT_BACKEND has a valid value.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Set appropriate defines\n",
+        "Line" : 88,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# For config.h\n",
+        "Line" : 96,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 13
+    },
+    "cmake/find_stp.cmake" : {
+      "ObjectId" : "7b10f1fe7f7eb8eee4aef00d22582a2dafee2754",
+      "LastModified" : "2017-07-28T16:11:33Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n\n# STP: Use CMake facility to detect. The user can pass `-DSTP_DIR=` to force\n\n# a particular directory.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Although find_package() will set `STP_DIR` for us add it here so that\n\n# is displayed in `ccmake` and `cmake-gui`.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set the default so that if the following is true:\n\n# * STP was found\n\n# * ENABLE_SOLVER_STP is not already set as a cache variable\n\n#\n\n# then the default is set to `ON`. Otherwise set the default to `OFF`.\n\n# A consequence of this is if we fail to detect STP the first time\n\n# subsequent calls to CMake will not change the default.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Try the STP shared library first\n",
+        "Line" : 35,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Try the static library instead\n",
+        "Line" : 37,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# For config.h\n",
+        "Line" : 49,
+        "CharPositionInLine" : 22
+      },
+      "6" : {
+        "Text" : "# For config.h\n",
+        "Line" : 56,
+        "CharPositionInLine" : 20
+      },
+      "CommentCount" : 7
+    },
+    "cmake/find_z3.cmake" : {
+      "ObjectId" : "2240d48c2288375d4d49f7634d07d1a6ac0d17a2",
+      "LastModified" : "2018-07-02T16:30:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the default so that if the following is true:\n\n# * Z3 was found\n\n# * ENABLE_SOLVER_Z3 is not already set as a cache variable\n\n#\n\n# then the default is set to `ON`. Otherwise set the default to `OFF`.\n\n# A consequence of this is if we fail to detect Z3 the first time\n\n# subsequent calls to CMake will not change the default.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For config.h\n",
+        "Line" : 30,
+        "CharPositionInLine" : 21
+      },
+      "3" : {
+        "Text" : "# Check the signature of `Z3_get_error_msg()`\n",
+        "Line" : 34,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# For config.h\n",
+        "Line" : 51,
+        "CharPositionInLine" : 19
+      },
+      "CommentCount" : 5
+    },
+    "cmake/klee_add_component.cmake" : {
+      "ObjectId" : "ea1b30b26502af2fb9103c9f3128eb619bfdf140",
+      "LastModified" : "2017-07-28T16:11:33Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Components are explicitly STATIC because we don't support building them\n\n# as shared libraries.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Use of `PUBLIC` means these will propagate to targets that use this component.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# In newer CMakes we can make sure that the flags are only used when compiling C++\n",
+        "Line" : 16,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# For older CMakes just live with the warnings we get for passing C++ only flags\n\n# to the C compiler.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "cmake/klee_component_add_cxx_flag.cmake" : {
+      "ObjectId" : "c866f6dab7a70334eb5ad941b3cb87a04470ba0f",
+      "LastModified" : "2017-07-28T16:11:33Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/FindSQLite3.cmake" : {
+      "ObjectId" : "9c99ae5ca59439d6c0995652176baf2b147d79a4",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (C) 2007-2009 LuaDist.\n\n# Created by Peter Kapec <kapecp@gmail.com>\n\n# Redistribution and use of this file is allowed according to the terms of the MIT license.\n\n# For details see the COPYRIGHT file distributed with LuaDist.\n\n#\tNote:\n\n#\t\tSearching headers and libraries is very simple and is NOT as powerful as scripts\n\n#\t\tdistributed with CMake, because LuaDist defines directories to search for.\n\n#\t\tEveryone is encouraged to contact the author with improvements. Maybe this file\n\n#\t\tbecomes part of CMake distribution sometimes.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find sqlite3\n\n# Find the native SQLITE3 headers and libraries.\n\n#\n\n# SQLITE3_INCLUDE_DIRS\t- where to find sqlite3.h, etc.\n\n# SQLITE3_LIBRARIES\t- List of libraries when using sqlite.\n\n# SQLITE3_FOUND\t- True if sqlite found.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Look for the header file.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Look for the library.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Handle the QUIETLY and REQUIRED arguments and set SQLITE3_FOUND to TRUE if all listed variables are TRUE.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Copy the results to the output variables.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/modules/FindZ3.cmake" : {
+      "ObjectId" : "999ed14e1822976f9861bac23b8bde0f4e3eaf36",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Tries to find an install of the Z3 library and header files\n\n#\n\n# Once done this will define\n\n#  Z3_FOUND - BOOL: System has the Z3 library installed\n\n#  Z3_INCLUDE_DIRS - LIST:The GMP include directories\n\n#  Z3_LIBRARIES - LIST:The libraries needed to use Z3\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Try to find libraries\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Try to find headers\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# For distributions that keep the header files in a `z3` folder,\n\n# for example Fedora's `z3-devel` package at `/usr/include/z3/z3.h`\n",
+        "Line" : 23,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# TODO: We should check we can link some simple code against libz3\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Handle QUIET and REQUIRED and check the necessary variables were set and if so\n\n# set ``Z3_FOUND``\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/string_to_list.cmake" : {
+      "ObjectId" : "65c04413fab880aea77bc29fadfa6946892ff80f",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/workaround_llvm_pr39177.cmake" : {
+      "ObjectId" : "317cac7e5758d941746cf47533ce63aee1f3b334",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Workaround for LLVM PR39177\n\n#  - https://bugs.llvm.org/show_bug.cgi?id=39177\n\n#  - https://github.com/klee/klee/issues/1000\n\n#\n\n# TODO: remove when support for LLVM <= 7 is dropped\n\n#\n\n# Short description of the bug:\n\n# The LLVM pass `-instcombine` optimizes calls to C standard lib functions by,\n\n# e.g. transforming the following call to a call to fwrite():\n\n#   fprintf(stderr, \"hello world!\\n\");\n\n# In uClibc, and thus klee-uclibc, fwrite() is defined as an alias to a function\n\n# fwrite_unlocked(). This translates to a GlobalAlias in LLVM IR. When trying to\n\n# infer function attributes from fwrite(), LLVM tries to cast a GlobalAlias to a\n\n# Function, which results in a null-pointer dereference. When calling KLEE with\n\n# `-optimize`, this leads to a crash of KLEE.\n\n#\n\n# This bug affects LLVM 3.9 - 7.0.0.\n\n#\n\n# As the bug results in a null-pointer dereference when trying to access a\n\n# Function that is only available as GlobalAlias, this workaround introduces a\n\n# pass into KLEE that replaces aliases for certain C standard lib function with\n\n# clones of the corresponding aliasee function.\n\n#\n\n# The bug was fixed in the following commits in LLVM:\n\n#  - https://reviews.llvm.org/rL344454\n\n#  - https://reviews.llvm.org/rL344455\n\n#  - https://reviews.llvm.org/rL344645\n\n# These patches were then applied to the release_70 branch to land in 7.0.1:\n\n#  - https://reviews.llvm.org/rL345921\n\n#\n\n# This CMake file checks whether the method responsible for the null-pointer\n\n# dereference leads to a crash of the program given in this file.\n\n#\n\n# Files that were created/modified for this workaround:\n\n# [NEW FILE] cmake/workaround_llvm_pr39177.cmake (this file)\n\n# [NEW FILE] cmake/workaround_llvm_pr39177.ll (auxiliary file for feature test)\n\n# [NEW FILE] lib/Module/WorkaroundLLVMPR39177.cpp\n\n#\n\n# [MODIFIED] CMakeLists.txt (including this file)\n\n# [MODIFIED] include/klee/Config/config.h.cmin (cmakedefine)\n\n# [MODIFIED] lib/Module/CMakeLists.txt\n\n# [MODIFIED] lib/Module/Optimize.cpp (add pass during optimization)\n\n# [MODIFIED] lib/Module/Passes.h\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Detect whether LLVM version is affected by PR39177\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# LLVM >= 3.9\n",
+        "Line" : 46,
+        "CharPositionInLine" : 107
+      },
+      "3" : {
+        "Text" : "# LLVM <= 7.0.0\n",
+        "Line" : 47,
+        "CharPositionInLine" : 142
+      },
+      "4" : {
+        "Text" : "# Detect whether PR39177 leads to crash\n",
+        "Line" : 56,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# For config.h\n",
+        "Line" : 123,
+        "CharPositionInLine" : 39
+      },
+      "6" : {
+        "Text" : "# For config.h\n",
+        "Line" : 133,
+        "CharPositionInLine" : 37
+      },
+      "CommentCount" : 7
+    },
+    "docs/CMakeLists.txt" : {
+      "ObjectId" : "f689e8a02243164a3e4005c8d54ba47fcf397506",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Top level target for building all documentation\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Configure the Doxyfile\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Add rule to build doxygen documentation\n",
+        "Line" : 24,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# FIXME: This variable should be used to set `OUTPUT_DIRECTORY` in\n\n# doxygen.cfg\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Add rule to clean doxygen documentation\n",
+        "Line" : 36,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "lib/Basic/CMakeLists.txt" : {
+      "ObjectId" : "d0a309c9692135016597d1959b767af4330d5345",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME: THIS IS STUPID.\n\n# `ConstructSolverChain.cpp` should be in\n\n# `kleaverSolver` not in in `kleeBasic`.\n\n# We are creating a circular dependency because\n\n# of this because `kleaverSolver` depends on `kleeBasic`.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "lib/CMakeLists.txt" : {
+      "ObjectId" : "8a0749324af4d949bc866f811d7f3138c240c055",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/Core/CMakeLists.txt" : {
+      "ObjectId" : "72e9bc31504dbcc677846c01369f1dd47f1f43d6",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: Work out what the correct LLVM components are for\n\n# kleeCore.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "lib/Expr/CMakeLists.txt" : {
+      "ObjectId" : "74407295d2916f605b6a762510e29ef0ef0dddf0",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/Module/CMakeLists.txt" : {
+      "ObjectId" : "5f234237c2dff67ca05d71ce0bf4300ca2e199fd",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/Solver/CMakeLists.txt" : {
+      "ObjectId" : "d9c393fb91602801c6233e9ea96343f248af5c29",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/Support/CMakeLists.txt" : {
+      "ObjectId" : "7145930fc5ec2ddb1d03516f38a0dede49d90fc5",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "runtime/CMakeLists.txt" : {
+      "ObjectId" : "e3619f3d4609d99df4107bf4da65e54c5baef565",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Configure the bitcode build system\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Copy over the makefiles to the build directory\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Makefile for root runtime directory\n\n# Copy over makefiles for libraries\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Find GNU make\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Find env\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Build the runtime as an external project.\n\n# We do this because CMake isn't really suitable\n\n# for building the runtime because it can't handle\n\n# the source file dependencies properly.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Dummy command\n",
+        "Line" : 89,
+        "CharPositionInLine" : 50
+      },
+      "8" : {
+        "Text" : "# Dummy command\n",
+        "Line" : 90,
+        "CharPositionInLine" : 46
+      },
+      "9" : {
+        "Text" : "# Dummy command\n",
+        "Line" : 91,
+        "CharPositionInLine" : 48
+      },
+      "10" : {
+        "Text" : "# Use `ExternalProject_Add_Step` with `ALWAYS` argument instead of directly\n\n# building in `ExternalProject_Add` with `BUILD_ALWAYS` argument due to lack of\n\n# support for the `BUILD_ALWAYS` argument in CMake < 3.1.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# `env` is used here to make sure `MAKEFLAGS` of KLEE's build\n\n# is not propagated into the bitcode build system.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Target for cleaning the bitcode build system\n\n# NOTE: Invoking `make clean` does not invoke this target.\n\n# Instead the user needs to invoke the `clean_all` target.\n\n# It's also weird that `ExternalProject` provides no way to do a clean.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "###############################################################################\n\n# Runtime install\n\n###############################################################################\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "runtime/Runtest/CMakeLists.txt" : {
+      "ObjectId" : "9ae185ee84dbc228a8352e70e7bf8f7e2f6263df",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# HACK:\n",
+        "Line" : 12,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Increment version appropriately if ABI/API changes, more details:\n\n# http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html#AEN135\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "0e4ef6f30187f216a36de24c6bfe780aea6480d0",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME: Do this to avoid changing the template file that\n\n# is shared by both build systems.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FIXME: Do this to avoid changing the template file that\n\n# is shared by both build systems.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "###############################################################################\n\n# Find LLVM testing tools\n\n###############################################################################\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Check `FileCheck` and the `not` tools are available.  By default we'll try\n\n# looking in the LLVM binary directory.  If that fails download the sources.\n\n# This might be necessary if using a shipped version of LLVM because LLVM\n\n# unfortunately does not ship its testing tools.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "###############################################################################\n\n# Concrete tests build system\n\n###############################################################################\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "###############################################################################\n\n# Configure lit test suite\n\n###############################################################################\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Find path to libkleeRuntest target for `lit.site.cfg`.\n\n# FIXME: This is not the right way to get the location of the target we have to\n\n# set CMP0026 to old.\n\n# This will likely break if using a multi-configuration generator.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# HACK: Allow reading `LOCATION` property.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Tell CMake to remove lit's output directories when\n\n# running `make clean`.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "test/Concrete/CMakeLists.txt" : {
+      "ObjectId" : "0f565bedd7483918108b38598ee4ac689ab1e643",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/CMakeLists.txt" : {
+      "ObjectId" : "6fe153d76cc75709371a2afab5ffea92776d3b61",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/gen-bout/CMakeLists.txt" : {
+      "ObjectId" : "07cfb3c721bb3e79f3802e200ff23d840f2a1dfb",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/gen-random-bout/CMakeLists.txt" : {
+      "ObjectId" : "c4596bc99fc965c6924fc01734508c7d09711d21",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/kleaver/CMakeLists.txt" : {
+      "ObjectId" : "c079c2a4e9f340cb1bedf0a91e5ab12f9f213c67",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/klee-replay/CMakeLists.txt" : {
+      "ObjectId" : "aeb9084578a60d2274f5f5bb144fbb5c22252a93",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/klee-stats/CMakeLists.txt" : {
+      "ObjectId" : "e5f21162bf866f5a8481a7ceb2da4ceeb6ee5327",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copy into the build directory's binary directory\n\n# so system tests can find it\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/klee/CMakeLists.txt" : {
+      "ObjectId" : "8b05c357e7b0f66a622da67dad804224b91d9b69",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The KLEE binary depends on the runtimes\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/ktest-tool/CMakeLists.txt" : {
+      "ObjectId" : "dbb00e9118bca2042eb992118e6a6808b5e9c95d",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copy into the build directory's binary directory\n\n# so system tests can find it\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "unittests/Assignment/CMakeLists.txt" : {
+      "ObjectId" : "8ca55b94d44607273e296c373fe9c77dfea36711",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/CMakeLists.txt" : {
+      "ObjectId" : "d6e58183eae577d3dd28aedd747018e846754c7d",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#===------------------------------------------------------------------------===#\n\n#\n\n#                     The KLEE Symbolic Virtual Machine\n\n#\n\n# This file is distributed under the University of Illinois Open Source\n\n# License. See LICENSE.TXT for details.\n\n#\n\n#===------------------------------------------------------------------------===#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build GTest. We don't use a pre-built version due to\n\n# https://github.com/google/googletest/blob/master/googletest/docs/FAQ.md#why-is-it-not-recommended-to-install-a-pre-compiled-copy-of-google-test-for-example-into-usrlocal\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# It's important that GTest is built with KLEE's compile flags\n\n# so set them here.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build GTest as part of our project\n\n# FIXME: Prevent GTest from adding to our install target.\n\n# This is a problem for GTest >= 1.8. I've filled a PR to fix the issue\n\n# ( https://github.com/google/googletest/pull/921 ). If it gets accepted\n\n# we can do `set(gtest_enable_install FALSE)` to fix this.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Restore the flags\n",
+        "Line" : 44,
+        "CharPositionInLine" : 47
+      },
+      "5" : {
+        "Text" : "# This keeps track of all the unit test\n\n# targets so we can ensure they are built\n\n# before trying to run them.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Unit Tests\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set up lit configuration\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Add a target to run all the unit tests using lit\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "unittests/DiscretePDF/CMakeLists.txt" : {
+      "ObjectId" : "07ec1f89c363cfd0763cb75bb86c4514685d488d",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME add the following line to link against libgtest.a\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "unittests/Expr/CMakeLists.txt" : {
+      "ObjectId" : "84dce619046e3383a938f079d0f0aaee29f2819b",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Ref/CMakeLists.txt" : {
+      "ObjectId" : "facd26a38bdcc6a0928439d0170b5fbd30b143cb",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Solver/CMakeLists.txt" : {
+      "ObjectId" : "c82e51b5369d8e36a3fa032c642012a8622444d6",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Time/CMakeLists.txt" : {
+      "ObjectId" : "6a860582f30586e0697d7b2801d9db2ee38e8c8d",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/TreeStream/CMakeLists.txt" : {
+      "ObjectId" : "4b2987244655b9e4afd5bf01ebede00f256fbb96",
+      "LastModified" : "2019-04-04T19:37:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 45
+  },
+  "ElapsedTime" : 2803
+}

@@ -1,0 +1,756 @@
+{
+  "Repository" : "2918779",
+  "Revision" : "HEAD",
+  "ObjectId" : "aa8764d6c3de146856b174a8674fa787a6311d7c",
+  "CommitTime" : "2017-11-09T07:10:43Z",
+  "Files" : {
+    "pom.xml" : {
+      "ObjectId" : "36162ef04ec40101b396364cf0263b38d029604c",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n    This pom is the aggregator for all gatk poms\n    See also:\n      http://maven.apache.org/pom.html#Inheritance_v\n      http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance_vs_Project_Aggregation\n      http://stackoverflow.com/questions/1992213/maven-parent-pom-vs-modules-pom\n    ",
+        "Line" : 11,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : " private & protected optionally enabled as profiles ",
+        "Line" : 26,
+        "CharPositionInLine" : 68
+      },
+      "2" : {
+        "Text" : " TODO: Need a better a way to say \"don't include hidden\" by default ",
+        "Line" : 33,
+        "CharPositionInLine" : 84
+      },
+      "3" : {
+        "Text" : "\n        Phases of the build that may be disabled to speed up compilation.\n        ",
+        "Line" : 41,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : "\n        Package tests ensure the consistency of the packaged / shaded jars.\n        It runs the tests where the monolithic jar is the only dependency on the classpath.\n        ",
+        "Line" : 52,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "\n        Serial tests use the test jars to run tests, such that all tests are run from a single TestNG invocation.\n        This is different that the invoker, that runs the test classes from the filesystem, but pointing at the packaged JAR files.\n        TODO: Currently, all tests run within each package, since packages already collect dependencies for shading an uber jar.\n        TODO: Should there be another level up of tests, possibly running \"all tests\" via this aggregator level?\n        TODO: If that require the aggregator to be dependent on the child dependencies, perhaps a better approach might be another monolithic test project.\n        ",
+        "Line" : 66,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : " Full path to write the executable MANIFEST.MF only jars, 10 seconds to create at 4KB each, and the accompanying lib directory ",
+        "Line" : 74,
+        "CharPositionInLine" : 143
+      },
+      "7" : {
+        "Text" : " Full path to write (symlinks to) the full shaded package jars, 1+ minute to create at 12MB+ each ",
+        "Line" : 76,
+        "CharPositionInLine" : 114
+      },
+      "8" : {
+        "Text" : "\n        Full path to write symlink to either an executable MANIFEST.MF only jar - OR - a fully shaded package jar.\n        NOTE: MANIFEST.MF only jars MUST be accompanied by the lib folder, or they will not run.\n        ",
+        "Line" : 81,
+        "CharPositionInLine" : 12
+      },
+      "9" : {
+        "Text" : " Plugin configuration ",
+        "Line" : 93,
+        "CharPositionInLine" : 38
+      },
+      "10" : {
+        "Text" : "\n                            TODO: Once GATKDoclet stops hard coding paths, we remove this and leave\n                            TODO: it to the standard maven conventions to clean up for us\n                            ",
+        "Line" : 104,
+        "CharPositionInLine" : 32
+      },
+      "11" : {
+        "Text" : "\n                            Shade dumps this temp file in basedir, with no good way to reconfigure.\n                            https://jira.codehaus.org/browse/MSHADE-145\n                            ",
+        "Line" : 119,
+        "CharPositionInLine" : 32
+      },
+      "12" : {
+        "Text" : "\n                            NOTE: Shade include filters do NOT include transient dependencies, only the class directly listed.\n\n                            Thus to fully include all the classes in packages, we must:\n                                1) List the artifacts we want shaded as direct dependencies\n                                2) Run the unpack direct dependencies into the classes directory\n                                3) Shade the classes directory as we normally would.\n                            ",
+        "Line" : 146,
+        "CharPositionInLine" : 32
+      },
+      "13" : {
+        "Text" : " Don't unjar the resource bundle, so that shade's AppendingTransformer can merge ",
+        "Line" : 152,
+        "CharPositionInLine" : 121
+      },
+      "14" : {
+        "Text" : " Allow skipping for \"fasttest\" ",
+        "Line" : 201,
+        "CharPositionInLine" : 71
+      },
+      "15" : {
+        "Text" : " Required as doclet uses reflection to access classes for documentation, instead of source java",
+        "Line" : 204,
+        "CharPositionInLine" : 135
+      },
+      "16" : {
+        "Text" : "\n                        Explicit package-info creation to match existing ant output.\n                        ",
+        "Line" : 240,
+        "CharPositionInLine" : 28
+      },
+      "17" : {
+        "Text" : "\n                        TODO: Currently disabled in build.xml. Here as well.\n                        <execution>\n                            <id>compile-annotations</id>\n                            <phase>compile</phase>\n                            <goals>\n                                <goal>compile</goal>\n                            </goals>\n                            <configuration>\n                                <proc>only</proc>\n                            </configuration>\n                        </execution>\n                        ",
+        "Line" : 268,
+        "CharPositionInLine" : 28
+      },
+      "18" : {
+        "Text" : "\n                                Package info is supposed to be in source:\n                                    http://maven.apache.org/plugins/maven-javadoc-plugin/examples/javadoc-resources.html\n                                But maven-compile-plugin doesn't auto exclude these:\n                                    https://jira.codehaus.org/browse/MCOMPILER-205?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel&focusedCommentId=326505#comment-326505\n                                So, explicitly exclude them\n                                ",
+        "Line" : 282,
+        "CharPositionInLine" : 36
+      },
+      "19" : {
+        "Text" : "\n                        TODO: Currently disabled in build.xml. Here as well.\n                        <execution>\n                            <id>testCompile-annotations</id>\n                            <phase>test-compile</phase>\n                            <goals>\n                                <goal>testCompile</goal>\n                            </goals>\n                            <configuration>\n                                <proc>only</proc>\n                            </configuration>\n                        </execution>\n                        ",
+        "Line" : 300,
+        "CharPositionInLine" : 28
+      },
+      "20" : {
+        "Text" : "\n                        Maven keeps executing default-jar first, even if it's listed AFTER the executable-jar.\n                        So while packaging: run executable-jar, disable default-jar, then run unshaded-default-jar.\n                        ",
+        "Line" : 354,
+        "CharPositionInLine" : 28
+      },
+      "21" : {
+        "Text" : "\n                                    NOTE: Removing cofoja's annotation service to allow \"javac -cp GenomeAnalysisTK.jar ...\" without\n                                    needing an additional -proc:none argument. Using *:* to catch shaded GATK in Queue package.\n                                    ",
+        "Line" : 398,
+        "CharPositionInLine" : 40
+      },
+      "22" : {
+        "Text" : "\n                        HACK: Adding the source directory via build-helper-maven-plugin doesn't work with IntelliJ.\n                        Add compatibility link from public's extensions source code to target/generated-sources.\n                        see: http://wiki.jetbrains.net/intellij/Maven_FAQ\n                        ",
+        "Line" : 460,
+        "CharPositionInLine" : 28
+      },
+      "23" : {
+        "Text" : "\n                        To allow using separated integration-test and verify, each execution must use a separate reportsDirectory.\n\n                        Otherwise, when an empty \"pipeline test\" later runs on an IntegrationTest class,\n                        it overwrites the results of the previous invocation always with a zero exit status.\n\n                        Mixing in the test name into the reportsDirectory also avoids collisions, when different maven jobs run tests in parallel.\n\n                        Similarly generating unique failsafe summary reports to avoid collisions.\n                        ",
+        "Line" : 558,
+        "CharPositionInLine" : 28
+      },
+      "24" : {
+        "Text" : " Invoke plugins that always run ",
+        "Line" : 677,
+        "CharPositionInLine" : 48
+      },
+      "25" : {
+        "Text" : "\n                        TODO: Separate maven modules into separate git repos?\n                        Until then, keep devs from accidentally mixing utils/engine/tools.\n                        ",
+        "Line" : 687,
+        "CharPositionInLine" : 28
+      },
+      "26" : {
+        "Text" : "\n                        TODO: Remove after 3.3+ release.\n                        Until then, will clean out symbolic links from users who download public/protected.\n                        Perhaps leave the script even longer.\n                        ",
+        "Line" : 703,
+        "CharPositionInLine" : 28
+      },
+      "27" : {
+        "Text" : " By not specifying an id, shut off all default javadocs from mvn site ",
+        "Line" : 751,
+        "CharPositionInLine" : 98
+      },
+      "28" : {
+        "Text" : " Only generate the GATK Docs across the parent aggregation, not the children too. ",
+        "Line" : 760,
+        "CharPositionInLine" : 114
+      },
+      "29" : {
+        "Text" : " Optionally include protected ",
+        "Line" : 781,
+        "CharPositionInLine" : 46
+      },
+      "30" : {
+        "Text" : " Optionally include private ",
+        "Line" : 794,
+        "CharPositionInLine" : 44
+      },
+      "31" : {
+        "Text" : " Optionally do not shade/package jars ",
+        "Line" : 807,
+        "CharPositionInLine" : 54
+      },
+      "32" : {
+        "Text" : "\n        NOTE: Profile id \"fast\" comes from comments in PR #771.\n        The name is meant to be memorable, but is highly non-specific. Users are forewarned that\n        behavior of this profile, or the identifier itself, may be heavily modified in the future.\n        Hardcode usage in non-VCS controlled scripts at your own risk.\n        ",
+        "Line" : 813,
+        "CharPositionInLine" : 12
+      },
+      "33" : {
+        "Text" : " Collection of properties for use during package testing ",
+        "Line" : 827,
+        "CharPositionInLine" : 73
+      },
+      "CommentCount" : 34
+    },
+    "protected/gatk-package-distribution/pom.xml" : {
+      "ObjectId" : "7030602a0ca27ece276abfc6f86a1e60089bd594",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Package everything in org.broadinstitute.gatk ",
+        "Line" : 23,
+        "CharPositionInLine" : 63
+      },
+      "1" : {
+        "Text" : " slf4j bindings must only be at the package level: http://www.slf4j.org/manual.html ",
+        "Line" : 44,
+        "CharPositionInLine" : 100
+      },
+      "2" : {
+        "Text" : " Tribble codecs & the variant package (VCF, BCF, and VariantContext) ",
+        "Line" : 49,
+        "CharPositionInLine" : 85
+      },
+      "3" : {
+        "Text" : " Workaround - depend on the logger impl required by JEXL ",
+        "Line" : 54,
+        "CharPositionInLine" : 73
+      },
+      "4" : {
+        "Text" : " Workaround - depend on commons-httpclient to prevent shade from eliminating IgnoreCookiesSpec class ",
+        "Line" : 59,
+        "CharPositionInLine" : 117
+      },
+      "5" : {
+        "Text" : " Used in ONE unit test (grr) ",
+        "Line" : 64,
+        "CharPositionInLine" : 45
+      },
+      "6" : {
+        "Text" : "\n        Some cofoja annotations (ex: PreconditionError) are ONLY in used tests.\n        They are not picked up by shade, not required during normal runs, but are important for tests to avoid\n        the cryptic ArrayStoreExceptions. See also: http://bugs.java.com/view_bug.do?bug_id=7183985\n        If added as scope test, they are not included during runtime compilation.\n        So, as a workaround, could configure shade to just include the classes, but our\n        standard operating procedure so far has been to include classes as full artifacts.\n        ",
+        "Line" : 76,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : " Required for binary-dist assembly, excluded by shade ",
+        "Line" : 81,
+        "CharPositionInLine" : 70
+      },
+      "8" : {
+        "Text" : " Test dependencies to run for for serial tests ",
+        "Line" : 90,
+        "CharPositionInLine" : 63
+      },
+      "9" : {
+        "Text" : " Transitive dependencies for the serial test artifacts above ",
+        "Line" : 106,
+        "CharPositionInLine" : 77
+      },
+      "CommentCount" : 10
+    },
+    "protected/gatk-queue-extensions-distribution/pom.xml" : {
+      "ObjectId" : "f18441135edce8d29c68108294bc7c1ebfdbd43b",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n        Extensions generator dependency only applies to the exec:exec,\n        not the artifact, but don't know another way to include\n        the artifact *only* in the <classpath/> of exec.\n        See https://jira.codehaus.org/browse/MEXEC-111\n\n        Perhaps extensions-generator should be wrapped in a maven plugin?\n        ",
+        "Line" : 55,
+        "CharPositionInLine" : 12
+      },
+      "1" : {
+        "Text" : "\n        NOTE: Because exec-maven-plugin is used, this aggregator dependency\n        will cause mvn compile to not work. Use mvn test-compile for now.\n\n        See:\n          http://stackoverflow.com/questions/4786881/why-is-test-jar-dependency-required-for-mvn-compile\n          http://jira.codehaus.org/browse/MEXEC-91\n        ",
+        "Line" : 70,
+        "CharPositionInLine" : 12
+      },
+      "2" : {
+        "Text" : "\n            See note above about exec plugin breaking mvn compile\n            ",
+        "Line" : 91,
+        "CharPositionInLine" : 16
+      },
+      "CommentCount" : 3
+    },
+    "protected/gatk-queue-package-distribution/pom.xml" : {
+      "ObjectId" : "10b6caa9374a5cd11c9da9a492cd77deffdf8cc9",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Queue ",
+        "Line" : 23,
+        "CharPositionInLine" : 23
+      },
+      "1" : {
+        "Text" : " Scala ",
+        "Line" : 39,
+        "CharPositionInLine" : 23
+      },
+      "2" : {
+        "Text" : " Picard ",
+        "Line" : 48,
+        "CharPositionInLine" : 24
+      },
+      "3" : {
+        "Text" : " JavaMail ",
+        "Line" : 53,
+        "CharPositionInLine" : 26
+      },
+      "4" : {
+        "Text" : " JNA, including embedded native libraries ",
+        "Line" : 58,
+        "CharPositionInLine" : 58
+      },
+      "5" : {
+        "Text" : " Contracts for Java ",
+        "Line" : 63,
+        "CharPositionInLine" : 36
+      },
+      "6" : {
+        "Text" : " snpEff ",
+        "Line" : 68,
+        "CharPositionInLine" : 24
+      },
+      "7" : {
+        "Text" : " Workaround - depend on commons-httpclient to prevent shade from eliminating IgnoreCookiesSpec class ",
+        "Line" : 73,
+        "CharPositionInLine" : 117
+      },
+      "8" : {
+        "Text" : " Required for binary-dist assembly, excluded by shade ",
+        "Line" : 78,
+        "CharPositionInLine" : 70
+      },
+      "9" : {
+        "Text" : " Test dependencies to run for for serial tests ",
+        "Line" : 94,
+        "CharPositionInLine" : 63
+      },
+      "10" : {
+        "Text" : " Transitive dependencies for the serial test artifacts above ",
+        "Line" : 103,
+        "CharPositionInLine" : 77
+      },
+      "CommentCount" : 11
+    },
+    "protected/gatk-tools-protected/pom.xml" : {
+      "ObjectId" : "7132c9481883f3c781cabeb86c28d3f0d952efc5",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "protected/pom.xml" : {
+      "ObjectId" : "31a82a7f184bbb47bf93d6e81841128bbcf34570",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " queue optionally enabled as profiles ",
+        "Line" : 19,
+        "CharPositionInLine" : 54
+      },
+      "1" : {
+        "Text" : " Allow queue to be disabled. ",
+        "Line" : 27,
+        "CharPositionInLine" : 45
+      },
+      "CommentCount" : 2
+    },
+    "public/c/libenvironhack/Makefile" : {
+      "ObjectId" : "302ff8e31e70998e80b84964ac7ec95b9856672e",
+      "LastModified" : "2011-07-20T00:11:31Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "public/external-example/pom.xml" : {
+      "ObjectId" : "83e2e9031579708cbc506cb0de0e34a695a3f3ec",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Properties for your assembly ",
+        "Line" : 4,
+        "CharPositionInLine" : 42
+      },
+      "1" : {
+        "Text" : "\n        gatk.basedir property must point to your checkout of GATK/GATK until we can get all the\n        dependencies out of the committed gatk repo and into central.\n        The installed pom for gatk-root looks for this property.\n        Alternatively, one can install all the gatk files into their local ~/.m2/repository repo.\n        http://maven.apache.org/plugins/maven-install-plugin/examples/custom-pom-installation.html\n        ",
+        "Line" : 19,
+        "CharPositionInLine" : 12
+      },
+      "2" : {
+        "Text" : " NOTE: Currently the testing infrastructure for walkers does not support running outside the Broad. ",
+        "Line" : 25,
+        "CharPositionInLine" : 116
+      },
+      "3" : {
+        "Text" : " This flag is used by the package tests to disable re-shading ",
+        "Line" : 30,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : " Copy test resources to your classes directory ",
+        "Line" : 77,
+        "CharPositionInLine" : 67
+      },
+      "5" : {
+        "Text" : " Generate help text ",
+        "Line" : 105,
+        "CharPositionInLine" : 40
+      },
+      "6" : {
+        "Text" : " Required as doclet uses reflection to access classes for documentation, instead of source java",
+        "Line" : 119,
+        "CharPositionInLine" : 131
+      },
+      "7" : {
+        "Text" : " Create packaged jar, containing only your walker and required classes ",
+        "Line" : 135,
+        "CharPositionInLine" : 91
+      },
+      "8" : {
+        "Text" : " Explicitly include classes loaded via reflection from artifacts below ",
+        "Line" : 149,
+        "CharPositionInLine" : 107
+      },
+      "9" : {
+        "Text" : " Stop shade from trying to unzip these indirect dependencies ",
+        "Line" : 164,
+        "CharPositionInLine" : 97
+      },
+      "10" : {
+        "Text" : " Set the main class to the GATK ",
+        "Line" : 172,
+        "CharPositionInLine" : 72
+      },
+      "11" : {
+        "Text" : " Include and append to the existing gatk help text in GATKText.properties ",
+        "Line" : 176,
+        "CharPositionInLine" : 114
+      },
+      "12" : {
+        "Text" : " surefire runs fast, small (aka unit) tests ",
+        "Line" : 186,
+        "CharPositionInLine" : 64
+      },
+      "13" : {
+        "Text" : " See explicit executions below ",
+        "Line" : 192,
+        "CharPositionInLine" : 59
+      },
+      "14" : {
+        "Text" : " Pass various system properties ",
+        "Line" : 195,
+        "CharPositionInLine" : 60
+      },
+      "15" : {
+        "Text" : " Disable maven default execution ",
+        "Line" : 202,
+        "CharPositionInLine" : 61
+      },
+      "16" : {
+        "Text" : " failsafe runs all other tests that may take longer, and may require pre/post test setup and teardown ",
+        "Line" : 225,
+        "CharPositionInLine" : 122
+      },
+      "17" : {
+        "Text" : " See explicit executions below ",
+        "Line" : 231,
+        "CharPositionInLine" : 59
+      },
+      "18" : {
+        "Text" : " Pass various system properties ",
+        "Line" : 234,
+        "CharPositionInLine" : 60
+      },
+      "19" : {
+        "Text" : " run integration tests ",
+        "Line" : 247,
+        "CharPositionInLine" : 55
+      },
+      "20" : {
+        "Text" : " These profiles are used by the GATK build in a multi-module setting. You do NOT need these profiles. ",
+        "Line" : 267,
+        "CharPositionInLine" : 114
+      },
+      "21" : {
+        "Text" : " Optionally do not shade/package jars ",
+        "Line" : 269,
+        "CharPositionInLine" : 54
+      },
+      "22" : {
+        "Text" : "\n        NOTE: Profile id \"fast\" comes from comments in PR #771.\n        The name is meant to be memorable, but is highly non-specific. Users are forewarned that\n        behavior of this profile, or the identifier itself, may be heavily modified in the future.\n        Hardcode usage in non-VCS controlled scripts at your own risk.\n        ",
+        "Line" : 275,
+        "CharPositionInLine" : 12
+      },
+      "23" : {
+        "Text" : " Collection of properties for use during package testing ",
+        "Line" : 288,
+        "CharPositionInLine" : 73
+      },
+      "CommentCount" : 24
+    },
+    "public/gatk-engine/pom.xml" : {
+      "ObjectId" : "ef85715891a1c644e4c9227498e716b7e661b4d9",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "public/gatk-queue-extensions-generator/pom.xml" : {
+      "ObjectId" : "1261cc014ad7201b600bd9efc616eafe09ec4df8",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "public/gatk-queue-extensions-public/pom.xml" : {
+      "ObjectId" : "b3942cced42fdac89f708c364973d87926cb1026",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n        Extensions generator dependency only applies to the exec:exec,\n        not the artifact, but don't know another way to include\n        the artifact *only* in the <classpath/> of exec.\n        See https://jira.codehaus.org/browse/MEXEC-111\n\n        Perhaps extensions-generator should be wrapped in a maven plugin?\n        ",
+        "Line" : 53,
+        "CharPositionInLine" : 12
+      },
+      "1" : {
+        "Text" : "\n        NOTE: Because exec-maven-plugin is used, this aggregator dependency\n        will cause mvn compile to not work. Use mvn test-compile for now.\n\n        See:\n          http://stackoverflow.com/questions/4786881/why-is-test-jar-dependency-required-for-mvn-compile\n          http://jira.codehaus.org/browse/MEXEC-91\n        ",
+        "Line" : 68,
+        "CharPositionInLine" : 12
+      },
+      "2" : {
+        "Text" : "\n            See note above about exec plugin breaking mvn compile\n            ",
+        "Line" : 89,
+        "CharPositionInLine" : 16
+      },
+      "CommentCount" : 3
+    },
+    "public/gatk-queue/pom.xml" : {
+      "ObjectId" : "42a4c2acd7952a1392d8094a3e05541d2937e4df",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "public/gatk-root/pom.xml" : {
+      "ObjectId" : "21acfb4e068af8c3e20a80584f696562e40afeb9",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n    This pom is parent for all gatk poms\n    See also:\n      http://maven.apache.org/pom.html#Inheritance_v\n      http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance_vs_Project_Aggregation\n      http://stackoverflow.com/questions/1992213/maven-parent-pom-vs-modules-pom\n    ",
+        "Line" : 11,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : " Version numbers for picard and htsjdk ",
+        "Line" : 46,
+        "CharPositionInLine" : 55
+      },
+      "2" : {
+        "Text" : " Dependency configuration (versions, etc.) ",
+        "Line" : 51,
+        "CharPositionInLine" : 55
+      },
+      "3" : {
+        "Text" : " The jdk15 classfier seems to throw off the normal dependency resolution,\n                    leading to both 6.8 and 5.0-jdk15 on the classpath, then leading to an old\n                    version testng loading, as seen by the super old TestNG4751Configurator.\n                    ",
+        "Line" : 77,
+        "CharPositionInLine" : 24
+      },
+      "4" : {
+        "Text" : " slf4j bindings must only be at the package level: http://www.slf4j.org/manual.html ",
+        "Line" : 138,
+        "CharPositionInLine" : 104
+      },
+      "5" : {
+        "Text" : "\n            For com.sun.javadoc\n            See also: http://sunnytalkstech.blogspot.in/2011/08/maven-dependency-for-toolsjar-in-jdk7.html\n            ",
+        "Line" : 248,
+        "CharPositionInLine" : 16
+      },
+      "6" : {
+        "Text" : "\n                    TODO: After upgrade to caliper 1.0-beta-1 or later, this may need a revisit.\n                    Possibly other modules may need to exclude *their* old guava versions.\n                     ",
+        "Line" : 290,
+        "CharPositionInLine" : 25
+      },
+      "7" : {
+        "Text" : " Dependencies for custom testng reports ",
+        "Line" : 306,
+        "CharPositionInLine" : 56
+      },
+      "8" : {
+        "Text" : " Plugin configuration ",
+        "Line" : 320,
+        "CharPositionInLine" : 38
+      },
+      "9" : {
+        "Text" : "\n                surefire/failsafe configurations are global, even across poms\n                not directly aggregated, for example package-tests/pom.xml\n                ",
+        "Line" : 396,
+        "CharPositionInLine" : 20
+      },
+      "10" : {
+        "Text" : " See explicit executions below ",
+        "Line" : 403,
+        "CharPositionInLine" : 63
+      },
+      "11" : {
+        "Text" : " run all non integration tests ",
+        "Line" : 433,
+        "CharPositionInLine" : 67
+      },
+      "12" : {
+        "Text" : " TODO: Re-enable unit tests by default? ",
+        "Line" : 439,
+        "CharPositionInLine" : 80
+      },
+      "13" : {
+        "Text" : " See explicit executions below ",
+        "Line" : 458,
+        "CharPositionInLine" : 63
+      },
+      "14" : {
+        "Text" : " run integration tests ",
+        "Line" : 489,
+        "CharPositionInLine" : 59
+      },
+      "15" : {
+        "Text" : " TODO: Re-enable integration tests by default? ",
+        "Line" : 491,
+        "CharPositionInLine" : 87
+      },
+      "16" : {
+        "Text" : " run queue dry run tests ",
+        "Line" : 509,
+        "CharPositionInLine" : 61
+      },
+      "17" : {
+        "Text" : " TODO: Re-enable queue tests by default? ",
+        "Line" : 511,
+        "CharPositionInLine" : 81
+      },
+      "18" : {
+        "Text" : " run large scale tests ",
+        "Line" : 529,
+        "CharPositionInLine" : 59
+      },
+      "19" : {
+        "Text" : " run knowledge base tests ",
+        "Line" : 548,
+        "CharPositionInLine" : 62
+      },
+      "20" : {
+        "Text" : " TODO: Remove temporary symbolic link creation, after fixing test paths to use local resources. ",
+        "Line" : 588,
+        "CharPositionInLine" : 120
+      },
+      "21" : {
+        "Text" : " Invoke plugins that always run ",
+        "Line" : 612,
+        "CharPositionInLine" : 48
+      },
+      "22" : {
+        "Text" : " TODO: gitdescribe plugin doesn't allow null prefixes ",
+        "Line" : 645,
+        "CharPositionInLine" : 78
+      },
+      "23" : {
+        "Text" : "\n                    The pom for com.pyx4j:maven-junction-plugin:1.0.3 points to\n                    sysinternals:junction:1.04:exe. This file is only hosted in the repo\n                    http://www.pyx4me.com/maven2, and the website keeps going down.\n\n                    This file is only used on windows, but the maven-plugin devs never finished\n                    implementing *plugin* dependency exclusions: http://jira.codehaus.org/browse/MNG-2163\n\n                    Until someone updates or replaces this 2007 plugin with a new plugin using Java 7's Files class,\n                    for now we copy over the artifact just in case the website is unavailable.\n\n                    See also: http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html#createSymbolicLink(java.nio.file.Path,%20java.nio.file.Path,%20java.nio.file.attribute.FileAttribute...)\n                    ",
+        "Line" : 702,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 24
+    },
+    "public/gatk-tools-public/pom.xml" : {
+      "ObjectId" : "5ccb42717356478dd854ee7ffd4e3b26f15caf82",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "public/gatk-utils/pom.xml" : {
+      "ObjectId" : "8653cb4ee502131ed7416a3415f571593c5c6012",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " slf4j bindings must only be at the package level: http://www.slf4j.org/manual.html ",
+        "Line" : 44,
+        "CharPositionInLine" : 100
+      },
+      "CommentCount" : 1
+    },
+    "public/gsalib/pom.xml" : {
+      "ObjectId" : "0e14d3bfc04ecbc075609a29b7b6d2704121205e",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n                            Looking at the assembly plugin 2.4(.1) source code, <updateOnly>true</updateOnly>\n                            is equivalent to plexus_archiver.setForced(false). Unlike the docs say, this\n                            does work even if the file does not exist.\n                            Also, why..? \"archiver.setUseJvmChmod( configSource.isUpdateOnly() );\"\n                            Appears to only affect the plexus dir/DirectoryArchiver.\n                            ",
+        "Line" : 41,
+        "CharPositionInLine" : 32
+      },
+      "CommentCount" : 1
+    },
+    "public/package-tests/pom.xml" : {
+      "ObjectId" : "d38637b124696f018215253a630a073c091b3b78",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n    Run during package testing by the maven invoker plugin in the gatk-aggregator /pom.xml\n    ",
+        "Line" : 7,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : " Dependency configuration (versions, etc.) ",
+        "Line" : 29,
+        "CharPositionInLine" : 55
+      },
+      "2" : {
+        "Text" : "\n        gatk-utils test-jar added for BaseTest\n\n        TODO: Currently the <exclusion> isn't working 100%, so switched to using additionalClasspathElements\n\n        TODO: Uncomment below to use the explicitly bad \"exclude *\" to really test correct packaging,\n        TODO: until we can separate BaseTest and other utilities into their own gatk-test-utils artifact.\n        TODO: We only want the classes in the packaged jars tested, not the classes within the dependency jars too.\n        See also:\n          http://stackoverflow.com/questions/547805/how-to-exclude-all-transitive-dependencies-of-a-maven-dependency\n          http://maven.apache.org/plugins/maven-jar-plugin/usage.html#The_preferred_way\n        <dependency>\n            <groupId>${project.groupId}</groupId>\n            <artifactId>gatk-utils</artifactId>\n            <version>${project.version}</version>\n            <type>test-jar</type>\n            <scope>test</scope>\n\n            <exclusions>\n                <exclusion>\n                    <groupId>*</groupId>\n                    <artifactId>*</artifactId>\n                </exclusion>\n            </exclusions>\n\n        </dependency>\n        ",
+        "Line" : 63,
+        "CharPositionInLine" : 12
+      },
+      "3" : {
+        "Text" : "\n        NOTE: Any test dependencies used by a packaged artifact must be ALSO added here.\n        For example, gatk-tools-protected uses caliper, so caliper should also be added here.\n        TestNG and its reporters are inherited from the global gatk-root/pom.xml as dependencies.\n        ",
+        "Line" : 69,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : " Plugin configuration ",
+        "Line" : 92,
+        "CharPositionInLine" : 46
+      },
+      "5" : {
+        "Text" : " TODO: Using additionalClasspathElement while debugging exclusion issue above ",
+        "Line" : 102,
+        "CharPositionInLine" : 114
+      },
+      "6" : {
+        "Text" : " Plugin configuration ",
+        "Line" : 135,
+        "CharPositionInLine" : 46
+      },
+      "7" : {
+        "Text" : " TODO: Using additionalClasspathElement while debugging exclusion issue above ",
+        "Line" : 145,
+        "CharPositionInLine" : 114
+      },
+      "8" : {
+        "Text" : " run integration tests ",
+        "Line" : 158,
+        "CharPositionInLine" : 63
+      },
+      "9" : {
+        "Text" : " run queue dry run tests ",
+        "Line" : 168,
+        "CharPositionInLine" : 65
+      },
+      "10" : {
+        "Text" : " run large scale tests ",
+        "Line" : 178,
+        "CharPositionInLine" : 63
+      },
+      "11" : {
+        "Text" : " run knowledge base tests ",
+        "Line" : 188,
+        "CharPositionInLine" : 66
+      },
+      "CommentCount" : 12
+    },
+    "public/pom.xml" : {
+      "ObjectId" : "e42558e6c08de9e4eef8d02df2026f7e5edf0ca9",
+      "LastModified" : "2017-11-09T07:10:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " queue optionally enabled as profiles ",
+        "Line" : 23,
+        "CharPositionInLine" : 54
+      },
+      "1" : {
+        "Text" : " Allow queue to be disabled. ",
+        "Line" : 31,
+        "CharPositionInLine" : 45
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 1,
+    "MAVEN" : 17
+  },
+  "ElapsedTime" : 4855
+}

@@ -1,0 +1,615 @@
+{
+  "Repository" : "73380926",
+  "Revision" : "HEAD",
+  "ObjectId" : "b5fb6b4a3f5b61f18b4233baa421fb7022bce6da",
+  "CommitTime" : "2019-04-16T18:38:13Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "074e4b8f6a4063c0298b23f41e0b2e06144216e0",
+      "LastModified" : "2019-03-21T16:15:55Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# amazee.io lagoon Makefile The main purpose of this Makefile is to provide easier handling of\n\n# building images and running tests It understands the relation of the different images (like\n\n# nginx-drupal is based on nginx) and builds them in the correct order Also it knows which\n\n# services in docker-compose.yml are depending on which base images or maybe even other service\n\n# images\n\n#\n\n# The main commands are:\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make build/<imagename>\n\n# Builds an individual image and all of it's needed parents. Run `make build-list` to get a list of\n\n# all buildable images. Make will keep track of each build image with creating an empty file with\n\n# the name of the image in the folder `build`. If you want to force a rebuild of the image, either\n\n# remove that file or run `make clean`\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make build\n\n# builds all images in the correct order. Uses existing images for layer caching, define via `TAG`\n\n# which branch should be used\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# make tests/<testname>\n\n# Runs individual tests. In a nutshell it does:\n\n# 1. Builds all needed images for the test\n\n# 2. Starts needed Lagoon services for the test via docker-compose up\n\n# 3. Executes the test\n\n#\n\n# Run `make tests-list` to see a list of all tests.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# make tests\n\n# Runs all tests together. Can be executed with `-j2` for two parallel running tests\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# make up\n\n# Starts all Lagoon Services at once, usefull for local development or just to start all of them.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# make logs\n\n# Shows logs of Lagoon Services (aka docker-compose logs -f)\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# make minishift\n\n# Some tests need a full openshift running in order to test deployments and such. This can be\n\n# started via openshift. It will:\n\n# 1. Download minishift cli\n\n# 2. Start an OpenShift Cluster\n\n# 3. Configure OpenShift cluster to our needs\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# make minishift/stop\n\n# Removes an OpenShift Cluster\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# make minishift/clean\n\n# Removes all openshift related things: OpenShift itself and the minishift cli\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#######\n\n####### Default Variables\n\n#######\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Parameter for all `docker build` commands, can be overwritten by passing `DOCKER_BUILD_PARAMS=` via the `-e` option\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Version and Hash of the OpenShift cli that should be downloaded\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# On CI systems like jenkins we need a way to run multiple testings at the same time. We expect the\n\n# CI systems to define an Environment variable CI_BUILD_TAG which uniquely identifies each build.\n\n# If it's not set we assume that we are running local and just call it lagoon.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Name of the Branch we are currently in\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#######\n\n####### Functions\n\n#######\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Builds a docker image. Expects as arguments: name of the image, location of Dockerfile, path of\n\n# Docker Build Context\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Build a Python docker image. Expects as arguments:\n\n# 1. Python version\n\n# 2. Location of Dockerfile\n\n# 3. Path of Docker Build context\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Build a PHP docker image. Expects as arguments:\n\n# 1. PHP version\n\n# 2. PHP version and type of image (ie 7.0-fpm, 7.0-cli etc)\n\n# 3. Location of Dockerfile\n\n# 4. Path of Docker Build Context\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Tags an image with the `amazeeio` repository and pushes it\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Tags an image with the `amazeeiolagoon` repository and pushes it\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#######\n\n####### Base Images\n\n#######\n\n####### Base Images are the base for all other images and are also published for clients to use during local development\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# base-images is a variable that will be constantly filled with all base image there are\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# List with all images prefixed with `build/`. Which are the commands to actually build images\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Define the make recepie for all base images\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#\tGenerate variable image without the prefix `build/`\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Call the docker build\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Touch an empty file which make itself is using to understand when the image has been last build\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Define dependencies of Base Images so that make can build them in the right order. There are two\n\n# types of Dependencies\n\n# 1. Parent Images, like `build/centos7-node6` is based on `build/centos7` and need to be rebuild\n\n#    if the parent has been built\n\n# 2. Dockerfiles of the Images itself, will cause make to rebuild the images if something has\n\n#    changed on the Dockerfiles\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "#######\n\n####### Python Images\n\n#######\n\n####### Python Images are alpine linux based Python images.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Define the make recepie for all base images\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# this fills variables only if $type is existing, if not they are just empty\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Call the docker build\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Touch an empty file which make itself is using to understand when the image has been last build\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#######\n\n####### PHP Images\n\n#######\n\n####### PHP Images are alpine linux based PHP images.\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Define the make recepie for all base images\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# this fills variables only if $type is existing, if not they are just empty\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# if there is a subtype, add it. If not, just keep what we already had\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Call the docker build\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Touch an empty file which make itself is using to understand when the image has been last build\n",
+        "Line" : 260,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#######\n\n####### Solr Images\n\n#######\n\n####### Solr Images are alpine linux based Solr images.\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Define the make recepie for all base images\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# this fills variables only if $type is existing, if not they are just empty\n",
+        "Line" : 300,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Call the docker build\n",
+        "Line" : 302,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Touch an empty file which make itself is using to understand when the image has been last build\n",
+        "Line" : 304,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "#######\n\n####### Node Images\n\n#######\n\n####### Node Images are alpine linux based Node images.\n",
+        "Line" : 317,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Define the make recepie for all base images\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# this fills variables only if $type is existing, if not they are just empty\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Call the docker build\n",
+        "Line" : 341,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Touch an empty file which make itself is using to understand when the image has been last build\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "#######\n\n####### Service Images\n\n#######\n\n####### Services Images are the Docker Images used to run the Lagoon Microservices, these images\n\n####### will be expected by docker-compose to exist.\n",
+        "Line" : 355,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Yarn Workspace Image which builds the Yarn Workspace within a single image. This image will be\n\n# used by all microservices based on Node.js to not build similar node packages again\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Variables of service images we manage and build\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Recepie for all building service-images\n",
+        "Line" : 405,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Dependencies of Service Images\n",
+        "Line" : 419,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Auth SSH needs the context of the root folder, so we have it individually\n",
+        "Line" : 432,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Images for local helpers that exist in another folder than the service images\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# Images for local helpers that exist in another folder than the service images\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Image with ansible test\n",
+        "Line" : 460,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "#######\n\n####### Commands\n\n#######\n\n####### List of commands in our Makefile\n",
+        "Line" : 469,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Builds all Images\n",
+        "Line" : 474,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# Outputs a list of all Images we manage\n",
+        "Line" : 477,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# Define list of all tests\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Run all tests\n",
+        "Line" : 498,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# List of tests existing\n",
+        "Line" : 502,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "#### Definition of tests\n",
+        "Line" : 508,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# Define a list of which Lagoon Services are needed for running any deployment testing\n",
+        "Line" : 510,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# All Tests that use REST endpoints\n",
+        "Line" : 513,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# List of Lagoon Services needed for REST endpoint testing\n",
+        "Line" : 516,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# All tests that use Webhook endpoints\n",
+        "Line" : 529,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# List of Lagoon Services needed for webhook endpoint testing\n",
+        "Line" : 532,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# push command of our base images into minishift\n",
+        "Line" : 557,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# tag and push all images\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# tag and push of each image\n",
+        "Line" : 562,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Publish command to amazeeio docker hub, this should probably only be done during a master deployments\n",
+        "Line" : 583,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# tag and push all images\n",
+        "Line" : 586,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# tag and push of each image\n",
+        "Line" : 591,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "#   Calling docker_publish for image, but remove the prefix '[publish-amazeeio-baseimages]-' first\n",
+        "Line" : 594,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# \tPublish images as :latest\n",
+        "Line" : 596,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# \tPublish images with version tag\n",
+        "Line" : 598,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# tag and push of base image with version\n",
+        "Line" : 602,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "#   Calling docker_publish for image, but remove the prefix '[publish-amazeeio-baseimages-with-versions]-' first\n",
+        "Line" : 605,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "#   The underline is a placeholder for a colon, replace that\n",
+        "Line" : 607,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "#\t\tThese images already use a tag to differentiate between different versions of the service itself (like node:9 and node:10)\n\n#\t\tTherefore they don't have any latest tag\n",
+        "Line" : 609,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "#\t\tWe add the Lagoon Version just as a dash\n",
+        "Line" : 612,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "# Publish command to amazeeio docker hub, this should probably only be done during a master deployments\n",
+        "Line" : 617,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "# tag and push all images\n",
+        "Line" : 620,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# tag and push of each image\n",
+        "Line" : 625,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "#   Calling docker_publish for image, but remove the prefix '[publish-amazeeiolagoon-baseimages]-' first\n",
+        "Line" : 628,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "# \tPublish images with version tag\n",
+        "Line" : 630,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "# tag and push of base image with version\n",
+        "Line" : 634,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "#   Calling docker_publish for image, but remove the prefix '[publish-amazeeiolagoon-baseimages-with-versions]-' first\n",
+        "Line" : 637,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "#   The underline is a placeholder for a colon, replace that\n",
+        "Line" : 639,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "#\t\tWe add the Lagoon Version just as a dash\n",
+        "Line" : 641,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "# Publish command to amazeeio docker hub, this should probably only be done during a master deployments\n",
+        "Line" : 645,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "# tag and push all images\n",
+        "Line" : 647,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "# tag and push of each image\n",
+        "Line" : 652,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "#   Calling docker_publish for image, but remove the prefix '[publish-amazeeiolagoon-serviceimages]-' first\n",
+        "Line" : 655,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "# \tPublish images with version tag\n",
+        "Line" : 657,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "# save all images to s3\n",
+        "Line" : 662,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "# tag and push of each image\n",
+        "Line" : 665,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "#   remove the prefix '[s3-save]-' first\n",
+        "Line" : 668,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "# save all images to s3\n",
+        "Line" : 674,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# tag and push of each image\n",
+        "Line" : 677,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "#   remove the prefix '[s3-load]-' first\n",
+        "Line" : 680,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "# Clean all build touches, which will case make to rebuild the Docker Images (Layer caching is\n\n# still active, so this is a very safe command)\n",
+        "Line" : 685,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# Show Lagoon Service Logs\n",
+        "Line" : 690,
+        "CharPositionInLine" : 0
+      },
+      "107" : {
+        "Text" : "# Start all Lagoon Services\n",
+        "Line" : 694,
+        "CharPositionInLine" : 0
+      },
+      "108" : {
+        "Text" : "# kill all containers containing the name \"lagoon\"\n",
+        "Line" : 703,
+        "CharPositionInLine" : 0
+      },
+      "109" : {
+        "Text" : "# Start Local OpenShift Cluster within a docker machine with a given name, also check if the IP\n\n# that has been assigned to the machine is not the default one and then replace the IP in the yaml files with it\n",
+        "Line" : 710,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "# Configures an openshift to use with Lagoon\n",
+        "Line" : 742,
+        "CharPositionInLine" : 0
+      },
+      "111" : {
+        "Text" : "# Only use the minishift provided oc if we don't have one yet (allows system engineers to use their own oc)\n",
+        "Line" : 745,
+        "CharPositionInLine" : 0
+      },
+      "112" : {
+        "Text" : "# This calles the regular openshift-lagoon-setup first, which configures our minishift like we configure a real openshift for laggon\n\n# It then overwrite the docker-host deploymentconfig and cronjobs to use our own just builded docker-host images\n",
+        "Line" : 773,
+        "CharPositionInLine" : 0
+      },
+      "113" : {
+        "Text" : "# Stop OpenShift Cluster\n",
+        "Line" : 781,
+        "CharPositionInLine" : 0
+      },
+      "114" : {
+        "Text" : "# Stop OpenShift, remove downloaded minishift\n",
+        "Line" : 787,
+        "CharPositionInLine" : 0
+      },
+      "115" : {
+        "Text" : "# Downloads the correct oc cli client based on if we are on OS X or Linux\n",
+        "Line" : 792,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 116
+    },
+    "services/api-db/Makefile" : {
+      "ObjectId" : "0490c03dbd280490f5f8ba7d5eba377054a93db8",
+      "LastModified" : "2018-02-28T16:59:49Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This file exists only for development purposes\n\n#\n\n# Whenever you are working on sql scripts inside the docker-entrypoint-initdb.d\n\n# directory, the watch task will initialize a SQL reload inside the running container\n\n# to propagate changes automatically.\n\n#\n\n# IMPORTANT:\n\n# The mariadb image runs always initdb scripts which were used during the build.\n\n# Without an initial rebuild, your currently changed initdb scripts are out of sync\n\n# with the actual used sql scripts in the docker image.\n\n#\n\n# Changing one sql file after initial load will sync the sql scripts.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "services/api/ocaml-impl/Makefile" : {
+      "ObjectId" : "7131398d21331f5e52d6949e88b758929fe6ffba",
+      "LastModified" : "2017-11-22T21:07:24Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 3
+  },
+  "ElapsedTime" : 2311
+}

@@ -1,0 +1,549 @@
+{
+  "Repository" : "23356404",
+  "Revision" : "HEAD",
+  "ObjectId" : "e71ed9d80e78dd5ee37a83a9be5b996697a90e96",
+  "CommitTime" : "2019-04-09T07:47:42Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "c263b7729b1b4a79903f073b7bb632fb82019391",
+      "LastModified" : "2019-04-07T21:09:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Project options\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create cpp-sort library and configure it\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install targets and files\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Export target so that it can be used in subdirectories\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Build tests if this is the main project\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/DownloadProject.cmake" : {
+      "ObjectId" : "e300f42658a532b948852e6d92e43f1fd7c2374e",
+      "LastModified" : "2018-09-02T13:23:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved MIT License.  See accompanying\n\n# file LICENSE or https://github.com/Crascit/DownloadProject for details.\n\n#\n\n# MODULE:   DownloadProject\n\n#\n\n# PROVIDES:\n\n#   download_project( PROJ projectName\n\n#                    [PREFIX prefixDir]\n\n#                    [DOWNLOAD_DIR downloadDir]\n\n#                    [SOURCE_DIR srcDir]\n\n#                    [BINARY_DIR binDir]\n\n#                    [QUIET]\n\n#                    ...\n\n#   )\n\n#\n\n#       Provides the ability to download and unpack a tarball, zip file, git repository,\n\n#       etc. at configure time (i.e. when the cmake command is run). How the downloaded\n\n#       and unpacked contents are used is up to the caller, but the motivating case is\n\n#       to download source code which can then be included directly in the build with\n\n#       add_subdirectory() after the call to download_project(). Source and build\n\n#       directories are set up with this in mind.\n\n#\n\n#       The PROJ argument is required. The projectName value will be used to construct\n\n#       the following variables upon exit (obviously replace projectName with its actual\n\n#       value):\n\n#\n\n#           projectName_SOURCE_DIR\n\n#           projectName_BINARY_DIR\n\n#\n\n#       The SOURCE_DIR and BINARY_DIR arguments are optional and would not typically\n\n#       need to be provided. They can be specified if you want the downloaded source\n\n#       and build directories to be located in a specific place. The contents of\n\n#       projectName_SOURCE_DIR and projectName_BINARY_DIR will be populated with the\n\n#       locations used whether you provide SOURCE_DIR/BINARY_DIR or not.\n\n#\n\n#       The DOWNLOAD_DIR argument does not normally need to be set. It controls the\n\n#       location of the temporary CMake build used to perform the download.\n\n#\n\n#       The PREFIX argument can be provided to change the base location of the default\n\n#       values of DOWNLOAD_DIR, SOURCE_DIR and BINARY_DIR. If all of those three arguments\n\n#       are provided, then PREFIX will have no effect. The default value for PREFIX is\n\n#       CMAKE_BINARY_DIR.\n\n#\n\n#       The QUIET option can be given if you do not want to show the output associated\n\n#       with downloading the specified project.\n\n#\n\n#       In addition to the above, any other options are passed through unmodified to\n\n#       ExternalProject_Add() to perform the actual download, patch and update steps.\n\n#       The following ExternalProject_Add() options are explicitly prohibited (they\n\n#       are reserved for use by the download_project() command):\n\n#\n\n#           CONFIGURE_COMMAND\n\n#           BUILD_COMMAND\n\n#           INSTALL_COMMAND\n\n#           TEST_COMMAND\n\n#\n\n#       Only those ExternalProject_Add() arguments which relate to downloading, patching\n\n#       and updating of the project sources are intended to be used. Also note that at\n\n#       least one set of download-related arguments are required.\n\n#\n\n#       If using CMake 3.2 or later, the UPDATE_DISCONNECTED option can be used to\n\n#       prevent a check at the remote end for changes every time CMake is run\n\n#       after the first successful download. See the documentation of the ExternalProject\n\n#       module for more information. It is likely you will want to use this option if it\n\n#       is available to you. Note, however, that the ExternalProject implementation contains\n\n#       bugs which result in incorrect handling of the UPDATE_DISCONNECTED option when\n\n#       using the URL download method or when specifying a SOURCE_DIR with no download\n\n#       method. Fixes for these have been created, the last of which is scheduled for\n\n#       inclusion in CMake 3.8.0. Details can be found here:\n\n#\n\n#           https://gitlab.kitware.com/cmake/cmake/commit/bdca68388bd57f8302d3c1d83d691034b7ffa70c\n\n#           https://gitlab.kitware.com/cmake/cmake/issues/16428\n\n#\n\n#       If you experience build errors related to the update step, consider avoiding\n\n#       the use of UPDATE_DISCONNECTED.\n\n#\n\n# EXAMPLE USAGE:\n\n#\n\n#   include(DownloadProject)\n\n#   download_project(PROJ                googletest\n\n#                    GIT_REPOSITORY      https://github.com/google/googletest.git\n\n#                    GIT_TAG             master\n\n#                    UPDATE_DISCONNECTED 1\n\n#                    QUIET\n\n#   )\n\n#\n\n#   add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})\n\n#\n\n#========================================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent the following from being passed through\n",
+        "Line" : 105,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# Hide output if requested\n",
+        "Line" : 115,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Set up where we will put our temporary CMakeLists.txt file and also\n\n# the base point below which the default source and binary dirs will be.\n\n# The prefix must always be an absolute path.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Ensure the caller can know where to find the source and build directories\n",
+        "Line" : 136,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# The way that CLion manages multiple configurations, it causes a copy of\n\n# the CMakeCache.txt to be copied across due to it not expecting there to\n\n# be a project within a project.  This causes the hard-coded paths in the\n\n# cache to be copied and builds to fail.  To mitigate this, we simply\n\n# remove the cache if it exists before we configure the new project.  It\n\n# is safe to do so because it will be re-generated.  Since this is only\n\n# executed at the configure step, it should not cause additional builds or\n\n# downloads.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Create and build a separate CMake project to carry out the download.\n\n# If we've already previously done these steps, they will not cause\n\n# anything to be updated, so extra rebuilds of the project won't occur.\n\n# Make sure to pass through CMAKE_MAKE_PROGRAM in case the main project\n\n# has this set to something not findable on the PATH.\n",
+        "Line" : 156,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 7
+    },
+    "cmake/FindGcov.cmake" : {
+      "ObjectId" : "6ffd6eacb1f370bee3fc734b929aca2bbc2b04b9",
+      "LastModified" : "2018-09-02T13:23:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is part of CMake-codecov.\n\n#\n\n# Copyright (c)\n\n#   2015-2017 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# See the LICENSE file in the package base directory for details\n\n#\n\n# Written by Alexander Haase, alexander.haase@rwth-aachen.de\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# include required Modules\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Search for gcov binary.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Gcov evaluation is dependend on the used compiler. Check gcov support for\n\n# each compiler that is used. If gcov binary was already found for this\n\n# compiler, do not try to find it again.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# Some distributions like OSX (homebrew) ship gcov with the compiler\n\n# version appended as gcov-x. To find this binary we'll build the\n\n# suggested binary name with the compiler version.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 3
+      },
+      "5" : {
+        "Text" : "# Some distributions like Debian ship llvm-cov with the compiler\n\n# version appended as llvm-cov-x.y. To find this binary we'll build\n\n# the suggested binary name with the compiler version.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "# llvm-cov prior version 3.5 seems to be not working with coverage\n\n# evaluation tools, but these versions are compatible with the gcc\n\n# gcov tool.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 3
+      },
+      "7" : {
+        "Text" : "# set additional parameters\n",
+        "Line" : 59,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# Fall back to gcov binary if llvm-cov was not found or is\n\n# incompatible. This is the default on OSX, but may crash on\n\n# recent Linux versions.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Add a new global target for all gcov targets. This target could be used to\n\n# generate the gcov files for the whole project instead of calling <TARGET>-gcov\n\n# for each target.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# This function will add gcov evaluation for target <TNAME>. Only sources of\n\n# this target will be evaluated and no dependencies will be added. It will call\n\n# Gcov on any source file of <TNAME> once and store the gcov file in the same\n\n# directory.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# We don't have to check, if the target has support for coverage, thus this\n\n# will be checked by add_coverage_target in Findcoverage.cmake. Instead we\n\n# have to determine which gcov binary to use.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "# If no gcov binary was found, coverage data can't be evaluated.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "# call gcov\n",
+        "Line" : 141,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# add target for gcov evaluation of <TNAME>\n",
+        "Line" : 152,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# add evaluation target to the global gcov target.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 16
+    },
+    "cmake/FindLcov.cmake" : {
+      "ObjectId" : "beb925ae06efb0de816b8a95c16782dbeffeef4a",
+      "LastModified" : "2018-09-02T13:23:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is part of CMake-codecov.\n\n#\n\n# Copyright (c)\n\n#   2015-2017 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# See the LICENSE file in the package base directory for details\n\n#\n\n# Written by Alexander Haase, alexander.haase@rwth-aachen.de\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# configuration\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Search for Gcov which is used by Lcov.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This function will add lcov evaluation for target <TNAME>. Only sources of\n\n# this target will be evaluated and no dependencies will be added. It will call\n\n# geninfo on any source file of <TNAME> once and store the info file in the same\n\n# directory.\n\n#\n\n# Note: This function is only a wrapper to define this function always, even if\n\n#   coverage is not supported by the compiler or disabled. This function must\n\n#   be defined here, because the module will be exited, if there is no coverage\n\n#   support by the compiler or it is disabled by the user.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# capture initial coverage data\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# capture coverage data after execution\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# include required Modules\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Search for required lcov binaries.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# enable genhtml C++ demangeling, if c++filt is found.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# enable no-external flag for lcov, if available.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# If Lcov was not found, exit module now.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Create directories to be used.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# This function will merge lcov files to a single target file. Additional lcov\n\n# flags may be set with setting LCOV_EXTRA_FLAGS before calling this function.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Remove ${OUTFILE} from ${ARGV} and generate lcov parameters with files.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "# Generate merged file.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# Add a new global target to generate initial coverage reports for all targets.\n\n# This target will be used to generate the global initial info file, which is\n\n# used to gather even empty report data.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# This function will add initial capture of coverage data for target <TNAME>,\n\n# which is needed to get also data for objects, which were not loaded at\n\n# execution time. It will call geninfo for every source file of <TNAME> once and\n\n# store the info file in the same directory.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# We don't have to check, if the target has support for coverage, thus this\n\n# will be checked by add_coverage_target in Findcoverage.cmake. Instead we\n\n# have to determine which gcov binary to use.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "# If no gcov binary was found, coverage data can't be evaluated.\n",
+        "Line" : 152,
+        "CharPositionInLine" : 1
+      },
+      "19" : {
+        "Text" : "# generate empty coverage files\n",
+        "Line" : 165,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Concatenate all files generated by geninfo to a single file per target.\n",
+        "Line" : 178,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "# add geninfo file generation to global lcov-geninfo target\n",
+        "Line" : 184,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# This function will generate the global info file for all targets. It has to be\n\n# called after all other CMake functions in the root CMakeLists.txt file, to get\n\n# a full list of all targets that generate coverage data.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Skip this function (and do not create the following targets), if there are\n\n# no input files.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 1
+      },
+      "24" : {
+        "Text" : "# Add a new target to merge the files of all targets.\n",
+        "Line" : 202,
+        "CharPositionInLine" : 1
+      },
+      "25" : {
+        "Text" : "# Add a new global target to generate coverage reports for all targets. This\n\n# target will be used to generate the global info file.\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# This function will add capture of coverage data for target <TNAME>, which is\n\n# needed to get also data for objects, which were not loaded at execution time.\n\n# It will call geninfo for every source file of <TNAME> once and store the info\n\n# file in the same directory.\n",
+        "Line" : 221,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# We don't have to check, if the target has support for coverage, thus this\n\n# will be checked by add_coverage_target in Findcoverage.cmake. Instead we\n\n# have to determine which gcov binary to use.\n",
+        "Line" : 226,
+        "CharPositionInLine" : 1
+      },
+      "28" : {
+        "Text" : "# If no gcov binary was found, coverage data can't be evaluated.\n",
+        "Line" : 243,
+        "CharPositionInLine" : 1
+      },
+      "29" : {
+        "Text" : "# Generate coverage files. If no .gcda file was generated during\n\n# execution, the empty coverage file will be used instead.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# Concatenate all files generated by geninfo to a single file per target.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 1
+      },
+      "31" : {
+        "Text" : "# add geninfo file generation to global lcov-capture target\n",
+        "Line" : 278,
+        "CharPositionInLine" : 1
+      },
+      "32" : {
+        "Text" : "# Add target for generating html output for this target only.\n",
+        "Line" : 284,
+        "CharPositionInLine" : 1
+      },
+      "33" : {
+        "Text" : "# This function will generate the global info file for all targets. It has to be\n\n# called after all other CMake functions in the root CMakeLists.txt file, to get\n\n# a full list of all targets that generate coverage data.\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Skip this function (and do not create the following targets), if there are\n\n# no input files.\n",
+        "Line" : 301,
+        "CharPositionInLine" : 1
+      },
+      "35" : {
+        "Text" : "# Add a new target to merge the files of all targets.\n",
+        "Line" : 307,
+        "CharPositionInLine" : 1
+      },
+      "36" : {
+        "Text" : "# Add a new global target for all lcov targets. This target could be used to\n\n# generate the lcov html output for the whole project instead of calling\n\n# <TARGET>-geninfo and <TARGET>-genhtml for each target. It will also be\n\n# used to generate a html site for all project data together instead of one\n\n# for each target.\n",
+        "Line" : 312,
+        "CharPositionInLine" : 1
+      },
+      "37" : {
+        "Text" : "# Add a new global target to generate the lcov html report for the whole project\n\n# instead of calling <TARGET>-genhtml for each target (to create an own report\n\n# for each target). Instead of the lcov target it does not require geninfo for\n\n# all targets, so you have to call <TARGET>-geninfo to generate the info files\n\n# the targets you'd like to have in your report or lcov-geninfo for generating\n\n# info files for all targets before calling lcov-genhtml.\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 38
+    },
+    "cmake/Findcodecov.cmake" : {
+      "ObjectId" : "fa135fa8fd2d8916f170dbd68eb5a578f576372e",
+      "LastModified" : "2018-09-02T13:23:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is part of CMake-codecov.\n\n#\n\n# Copyright (c)\n\n#   2015-2017 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# See the LICENSE file in the package base directory for details\n\n#\n\n# Written by Alexander Haase, alexander.haase@rwth-aachen.de\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add an option to choose, if coverage should be enabled or not. If enabled\n\n# marked targets will be build with coverage support and appropriate targets\n\n# will be added. If disabled coverage will be ignored for *ALL* targets.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gcc and clang\n",
+        "Line" : 18,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# gcc and clang fallback\n",
+        "Line" : 21,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# Add coverage support for target ${TNAME} and register target for coverage\n\n# evaluation. If coverage is disabled or not supported, this function will\n\n# simply do nothing.\n\n#\n\n# Note: This function is only a wrapper to define this function always, even if\n\n#   coverage is not supported by the compiler or disabled. This function must\n\n#   be defined here, because the module will be exited, if there is no coverage\n\n#   support by the compiler or it is disabled by the user.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# only add coverage for target, if coverage is support and enabled.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# Add global target to gather coverage information after all targets have been\n\n# added. Other evaluation functions could be added here, after checks for the\n\n# specific module have been passed.\n\n#\n\n# Note: This function is only a wrapper to define this function always, even if\n\n#   coverage is not supported by the compiler or disabled. This function must\n\n#   be defined here, because the module will be exited, if there is no coverage\n\n#   support by the compiler or it is disabled by the user.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# add lcov evaluation\n",
+        "Line" : 53,
+        "CharPositionInLine" : 1
+      },
+      "8" : {
+        "Text" : "# Exit this module, if coverage is disabled. add_coverage is defined before this\n\n# return, so this module can be exited now safely without breaking any build-\n\n# scripts.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Find the reuired flags foreach language.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Coverage flags are not dependend on language, but the used compiler. So\n\n# instead of searching flags foreach language, search flags foreach compiler\n\n# used.\n",
+        "Line" : 77,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# CheckFortranCompilerFlag was introduced in CMake 3.x. To be\n\n# compatible with older Cmake versions, we will check if this\n\n# module is present before we use it. Otherwise we will define\n\n# Fortran coverage support as not available.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Helper function to get the language of a source file.\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Helper function to get the relative path of the source file destination path.\n\n# This path is needed by FindGcov and FindLcov cmake files to locate the\n\n# captured data.\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# If expression was found, SOURCEFILE is a generator-expression for an\n\n# object library. Currently we found no way to call this function automatic\n\n# for the referenced target, so it must be called in the directoryso of the\n\n# object library definition.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# get the right path for file\n",
+        "Line" : 174,
+        "CharPositionInLine" : 1
+      },
+      "16" : {
+        "Text" : "# Add coverage support for target ${TNAME} and register target for coverage\n\n# evaluation.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Check if all sources for target use the same compiler. If a target uses\n\n# e.g. C and Fortran mixed and uses different compilers (e.g. clang and\n\n# gfortran) this can trigger huge problems, because different compilers may\n\n# use different implementations for code coverage.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "# If expression was found, FILE is a generator-expression for an object\n\n# library. Object libraries will be ignored.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# A warning has been printed before, so just return if flags for this\n\n# compiler aren't available.\n",
+        "Line" : 224,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# enable coverage for target\n",
+        "Line" : 230,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "# Add gcov files generated by compiler to clean target.\n",
+        "Line" : 237,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# Include modules for parsing the collected data and output it in a readable\n\n# format (like gcov and lcov).\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "test_package/CMakeLists.txt" : {
+      "ObjectId" : "eec49a24da4721be14be004e7609f497b57d4799",
+      "LastModified" : "2018-09-02T13:23:55Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "testsuite/CMakeLists.txt" : {
+      "ObjectId" : "1c093f36591f9c8980c8e914d66681e0df50ef0b",
+      "LastModified" : "2019-04-07T21:09:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Download and configure Catch2 for the tests\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define test files\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make one executable for the whole testsuite\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Somewhat speed up Catch2 compile times\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# General settings, mostly warnings\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The warning when initializing an std::array is just too much of a bother\n",
+        "Line" : 159,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# Settings depending on debug/release mode\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Use lld or the gold linker if possible\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Optionally enable sanitizers\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Set flags specific to coverage builds\n",
+        "Line" : 194,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 10
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 7
+  },
+  "ElapsedTime" : 687
+}

@@ -1,0 +1,53 @@
+{
+  "Repository" : "25025145",
+  "Revision" : "HEAD",
+  "ObjectId" : "55079fe20d60ea50f20b98c42c8edd941c0d3cf6",
+  "CommitTime" : "2019-04-03T14:55:22Z",
+  "Files" : {
+    "build.xml" : {
+      "ObjectId" : "08fb2678a8706617eca1ce2354f12bc071b1adaf",
+      "LastModified" : "2017-02-21T11:13:36Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " xmlns:antelope=\"antlib:ise.antelope.tasks\"",
+        "Line" : 4,
+        "CharPositionInLine" : 116
+      },
+      "1" : {
+        "Text" : " <import file=\"../build-common-portlet.xml\" />\n\n <property name=\"native.lang.dir\" value=\"docroot/WEB-INF/src/content/\" /> ",
+        "Line" : 9,
+        "CharPositionInLine" : 78
+      },
+      "2" : {
+        "Text" : "property name=\"lang.dir\" value=\"docroot/WEB-INF/classes/content/\" /",
+        "Line" : 10,
+        "CharPositionInLine" : 76
+      },
+      "3" : {
+        "Text" : " <property name=\"lang.dir\" value=\"docroot/WEB-INF/src/content/\" />",
+        "Line" : 11,
+        "CharPositionInLine" : 75
+      },
+      "4" : {
+        "Text" : "         \n <target name=\"compile\" depends=\"clean\">\n  <antcall target=\"build-common-plugin.compile\" /> ",
+        "Line" : 15,
+        "CharPositionInLine" : 55
+      },
+      "5" : {
+        "Text" : "antcall target=\"build-portlet-language-files\" /",
+        "Line" : 16,
+        "CharPositionInLine" : 57
+      },
+      "6" : {
+        "Text" : " </target>\n\n <target name=\"build-portlet-language-files\">\n\n    <for param=\"lang.native.file\">\n        <path>\n                <fileset dir=\"${native.lang.dir}\" includes=\"**/Language*.properties\" />\n        </path>\n        <sequential>\n                <basename property=\"lang.native.file.basename\" file=\"@{lang.native.file}\"/>\n                <loadfile property=\"native.file.contents\" srcfile=\"@{lang.native.file}\"/>  \n                <antelope:grep in=\"${native.file.contents}\" regex=\"javax\\.portlet\\.title\\.(.*)=(.*)\" group=\"1\" property=\"portlet.names\" allmatches=\"yes\"\n                separator=\"${line.separator}\"/>\n                \n                <if>\n                 <isset property=\"portlet.names\"/>\n                 <then>\n                <for list=\"${portlet.names}\" param=\"portlet.name\" delimiter=\"${line.separator}\" >\n                  <sequential>\n                        \n                        <antelope:stringutil property=\"portlet.name.lower\" string=\"@{portlet.name}\">\n                            <antelope:lowercase/>\n                                <antelope:trim/>\n                        </antelope:stringutil>\n                        \n                        <mkdir dir=\"${lang.dir}${portlet.name.lower}\"/>\n\n                        <copy tofile=\"${lang.dir}${portlet.name.lower}/${lang.native.file.basename}\" file=\"@{lang.native.file}\" >\n                                <filterchain>\n                                        <striplinecomments>\n                                          <comment value=\"#\"/>\n                                        </striplinecomments>\n                            <linecontainsregexp negate=\"true\">\n                                <regexp pattern=\"javax\\.portlet\\.title\\.(.*)=(.*)\"/>\n                            </linecontainsregexp>\n                            <linecontainsregexp negate=\"true\">\n                                <regexp pattern=\"javax\\.portlet\\.long-title\\.(.*)=(.*)\"/>\n                            </linecontainsregexp>\n                            <linecontainsregexp negate=\"true\">\n                                <regexp pattern=\"javax\\.portlet\\.description\\.(.*)=(.*)\"/>\n                            </linecontainsregexp>\n                        </filterchain>\n                        </copy>\n                        \n                        <antelope:grep in=\"${native.file.contents}\" regex=\"javax\\.portlet\\.title\\.@{portlet.name}=(.*)\" group=\"1\" property=\"portlet.title\" />\n                        <antelope:grep in=\"${native.file.contents}\" regex=\"javax\\.portlet\\.long-title\\.@{portlet.name}=(.*)\" group=\"1\" property=\"portlet.long-title\" />\n                        <antelope:grep in=\"${native.file.contents}\" regex=\"javax\\.portlet\\.description\\.@{portlet.name}=(.*)\" group=\"1\" property=\"portlet.description\" />\n                        \n                        <antelope:stringutil property=\"portlet.title.trim\" string=\"${portlet.title}\">\n                                <antelope:trim/>\n                        </antelope:stringutil>\n                        \n                        <if>\n                         <isset property=\"portlet.long-title\"/>\n                         <then>\n                                <antelope:stringutil property=\"portlet.long-title.trim\" string=\"${portlet.long-title}\">\n                                        <antelope:trim/>\n                                </antelope:stringutil>\n                         </then>\n                         <else>\n                                <var name=\"portlet.long-title.trim\" value=\"${portlet.title.trim}\" />\n                         </else>\n                         </if>\n                        \n                        <if>\n                         <isset property=\"portlet.description\"/>\n                         <then>\n                                <antelope:stringutil property=\"portlet.description.trim\" string=\"${portlet.description}\">\n                                        <antelope:trim/>\n                                </antelope:stringutil>\n                         </then>\n                         <else>\n                                <var name=\"portlet.description.trim\" value=\"${portlet.title.trim}\" />\n                         </else>\n                         </if>\n                        \n                    <propertyfile file=\"${lang.dir}${portlet.name.lower}/${lang.native.file.basename}\"\n                       comment=\"Generated from ${lang.native.file.basename}\">\n                        <entry key=\"javax.portlet.title\" value=\"${portlet.title.trim}\" />\n                                <entry key=\"javax.portlet.long-title\" value=\"${portlet.long-title.trim}\" />\n                        <entry key=\"javax.portlet.description\" value=\"${portlet.description.trim}\" />\n                    </propertyfile>\n                        \n                        <var name=\"portlet.name.lower\" unset=\"true\"/> \n                        <var name=\"portlet.title\" unset=\"true\"/>  \n                        <var name=\"portlet.long-title\" unset=\"true\"/>   \n                        <var name=\"portlet.description\" unset=\"true\"/>   \n                        <var name=\"portlet.title.trim\" unset=\"true\"/>  \n                        <var name=\"portlet.long-title.trim\" unset=\"true\"/>   \n                        <var name=\"portlet.description.trim\" unset=\"true\"/>   \n                  </sequential>\n                </for>\n                 </then>\n                </if>\n                \n                <var name=\"lang.native.file.basename\" unset=\"true\"/> \n                <var name=\"lang.code\" unset=\"true\"/>  \n                <var name=\"native.file.contents\" unset=\"true\"/>   \n                <var name=\"portlet.names\" unset=\"true\"/>    \n        </sequential>\n    </for>\n </target>",
+        "Line" : 118,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 7
+    }
+  },
+  "FileTypes" : {
+    "ANT" : 1
+  },
+  "ElapsedTime" : 1961
+}

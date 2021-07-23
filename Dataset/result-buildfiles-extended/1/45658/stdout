@@ -1,0 +1,2117 @@
+{
+  "Repository" : "45658",
+  "Revision" : "HEAD",
+  "ObjectId" : "9f064b7ce49f550b7a1faba9567491db17bd5cec",
+  "CommitTime" : "2019-04-18T22:22:38Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "50cc00427017d24860ce5ca992b923e9e904699b",
+      "LastModified" : "2019-04-01T22:28:37Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# <<<< DEV ONLY\n\n#\n\n# Hue Build Process Overview\n\n# =======================================\n\n# This build process handles different types of builds:\n\n#\n\n#   - The production release build, the main task of which is to install\n\n#     Desktop in the local system. The main build products are:\n\n#\n\n#     * build/env \t\t- The virtual environment, where Desktop core\n\n#     \t\t\t\t  and various apps install into.\n\n#\n\n#   - The development build, which includes test and debugging tools. It\n\n#     generates the production release, which boils down to a tarball that is\n\n#     downloaded and installed. Additional build products include:\n\n#\n\n#     * build/release/prod \t- The production tarball.\n\n#     * build/docs \t\t- General Desktop and SDK docs.\n\n#\n\n# We achieve this by selecting the parts to be distributed, and by stripping\n\n# the Makefile's. Lines enclosed by the \"DEV ONLY\" marks are stripped for the\n\n# general release. Targets are split/expanded using multiple rules and\n\n# double-colon rules. The idea is to use almost identical build logic for the\n\n# different flavours.\n\n#\n\n# Logic Flow\n\n# ==========\n\n# Here we summarize the flow of the build logic. Lines represent dependency.\n\n#\n\n#                  virtual-bootstrap.py\n\n#                            |\n\n#                  virtual-env (./env)\n\n#                            |\n\n#                      +----------+\n\n#                      |          |\n\n#                      |          V\n\n#                      |       desktop  <--- recursive make in /desktop\n\n#                      |          |\n\n#                      |          V\n\n#                      |         apps   <--- recursive make in /apps\n\n#                      |\n\n#                      V\n\n#                 prod tarball   <-- selective copying into /build/release/...\n\n#\n\n#\n\n# Application Build\n\n# =================\n\n# An app typically includes $(ROOT)/Makefile.sdk, which provides the standard\n\n# targets and facilities. ROOT, which points to the Hue installation root, is\n\n# always passed in.\n\n#\n\n# The application may also choose to not use the Hue build facilities. In that\n\n# case, its Makefile still receives $(ROOT), and needs to provide several\n\n# targets as specified in Makefile.sdk.\n\n#\n\n# END DEV ONLY >>>>\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "###################################\n\n# Global variables\n\n###################################\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "###################################\n\n# Error checking\n\n###################################\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "###################################\n\n# Build docs\n\n###################################\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "###################################\n\n# Install parent POM\n\n###################################\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "###################################\n\n# virtual-env\n\n###################################\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "###################################\n\n# Build desktop\n\n###################################\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "###################################\n\n# Build apps\n\n###################################\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "###################################\n\n# Install binary dist\n\n###################################\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Add some variables to Makefile to make sure that our virtualenv\n\n# in the install root is the same one we built from - this also\n\n# disables the check for python-devel packages which are no longer\n\n# needed\n",
+        "Line" : 188,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "###################################\n\n# Internationalization\n\n###################################\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "###################################\n\n# Ace Editor\n\n###################################\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 230,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 234,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "###################################\n\n# JISON Parser Generators\n\n###################################\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "###################################\n\n# Cleanup\n\n###################################\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 283,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 285,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "#\n\n# Note: It is important for clean targets to *ONLY* clean products of the\n\n#       build, and not misc runtime generated files. Don't abuse Makefile.\n\n#\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Remove the other directories in build/\n",
+        "Line" : 295,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# <<<< DEV ONLY\n\n###############################################\n\n# Misc (some used by automated test scripts)\n\n###############################################\n",
+        "Line" : 305,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 328,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 33
+    },
+    "apps/Makefile" : {
+      "ObjectId" : "d6ca0411606ce956785d37eb3c10c30d74e89540",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Application installation\n\n# ========================\n\n# The apps/ directory contains all the opensource apps. The standard build\n\n# process installs all of them. You can use the `app_reg' tool for more\n\n# fine-grain control.\n\n#\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "################################################\n\n# Install all applications into the Desktop environment\n\n################################################\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "################################################\n\n# Distribution\n\n################################################\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# install-source-parts:\n\n#     Installs the non-app parts into the INSTALL_DIR\n\n#\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "################################################\n\n# Clean all the apps\n\n################################################\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "################################################\n\n# Internationalization\n\n################################################\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "apps/about/Makefile" : {
+      "ObjectId" : "46c77731ea7c8c7e12da858cde36873b51f1b6be",
+      "LastModified" : "2012-07-31T18:50:15Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/beeswax/Makefile" : {
+      "ObjectId" : "67cae24027f73b4a44a47003157740a7bd33e674",
+      "LastModified" : "2013-08-14T06:13:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/filebrowser/Makefile" : {
+      "ObjectId" : "e130cbc31ed0255a15a7ec4745163b21ebb4fe64",
+      "LastModified" : "2012-07-31T18:50:15Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/hbase/Makefile" : {
+      "ObjectId" : "4dbe8e8817655e084fe6af225638131286544e4a",
+      "LastModified" : "2013-08-14T06:13:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/help/Makefile" : {
+      "ObjectId" : "507f230f2c8eef22ee10ce118c8204c40de756cd",
+      "LastModified" : "2013-08-14T06:13:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/hive/Makefile" : {
+      "ObjectId" : "c797f73820d12f21ecb9e092a57d1a479190f2ab",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/impala/Makefile" : {
+      "ObjectId" : "ce6ecf38ae90025c3d3f95e8e0d8f016104390ec",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Tell the `bdist' target to exclude our java source.\n\n#\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "apps/jobbrowser/Makefile" : {
+      "ObjectId" : "6be0b0807a0298e4a00498c5781621f2d71e5a3c",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/jobsub/Makefile" : {
+      "ObjectId" : "b6c0fd5442113b8bdf7fd9111761e935247b9341",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/metastore/Makefile" : {
+      "ObjectId" : "178491c27e970b419c1b0095dd2895a997a75653",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/oozie/Makefile" : {
+      "ObjectId" : "75fb396e5eec31b65ccb4e19c7a462e440589818",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/pig/Makefile" : {
+      "ObjectId" : "4b3166831be908805b1b05069fb2ed4194d1da70",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/proxy/Makefile" : {
+      "ObjectId" : "62a8ef1b4a2801a962a71ac36137ac33ab51096f",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/rdbms/Makefile" : {
+      "ObjectId" : "77e8a44487797d33493c5811004e1c071bcc0547",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/search/Makefile" : {
+      "ObjectId" : "6e4f9911d44886b03ac5c4fc6be7c17f7ddd5d44",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/security/Makefile" : {
+      "ObjectId" : "80ba41f32b94ed451512ff816ea2f27695994fb4",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/spark/Makefile" : {
+      "ObjectId" : "8d88afab3c0826733059d903657e5b03de81c3fb",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/sqoop/Makefile" : {
+      "ObjectId" : "5366a63b977794ddb2261fa77c84b06da063dc8a",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/useradmin/Makefile" : {
+      "ObjectId" : "f0558e30fa3f68c01c7c4816c3c665bf96e74d70",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "apps/zookeeper/Makefile" : {
+      "ObjectId" : "fb0e6f6b005552232f35f5c5963597b206035e27",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/Makefile" : {
+      "ObjectId" : "063e2bc746f774a8700011d4ea7bffdbba69aeb6",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n\n# <<<< DEV ONLY\n\n#\n\n# This Makefile essentially lists the applications, and delegates build targets\n\n# through to them.\n\n#\n\n# The interesting bit is done by the recursive_app_make_target macro (see below).\n\n# In essence, the important targets are:\n\n#\n\n#   install-binary-apps\n\n#      installs built applications into the install dir, without\n\n#      installing them into a virtual environment.\n\n#\n\n#   env-install\n\n#      installs all of the applications into the virtual environment\n\n#\n\n#   clean\n\n#      cleans up\n\n#\n\n# END DEV ONLY >>>>\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###################################\n\n# Configuration\n\n###################################\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Template ini to generate (only if it doesn't exist)\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Pattern rule for HUE config file\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "###################################\n\n# Build apps\n\n###################################\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Targets that simply recurse into all of the applications\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# hue target\n\n#\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# <<<< DEV ONLY\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Make symlink for backward compatibility\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "###################################\n\n# Distribution\n\n###################################\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#\n\n# install-source-parts:\n\n#     Installs the non-app parts (eg makefiles, conf) into\n\n#     the INSTALL_DIR\n\n#\n\n# We should move all of the libs/* into some kind of container\n\n# python app, or into core.\n\n# TODO(todd) deal with these JS dependencies\n\n#\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Remove the application configuration files\n",
+        "Line" : 176,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# <<<< DEV ONLY\n\n###################################\n\n# Internationalization\n\n###################################\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# END DEV ONLY >>>>\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "desktop/core/Makefile" : {
+      "ObjectId" : "edebba1268bc2fefaab3d360da05fe0f85172399",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The default RSYNC_OPT copies unsafe links. We don't want that because\n\n# the symlink targets are always installed (separately). See HUE-565.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# env-install\n\n# \tInstall app into the virtual environment.\n\n#\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/Babel-2.5.1/Makefile" : {
+      "ObjectId" : "eafaeb48d00ba243a4536324fbd7ad21f4655e2a",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/Babel-2.5.1/docs/Makefile" : {
+      "ObjectId" : "c8c4f28a6bce97cc9e959d50ee141b9f97479de2",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/Django-1.11.20/docs/Makefile" : {
+      "ObjectId" : "39f84ec0e3ff693bb0d5fee84569b35a86939d27",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Convert something like \"en_US\" to \"en\", because Sphinx does not recognize\n\n# underscores. Country codes should be passed using a dash, e.g. \"pt-BR\".\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/Django-1.11.20/extras/Makefile" : {
+      "ObjectId" : "66efd0d451960d2022d8795af36cccae7a5c8f83",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/Pygments-1.3.1/Makefile" : {
+      "ObjectId" : "6e81f2eeeebae55056f9da2afb2cb96414ce24c2",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Makefile for Pygments\n\n# ~~~~~~~~~~~~~~~~~~~~~\n\n#\n\n# Combines scripts for common tasks.\n\n#\n\n# :copyright: Copyright 2006-2010 by the Pygments team, see AUTHORS.\n\n# :license: BSD, see LICENSE for details.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/core/ext-py/amqp-2.4.1/docs/Makefile" : {
+      "ObjectId" : "8825377c32ce58c37ebc8689343a757bc115aefc",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/billiard-3.5.0.5/Makefile" : {
+      "ObjectId" : "b685fb29e60742781a4090baec0b0c2d2f95215f",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/boto-2.46.1/docs/Makefile" : {
+      "ObjectId" : "91d9bf278f45dfe36f806ffa12ef44ac827e07ec",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/celery-4.2.1/docs/Makefile" : {
+      "ObjectId" : "3ec9ca41f7891b517f54fe7b3ff6789428a7247c",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/cffi-1.11.5/doc/Makefile" : {
+      "ObjectId" : "285361cd46c7d2ca87d1a505293e5fd713481c84",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/chardet-3.0.4/docs/Makefile" : {
+      "ObjectId" : "0fb18a049bda82988f6945aa2b40b524b8ecbfb6",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/cryptography-2.1.4/docs/Makefile" : {
+      "ObjectId" : "323aeca165ccd9ea8f9429fbb4376845c240b9f9",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/defusedxml-0.5.0/Makefile" : {
+      "ObjectId" : "51c0d82da0e4bd00628d79b465f99bbd4041d2ba",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/django-auth-ldap-1.3.0/docs/Makefile" : {
+      "ObjectId" : "445f0c022e2f7f1a0eb986b9f8acd6ef3531653a",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Minimal makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Put it first so that \"make\" without argument is like \"make help\".\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Catch-all target: route all unknown targets to Sphinx using the new\n\n# \"make mode\" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/django-axes-2.2.0/Makefile" : {
+      "ObjectId" : "6fdf5ed3af7dbbbd5f3c6918ad5219cda3208a02",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# https://github.com/aclark4life/project-makefile\n\n#\n\n# The MIT License (MIT)\n\n#\n\n# Copyright (c) 2016 Alex Clark\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Django\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Git\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Heroku\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Misc\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Node\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Plone\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Python\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Sphinx\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Vagrant\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Django-axes\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "desktop/core/ext-py/django-celery-beat-1.4.0/docs/Makefile" : {
+      "ObjectId" : "d5624b41deb52207ea2e476a07212dbf5a69531e",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/django-extensions-1.8.0/docs/Makefile" : {
+      "ObjectId" : "969e59853a60089d84e3fc09bfeef74c10a026fd",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/django-nose-1.4.5/Makefile" : {
+      "ObjectId" : "90b2ad06d166a8fed96e6fa4d255de1e43fef2b5",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Add [test] section to ~/.pypirc, https://test.pypi.org/legacy/\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/core/ext-py/django-nose-1.4.5/docs/Makefile" : {
+      "ObjectId" : "ad0b4194e5b160c0929b716f247876526d8ab87d",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/django-openid-auth-0.14/Makefile" : {
+      "ObjectId" : "ca855c9b07fad0c7c8b826e55d60647a3bd53fe3",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/django-webpack-loader-0.5.0/Makefile" : {
+      "ObjectId" : "0045f7127095ce23e7b729f9e5cd5dcf6621e3e4",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Project settings\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Virtual environment settings\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/core/ext-py/django_celery_results-1.0.4/docs/Makefile" : {
+      "ObjectId" : "d5624b41deb52207ea2e476a07212dbf5a69531e",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/dnspython-1.15.0/tests/Makefile" : {
+      "ObjectId" : "1524552e0e91e044339e30165b0ba25da5a7cfa3",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (C) 2003-2007, 2009-2011 Nominum, Inc.\n\n#\n\n# Permission to use, copy, modify, and distribute this software and its\n\n# documentation for any purpose with or without fee is hereby granted,\n\n# provided that the above copyright notice and this permission notice\n\n# appear in all copies.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\" AND NOMINUM DISCLAIMS ALL WARRANTIES\n\n# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n\n# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL NOMINUM BE LIABLE FOR\n\n# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n\n# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n\n# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT\n\n# OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# $Id: Makefile,v 1.5 2004/03/19 00:17:27 halley Exp $\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/core/ext-py/docutils-0.14/tools/editors/emacs/tests/Makefile" : {
+      "ObjectId" : "7ce3332610048cfbf69d3d08160445fc3adc9625",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/usr/bin/env make\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/core/ext-py/eventlet-0.24.1/doc/Makefile" : {
+      "ObjectId" : "64f01344ea913b2741b36140df1f42f4667a5b32",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/future-0.16.0/docs/Makefile" : {
+      "ObjectId" : "3607cbddd77b7850af3723c46784bc99485defc3",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/greenlet-0.4.15/doc/Makefile" : {
+      "ObjectId" : "d33c13b88b46be75c2d00101b630c80fdbd15188",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/gunicorn-19.9.0/docs/Makefile" : {
+      "ObjectId" : "7c8d1938e9ad20647ec0246b246552c61913cf38",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/ipaddress-1.0.19/Makefile" : {
+      "ObjectId" : "b1a93d4fe3b95a83022b5cca547e0c4c9312269e",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/josepy-1.1.0/docs/Makefile" : {
+      "ObjectId" : "f90a5186417734f39f97f5d40d37a06e1c65f6d9",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Minimal makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Put it first so that \"make\" without argument is like \"make help\".\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Catch-all target: route all unknown targets to Sphinx using the new\n\n# \"make mode\" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/kazoo-2.0/docs/Makefile" : {
+      "ObjectId" : "b9c141974e34b3380e3366111de0754db7dd9ab9",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/kombu-4.3.0/docs/Makefile" : {
+      "ObjectId" : "8825377c32ce58c37ebc8689343a757bc115aefc",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/lxml-3.3.6/Makefile" : {
+      "ObjectId" : "e51155c1a65fb4a8dea4d169090ec99f8c417b96",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Build in-place\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Two pdflatex runs are needed to build the correct Table of contents.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/core/ext-py/lxml-3.3.6/doc/s5/Makefile" : {
+      "ObjectId" : "d08e710603c8b1e3e95fa79ce238af370fcf11fa",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/ndg_httpsclient-0.4.0/documentation/Makefile" : {
+      "ObjectId" : "11738638b4bb3756a0c439ac9ab8fab587dd72ad",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Makefile to generate epydoc documentation for the NDG HTTPS Client Package\n\n#\n\n# @author P J Kershaw 17/01/12\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# @copyright: (C) 2012 STFC\n\n#\n\n# @license: BSD - see LICENSE file for details\n\n#\n\n# $Id$\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generate HTML from embedded epydoc text in source code.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/nose-1.3.7/doc/Makefile" : {
+      "ObjectId" : "1b36c7271b41819bbd21144d03396456fe3a7cf0",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/py4j-0.9/py4j-java/build.xml" : {
+      "ObjectId" : "d54f423edfc737acbca84eb4a3c618b6d85f6d1e",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n    Copyright (c) 2010, 2011, Barthelemy Dagenais All rights reserved.\n   \n    Redistribution and use in source and binary forms, with or without\n    modification, are permitted provided that the following conditions are met:\n   \n    - Redistributions of source code must retain the above copyright notice, this\n    list of conditions and the following disclaimer.\n   \n    - Redistributions in binary form must reproduce the above copyright notice,\n    this list of conditions and the following disclaimer in the documentation\n    and/or other materials provided with the distribution.\n   \n    - The name of the author may not be used to endorse or promote products\n    derived from this software without specific prior written permission.\n   \n    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n    POSSIBILITY OF SUCH DAMAGE.\n ",
+        "Line" : 29,
+        "CharPositionInLine" : 5
+      },
+      "1" : {
+        "Text" : " Py4J JAVA ",
+        "Line" : 50,
+        "CharPositionInLine" : 23
+      },
+      "2" : {
+        "Text" : " JAVA - CLEAN ",
+        "Line" : 86,
+        "CharPositionInLine" : 26
+      },
+      "3" : {
+        "Text" : " JAVA - COMPILE ",
+        "Line" : 114,
+        "CharPositionInLine" : 28
+      },
+      "4" : {
+        "Text" : " JAVA - JUNIT ",
+        "Line" : 129,
+        "CharPositionInLine" : 26
+      },
+      "5" : {
+        "Text" : " JAVA - JAVADOC ",
+        "Line" : 153,
+        "CharPositionInLine" : 28
+      },
+      "6" : {
+        "Text" : " JAVA - DISTRIBUTION ",
+        "Line" : 160,
+        "CharPositionInLine" : 33
+      },
+      "7" : {
+        "Text" : " JAVA - EXECUTE EXAMPLE APPLICATIONS ",
+        "Line" : 202,
+        "CharPositionInLine" : 49
+      },
+      "8" : {
+        "Text" : " Py4J DOCUMENTATION ",
+        "Line" : 215,
+        "CharPositionInLine" : 32
+      },
+      "9" : {
+        "Text" : " Py4J PYTHON DISTRIBUTION ",
+        "Line" : 242,
+        "CharPositionInLine" : 38
+      },
+      "CommentCount" : 10
+    },
+    "desktop/core/ext-py/pyOpenSSL-17.5.0/doc/Makefile" : {
+      "ObjectId" : "4202bee5a1b48a040b43fedf41c293abf33866eb",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/pycryptodomex-3.4.7/Doc/Makefile" : {
+      "ObjectId" : "8d6f3262f5c4a02a8549eb3a0857cb1c284a221d",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/pysaml2-4.4.0/doc/Makefile" : {
+      "ObjectId" : "462e0de61ea73c7bfe2446fedd523fe3ab66dc27",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/ext-py/pysqlite/doc/sphinx/Makefile" : {
+      "ObjectId" : "33e33610b92779a5e261016deaced26fb0414b44",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/core/ext-py/python-ldap-2.3.13/Doc/Makefile" : {
+      "ObjectId" : "5c8c6f12a27a2c68f4403d48c871804d8885eef1",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\r\n\n#\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\r\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\r\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/python-oauth2/Makefile" : {
+      "ObjectId" : "57472bd1279cbd958a6a2f096661b9a947614020",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Development setup\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/core/ext-py/repoze.who-2.3/docs/Makefile" : {
+      "ObjectId" : "e9969977523b35a81792f7afc31faa0af1cdcd05",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/six-1.11.0/documentation/Makefile" : {
+      "ObjectId" : "eebafcd6d60f129cb5c626fb2e04d40f78e375da",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/sqlparse-0.2.0/Makefile" : {
+      "ObjectId" : "cb3fbf51725d7b3f5f784aa2d32e28b98d490749",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile to simplify some common development tasks.\n\n# Run 'make help' for a list of commands.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/core/ext-py/sqlparse-0.2.0/docs/Makefile" : {
+      "ObjectId" : "cb23107cb071278f5a89547fbad051e830fe9b57",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/ssl-1.15/Makefile" : {
+      "ObjectId" : "57f7eab6f575a5ca1f1df17cc591ea009260e5ad",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/thrift-0.9.1/Makefile.am" : {
+      "ObjectId" : "e33bf1379a0de300a7c825f376518b1669bb7aaa",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We're ignoring prefix here because site-packages seems to be\n\n# the equivalent of /usr/local/lib in Python land.\n\n# Old version (can't put inline because it's not portable).\n\n#$(PYTHON) setup.py install --prefix=$(prefix) --root=$(DESTDIR) $(PYTHON_SETUPUTIL_ARGS)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/core/ext-py/urllib3-1.22/Makefile" : {
+      "ObjectId" : "3e80cf48643e68c1c7dc2238b1f785e21d4bba3e",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "desktop/core/ext-py/urllib3-1.22/docs/Makefile" : {
+      "ObjectId" : "66e3ee5e9086c04d00fa905492afb3e2e423f82f",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "desktop/core/ext-py/vine-1.2.0/docs/Makefile" : {
+      "ObjectId" : "457f4aa6d4a5d621347584fd61d1aaffe2a12f9a",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "desktop/core/ext-py/zope.interface-4.5.0/docs/Makefile" : {
+      "ObjectId" : "d34ea74bce1ee2c73fd48c4c4712c4c05562c19a",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/core/src/desktop/app_template/Makefile" : {
+      "ObjectId" : "18748594a0fe595d70ff16978699ae0cd3665cc0",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/core/src/desktop/app_template_proxy/Makefile" : {
+      "ObjectId" : "18748594a0fe595d70ff16978699ae0cd3665cc0",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "desktop/libs/aws/Makefile" : {
+      "ObjectId" : "f0cd6694cda3e4e013cf740ce36b0d442f652986",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/azure/Makefile" : {
+      "ObjectId" : "f0cd6694cda3e4e013cf740ce36b0d442f652986",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/dashboard/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/hadoop/Makefile" : {
+      "ObjectId" : "16c63c9095d1f8a5b8d4041cbe1f7be30c0c8495",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n# \tInstall app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/indexer/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/kafka/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/libanalyze/Makefile" : {
+      "ObjectId" : "f0cd6694cda3e4e013cf740ce36b0d442f652986",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/liboauth/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/liboozie/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/libopenid/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/librdbms/Makefile" : {
+      "ObjectId" : "b5df9c228e1527ac766e749089ee152fec986e6b",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "###################################\n\n# Build DBProxy plugin\n\n###################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build the plugin jar iff the source is present\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "desktop/libs/librdbms/java/pom.xml" : {
+      "ObjectId" : "45b28ad178f26e9c96b76b485b1d08f07ac0b63c",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n   Licensed to Cloudera, Inc. under one or more\n   contributor license agreements.  See the NOTICE file distributed with\n   this work for additional information regarding copyright ownership.\n   The ASF licenses this file to You under the Apache License, Version 2.0\n   (the \"License\"); you may not use this file except in compliance with\n   the License.  You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "desktop/libs/libsaml/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/libsentry/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/libsolr/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/libzookeeper/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/metadata/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "desktop/libs/notebook/Makefile" : {
+      "ObjectId" : "1bda9cfbe60edf37a6059ea11e9b8aec08063243",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# env-install\n\n#   Install app into the virtual environment.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "docs/Makefile" : {
+      "ObjectId" : "7486bc95e1da99e7ffb857cfed2700097b4beccc",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to Cloudera, Inc. under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  Cloudera, Inc. licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Option for a2x\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Remove intermediate file\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# This is somewhat heinous, but works fine and avoids the need\n\n# to install markdown on developer systems, or depend on building\n\n# out the virtual env to build sdk docs\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "maven/pom.xml" : {
+      "ObjectId" : "1da05b6dc645c83020e85aec7d6dc1412efed9f1",
+      "LastModified" : "2019-04-18T22:22:38Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n   Licensed to the Apache Software Foundation (ASF) under one or more\n   contributor license agreements.  See the NOTICE file distributed with\n   this work for additional information regarding copyright ownership.\n   The ASF licenses this file to You under the Apache License, Version 2.0\n   (the \"License\"); you may not use this file except in compliance with\n   the License.  You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "tools/ace-editor/Makefile" : {
+      "ObjectId" : "29cf0495029701c10398a3091238bbbea1acf6d5",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Minimal build: call Makefile.dryice.js only if our sources changed\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/ace-editor/demo/kitchen-sink/docs/Makefile" : {
+      "ObjectId" : "9b0b31acd81cfcfac42dff216eca0d217bffd060",
+      "LastModified" : "2019-04-13T13:48:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# packages apf\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This is the first line of a comment \\\nand this is still part of the comment \\\nas is this, since I keep ending each line \\\nwith a backslash character\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# package debug version of apf\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# package_apf--temporary fix for non-workering infra\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# makes ace; at the moment, requires dryice@0.4.2\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# packages core\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# generates packed template\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# packages ext\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# calls dryice on worker & packages it\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# copies built ace modes\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# copies built ace themes\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11,
+      "Errorlog" : "line 23:92 token recognition error at: '\\1'\nline 23:94 token recognition error at: '\\2'\n"
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 97,
+    "AUTOMAKE" : 1,
+    "ANT" : 1,
+    "MAVEN" : 2
+  },
+  "ElapsedTime" : 17278
+}

@@ -1,0 +1,548 @@
+{
+  "Repository" : "60032719",
+  "Revision" : "HEAD",
+  "ObjectId" : "16d5dbed57de107d9e504da29cc4d85bfbdaf127",
+  "CommitTime" : "2019-02-24T19:21:53Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "b56b9a4e03e53b2fef5be48f428423a46e804930",
+      "LastModified" : "2018-10-19T20:12:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMakeLists.txt for gpuvis\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To build on Windows:\n\n#\n\n# Download SDL2 development libraries and runtime binary:\n\n#   https://www.libsdl.org/download-2.0.php\n\n#\n\n# set SDL2DIR=c:\\dev\\SDL2-2.0.5\n\n#\n\n# git clone https://github.com/mikesart/gpuvis\n\n# mkdir gpuvis\\build\n\n# cd gpuvis\\build\n\n# ; copy SDL2.dll here...\n\n#\n\n# cmake -G \"NMake Makefiles JOM\" -DCMAKE_BUILD_TYPE=RelWithDebInfo ..\n\n# jom\n\n#\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# bring in useful cmake macros\n\n#   https://github.com/onqtam/ucm\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# https://github.com/mikesart/gpuvis/issues/17\n\n# From Pierre-Loup: Static is better for our usecase, since we do ad-hoc builds\n\n#   that we distribute in SteamVR.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# https://codingnest.com/basic-cmake/#fnref6\n\n#  also: CMAKE_CXX_COMPILER_VERSION\n\n## if ( CMAKE_CXX_COMPILER_ID MATCHES \"Clang|AppleClang|GNU\" )\n\n##     message(\"foo\")\n\n##     # target_compile_options( vector-test PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)\n\n## endif()\n\n## if ( CMAKE_CXX_COMPILER_ID MATCHES \"Clang\" )\n\n##     message(\"foo2\")\n\n##     # target_compile_options( vector-test PRIVATE -Wweak-vtables -Wexit-time-destructors -Wglobal-constructors -Wmissing-noreturn )\n\n## endif()\n\n## if ( CMAKE_CXX_COMPILER_ID MATCHES \"MSVC\" )\n\n##     message(\"foo3\")\n\n##     # target_compile_options( vector-test PRIVATE /W4 /w44265 /w44061 /w44062 )\n\n## endif()\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Main source list\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "Makefile" : {
+      "ObjectId" : "d33da19f0f3c8e3a6d40abcc99dccd249f3dd93f",
+      "LastModified" : "2019-02-24T19:21:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $@: name of the target file (one before colon)\n\n# $<: name of first prerequisite file (first one after colon)\n\n# $^: names of all prerequisite files (space separated)\n\n# $*: stem (bit which matches the % wildcard in rule definition)\n\n#\n\n# VAR = val: Normal setting - values within are recursively expand when var used.\n\n# VAR := val: Setting of var with simple expansion of values inside - values are expanded at decl time.\n\n# VAR ?= val: Set var only if it doesn't have a value.\n\n# VAR += val: Append val to existing value (or set if var didn't exist).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To use static analyzer:\n\n#   http://clang-analyzer.llvm.org/scan-build.html\n\n# Ie:\n\n#   scan-build -k -V --use-analyzer ~/bin/clang make\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Investigate: Improving C++ Builds with Split DWARF\n\n#  http://www.productive-cpp.com/improving-cpp-builds-with-split-dwarf/\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# https://gcc.gnu.org/onlinedocs/libstdc++/manual/profile_mode.html#manual.ext.profile_mode.intro\n\n# To resolve addresses from libstdcxx-profile.conf.out: addr2line -C -f -e _debug/gpuvis 0x42cc6a 0x43630a 0x46654d\n\n# CFLAGS += -D_GLIBCXX_PROFILE -D_GLIBCXX_PROFILE_CONTAINERS\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# To profile with google perftools:\n\n#   http://htmlpreview.github.io/?https://github.com/gperftools/gperftools/blob/master/doc/cpuprofile.html\n\n# PROF=1 make -j 30 && CPUPROFILE_FREQUENCY=10000 _release/gpuvis && pprof --stack --text _release/gpuvis ./gpuvis.prof | vi -\n\n# PROF=1 make -j 30 && CPUPROFILE_FREQUENCY=10000 _release/gpuvis && pprof --web _release/gpuvis ./gpuvis.prof\n",
+        "Line" : 87,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# Useful GCC address sanitizer checks not enabled by default\n\n# https://kristerw.blogspot.com/2018/06/useful-gcc-address-sanitizer-checks-not.html\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# https://gcc.gnu.org/gcc-5/changes.html\n\n#  -fsanitize=float-cast-overflow: check that the result of floating-point type to integer conversions do not overflow;\n\n#  -fsanitize=alignment: enable alignment checking, detect various misaligned objects;\n\n#  -fsanitize=vptr: enable checking of C++ member function calls, member accesses and some conversions between pointers to base and derived classes, detect if the referenced object does not have the correct dynamic type.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 1
+      },
+      "8" : {
+        "Text" : "# fast memory error detector (heap, stack, global buffer overflow, and use-after free)\n",
+        "Line" : 105,
+        "CharPositionInLine" : 34
+      },
+      "9" : {
+        "Text" : "# detect leaks\n",
+        "Line" : 106,
+        "CharPositionInLine" : 31
+      },
+      "10" : {
+        "Text" : "# fast undefined behavior detector\n",
+        "Line" : 107,
+        "CharPositionInLine" : 36
+      },
+      "11" : {
+        "Text" : "# detect floating-point division by zero;\n",
+        "Line" : 108,
+        "CharPositionInLine" : 47
+      },
+      "12" : {
+        "Text" : "# enable instrumentation of array bounds and detect out-of-bounds accesses;\n",
+        "Line" : 109,
+        "CharPositionInLine" : 33
+      },
+      "13" : {
+        "Text" : "# enable object size checking, detect various out-of-bounds accesses.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 38
+      },
+      "CommentCount" : 14
+    },
+    "cmake/FindSDL2.cmake" : {
+      "ObjectId" : "0badaa10d44b688974e2e1cccfa6841cd333250b",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This module defines\n\n# SDL2_LIBRARY, the name of the library to link against\n\n# SDL2_FOUND, if false, do not try to link to SDL2\n\n# SDL2_INCLUDE_DIR, where to find SDL.h\n\n#\n\n# This module responds to the the flag:\n\n# SDL2_BUILDING_LIBRARY\n\n# If this is defined, then no SDL2main will be linked in because\n\n# only applications need main().\n\n# Otherwise, it is assumed you are building an application and this\n\n# module will attempt to locate and set the the proper link flags\n\n# as part of the returned SDL2_LIBRARY variable.\n\n#\n\n# Don't forget to include SDLmain.h and SDLmain.m your project for the\n\n# OS X framework based version. (Other versions link to -lSDL2main which\n\n# this module will try to find on your behalf.) Also for OS X, this\n\n# module will automatically add the -framework Cocoa on your behalf.\n\n#\n\n#\n\n# Additional Note: If you see an empty SDL2_LIBRARY_TEMP in your configuration\n\n# and no SDL2_LIBRARY, it means CMake did not find your SDL2 library\n\n# (SDL2.dll, libsdl2.so, SDL2.framework, etc).\n\n# Set SDL2_LIBRARY_TEMP to point to your SDL2 library, and configure again.\n\n# Similarly, if you see an empty SDL2MAIN_LIBRARY, you should set this value\n\n# as appropriate. These values are used to generate the final SDL2_LIBRARY\n\n# variable, but when these values are unset, SDL2_LIBRARY does not get created.\n\n#\n\n#\n\n# $SDL2DIR is an environment variable that would\n\n# correspond to the ./configure --prefix=$SDL2DIR\n\n# used in building SDL2.\n\n# l.e.galup  9-20-02\n\n#\n\n# Modified by Eric Wing.\n\n# Added code to assist with automated building by using environmental variables\n\n# and providing a more controlled/consistent search behavior.\n\n# Added new modifications to recognize OS X frameworks and\n\n# additional Unix paths (FreeBSD, etc).\n\n# Also corrected the header search path to follow \"proper\" SDL guidelines.\n\n# Added a search for SDL2main which is needed by some platforms.\n\n# Added a search for threads which is needed by some platforms.\n\n# Added needed compile switches for MinGW.\n\n#\n\n# On OSX, this will prefer the Framework version (if found) over others.\n\n# People will have to manually change the cache values of\n\n# SDL2_LIBRARY to override this selection or set the CMake environment\n\n# CMAKE_INCLUDE_PATH to modify the search paths.\n\n#\n\n# Note that the header path has changed from SDL2/SDL.h to just SDL.h\n\n# This needed to change because \"proper\" SDL convention\n\n# is #include \"SDL.h\", not <SDL2/SDL.h>. This is done for portability\n\n# reasons because not all systems place things in SDL2/ (see FreeBSD).\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2003-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Fink\n",
+        "Line" : 75,
+        "CharPositionInLine" : 5
+      },
+      "3" : {
+        "Text" : "# DarwinPorts\n",
+        "Line" : 76,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : "# Blastwave\n",
+        "Line" : 77,
+        "CharPositionInLine" : 10
+      },
+      "5" : {
+        "Text" : "# Non-OS X framework versions expect you to also dynamically link to\n\n# SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms\n\n# seem to provide SDL2main for compatibility even though they don't\n\n# necessarily need it.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# SDL2 may require threads on your system.\n\n# The Apple build may not need an explicit flag because one of the\n\n# frameworks may already provide it.\n\n# But for non-OSX systems, I will use the CMake Threads package.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# MinGW needs an additional link flag, -mwindows\n\n# It's total link flags should look like -lmingw32 -lSDL2main -lSDL2 -mwindows\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# For SDL2main\n",
+        "Line" : 134,
+        "CharPositionInLine" : 1
+      },
+      "9" : {
+        "Text" : "# For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.\n\n# CMake doesn't display the -framework Cocoa string in the UI even\n\n# though it actually is there if I modify a pre-used variable.\n\n# I think it has something to do with the CACHE STRING.\n\n# So I use a temporary variable until the end so I can set the\n\n# \"real\" variable in one-shot.\n",
+        "Line" : 141,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# For threads, as mentioned Apple doesn't need this.\n\n# In fact, there seems to be a problem if I used the Threads package\n\n# and try using this line, so I'm just skipping it entirely for OS X.\n",
+        "Line" : 151,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# For MinGW library\n",
+        "Line" : 158,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "# Set the final string here so the GUI reflects the final state.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "# Set the temp variable to INTERNAL so it is not seen in the CMake GUI\n",
+        "Line" : 165,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 14
+    },
+    "cmake/ucm.cmake" : {
+      "ObjectId" : "c17c1c29184decc1090771450d1a28314e43b4fb",
+      "LastModified" : "2017-04-08T03:00:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# ucm.cmake - useful cmake macros\n\n#\n\n# Copyright (c) 2016 Viktor Kirilov\n\n#\n\n# Distributed under the MIT Software License\n\n# See accompanying file LICENSE.txt or copy at\n\n# https://opensource.org/licenses/MIT\n\n#\n\n# The documentation can be found at the library's page:\n\n# https://github.com/onqtam/ucm\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# optionally include cotire - the git submodule might not be inited (or the user might have already included it)\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ucm_add_flags\n\n# Adds compiler flags to CMAKE_<LANG>_FLAGS or to a specific config\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# determine to which flags to add\n",
+        "Line" : 41,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# clear the old flags\n",
+        "Line" : 51,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# add all the passed flags\n",
+        "Line" : 61,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# ucm_set_flags\n\n# Sets the CMAKE_<LANG>_FLAGS compiler flags or for a specific config\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ucm_add_linker_flags\n\n# Adds linker flags to CMAKE_<TYPE>_LINKER_FLAGS or to a specific config\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# clear the old flags\n",
+        "Line" : 129,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# add all the passed flags\n",
+        "Line" : 136,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# ucm_set_linker_flags\n\n# Sets the CMAKE_<TYPE>_LINKER_FLAGS linker flags or for a specific config\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# ucm_gather_flags\n\n# Gathers all lists of flags for printing or manipulation\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# add the main flags without a config\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# handle single config generators - like makefiles/ninja - when CMAKE_BUILD_TYPE is set\n",
+        "Line" : 166,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# handle multi config generators (like msvc, xcode)\n",
+        "Line" : 177,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# ucm_set_runtime\n\n# Sets the runtime (static/dynamic) for msvc/gcc\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# add/replace the flags\n\n# note that if the user has messed with the flags directly this function might fail\n\n# - for example if with MSVC and the user has removed the flags - here we just switch/replace them\n",
+        "Line" : 207,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# ucm_print_flags\n\n# Prints all compiler flags for all configurations\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# ucm_count_sources\n\n# Counts the number of source files\n",
+        "Line" : 254,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# ucm_include_file_in_sources\n\n# Includes the file to the source with compiler flags\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# get old flags\n",
+        "Line" : 281,
+        "CharPositionInLine" : 12
+      },
+      "21" : {
+        "Text" : "# update flags\n",
+        "Line" : 287,
+        "CharPositionInLine" : 12
+      },
+      "22" : {
+        "Text" : "# ucm_dir_list\n\n# Returns a list of subdirectories for a given directory\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# ucm_trim_front_words\n\n# Trims X times the front word from a string separated with \"/\" and removes\n\n# the front \"/\" characters after that (used for filters for visual studio)\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# removes everything at the front up to a \"/\" character\n",
+        "Line" : 321,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# removes all consecutive \"/\" characters from the front\n",
+        "Line" : 323,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# ucm_remove_files\n\n# Removes source files from a list of sources (path is the relative path for it to be found)\n",
+        "Line" : 329,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# ucm_remove_directories\n\n# Removes all source files from the given directories from the sources list\n",
+        "Line" : 346,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# ucm_add_files_impl\n",
+        "Line" : 378,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# replacing forward slashes with back slashes so filters can be generated (back slash used in parsing...)\n",
+        "Line" : 384,
+        "CharPositionInLine" : 8
+      },
+      "30" : {
+        "Text" : "# ucm_add_files\n\n# Adds files to a list of sources\n",
+        "Line" : 390,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# ucm_add_dir_impl\n",
+        "Line" : 409,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# handle the \"\" and \".\" cases\n",
+        "Line" : 413,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# to circumvent some linux/cmake/path issues - barely made it work...\n",
+        "Line" : 419,
+        "CharPositionInLine" : 8
+      },
+      "34" : {
+        "Text" : "# since unix is case sensitive - add these valid extensions too\n\n# we don't use \"UNIX\" but instead \"CMAKE_HOST_UNIX\" because we might be cross\n\n# compiling (for example emscripten) under windows and UNIX may be set to 1\n\n# Also OSX is case insensitive like windows...\n",
+        "Line" : 426,
+        "CharPositionInLine" : 8
+      },
+      "35" : {
+        "Text" : "# find all sources and set them as result\n",
+        "Line" : 444,
+        "CharPositionInLine" : 8
+      },
+      "36" : {
+        "Text" : "# https://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Overall-Options.html#index-file-name-suffix-71\n\n# sources\n",
+        "Line" : 446,
+        "CharPositionInLine" : 8
+      },
+      "37" : {
+        "Text" : "# headers\n",
+        "Line" : 456,
+        "CharPositionInLine" : 8
+      },
+      "38" : {
+        "Text" : "# set the proper filters\n",
+        "Line" : 473,
+        "CharPositionInLine" : 8
+      },
+      "39" : {
+        "Text" : "# replacing forward slashes with back slashes so filters can be generated (back slash used in parsing...)\n",
+        "Line" : 475,
+        "CharPositionInLine" : 8
+      },
+      "40" : {
+        "Text" : "# ucm_add_dirs\n\n# Adds all files from directories traversing them recursively to a list of sources\n\n# and generates filters according to their location (accepts relative paths only).\n\n# Also this macro trims X times the front word from the filter string for visual studio filters.\n",
+        "Line" : 490,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# ucm_add_target\n\n# Adds a target eligible for cotiring - unity build and/or precompiled header\n",
+        "Line" : 508,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# init with the global unity flag\n",
+        "Line" : 528,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "# check the UNITY argument\n",
+        "Line" : 531,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "# if target is excluded through the exclusion list\n",
+        "Line" : 536,
+        "CharPositionInLine" : 4
+      },
+      "45" : {
+        "Text" : "# unity build only for targets with > 1 source file (otherwise there will be an additional unnecessary target)\n",
+        "Line" : 542,
+        "CharPositionInLine" : 4
+      },
+      "46" : {
+        "Text" : "# optimization\n",
+        "Line" : 543,
+        "CharPositionInLine" : 17
+      },
+      "47" : {
+        "Text" : "# if cotire cannot be used\n",
+        "Line" : 552,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "# inform the developer that the current target might benefit from a unity build\n",
+        "Line" : 557,
+        "CharPositionInLine" : 1
+      },
+      "49" : {
+        "Text" : "# prepare for the unity build\n",
+        "Line" : 565,
+        "CharPositionInLine" : 4
+      },
+      "50" : {
+        "Text" : "# the original target will be added with a different name than the requested\n",
+        "Line" : 568,
+        "CharPositionInLine" : 8
+      },
+      "51" : {
+        "Text" : "# exclude requested files from unity build of the current target\n",
+        "Line" : 571,
+        "CharPositionInLine" : 8
+      },
+      "52" : {
+        "Text" : "# add the original target\n",
+        "Line" : 577,
+        "CharPositionInLine" : 4
+      },
+      "53" : {
+        "Text" : "# set the number of unity cpp files to be used for the unity target\n",
+        "Line" : 585,
+        "CharPositionInLine" : 8
+      },
+      "54" : {
+        "Text" : "# add a unity target for the original one with the name intended for the original\n",
+        "Line" : 597,
+        "CharPositionInLine" : 8
+      },
+      "55" : {
+        "Text" : "# this is the library call that does the magic\n",
+        "Line" : 600,
+        "CharPositionInLine" : 8
+      },
+      "56" : {
+        "Text" : "# disable the original target and enable the unity one\n",
+        "Line" : 604,
+        "CharPositionInLine" : 8
+      },
+      "57" : {
+        "Text" : "# also set the name of the target output as the original one\n",
+        "Line" : 609,
+        "CharPositionInLine" : 8
+      },
+      "58" : {
+        "Text" : "# reset the folder property so all unity targets dont end up in a single folder in the solution explorer of VS\n",
+        "Line" : 612,
+        "CharPositionInLine" : 12
+      },
+      "59" : {
+        "Text" : "# print a message if the target was requested to be cotired but it couldn't\n",
+        "Line" : 626,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 60
+    },
+    "sample/Makefile" : {
+      "ObjectId" : "bfa2e58160214d9265efaaaefe84e507eb9b659e",
+      "LastModified" : "2017-10-09T18:52:46Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# https://gcc.gnu.org/gcc-5/changes.html\n\n#  -fsanitize=float-cast-overflow: check that the result of floating-point type to integer conversions do not overflow;\n\n#  -fsanitize=alignment: enable alignment checking, detect various misaligned objects;\n\n#  -fsanitize=vptr: enable checking of C++ member function calls, member accesses and some conversions between pointers to base and derived classes, detect if the referenced object does not have the correct dynamic type.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 1
+      },
+      "1" : {
+        "Text" : "# fast memory error detector (heap, stack, global buffer overflow, and use-after free)\n",
+        "Line" : 35,
+        "CharPositionInLine" : 34
+      },
+      "2" : {
+        "Text" : "# detect leaks\n",
+        "Line" : 36,
+        "CharPositionInLine" : 31
+      },
+      "3" : {
+        "Text" : "# fast undefined behavior detector\n",
+        "Line" : 37,
+        "CharPositionInLine" : 36
+      },
+      "4" : {
+        "Text" : "# detect floating-point division by zero;\n",
+        "Line" : 38,
+        "CharPositionInLine" : 47
+      },
+      "5" : {
+        "Text" : "# enable instrumentation of array bounds and detect out-of-bounds accesses;\n",
+        "Line" : 39,
+        "CharPositionInLine" : 33
+      },
+      "6" : {
+        "Text" : "# enable object size checking, detect various out-of-bounds accesses.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 38
+      },
+      "CommentCount" : 7
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 3,
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 1395
+}

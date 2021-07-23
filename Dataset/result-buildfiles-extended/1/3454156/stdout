@@ -1,0 +1,1371 @@
+{
+  "Repository" : "3454156",
+  "Revision" : "HEAD",
+  "ObjectId" : "7225090e5b84664c9bc8f737a93975bfdd7c2434",
+  "CommitTime" : "2019-04-09T23:36:47Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "c6466e3d6fda78d32d78f36031a7826a8426bfb2",
+      "LastModified" : "2019-03-09T10:04:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Kitchen Sync is all C++, but Threads requires C to be enabled to figure out what options to use\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# suppress warnings about using c++11 features such as variadic templates\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# optionally compile with sanitizer checks\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# we will need to be linked against pthreads on most platforms, but note that we don't use REQUIRED\n\n# here because Threads was broken (http://www.cmake.org/Bug/view.php?id=15058).\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# vendored-in version of yaml-cpp for filter files\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# the main program knows nothing but how to hook up the endpoints\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# the endpoints normally hash data using OpenSSL; on macOS we use Apple's Common Crypto fork instead\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# is backtrace in libc?\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# the endpoints do the actual work\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# turn on debugging symbols\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# we have one endpoint program for mysql\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# and one endpoint program for postgresql\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# it's usually a mistake to try and compile Kitchen Sync without support for at least one database\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# the main tests require ruby (and various extra gems).  to run the suite, run\n\n#   cmake .. && CTEST_OUTPUT_ON_FAILURE=1 make test\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "cmake/Modules/FindMySQL.cmake" : {
+      "ObjectId" : "87ba7b907950ed8ff745174f3fed1d623b49c694",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find mysql client library\n\n# Find the native MySQL includes and library\n\n#\n\n# You may manually set (if not found automatically):\n\n#  MySQL_INCLUDE_DIR - Where to find mysql.h.\n\n#  MySQL_LIBRARY_DIR - Where to find the corresponding library.\n\n#\n\n# The following variables are set if the mysql client library is found:\n\n#  MySQL_INCLUDE_DIR - Where to find mysql.h.\n\n#  MySQL_LIBRARIES   - List of libraries when using MySQL.\n\n#  MySQL_FOUND       - True if MySQL found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindPostgreSQL.cmake" : {
+      "ObjectId" : "91857520ee85f378135f72e3c029e7342f89b3c2",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find the PostgreSQL installation.\n\n# In Windows, we make the assumption that, if the PostgreSQL files are installed, the default directory\n\n# will be C:\\Program Files\\PostgreSQL.\n\n#\n\n# This module defines\n\n#  PostgreSQL_LIBRARIES - the PostgreSQL libraries needed for linking\n\n#  PostgreSQL_INCLUDE_DIRS - the directories of the PostgreSQL headers\n\n#  PostgreSQL_VERSION_STRING - the version of PostgreSQL found (since CMake 2.8.8)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2004-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# History:\n\n# This module is derived from the module originally found in the VTK source tree.\n\n#\n\n# ----------------------------------------------------------------------------\n\n# Note:\n\n# PostgreSQL_ADDITIONAL_VERSIONS is a variable that can be used to set the\n\n# version mumber of the implementation of PostgreSQL.\n\n# In Windows the default installation of PostgreSQL uses that as part of the path.\n\n# E.g C:\\Program Files\\PostgreSQL\\8.4.\n\n# Currently, the following version numbers are known to this module:\n\n# \"9.1\" \"9.0\" \"8.4\" \"8.3\" \"8.2\" \"8.1\" \"8.0\"\n\n#\n\n# To use this variable just do something like this:\n\n# set(PostgreSQL_ADDITIONAL_VERSIONS \"9.2\" \"8.4.4\")\n\n# before calling FIND_PACKAGE(PostgreSQL) in your CMakeLists.txt file.\n\n# This will mean that the versions you set here will be found first in the order\n\n# specified before the default ones are searched.\n\n#\n\n# ----------------------------------------------------------------------------\n\n# You may need to manually set:\n\n#  PostgreSQL_INCLUDE_DIR  - the path to where the PostgreSQL include files are.\n\n#  PostgreSQL_LIBRARY_DIR  - The path to where the PostgreSQL library files are.\n\n# If FindPostgreSQL.cmake cannot find the include files or the library files.\n\n#\n\n# ----------------------------------------------------------------------------\n\n# The following variables are set if PostgreSQL is found:\n\n#  PostgreSQL_FOUND         - Set to true when PostgreSQL is found.\n\n#  PostgreSQL_INCLUDE_DIRS  - Include directories for PostgreSQL\n\n#  PostgreSQL_LIBRARY_DIRS  - Link directories for PostgreSQL libraries\n\n#  PostgreSQL_LIBRARIES     - The PostgreSQL libraries.\n\n#\n\n# ----------------------------------------------------------------------------\n\n# If you have installed PostgreSQL in a non-standard location.\n\n# (Please note that in the following comments, it is assumed that <Your Path>\n\n# points to the root directory of the include directory of PostgreSQL.)\n\n# Then you have three options.\n\n# 1) After CMake runs, set PostgreSQL_INCLUDE_DIR to <Your Path>/include and\n\n#    PostgreSQL_LIBRARY_DIR to wherever the library pq (or libpq in windows) is\n\n# 2) Use CMAKE_INCLUDE_PATH to set a path to <Your Path>/PostgreSQL<-version>. This will allow find_path()\n\n#    to locate PostgreSQL_INCLUDE_DIR by utilizing the PATH_SUFFIXES option. e.g. In your CMakeLists.txt file\n\n#    SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} \"<Your Path>/include\")\n\n# 3) Set an environment variable called ${PostgreSQL_ROOT} that points to the root of where you have\n\n#    installed PostgreSQL, e.g. <Your Path>.\n\n#\n\n# ----------------------------------------------------------------------------\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define additional search paths for root directories.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Look for an installation.\n\n#\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Look in other places.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "# Help the user find it if we cannot.\n",
+        "Line" : 109,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# The PostgreSQL library.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Setting some more prefixes for the library\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Did we find anything?\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Now try to get the include and library path.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#message(\"Final PostgreSQL include dir: ${PostgreSQL_INCLUDE_DIRS}\")\n\n#message(\"Final PostgreSQL library dir: ${PostgreSQL_LIBRARY_DIRS}\")\n\n#message(\"Final PostgreSQL libraries:   ${PostgreSQL_LIBRARIES}\")\n",
+        "Line" : 162,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 12
+    },
+    "src/yaml-cpp/CMakeLists.txt" : {
+      "ObjectId" : "d2d8810288043c2e9cc4cfc036961de017c54eb8",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "###\n\n### CMake settings\n\n###\n\n## Due to Mac OSX we need to keep compatibility with CMake 2.6\n\n# see http://www.cmake.org/Wiki/CMake_Policies\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# see http://www.cmake.org/cmake/help/cmake-2-8-docs.html#policy:CMP0012\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# see http://www.cmake.org/cmake/help/cmake-2-8-docs.html#policy:CMP0015\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# see https://cmake.org/cmake/help/latest/policy/CMP0042.html\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Enable MACOSX_RPATH by default.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "###\n\n### Project settings\n\n###\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "###\n\n### Project options\n\n###\n\n## Project stuff\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "## Build options\n\n# --> General\n\n# see http://www.cmake.org/cmake/help/cmake2.6docs.html#variable:BUILD_SHARED_LIBS\n\n#     http://www.cmake.org/cmake/help/cmake2.6docs.html#command:add_library\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# --> Apple\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# --> Microsoft Visual C++\n\n# see http://msdn.microsoft.com/en-us/library/aa278396(v=VS.60).aspx\n\n#     http://msdn.microsoft.com/en-us/library/2kzt1wy3(v=VS.71).aspx\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "###\n\n### Sources, headers, directories and libs\n\n###\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# From http://www.cmake.org/pipermail/cmake/2010-March/035992.html:\n\n# function to collect all the sources from sub-directories\n\n# into a single list\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# make absolute paths\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# append to global list\n",
+        "Line" : 82,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "###\n\n### General compilation settings\n\n###\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# use or build Windows DLL\n",
+        "Line" : 149,
+        "CharPositionInLine" : 41
+      },
+      "16" : {
+        "Text" : "# GCC or Clang or Intel Compiler specialities\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "### General stuff\n",
+        "Line" : 161,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "# DLLs do not have a \"lib\" prefix\n\n# same for DLL import libs\n",
+        "Line" : 163,
+        "CharPositionInLine" : 38
+      },
+      "19" : {
+        "Text" : "# CMake workaround (2.8.3)\n",
+        "Line" : 165,
+        "CharPositionInLine" : 35
+      },
+      "20" : {
+        "Text" : "### Project stuff\n",
+        "Line" : 168,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "#\n",
+        "Line" : 172,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "#\n",
+        "Line" : 177,
+        "CharPositionInLine" : 1
+      },
+      "23" : {
+        "Text" : "#\n",
+        "Line" : 179,
+        "CharPositionInLine" : 1
+      },
+      "24" : {
+        "Text" : "#\n",
+        "Line" : 183,
+        "CharPositionInLine" : 1
+      },
+      "25" : {
+        "Text" : "#\n",
+        "Line" : 189,
+        "CharPositionInLine" : 1
+      },
+      "26" : {
+        "Text" : "### Make specific\n",
+        "Line" : 192,
+        "CharPositionInLine" : 1
+      },
+      "27" : {
+        "Text" : "# Microsoft VisualC++ specialities\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "### General stuff\n\n# a) Change MSVC runtime library settings (/MD[d], /MT[d], /ML[d] (single-threaded until VS 2003))\n\n#    plus set lib suffix for later use and project label accordingly\n\n# see http://msdn.microsoft.com/en-us/library/aa278396(v=VS.60).aspx\n\n#     http://msdn.microsoft.com/en-us/library/2kzt1wy3(v=VS.71).aspx\n",
+        "Line" : 207,
+        "CharPositionInLine" : 1
+      },
+      "29" : {
+        "Text" : "# CMake defaults to /MD for MSVC\n",
+        "Line" : 212,
+        "CharPositionInLine" : 25
+      },
+      "30" : {
+        "Text" : "#\n",
+        "Line" : 214,
+        "CharPositionInLine" : 1
+      },
+      "31" : {
+        "Text" : "# User wants to have static runtime libraries (/MT, /ML)\n\n# User wants to have old single-threaded static runtime libraries\n",
+        "Line" : 215,
+        "CharPositionInLine" : 24
+      },
+      "32" : {
+        "Text" : "# correct linker options\n",
+        "Line" : 227,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "#\n",
+        "Line" : 239,
+        "CharPositionInLine" : 1
+      },
+      "34" : {
+        "Text" : "# b) Change prefix for static libraries\n",
+        "Line" : 242,
+        "CharPositionInLine" : 1
+      },
+      "35" : {
+        "Text" : "# to distinguish static libraries from DLL import libs\n",
+        "Line" : 243,
+        "CharPositionInLine" : 40
+      },
+      "36" : {
+        "Text" : "# c) Correct suffixes for static libraries\n",
+        "Line" : 245,
+        "CharPositionInLine" : 1
+      },
+      "37" : {
+        "Text" : "### General stuff\n",
+        "Line" : 247,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "### Project stuff\n\n# /W3 = set warning level; see http://msdn.microsoft.com/en-us/library/thxezb7y.aspx\n\n# /wd4127 = disable warning C4127 \"conditional expression is constant\"; see http://msdn.microsoft.com/en-us/library/6t66728h.aspx\n\n# /wd4355 = disable warning C4355 \"'this' : used in base member initializer list\"; http://msdn.microsoft.com/en-us/library/3c594ae3.aspx\n",
+        "Line" : 251,
+        "CharPositionInLine" : 1
+      },
+      "39" : {
+        "Text" : "###\n\n### General install settings\n\n###\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "###\n\n### Library\n\n###\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# correct library names\n",
+        "Line" : 296,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "###\n\n### Extras\n\n###\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "### Formatting\n",
+        "Line" : 360,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 44
+    },
+    "src/yaml-cpp/test/CMakeLists.txt" : {
+      "ObjectId" : "3633da578b3fcdc0fb5273de8c255feaf71761b8",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/CMakeLists.txt" : {
+      "ObjectId" : "8d2b552ef7ad9f18d6d3293efedfea7c9964324f",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#Note that googlemock target already builds googletest\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googlemock/CMakeLists.txt" : {
+      "ObjectId" : "beb259a2e9dbb5dcb50f61c7a779f563528983f6",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n# CMake build script for Google Mock.\n\n#\n\n# To run the tests for Google Mock itself on Linux, use 'make test' or\n\n# ctest.  You can select which tests to run using 'ctest -R regex'.\n\n# For more options, run 'ctest --help'.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to\n\n# make it prominent in the GUI.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# A directory to find Google Test sources.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Defines pre_project_set_up_hermetic_build() and set_up_hermetic_build().\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Google Test also calls hermetic setup functions from add_subdirectory,\n\n# although its changes will not affect things at the current scope.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "########################################################################\n\n#\n\n# Project-wide settings\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Name of the project.\n\n#\n\n# CMake files in this project can refer to the root source directory\n\n# as ${gmock_SOURCE_DIR} and to the root binary directory as\n\n# ${gmock_BINARY_DIR}.\n\n# Language \"C\" is required for find_package(Threads).\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Instructs CMake to process Google Test's CMakeLists.txt and add its\n\n# targets to the current scope.  We are placing Google Test's binary\n\n# directory in a subdirectory of our own as VC compilation may break\n\n# if they are the same (the default).\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Although Google Test's CMakeLists.txt calls this function, the\n\n# changes there don't affect the current scope.  Therefore we have to\n\n# call it again here.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# from ${gtest_dir}/cmake/internal_utils.cmake\n",
+        "Line" : 56,
+        "CharPositionInLine" : 30
+      },
+      "10" : {
+        "Text" : "# Adds Google Mock's and Google Test's header directories to the search path.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# This directory is needed to build directly from Google\n\n# Test sources.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 20
+      },
+      "12" : {
+        "Text" : "# Summary of tuple support for Microsoft Visual Studio:\n\n# Compiler    version(MS)  version(cmake)  Support\n\n# ----------  -----------  --------------  -----------------------------\n\n# <= VS 2010  <= 10        <= 1600         Use Google Tests's own tuple.\n\n# VS 2012     11           1700            std::tr1::tuple + _VARIADIC_MAX=10\n\n# VS 2013     12           1800            std::tr1::tuple\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "########################################################################\n\n#\n\n# Defines the gmock & gmock_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Google Mock libraries.  We build them using more strict warnings than what\n\n# are used for other targets, to ensure that Google Mock can be compiled by\n\n# a user aggressive about warnings.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# If the CMake version supports it, attach header directory information\n\n# to the targets for when we are part of a parent build (ie being pulled\n\n# in via add_subdirectory() rather than being a standalone build).\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "########################################################################\n\n#\n\n# Install rules\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "########################################################################\n\n#\n\n# Google Mock's own tests.\n\n#\n\n# You can skip this section if you aren't interested in testing\n\n# Google Mock itself.\n\n#\n\n# The tests are not built by default.  To build them, set the\n\n# gmock_build_tests option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgmock_build_tests=ON flag when running cmake.\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# This must be set in the root directory for the tests to be run by\n\n# 'make test' or ctest.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "############################################################\n\n# C++ tests built with standard compiler flags.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# gmock_all_test is commented to save time building and running tests.\n\n# Uncomment if necessary.\n\n# cxx_test(gmock_all_test gmock_main)\n",
+        "Line" : 150,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "############################################################\n\n# C++ tests built with non-standard compiler flags.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# 1600 is Visual Studio 2010.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 43
+      },
+      "23" : {
+        "Text" : "# Visual Studio 2010, 2012, and 2013 define symbols in std::tr1 that\n\n# conflict with our own definitions. Therefore using our own tuple does not\n\n# work on those compilers.\n",
+        "Line" : 164,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Tests that a binary can be built with Google Mock as a shared library.  On\n\n# some system configurations, it may not possible to run the binary without\n\n# knowing more details about the system configurations. We do not try to run\n\n# this binary. To get a more robust shared library coverage, configure with\n\n# -DBUILD_SHARED_LIBS=ON.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "############################################################\n\n# Python tests.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 26
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googlemock/Makefile.am" : {
+      "ObjectId" : "9adbc5163dd7191a14a887a384fb5d6d2956b44d",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Automake file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Nonstandard package files for distribution.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We may need to build our internally packaged gtest. If so, it will be\n\n# included in the 'subdirs' variable.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This is generated by the configure script, so clean it for distribution.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We define the global AM_CPPFLAGS as everything we compile includes from these\n\n# directories.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Modifies compiler and linker flags for pthreads compatibility.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Build rules for libraries.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Build rules for tests. Automake's naming for some of these variables isn't\n\n# terribly obvious, so this is a brief reference:\n\n#\n\n# TESTS -- Programs run automatically by \"make check\"\n\n# check_PROGRAMS -- Programs built by \"make check\" but not necessarily run\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# This exercises all major components of Google Mock.  It also\n\n# verifies that libgmock works.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# This tests using Google Mock in multiple translation units.  It also\n\n# verifies that libgmock_main and libgmock work.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Tests that fused gmock files compile and work.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Google Mock source files that we don't compile directly.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# C++ tests that we don't compile using autotools.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Python tests, which we don't run using autotools.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Nonstandard package files for distribution.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Pump scripts for generating Google Mock headers.\n\n# TODO(chandlerc@google.com): automate the generation of *.h from *.h.pump.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Script for fusing Google Mock and Google Test source files.\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The Google Mock Generator tool from the cppclean project.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Script for diagnosing compiler errors in programs that use Google\n\n# Mock.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# CMake scripts.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Microsoft Visual Studio 2005 projects.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Microsoft Visual Studio 2010 projects.\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# gmock_test.cc does not really depend on files generated by the\n\n# fused-gmock-internal rule.  However, gmock_test.o does, and it is\n\n# important to include test/gmock_test.cc as part of this rule in order to\n\n# prevent compiling gmock_test.o until all dependent files have been\n\n# generated.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# TODO(vladl@google.com): Find a way to add Google Tests's sources here.\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Death tests may produce core dumps in the build directory. In case\n\n# this happens, clean them to keep distcleancheck happy.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Disables 'make install' as installing a compiled version of Google\n\n# Mock can lead to undefined behavior due to violation of the\n\n# One-Definition Rule.\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googlemock/make/Makefile" : {
+      "ObjectId" : "7c13e05fa961dd3a37ee05def12de08ce0e86a88",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A sample Makefile for building both Google Mock and Google Test and\n\n# using them in user tests.  This file is self-contained, so you don't\n\n# need to use the Makefile in Google Test's source tree.  Please tweak\n\n# it to suit your environment and project.  You may want to move it to\n\n# your project's root directory.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Please tweak the following variable definitions as needed by your\n\n# project, except GMOCK_HEADERS and GTEST_HEADERS, which you can use\n\n# in your own targets but shouldn't modify.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Points to the root of Google Test, relative to where this file is.\n\n# Remember to tweak this if you move this file, or if you want to use\n\n# a copy of Google Test at a different location.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Points to the root of Google Mock, relative to where this file is.\n\n# Remember to tweak this if you move this file.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Where to find user code.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# Set Google Test and Google Mock's header directories as system\n\n# directories, such that the compiler doesn't generate warnings in\n\n# these headers.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# All tests produced by this Makefile.  Remember to add new tests you\n\n# created to the list.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# All Google Test headers.  Usually you shouldn't change this\n\n# definition.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# All Google Mock headers. Note that all Google Test headers are\n\n# included here too, as they are #included by Google Mock headers.\n\n# Usually you shouldn't change this definition.\t\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# House-keeping build targets.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Builds gmock.a and gmock_main.a.  These libraries contain both\n\n# Google Mock and Google Test.  A test should link with either gmock.a\n\n# or gmock_main.a, depending on whether it defines its own main()\n\n# function.  It's fine if your test only uses features from Google\n\n# Test (and not Google Mock).\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Usually you shouldn't tweak such internal variables, indicated by a\n\n# trailing _.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# For simplicity and to avoid depending on implementation details of\n\n# Google Mock and Google Test, the dependencies specified below are\n\n# conservative and not optimized.  This is fine as Google Mock and\n\n# Google Test compile fast and for ordinary users their source rarely\n\n# changes.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Builds a sample test.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googletest/CMakeLists.txt" : {
+      "ObjectId" : "621d0f0421543eba41e1d69f497814104bb9c6a7",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n# CMake build script for Google Test.\n\n#\n\n# To run the tests for Google Test itself on Linux, use 'make test' or\n\n# ctest.  You can select which tests to run using 'ctest -R regex'.\n\n# For more options, run 'ctest --help'.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to\n\n# make it prominent in the GUI.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# When other libraries are using a shared version of runtime libraries,\n\n# Google Test also has to use one.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Defines pre_project_set_up_hermetic_build() and set_up_hermetic_build().\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "########################################################################\n\n#\n\n# Project-wide settings\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Name of the project.\n\n#\n\n# CMake files in this project can refer to the root source directory\n\n# as ${gtest_SOURCE_DIR} and to the root binary directory as\n\n# ${gtest_BINARY_DIR}.\n\n# Language \"C\" is required for find_package(Threads).\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Define helper functions and macros used by Google Test.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Defined in internal_utils.cmake.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 30
+      },
+      "8" : {
+        "Text" : "# Where Google Test's .h files can be found.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Where Google Test's libraries can be found.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Summary of tuple support for Microsoft Visual Studio:\n\n# Compiler    version(MS)  version(cmake)  Support\n\n# ----------  -----------  --------------  -----------------------------\n\n# <= VS 2010  <= 10        <= 1600         Use Google Tests's own tuple.\n\n# VS 2012     11           1700            std::tr1::tuple + _VARIADIC_MAX=10\n\n# VS 2013     12           1800            std::tr1::tuple\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "########################################################################\n\n#\n\n# Defines the gtest & gtest_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Google Test libraries.  We build them using more strict warnings than what\n\n# are used for other targets, to ensure that gtest can be compiled by a user\n\n# aggressive about warnings.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# If the CMake version supports it, attach header directory information\n\n# to the targets for when we are part of a parent build (ie being pulled\n\n# in via add_subdirectory() rather than being a standalone build).\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "########################################################################\n\n#\n\n# Install rules\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "########################################################################\n\n#\n\n# Samples on how to link user tests with gtest or gtest_main.\n\n#\n\n# They are not built by default.  To build them, set the\n\n# gtest_build_samples option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgtest_build_samples=ON flag when running cmake.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "########################################################################\n\n#\n\n# Google Test's own tests.\n\n#\n\n# You can skip this section if you aren't interested in testing\n\n# Google Test itself.\n\n#\n\n# The tests are not built by default.  To build them, set the\n\n# gtest_build_tests option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgtest_build_tests=ON flag when running cmake.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# This must be set in the root directory for the tests to be run by\n\n# 'make test' or ctest.\n",
+        "Line" : 143,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "############################################################\n\n# C++ tests built with standard compiler flags.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "############################################################\n\n# C++ tests built with non-standard compiler flags.\n",
+        "Line" : 178,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 181,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# 1600 is Visual Studio 2010.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 43
+      },
+      "22" : {
+        "Text" : "# Visual Studio 2010, 2012, and 2013 define symbols in std::tr1 that\n\n# conflict with our own definitions. Therefore using our own tuple does not\n\n# work on those compilers.\n",
+        "Line" : 211,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "############################################################\n\n# Python tests.\n",
+        "Line" : 225,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Visual Studio .NET 2003 does not support STL with exceptions disabled.\n",
+        "Line" : 231,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# 1310 is Visual Studio .NET 2003\n",
+        "Line" : 232,
+        "CharPositionInLine" : 46
+      },
+      "26" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 27
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googletest/Makefile.am" : {
+      "ObjectId" : "29797e4e9de4e1d5e5f93bba14288de87f623946",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Automake file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Nonstandard package files for distribution\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gtest source files that we don't compile directly.  They are\n\n# #included by gtest-all.cc.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Sample files that we don't compile.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# C++ test files that we don't compile directly.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Python tests that we don't run.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CMake script\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# MSVC project files\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# xcode project files\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# xcode sample files\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# C++Builder project files\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Distribute and install M4 macro\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# We define the global AM_CPPFLAGS as everything we compile includes from these\n\n# directories.\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Modifies compiler and linker flags for pthreads compatibility.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Build rules for libraries.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Bulid rules for samples and tests. Automake's naming for some of\n\n# these variables isn't terribly obvious, so this is a brief\n\n# reference:\n\n#\n\n# TESTS -- Programs run automatically by \"make check\"\n\n# check_PROGRAMS -- Programs built by \"make check\" but not necessarily run\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# A simple sample on using gtest.\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Another sample.  It also verifies that libgtest works.\n",
+        "Line" : 250,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# This tests most constructs of gtest and verifies that libgtest_main\n\n# and libgtest work.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Tests that fused gtest files compile and work.\n",
+        "Line" : 264,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Build rules for putting fused Google Test files into the distribution\n\n# package. The user can also create those files by manually running\n\n# scripts/fuse_gtest_files.py.\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Death tests may produce core dumps in the build directory. In case\n\n# this happens, clean them to keep distcleancheck happy.\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Disables 'make install' as installing a compiled version of Google\n\n# Test can lead to undefined behavior due to violation of the\n\n# One-Definition Rule.\n",
+        "Line" : 300,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googletest/cmake/internal_utils.cmake" : {
+      "ObjectId" : "777b91ed4b8caa226ea55cfa61fe7ec433ffb452",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Defines functions and macros useful for building Google Test and\n\n# Google Mock.\n\n#\n\n# Note:\n\n#\n\n# - This file will be run twice when building Google Mock (once via\n\n#   Google Test's CMakeLists.txt, and once via Google Mock's).\n\n#   Therefore it shouldn't have any side effects other than defining\n\n#   the functions and macros.\n\n#\n\n# - The functions/macros defined in this file may depend on Google\n\n#   Test and Google Mock's option() definitions, and thus must be\n\n#   called *after* the options have been defined.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tweaks CMake's default compiler/linker settings to suit Google Test's needs.\n\n#\n\n# This must be a macro(), as inside a function string() can only\n\n# update variables in the function scope.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For MSVC, CMake sets certain flags to defaults we want to override.\n\n# This replacement code is taken from sample in the CMake Wiki at\n\n# http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# When Google Test is built as a shared library, it should also use\n\n# shared runtime libraries.  Otherwise, it may end up with multiple\n\n# copies of runtime library data in different modules, resulting in\n\n# hard-to-find crashes. When it is built as a static library, it is\n\n# preferable to use CRT as static libraries, as we don't have to rely\n\n# on CRT DLLs being available. CMake always defaults to using shared\n\n# CRT libraries, so we override that default here.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# We prefer more strict warning checking for building Google Test.\n\n# Replaces /W3 with /W4 in defaults.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# Defines the compiler/linker flags used to build Google Test and\n\n# Google Mock.  You can tweak these definitions to suit your need.  A\n\n# variable's value is empty before it's explicitly assigned to.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Defines CMAKE_USE_PTHREADS_INIT and CMAKE_THREAD_LIBS_INIT.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Newlines inside flags variables break CMake's NMake generator.\n\n# TODO(vladl@google.com): Add -RTCs and -RTCu to debug builds.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# 1400 is Visual Studio 2005\n",
+        "Line" : 59,
+        "CharPositionInLine" : 33
+      },
+      "9" : {
+        "Text" : "# Suppress spurious warnings MSVC 7.1 sometimes issues.\n\n# Forcing value to bool.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "# Copy constructor and assignment operator could not be generated.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# Compatibility warnings not applicable to Google Test.\n\n# Resolved overload was found by argument-dependent lookup.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# 1500 is Visual Studio 2008\n",
+        "Line" : 69,
+        "CharPositionInLine" : 33
+      },
+      "13" : {
+        "Text" : "# Conditional expression is constant.\n\n# When compiling with /W4, we get several instances of C4127\n\n# (Conditional expression is constant). In our code, we disable that\n\n# warning on a case-by-case basis. However, on Visual Studio 2005,\n\n# the warning fires on std::list. Therefore on that compiler and earlier,\n\n# we disable the warning project-wide.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# 1700 is Visual Studio 2012.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 39
+      },
+      "15" : {
+        "Text" : "# Suppress \"unreachable code\" warning on VS 2012 and later.\n\n# http://stackoverflow.com/questions/3232669 explains the issue.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# 1900 is Visual Studio 2015\n",
+        "Line" : 83,
+        "CharPositionInLine" : 42
+      },
+      "17" : {
+        "Text" : "# BigObj required for tests.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Until version 4.3.2, GCC doesn't define a macro to indicate\n\n# whether RTTI is enabled.  Therefore we define GTEST_HAS_RTTI\n\n# explicitly.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Sun Pro doesn't provide macros to indicate whether exceptions and\n\n# RTTI are enabled, so we define GTEST_HAS_* explicitly.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# CMake 2.8 changes Visual Age's compiler ID to \"XL\".\n",
+        "Line" : 111,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Until version 9.0, Visual Age doesn't define a macro to indicate\n\n# whether RTTI is enabled.  Therefore we define GTEST_HAS_RTTI\n\n# explicitly.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# RTTI can not be disabled in HP aCC compiler.\n",
+        "Line" : 122,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# The pthreads library is available and allowed.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 32
+      },
+      "24" : {
+        "Text" : "# For building gtest's own tests and samples.\n",
+        "Line" : 132,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# For building the gtest libraries.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Defines the gtest & gtest_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# type can be either STATIC or SHARED to denote a static or shared library.\n\n# ARGN refers to additional arguments after 'cxx_flags'.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "########################################################################\n\n#\n\n# Helper functions for creating build targets.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# cxx_executable_with_flags(name cxx_flags libs srcs...)\n\n#\n\n# creates a named C++ executable that depends on the given libraries and\n\n# is built from the given source files with the given compiler flags.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# To support mixing linking in static and dynamic libraries, link each\n\n# library in with an extra call to target_link_libraries.\n",
+        "Line" : 191,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# cxx_executable(name dir lib srcs...)\n\n#\n\n# creates a named target that depends on the given libs and is built\n\n# from the given source files.  dir/name.cc is implicitly included in\n\n# the source file list.\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Sets PYTHONINTERP_FOUND and PYTHON_EXECUTABLE.\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# cxx_test_with_flags(name cxx_flags libs srcs...)\n\n#\n\n# creates a named C++ test that depends on the given libs and is built\n\n# from the given source files with the given compiler flags.\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# cxx_test(name libs srcs...)\n\n#\n\n# creates a named test target that depends on the given libs and is\n\n# built from the given source files.  Unlike cxx_test_with_flags,\n\n# test/name.cc is already implicitly included in the source file list.\n",
+        "Line" : 220,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# py_test(name)\n\n#\n\n# creates a Python test with the given name whose main module is in\n\n# test/name.py.  It does nothing if Python is not installed.\n",
+        "Line" : 230,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# We are not supporting Python tests on Linux yet as they consider\n\n# all Linux environments to be google3 and try to use google3 features.\n",
+        "Line" : 235,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# ${CMAKE_BINARY_DIR} is known at configuration time, so we can\n\n# directly bind it from cmake. ${CTEST_CONFIGURATION_TYPE} is known\n\n# only at ctest runtime (by calling ctest -c <Configuration>), so\n\n# we have to escape $ to delay variable substitution here.\n",
+        "Line" : 238,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 38
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googletest/make/Makefile" : {
+      "ObjectId" : "9ac74493ba55246597e90b898fae847ae358eab5",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A sample Makefile for building Google Test and using it in user\n\n# tests.  Please tweak it to suit your environment and project.  You\n\n# may want to move it to your project's root directory.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Please tweak the following variable definitions as needed by your\n\n# project, except GTEST_HEADERS, which you can use in your own targets\n\n# but shouldn't modify.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Points to the root of Google Test, relative to where this file is.\n\n# Remember to tweak this if you move this file.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to find user code.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# Set Google Test's header directory as a system directory, such that\n\n# the compiler doesn't generate warnings in Google Test headers.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# All tests produced by this Makefile.  Remember to add new tests you\n\n# created to the list.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# All Google Test headers.  Usually you shouldn't change this\n\n# definition.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# House-keeping build targets.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Builds gtest.a and gtest_main.a.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Usually you shouldn't tweak such internal variables, indicated by a\n\n# trailing _.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# For simplicity and to avoid depending on Google Test's\n\n# implementation details, the dependencies specified below are\n\n# conservative and not optimized.  This is fine as Google Test\n\n# compiles fast and for ordinary users its source rarely changes.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Builds a sample test.  A test should link with either gtest.a or\n\n# gtest_main.a, depending on whether it defines its own main()\n\n# function.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "src/yaml-cpp/test/gtest-1.8.0/googletest/scripts/test/Makefile" : {
+      "ObjectId" : "cdff584637b7a6e9df1fa43ce8f588c43815e561",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A Makefile for fusing Google Test and building a sample test against it.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make check  - makes everything and runs the built sample test.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Points to the root of fused Google Test, relative to where this file is.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Paths to the fused gtest files.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to find the sample test.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Where to find gtest_main.cc.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# We have no idea here whether pthreads is available in the system, so\n\n# disable its use.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/yaml-cpp/util/CMakeLists.txt" : {
+      "ObjectId" : "22866273c74cfd6be32fb59ebf43e254af5b83e8",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/yaml-cpp/yaml-cpp.pc.cmake" : {
+      "ObjectId" : "3db7962eaf50734dd153ee6f84f0285eb7fb5d4c",
+      "LastModified" : "2018-12-01T11:08:52Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "5209f49332a6db58ddb36048047eec5fb5708a18",
+      "LastModified" : "2019-03-09T09:54:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# we mostly prefer protocol-level integration tests but have some unit tests\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# the main tests require ruby (and various extra gems).  to run the suite, run\n\n#   cmake .. && CTEST_OUTPUT_ON_FAILURE=1 make test\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# we also have a performance test utility that is not run as part of the test suite because there's no particular pass/fail criteria\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 12,
+    "MAKEFILE" : 3,
+    "AUTOMAKE" : 2
+  },
+  "ElapsedTime" : 1268
+}

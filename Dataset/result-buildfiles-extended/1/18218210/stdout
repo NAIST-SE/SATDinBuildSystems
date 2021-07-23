@@ -1,0 +1,1582 @@
+{
+  "Repository" : "18218210",
+  "Revision" : "HEAD",
+  "ObjectId" : "d3dad4d44c1c71797f8b4e5e0177c5f8515d86be",
+  "CommitTime" : "2019-04-06T12:16:22Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "6ded748560a5618073c29b5c27e94aa811f1f62a",
+      "LastModified" : "2019-04-06T10:36:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Casacore\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable <packageName>_ROOT variables for recent versions of CMake\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#required\n",
+        "Line" : 37,
+        "CharPositionInLine" : 47
+      },
+      "4" : {
+        "Text" : "# By default build only Python2 bindings\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# By default build shared libraries\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Check if O_DIRECT is available.\n\n# Note this does not work well with check_c_source_compiles.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# By default do not use ADIOS2, HDF5, FFTW3\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# ccache use is optional\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# basic setup for building within CASA environment\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "### RHEL7\n",
+        "Line" : 102,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "### RHEL7\n",
+        "Line" : 114,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "### RHEL5/RHEL6\n",
+        "Line" : 122,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "### RHEL5\n",
+        "Line" : 127,
+        "CharPositionInLine" : 9
+      },
+      "14" : {
+        "Text" : "### RHEL6\n",
+        "Line" : 130,
+        "CharPositionInLine" : 9
+      },
+      "15" : {
+        "Text" : "# Test if shared libraries have to be built.\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Set RPATH to use for installed targets; append linker search path\n",
+        "Line" : 140,
+        "CharPositionInLine" : 8
+      },
+      "17" : {
+        "Text" : "# Define the compiler flags to be used.\n\n# Note: -Wshadow and -Wunreachable-code give (too) many warnings.\n\n# Casacore uses longlong, so no warnings for it.\n\n# Clang gives warning on bison generated code; disable unneeded-internal-declaration.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#SET(CMAKE_CXX_FLAGS=\"-g -O0 -Wall -Wextra -Wshadow -Wunused-variable\n\n# -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers\n\n# -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs\n\n# -ftest-coverage -Wold-style-cast -Weffc++ -Wconversion\")\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Set build type if not given.\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Use debug mode if building in dbg or debug directory.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Detect if the compiler supports C++11 if we want to use it.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# use faster fortran rules for complex operations, removes restoring complex\n\n# infinities if naive computation results in NAN + NAN * I\n\n#Handling complex multiplication and division with correct treating of complex\n\n#infinities (one element Inf regardless of the other) according to the C is\n\n#complicated.\n\n#E.g. a = NaN + 1e30 i; a * a is not NaN but a complex infinity (-Inf - NaN).\n\n#\n\n#Treating this situation correctly has large performance impact. In GCC's\n\n#implementation it is about 4 times slower than the naive implementation, with\n\n#vectorization enabled the impact is even larger.\n\n#As correct treatment of complex infinities when NaN appear in results is seldom\n\n#accounted for, or not required and most other languages do not have these\n\n#rules, the correct treatmeant can be disabled with the -fcx-fortran-rules flag.\n\n#This changes the semantics to those of the FORTRAN language which is removes\n\n#the need for rescuing the result when NaN appear. Python also follows FORTRAN\n\n#rules.\n\n#Additionally the correct behavior is not implemented in all compilers,\n\n#most notably clang which is the default compiler on MacOS. So turning off\n\n#correct treatment with GCC does not only make our code faster but also behave\n\n#the same on more compilers.\n\n#\n\n#This has measurable impact on e.g. applycal where the cpu performance improves\n\n#by about 20%.\n\n# For one reason or another the check on the compiler flag has no\n\n# effect; it still adds the option which fails for clang.\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# added before cmake flags so it can be disabled with\n\n# -fno-cx-fortran-rules for testing\n",
+        "Line" : 242,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Ensure clang is not complaining about unused arguments.\n",
+        "Line" : 251,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# Since 2015, we need pwrite and pwrite (POSIX 2001)\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# FindHDF5 uses environment variables, so set it if needed.\n",
+        "Line" : 263,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Find out which modules to build.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Determine which external packages to use.\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Decrease test timeout. Valgrind times are excessive and need much more.\n\n#set (CTEST_TEST_TIMEOUT 150 CACHE STRING\n\n#    \"Maximum ctest -S time allowed before CTest will kill the test.\" FORCE)\n\n# Already a cache var. It can be overridden using ctest --timeout N\n\n#set (DART_TESTING_TIMEOUT 150 CACHE STRING\n\n#    \"Maximum ctest time allowed before CTest will kill the test.\" FORCE)\n",
+        "Line" : 318,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Should pad to three decimal digits\n",
+        "Line" : 355,
+        "CharPositionInLine" : 42
+      },
+      "31" : {
+        "Text" : "#    find_package (WCSLIB 4.20 REQUIRED)\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# needed for CASA\n",
+        "Line" : 359,
+        "CharPositionInLine" : 43
+      },
+      "33" : {
+        "Text" : "# WCSlib 5.14 throws segfaults on lots of tests, e.g. tTempImage\n",
+        "Line" : 361,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# Set the include directories and HAVE compiler variables\n",
+        "Line" : 366,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "## setting intel libraries with e.g.\n\n##\n\n##    find_library( INTEL_IRNG irng HINTS ${INTEL_PATH} )\n\n##\n\n## causes CMAKE to substitute fully qualified paths which makes\n\n## python shared object unrelocatable in the case of libirng.so\n\n##\n",
+        "Line" : 403,
+        "CharPositionInLine" : 3
+      },
+      "36" : {
+        "Text" : "# Thread support?\n",
+        "Line" : 441,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Compile with -fno-threadsafe-statics if supp to reduce some thread safety overhead.\n",
+        "Line" : 469,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# Set default DATA_DIR if undefined.\n",
+        "Line" : 480,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Let cmake cache DATA_DIR.\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Set compiler flag if no table locking.\n",
+        "Line" : 488,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Set compiler flag if stack tracing.\n",
+        "Line" : 492,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Enable cmake testing and add make check target that builds and runs the test\n",
+        "Line" : 497,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# This legacy flag always builds the tests and runs them with make test. There\n\n# seems to be no good way to make test executable depend on the test target\n",
+        "Line" : 500,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Determine the SOVERSION and define as compile variable.\n",
+        "Line" : 506,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Add the modules to be built.\n",
+        "Line" : 516,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Show summary.\n",
+        "Line" : 538,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# List of build variables and defaults.\n\n#  BUILD_PYTHON                  YES\n\n#  BUILD_PYTHON3                 NO\n\n#  ENABLE_SHARED                 YES\n\n#  ENABLE_RPATH                  YES\n\n#  ENABLE_TABLELOCKING           YES\n\n#  USE_ADIOS2                    NO\n\n#  USE_HDF5                      NO\n\n#  USE_FFTW3                     NO\n\n#  USE_THREADS                   YES\n\n#  USE_OPENMP                    NO\n\n#  USE_MPI                       NO\n\n#  USE_STACKTRACE                NO\n\n#  DATA_DIR                      ${CMAKE_INSTALL_PREFIX}/share/casacore/data\n\n#  MODULE                        all\n\n#                                Possible value for MODULE (previous built too):\n\n#                                - casa     (casa)\n\n#                                - tables   (tables)\n\n#                                - measures (scimath,scimath_f,measures,meas)\n\n#                                -  ms      (ms,derivedmscal)\n\n#                                or msfits  (fits,ms,msfits,derivedmscal)\n\n#                                or images  (fits,lattices,mirlib,coordinates,images)\n\n#                                - all\n\n# \n\n# List of possibly used external packages and where\n\n#  CFITSIO      fits\n\n#  WCSLIB       coordinates\n\n#  SOFA         measures (optional, only for testing)\n\n#  DL           casa (optional)\n\n#  READLINE     casa (optional)\n\n#  HDF5         casa (optional)\n\n#  BISON        casa,tables,images\n\n#  FLEX         casa,tables,images\n\n#  ADIOS2       tables (optional)\n\n#  LAPACK       scimath\n\n#  BLAS         scimath\n\n#  FFTW         scimath (optional)\n\n#  BOOST        python (Boost-Python only)\n\n#  PYTHON       python\n\n#  NUMPY        python\n",
+        "Line" : 585,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 48
+    },
+    "build-tools/CMakeLists.txt" : {
+      "ObjectId" : "1a19448ca10871c11cad02aaa374a24e48757173",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA build-tools\n\n#\n\n# nothing to install\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "casa/Arrays/test/CMakeLists.txt" : {
+      "ObjectId" : "77edbe78b5abdd9cff7a69dbf20bab47837b86c3",
+      "LastModified" : "2018-12-15T15:17:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/BasicMath/test/CMakeLists.txt" : {
+      "ObjectId" : "959168dd3fd18d38f3129f191a5eb729a0a0fd47",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/BasicSL/test/CMakeLists.txt" : {
+      "ObjectId" : "ae697b28caec77b7f37de291a2d5895e429ea69f",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/CMakeLists.txt" : {
+      "ObjectId" : "a60ac548e4ce8cfc3b328c07f722b6700123f917",
+      "LastModified" : "2018-12-15T15:17:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA casa\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "casa/Containers/test/CMakeLists.txt" : {
+      "ObjectId" : "b3862dacb80b05dd99a9d293d1ed685607ed7625",
+      "LastModified" : "2018-12-15T15:17:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/Exceptions/test/CMakeLists.txt" : {
+      "ObjectId" : "7df4956b2bdebcdd05d43d73697d346f0a8e33c1",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/HDF5/test/CMakeLists.txt" : {
+      "ObjectId" : "a15012746777e28a7e920cac90fe7c543e5634a3",
+      "LastModified" : "2018-12-15T15:17:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/IO/test/CMakeLists.txt" : {
+      "ObjectId" : "188a6c4a8944fcd48cbd51464aec00c94ab95a4b",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/Inputs/test/CMakeLists.txt" : {
+      "ObjectId" : "071d60a112305e13529ade713dcc0f1ea477f19f",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/Json/test/CMakeLists.txt" : {
+      "ObjectId" : "1749b7184663e44d9f2cdfa6e01cb0b885c27564",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/Logging/test/CMakeLists.txt" : {
+      "ObjectId" : "dbd2676bae3f829bb8f957c8845b7acf8e3146c3",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/OS/test/CMakeLists.txt" : {
+      "ObjectId" : "520ceede23a336b5583be52a343768f82cbc9a48",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/Quanta/test/CMakeLists.txt" : {
+      "ObjectId" : "b1ec9e3f197a4074ac649074736c34ab7f411b7d",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/System/test/CMakeLists.txt" : {
+      "ObjectId" : "790da89fec3d666f3134390373e99af6580ce2ee",
+      "LastModified" : "2018-12-15T15:17:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/Utilities/test/CMakeLists.txt" : {
+      "ObjectId" : "8619c0d24f132b6019291d7f434dc0b8d1ca322a",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "casa/apps/CMakeLists.txt" : {
+      "ObjectId" : "3a23d8165f081e6482a969788b50e8edfd4204b3",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Programs\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Scripts\n\n##foreach(prog countcode)\n\n##   install(PROGRAMS ${prog} DESTINATION bin)\n\n##endforeach()\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "casa/test/CMakeLists.txt" : {
+      "ObjectId" : "46c88ba6cc8a72ea71d2c8e063b0a4a3ed2a50dc",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/FindBISON.cmake" : {
+      "ObjectId" : "b604d0ba6bb38a5e78dda2e8934b99c5a55e44d0",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find bison executable and provides macros to generate custom build rules\n\n# The module defines the following variables:\n\n#\n\n#  BISON_EXECUTABLE - path to the bison program\n\n#  BISON_VERSION - version of bison\n\n#  BISON_FOUND - true if the program was found\n\n#\n\n# If bison is found, the module defines the macros:\n\n#  BISON_TARGET(<Name> <YaccInput> <CodeOutput> [VERBOSE <file>]\n\n#              [COMPILE_FLAGS <string>])\n\n# which will create  a custom rule to generate  a parser. <YaccInput> is\n\n# the path to  a yacc file. <CodeOutput> is the name  of the source file\n\n# generated by bison.  A header file is also  be generated, and contains\n\n# the  token  list.  If  COMPILE_FLAGS  option is  specified,  the  next\n\n# parameter is  added in the bison  command line.  if  VERBOSE option is\n\n# specified, <file> is created  and contains verbose descriptions of the\n\n# grammar and parser. The macro defines a set of variables:\n\n#  BISON_${Name}_DEFINED - true is the macro ran successfully\n\n#  BISON_${Name}_INPUT - The input source file, an alias for <YaccInput>\n\n#  BISON_${Name}_OUTPUT_SOURCE - The source file generated by bison\n\n#  BISON_${Name}_OUTPUT_HEADER - The header file generated by bison\n\n#  BISON_${Name}_OUTPUTS - The sources files generated by bison\n\n#  BISON_${Name}_COMPILE_FLAGS - Options used in the bison command line\n\n#\n\n#  ====================================================================\n\n#  Example:\n\n#\n\n#   find_package(BISON)\n\n#   BISON_TARGET(MyParser parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)\n\n#   add_executable(Foo main.cpp ${BISON_MyParser_OUTPUTS})\n\n#  ====================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Kitware, Inc.\n\n# Copyright 2006 Tristan Carel\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distributed this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# internal macro\n",
+        "Line" : 64,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# internal macro\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#============================================================\n\n# BISON_TARGET (public macro)\n\n#============================================================\n\n#\n",
+        "Line" : 90,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Parsing parameters\n",
+        "Line" : 101,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# Header's name generated by bison (see option -d)\n",
+        "Line" : 121,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# define target variables\n",
+        "Line" : 137,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "#\n\n#============================================================\n",
+        "Line" : 146,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# FindBISON.cmake ends here\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "cmake/FindCFITSIO.cmake" : {
+      "ObjectId" : "a7497012967938dc775f439d800821b21707928a",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find CFITSIO.\n\n# Variables used by this module:\n\n#  CFITSIO_ROOT_DIR     - CFITSIO root directory\n\n# Variables defined by this module:\n\n#  CFITSIO_FOUND        - system has CFITSIO\n\n#  CFITSIO_INCLUDE_DIR  - the CFITSIO include directory (cached)\n\n#  CFITSIO_INCLUDE_DIRS - the CFITSIO include directories\n\n#                         (identical to CFITSIO_INCLUDE_DIR)\n\n#  CFITSIO_LIBRARY      - the CFITSIO library (cached)\n\n#  CFITSIO_LIBRARIES    - the CFITSIO libraries\n\n#                         (identical to CFITSIO_LIBRARY)\n\n#  CFITSIO_VERSION_STRING the found version of CFITSIO, padded to 3 digits\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 2009\n\n# ASTRON (Netherlands Institute for Radio Astronomy)\n\n# P.O.Box 2, 7990 AA Dwingeloo, The Netherlands\n\n#\n\n# This file is part of the LOFAR software suite.\n\n# The LOFAR software suite is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU General Public License as published\n\n# by the Free Software Foundation, either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# The LOFAR software suite is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License along\n\n# with the LOFAR software suite. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# $Id$\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Pad CFITSIO minor version to three digit because 3.181 is older than 3.35\n",
+        "Line" : 44,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# CFITSIO_VERSION_MINOR will contain 80 for 3.08, 181 for 3.181 and 200 for 3.2\n",
+        "Line" : 49,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 4
+    },
+    "cmake/FindDL.cmake" : {
+      "ObjectId" : "8d1df7bba56419d00ed17e4fb7e3632b488c2c9d",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - find where dlopen and friends are located.\n\n# DL_FOUND - system has dynamic linking interface available\n\n# DL_INCLUDE_DIR - where dlfcn.h is located.\n\n# DL_LIBRARIES - libraries needed to use dlopen\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If dlopen can be found without linking in dl then dlopen is part\n\n# of libc, so don't need to link extra libs.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake/FindFFTW3.cmake" : {
+      "ObjectId" : "886f3bebbbb5aa3d4d7f4e7739808f47aac39e6d",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find FFTW3.\n\n# Usage: find_package(FFTW3 [COMPONENTS [single double long-double threads]])\n\n#\n\n# Variables used by this module:\n\n#  FFTW3_ROOT_DIR             - FFTW3 root directory\n\n# Variables defined by this module:\n\n#  FFTW3_FOUND                - system has FFTW3\n\n#  FFTW3_INCLUDE_DIR          - the FFTW3 include directory (cached)\n\n#  FFTW3_INCLUDE_DIRS         - the FFTW3 include directories\n\n#                               (identical to FFTW3_INCLUDE_DIR)\n\n#  FFTW3[FL]?_LIBRARY         - the FFTW3 library - double, single(F), \n\n#                               long-double(L) precision (cached)\n\n#  FFTW3[FL]?_THREADS_LIBRARY - the threaded FFTW3 library - double, single(F), \n\n#                               long-double(L) precision (cached)\n\n#  FFTW3_LIBRARIES            - list of all FFTW3 libraries found\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 2009-2010\n\n# ASTRON (Netherlands Institute for Radio Astronomy)\n\n# P.O.Box 2, 7990 AA Dwingeloo, The Netherlands\n\n#\n\n# This file is part of the LOFAR software suite.\n\n# The LOFAR software suite is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU General Public License as published\n\n# by the Free Software Foundation, either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# The LOFAR software suite is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License along\n\n# with the LOFAR software suite. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# $Id: FindFFTW3.cmake 15918 2010-06-25 11:12:42Z loose $\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use double precision by default.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Loop over each component.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# If using threads, we need to link against threaded libraries as well.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Keep a list of variable names that we need to pass on to\n\n# find_package_handle_standard_args().\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Search for all requested libraries.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Search for the header file.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Handle the QUIETLY and REQUIRED arguments and set FFTW_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "cmake/FindFLEX.cmake" : {
+      "ObjectId" : "068ee75d85c223280a1d4828f31d09d57c560a37",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find flex executable and provides a macro to generate custom build rules\n\n#\n\n# The module defines the following variables:\n\n#  FLEX_FOUND - true is flex executable is found\n\n#  FLEX_EXECUTABLE - the path to the flex executable\n\n#  FLEX_VERSION - the version of flex\n\n#  FLEX_LIBRARIES - The flex libraries\n\n#\n\n# If flex is found on the system, the module provides the macro:\n\n#  FLEX_TARGET(Name FlexInput FlexOutput [COMPILE_FLAGS <string>])\n\n# which creates a custom command  to generate the <FlexOutput> file from\n\n# the <FlexInput> file.  If  COMPILE_FLAGS option is specified, the next\n\n# parameter is added to the flex  command line. Name is an alias used to\n\n# get  details of  this custom  command.  Indeed the  macro defines  the\n\n# following variables:\n\n#  FLEX_${Name}_DEFINED - true is the macro ran successfully\n\n#  FLEX_${Name}_OUTPUTS - the source file generated by the custom rule, an\n\n#  alias for FlexOutput\n\n#  FLEX_${Name}_INPUT - the flex source file, an alias for ${FlexInput}\n\n#\n\n# Flex scanners oftenly use tokens  defined by Bison: the code generated\n\n# by Flex  depends of the header  generated by Bison.   This module also\n\n# defines a macro:\n\n#  ADD_FLEX_BISON_DEPENDENCY(FlexTarget BisonTarget)\n\n# which  adds the  required dependency  between a  scanner and  a parser\n\n# where  <FlexTarget>  and <BisonTarget>  are  the  first parameters  of\n\n# respectively FLEX_TARGET and BISON_TARGET macros.\n\n#\n\n#  ====================================================================\n\n#  Example:\n\n#\n\n#   find_package(BISON)\n\n#   find_package(FLEX)\n\n#\n\n#   BISON_TARGET(MyParser parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp\n\n#   FLEX_TARGET(MyScanner lexer.l  ${CMAKE_CURRENT_BIANRY_DIR}/lexer.cpp)\n\n#   ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)\n\n#\n\n#   include_directories(${CMAKE_CURRENT_BINARY_DIR})\n\n#   add_executable(Foo\n\n#      Foo.cc\n\n#      ${BISON_MyParser_OUTPUTS}\n\n#      ${FLEX_MyScanner_OUTPUTS}\n\n#   )\n\n#  ====================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Kitware, Inc.\n\n# Copyright 2006 Tristan Carel\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distributed this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#============================================================\n\n# FLEX_TARGET (public macro)\n\n#============================================================\n\n#\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#============================================================\n",
+        "Line" : 114,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#============================================================\n\n# ADD_FLEX_BISON_DEPENDENCY (public macro)\n\n#============================================================\n\n#\n",
+        "Line" : 117,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#============================================================\n",
+        "Line" : 134,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# FindFLEX.cmake ends here\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "cmake/FindGSL.cmake" : {
+      "ObjectId" : "4f4d31bf567df848a71563fd949caa2187984f84",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Script found on KDE-edu list\n\n# Permission obtained from Jan Woetzel to use under a BSD-style license\n\n# (left to OpenCog to determine the specific BSD license, but this file should\n\n# be included in CMake proper soon...).\n\n#\n\n# Look for the header file\n\n# Try to find gnu scientific library GSL\n\n# See\n\n# http://www.gnu.org/software/gsl/  and\n\n# http://gnuwin32.sourceforge.net/packages/gsl.htm\n\n#\n\n# Once run this will define:\n\n#\n\n# GSL_FOUND       = system has GSL lib\n\n#\n\n# GSL_LIBRARIES   = full path to the libraries\n\n#    on Unix/Linux with additional linker flags from \"gsl-config --libs\"\n\n#\n\n# CMAKE_GSL_CXX_FLAGS  = Unix compiler flags for GSL, essentially \"`gsl-config --cxxflags`\"\n\n#\n\n# GSL_INCLUDE_DIR      = where to find headers\n\n#\n\n# GSL_LINK_DIRECTORIES = link directories, useful for rpath on Unix\n\n# GSL_EXE_LINKER_FLAGS = rpath on Unix\n\n#\n\n# Felix Woelk 07/2004\n\n# Jan Woetzel\n\n#\n\n# www.mip.informatik.uni-kiel.de\n\n# --------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# JW tested with gsl-1.8, Windows XP, MSVS 7.1\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "#MESSAGE(\"DBG\\n\"\n\n#  \"GSL_GSL_LIBRARY=${GSL_GSL_LIBRARY}\\n\"\n\n#  \"GSL_GSLCBLAS_LIBRARY=${GSL_GSLCBLAS_LIBRARY}\\n\"\n\n#  \"GSL_LIBRARIES=${GSL_LIBRARIES}\")\n",
+        "Line" : 64,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# MESSAGE(\"DBG GSL_CONFIG ${GSL_CONFIG}\")\n",
+        "Line" : 82,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# set CXXFLAGS to be fed into CXX_FLAGS by the user:\n",
+        "Line" : 85,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# set INCLUDE_DIRS to prefix+include\n",
+        "Line" : 88,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# set link libraries and link flags\n",
+        "Line" : 94,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "#SET(GSL_LIBRARIES \"`${GSL_CONFIG} --libs`\")\n",
+        "Line" : 98,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# extract link dirs for rpath\n",
+        "Line" : 100,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "# split off the link dirs (for rpath)\n\n# use regular expression to match wildcard equivalent \"-L*<endchar>\"\n\n# with <endchar> is a space or a semicolon\n",
+        "Line" : 105,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "#      MESSAGE(\"DBG  GSL_LINK_DIRECTORIES_WITH_PREFIX=${GSL_LINK_DIRECTORIES_WITH_PREFIX}\")\n",
+        "Line" : 111,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# remove prefix -L because we need the pure directory for LINK_DIRECTORIES\n",
+        "Line" : 113,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "#      MESSAGE(\"DBG  GSL_LINK_DIRECTORIES=${GSL_LINK_DIRECTORIES}\")\n\n#      MESSAGE(\"DBG  GSL_EXE_LINKER_FLAGS=${GSL_EXE_LINKER_FLAGS}\")\n",
+        "Line" : 119,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "#      ADD_DEFINITIONS(\"-DHAVE_GSL\")\n\n#      SET(GSL_DEFINITIONS \"-DHAVE_GSL\")\n",
+        "Line" : 122,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "#MESSAGE(STATUS \"Using GSL from ${GSL_PREFIX}\")\n",
+        "Line" : 131,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 15
+    },
+    "cmake/FindHDF5.cmake" : {
+      "ObjectId" : "b973912a0fe290c5d968823a6ff7420948218310",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find HDF5, a library for reading and writing self describing array data.\n\n#\n\n# This module invokes the HDF5 wrapper compiler that should be installed\n\n# alongside HDF5.  Depending upon the HDF5 Configuration, the wrapper compiler\n\n# is called either h5cc or h5pcc.  If this succeeds, the module will then call\n\n# the compiler with the -show argument to see what flags are used when compiling\n\n# an HDF5 client application.\n\n#\n\n# The module will optionally accept the COMPONENTS argument.  If no COMPONENTS\n\n# are specified, then the find module will default to finding only the HDF5 C\n\n# library.  If one or more COMPONENTS are specified, the module will attempt to\n\n# find the language bindings for the specified components.  Currently, the only\n\n# valid components are C and CXX.  The module does not yet support finding the\n\n# Fortran bindings.  If the COMPONENTS argument is not given, the module will\n\n# attempt to find only the C bindings.\n\n#\n\n# On UNIX systems, this module will read the variable HDF5_USE_STATIC_LIBRARIES\n\n# to determine whether or not to prefer a static link to a dynamic link for HDF5\n\n# and all of it's dependencies.  To use this feature, make sure that the\n\n# HDF5_USE_STATIC_LIBRARIES variable is set before the call to find_package.\n\n#\n\n# To provide the module with a hint about where to find your HDF5 installation,\n\n# you can set the environment variable HDF5_ROOT.  The Find module will then\n\n# look in this path when searching for HDF5 executables, paths, and libraries.\n\n#\n\n# In addition to finding the includes and libraries required to compile an HDF5\n\n# client application, this module also makes an effort to find tools that come\n\n# with the HDF5 distribution that may be useful for regression testing.\n\n# \n\n# This module will define the following variables:\n\n#  HDF5_INCLUDE_DIRS - Location of the hdf5 includes\n\n#  HDF5_DEFINITIONS - Required compiler definitions for HDF5\n\n#  HDF5_C_LIBRARIES - Required libraries for the HDF5 C bindings.\n\n#  HDF5_CXX_LIBRARIES - Required libraries for the HDF5 C++ bindings\n\n#  HDF5_LIBRARIES - Required libraries for all requested bindings\n\n#  HDF5_FOUND - true if HDF5 was found on the system\n\n#  HDF5_LIBRARY_DIRS - the full set of library directories\n\n#  HDF5_IS_PARALLEL - Whether or not HDF5 was found with parallel IO support\n\n#  HDF5_C_COMPILER_EXECUTABLE - the path to the HDF5 C wrapper compiler\n\n#  HDF5_CXX_COMPILER_EXECUTABLE - the path to the HDF5 C++ wrapper compiler\n\n#  HDF5_DIFF_EXECUTABLE - the path to the HDF5 dataset comparison tool\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distributed this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This module is maintained by Will Dicharry <wdicharry@stellarscience.com>.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# List of the valid HDF5 components\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# try to find the HDF5 wrapper compilers\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Invoke the HDF5 wrapper compiler.  The compiler return value is stored to the\n\n# return_value argument, the text output is stored to the output variable.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# do nothing\n",
+        "Line" : 99,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# Parse a compile line for definitions, includes, library paths, and libraries.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Match the include paths\n",
+        "Line" : 115,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Match the definitions\n",
+        "Line" : 125,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Match the library paths\n",
+        "Line" : 131,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# now search for the library names specified in the compile line (match -l...)\n\n# match only -l's preceded by a space or comma\n\n# this is to exclude directory names like xxx-linux/\n",
+        "Line" : 142,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# strip the -l from all of the library flags and add to the search list\n",
+        "Line" : 147,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Do nothing: we already have HDF5_INCLUDE_PATH and HDF5_LIBRARIES in the\n\n# cache, it would be a shame to override them\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# add the extra specified components, ensuring that they are valid.\n",
+        "Line" : 164,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# seed the initial lists of libraries to find with items we know we need\n",
+        "Line" : 176,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# take a guess that the includes may be in the 'include' sibling directory\n\n# of a library directory.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 12
+      },
+      "17" : {
+        "Text" : "# set the definitions for the language bindings.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# find the HDF5 include directories\n",
+        "Line" : 199,
+        "CharPositionInLine" : 8
+      },
+      "19" : {
+        "Text" : "# find the HDF5 libraries\n",
+        "Line" : 218,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "# According to bug 1643 on the CMake bug tracker, this is the\n\n# preferred method for searching for a static library.\n\n# See http://www.cmake.org/Bug/view.php?id=1643.  We search\n\n# first for the full static library name, but fall back to a\n\n# generic search on the name if the static search fails.\n",
+        "Line" : 221,
+        "CharPositionInLine" : 16
+      },
+      "21" : {
+        "Text" : "# even though we adjusted the individual library names in\n\n# select_library_configurations, we still need to distinguish\n\n# between debug and release variants because HDF5_LIBRARIES will\n\n# need to specify different lists for debug and optimized builds.\n\n# We can't just use the HDF5_${LIB}_LIBRARY variable (which was set\n\n# up by the selection macro above) because it may specify debug and\n\n# optimized variants for a particular library, but a list of\n\n# libraries is allowed to specify debug and optimized only once.\n",
+        "Line" : 243,
+        "CharPositionInLine" : 12
+      },
+      "22" : {
+        "Text" : "# Append the libraries for this language binding to the list of all\n\n# required libraries.\n",
+        "Line" : 258,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# We may have picked up some duplicates in various lists during the above\n\n# process for the language bindings (both the C and C++ bindings depend on\n\n# libz for example).  Remove the duplicates.\n",
+        "Line" : 266,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Construct the complete list of HDF5 libraries with debug and optimized\n\n# variants when the generator supports them.\n",
+        "Line" : 282,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# If the HDF5 include directory was found, open H5pubconf.h to determine if\n\n# HDF5 was compiled with parallel IO support\n",
+        "Line" : 292,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 26
+    },
+    "cmake/FindNUMPY.cmake" : {
+      "ObjectId" : "e91c65e72866b28f25e9c601f9bfc6f561334456",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find the NumPy libraries\n\n# This module finds if NumPy is installed, and sets the following variables\n\n# indicating where it is.\n\n#\n\n# TODO: Update to provide the libraries and paths for linking npymath lib.\n\n#\n\n# NUMPY_FOUND - was NumPy found\n\n# NUMPY_VERSION - the version of NumPy found as a string\n\n# NUMPY_VERSION_MAJOR - the major version number of NumPy\n\n# NUMPY_VERSION_MINOR - the minor version number of NumPy\n\n# NUMPY_VERSION_PATCH - the patch version number of NumPy\n\n# NUMPY_VERSION_DECIMAL - e.g. version 1.6.1 is 10601\n\n# NUMPY_INCLUDE_DIRS - path to the NumPy include files\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#============================================================================\n\n# Copyright 2012 Continuum Analytics, Inc.\n\n#\n\n# MIT License\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining\n\n# a copy of this software and associated documentation files\n\n# (the \"Software\"), to deal in the Software without restriction, including\n\n# without limitation the rights to use, copy, modify, merge, publish,\n\n# distribute, sublicense, and/or sell copies of the Software, and to permit\n\n# persons to whom the Software is furnished to do so, subject to\n\n# the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included\n\n# in all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n\n# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL\n\n# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR\n\n# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\n\n# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\n\n# OTHER DEALINGS IN THE SOFTWARE.\n\n#\n\n#============================================================================\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Finding NumPy involves calling the Python interpreter\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Convert the process output into a list\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Just in case there is unexpected output from the Python command.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# If numpy headers are not installed, n.get_include() returns None\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Unset this variable\n",
+        "Line" : 83,
+        "CharPositionInLine" : 28
+      },
+      "7" : {
+        "Text" : "# The output from Python was unexpected. Raise an error always\n\n# here, because we found NumPy, but it appears to be corrupted somehow.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Make sure all directory separators are '/'\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Get the major and minor version numbers\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "cmake/FindPthreads.cmake" : {
+      "ObjectId" : "a34638b752892675f0f1efa4155a9ea80d400695",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the Pthreads library\n\n# This module searches for the Pthreads library (including the\n\n# pthreads-win32 port).\n\n#\n\n# This module defines these variables:\n\n#\n\n#  PTHREADS_FOUND       - True if the Pthreads library was found\n\n#  PTHREADS_LIBRARY     - The location of the Pthreads library\n\n#  PTHREADS_INCLUDE_DIR - The include directory of the Pthreads library\n\n#  PTHREADS_DEFINITIONS - Preprocessor definitions to define (HAVE_PTHREAD_H is a fairly common one)\n\n#\n\n# This module responds to the PTHREADS_EXCEPTION_SCHEME\n\n# variable on Win32 to allow the user to control the\n\n# library linked against.  The Pthreads-win32 port\n\n# provides the ability to link against a version of the\n\n# library with exception handling.\tIT IS NOT RECOMMENDED\n\n# THAT YOU CHANGE PTHREADS_EXCEPTION_SCHEME TO ANYTHING OTHER THAN\n\n# \"C\" because most POSIX thread implementations do not support stack\n\n# unwinding.\n\n#\n\n#  PTHREADS_EXCEPTION_SCHEME\n\n#\t   C  = no exceptions (default)\n\n#\t\t  (NOTE: This is the default scheme on most POSIX thread\n\n#\t\t   implementations and what you should probably be using)\n\n#\t   CE = C++ Exception Handling\n\n#\t   SE = Structure Exception Handling (MSVC only)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Define a default exception scheme to link against\n\n# and validate user choice.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Assign default if needed\n",
+        "Line" : 34,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# Validate\n",
+        "Line" : 37,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "#\n\n# Find the header file\n\n#\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Find the library\n\n#\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Unix / Cygwin / Apple / Etc.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 11
+      },
+      "CommentCount" : 7
+    },
+    "cmake/FindPython.cmake" : {
+      "ObjectId" : "152dc0e51d900c4c2ee0c4679ace6077cc185d94",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find the Python interpreter, Python header files and libraries. \n\n# This macro effectively wraps the FindPythonInterp and FindPythonLibs macros\n\n# provided by CMake.\n\n#\n\n# In addition to the variables that are set by FindPythonInterp and\n\n# FindPythonLibs, this will define:\n\n#  PYTHON_FOUND        - system has Python interpreter, Python headers\n\n#                        files and libraries\n\n#  PYTHON_INCLUDE_DIRS - path to the Python header files\n\n#  PYTHON_BUILD_DIR    - build directory for Python extensions (cached)\n\n#  PYTHON_INSTALL_DIR  - installation directory for Python extensions (cached)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 2009\n\n# ASTRON (Netherlands Institute for Radio Astronomy)\n\n# P.O.Box 2, 7990 AA Dwingeloo, The Netherlands\n\n#\n\n# This file is part of the LOFAR software suite.\n\n# The LOFAR software suite is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU General Public License as published\n\n# by the Free Software Foundation, either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# The LOFAR software suite is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License along\n\n# with the LOFAR software suite. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# $Id: FindPython.cmake 22948 2012-11-23 08:54:47Z loose $\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set options string to pass to the find_package() commands below.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Search for the Python interpreter.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Search for the Python header files and libraries.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Set PYTHON_INCLUDE_DIRS variable, because FindPythonLibs does not do it.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# PythonInstall sets PYTHON_BUILD_DIR and PYTHON_INSTALL_DIR\n\n#include(PythonInstall)\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set PYTHON_FOUND to TRUE if both Python interpreter and libraries are found.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake/FindReadline.cmake" : {
+      "ObjectId" : "7c6fe061d1d04ff8061eb50721735f1f41164a19",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find readline, a library for easy editing of command lines.\n\n# Variables used by this module:\n\n#  READLINE_ROOT_DIR     - Readline root directory\n\n# Variables defined by this module:\n\n#  READLINE_FOUND        - system has Readline\n\n#  READLINE_INCLUDE_DIR  - the Readline include directory (cached)\n\n#  READLINE_INCLUDE_DIRS - the Readline include directories\n\n#                          (identical to READLINE_INCLUDE_DIR)\n\n#  READLINE_LIBRARY      - the Readline library (cached)\n\n#  READLINE_LIBRARIES    - the Readline library plus the libraries it \n\n#                          depends on\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 2009\n\n# ASTRON (Netherlands Institute for Radio Astronomy)\n\n# P.O.Box 2, 7990 AA Dwingeloo, The Netherlands\n\n#\n\n# This file is part of the LOFAR software suite.\n\n# The LOFAR software suite is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU General Public License as published\n\n# by the Free Software Foundation, either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# The LOFAR software suite is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License along\n\n# with the LOFAR software suite. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# $Id: FindReadline.cmake 15228 2010-03-16 09:27:26Z loose $\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# readline depends on libncurses\n",
+        "Line" : 39,
+        "CharPositionInLine" : 42
+      },
+      "CommentCount" : 3
+    },
+    "cmake/FindSOFA.cmake" : {
+      "ObjectId" : "b6d0389bf51e5bcc470a02591df0e10428af71f3",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find SOFA: the IAU Standards of Fundamental Astronomy libraries\n\n# Variables used by this module:\n\n#  SOFA_ROOT_DIR     - SOFA root directory\n\n# Variables defined by this module:\n\n#  SOFA_FOUND        - system has SOFA\n\n#  SOFA_LIBRARY      - the SOFA library (cached)\n\n#  SOFA_LIBRARIES    - the SOFA libraries\n\n#                        (identical to SOFA_LIBRARY)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindWCSLIB.cmake" : {
+      "ObjectId" : "4327084374c6d653f44f4cd12e7c25e599bc5b22",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find WCSLIB: the FITS \"World Coordinate System\" library\n\n# Variables used by this module:\n\n#  WCSLIB_ROOT_DIR     - WCSLIB root directory\n\n# Variables defined by this module:\n\n#  WCSLIB_FOUND        - system has WCSLIB\n\n#  WCSLIB_INCLUDE_DIR  - the WCSLIB include directory (cached)\n\n#  WCSLIB_INCLUDE_DIRS - the WCSLIB include directories\n\n#                        (identical to WCSLIB_INCLUDE_DIR)\n\n#  WCSLIB_LIBRARY      - the WCSLIB library (cached)\n\n#  WCSLIB_LIBRARIES    - the WCSLIB libraries\n\n#                        (identical to WCSLIB_LIBRARY)\n\n#  WCSLIB_VERSION_STRING the found version of WCSLIB\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 2009\n\n# ASTRON (Netherlands Institute for Radio Astronomy)\n\n# P.O.Box 2, 7990 AA Dwingeloo, The Netherlands\n\n#\n\n# This file is part of the LOFAR software suite.\n\n# The LOFAR software suite is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU General Public License as published\n\n# by the Free Software Foundation, either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# The LOFAR software suite is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License along\n\n# with the LOFAR software suite. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# $Id$\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/PythonInstall.cmake" : {
+      "ObjectId" : "967bb6eb3bfb6a1822f36a97e170200cb7495b21",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Install Python source files.\n\n#  python_install(source1..sourceN DESTINATION install_dir)\n\n# Install Python source files and byte-compile them in the directory\n\n# ${PYTHON_INSTALL_DIR}/${install_dir}.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (C) 2008-2009\n\n# ASTRON (Netherlands Foundation for Research in Astronomy)\n\n# P.O.Box 2, 7990 AA Dwingeloo, The Netherlands, seg@astron.nl\n\n#\n\n# This program is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 2 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, write to the Free Software\n\n# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n\n#\n\n# $Id: PythonInstall.cmake 23473 2013-01-10 08:02:35Z loose $\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Search for the Python interpreter.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Derive the Python site-packages installation directory and build directory.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# macro python_install\n\n#\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Precondition check.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Parse arguments.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Set python package build/install directory.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Install and byte-compile each Python file.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Create a symlink to each Python file; needed to mimic install tree.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Make sure that there's a __init__.py file in each build/install directory.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 11
+    },
+    "cmake/SelectLibraryConfigurations.cmake" : {
+      "ObjectId" : "edba5d9d6e7fd66acb5d26f2a6000c635ece2e50",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# select_library_configurations( basename )\n\n#\n\n# This macro takes a library base name as an argument, and will choose good\n\n# values for basename_LIBRARY, basename_LIBRARIES, basename_LIBRARY_DEBUG, and\n\n# basename_LIBRARY_RELEASE depending on what has been found and set.  If only\n\n# basename_LIBRARY_RELEASE is defined, basename_LIBRARY, basename_LIBRARY_DEBUG,\n\n# and basename_LIBRARY_RELEASE will be set to the release value.  If only\n\n# basename_LIBRARY_DEBUG is defined, then basename_LIBRARY,\n\n# basename_LIBRARY_DEBUG and basename_LIBRARY_RELEASE will take the debug value.  \n\n#\n\n# If the generator supports configuration types, then basename_LIBRARY and\n\n# basename_LIBRARIES will be set with debug and optimized flags specifying the\n\n# library to be used for the given configuration.  If no build type has been set\n\n# or the generator in use does not support configuration types, then\n\n# basename_LIBRARY and basename_LIBRARIES will take only the release values.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Kitware, Inc.\n\n# Copyright 2009 Will Dicharry <wdicharry@stellarscience.com>\n\n# Copyright 2005-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distributed this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This macro was adapted from the FindQt4 CMake module and is maintained by Will\n\n# Dicharry <wdicharry@stellarscience.com>.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Utility macro to check if one variable exists while another doesn't, and set\n\n# one that doesn't exist to the one that exists.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# if only the release version was found, set the debug to be the release\n\n# version.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# if only the debug version was found, set the release value to be the\n\n# debug value.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# if the generator supports configuration types or CMAKE_BUILD_TYPE\n\n# is set, then set optimized and debug options.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# If there are no configuration types or build type, just use\n\n# the release version\n",
+        "Line" : 63,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 8
+    },
+    "coordinates/CMakeLists.txt" : {
+      "ObjectId" : "7ef92b1489c2bd10b84640448b35a7569c678da5",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA coordinates\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "coordinates/Coordinates/test/CMakeLists.txt" : {
+      "ObjectId" : "bd1c9960db210251aa3ac97d24c8478287c8acd5",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "derivedmscal/CMakeLists.txt" : {
+      "ObjectId" : "23c16aee7567846f34be0e751690c3992b86c30d",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA derivedmscal\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "derivedmscal/DerivedMC/test/CMakeLists.txt" : {
+      "ObjectId" : "2a8d57a6bf64f18b29d7e091078ac6c9c2efceaf",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "fits/CMakeLists.txt" : {
+      "ObjectId" : "2104c5612c5a9529cda5a3a95fc610d8e347f70c",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA Fits\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#the tests\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "fits/FITS/test/CMakeLists.txt" : {
+      "ObjectId" : "f8a20c52de6b7645a63d562e08c715312ffe4a5d",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "fits/apps/CMakeLists.txt" : {
+      "ObjectId" : "578ee92d757f27a3c888195d32b0a7d84c7483b5",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "images/CMakeLists.txt" : {
+      "ObjectId" : "80ea4b22efb41c4b8284e94683baea364a09ad28",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA Images\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "images/Images/test/CMakeLists.txt" : {
+      "ObjectId" : "302d7980026a0555e09b0cc41ec9f19f67ae7f26",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# for tFITSQualityImage\n",
+        "Line" : 2,
+        "CharPositionInLine" : 27
+      },
+      "1" : {
+        "Text" : "# for tFITSImgParser\n",
+        "Line" : 3,
+        "CharPositionInLine" : 26
+      },
+      "2" : {
+        "Text" : "# for tImageStatistics\n",
+        "Line" : 4,
+        "CharPositionInLine" : 28
+      },
+      "3" : {
+        "Text" : "#ngc5921.clean.fits       # for tImageMetaData\n\n#ngc5921.clean.no_freq.no_stokes.fits     # for tImageMetaData\n\n#jyperpixelimage.fits     # for tImageMetaData\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# for tFITSImage\n",
+        "Line" : 8,
+        "CharPositionInLine" : 24
+      },
+      "5" : {
+        "Text" : "# for dImageStatistics. image2fits\n",
+        "Line" : 9,
+        "CharPositionInLine" : 27
+      },
+      "CommentCount" : 6
+    },
+    "images/Regions/test/CMakeLists.txt" : {
+      "ObjectId" : "b94c391be0ee3349bbbb88145a9c77faa689b494",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "images/apps/CMakeLists.txt" : {
+      "ObjectId" : "2f06cea986214d0bf5e687832ae6219dc8a0c31a",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lattices/CMakeLists.txt" : {
+      "ObjectId" : "45ffaa17d05ba96fe6ceb6a74856392d7e2dd889",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA Lattices\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The tests\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "lattices/LEL/test/CMakeLists.txt" : {
+      "ObjectId" : "fcaceca373a36c703536b46df6dbec8f8f3d328e",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lattices/LRegions/test/CMakeLists.txt" : {
+      "ObjectId" : "0e3e14757f3b24258bb9687b380359ce1a76e001",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lattices/LatticeMath/test/CMakeLists.txt" : {
+      "ObjectId" : "0d869d57e29f1cd411312f6f0e46bcfe43fb4638",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lattices/Lattices/test/CMakeLists.txt" : {
+      "ObjectId" : "0840ee99a0d7799dc6a5c8e2660fd028d8f562e6",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "meas/CMakeLists.txt" : {
+      "ObjectId" : "c3266bcf86e94a253bf713d38c1f2e4ac86b7e17",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA meas\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "meas/MeasUDF/test/CMakeLists.txt" : {
+      "ObjectId" : "e4e8ff4aede9d10b37a4b2dfa152fe846eff7f88",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "measures/CMakeLists.txt" : {
+      "ObjectId" : "c424d059f9d7940463bfbad979d8c2273bf6dd90",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA measures\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check whether DATA_DIR contains data (only if measures is build)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If given, add the data directory as compile variable.\n\n# If it contains a single $, it needs to be doubled for make purposes.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "measures/Measures/test/CMakeLists.txt" : {
+      "ObjectId" : "c10a670273c21c45ce6b637d54c003b55b834e44",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "measures/TableMeasures/test/CMakeLists.txt" : {
+      "ObjectId" : "e7c4af1f962b7f79fb18f56c4149c1f7b9016369",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "measures/apps/CMakeLists.txt" : {
+      "ObjectId" : "fcf218489f4aca1d2cf30d44b7c5acae9053eee5",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "mirlib/CMakeLists.txt" : {
+      "ObjectId" : "0703a5d1d238abebd9ac67ff7dd21e35f86dc596",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA Mirlib\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "ms/CMakeLists.txt" : {
+      "ObjectId" : "a0401720f1e42d02ce2132e1e17468d0cf52bf96",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA MeasurementSets \n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "ms/MSOper/test/CMakeLists.txt" : {
+      "ObjectId" : "c0366ef281d3961593c76bdd70566e8b13a98abe",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "ms/MSSel/test/CMakeLists.txt" : {
+      "ObjectId" : "c33c14d93bf2cc1d454b4e8f52821cba7f8364a4",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "ms/MeasurementSets/test/CMakeLists.txt" : {
+      "ObjectId" : "6e66aadc3ddb2a24ddd6773a2198d07484e14972",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#foreach (files\n\n#antenna.params\n\n#feed.params\n\n#field.params\n\n#obs.params\n\n#range-obs.params\n\n#selector-obs.params\n\n#spw.params\n\n#)\n\n#    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${files} ${CMAKE_CURRENT_BINARY_DIR}#/${files} COPYONLY)\n\n#endforeach (files)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "ms/apps/CMakeLists.txt" : {
+      "ObjectId" : "79136b116b09eb960fac585bd51fda56fd6f4743",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "msfits/CMakeLists.txt" : {
+      "ObjectId" : "28f1884a206d3e932362160adbfebe0ee3016107",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA msfits\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "msfits/MSFits/test/CMakeLists.txt" : {
+      "ObjectId" : "4f2c14a8e6b4e21807b673bf1dee449c61bddf41",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "msfits/apps/CMakeLists.txt" : {
+      "ObjectId" : "d2775c8253a311c1608e674eb7ea83db0d2a1c6c",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "python/CMakeLists.txt" : {
+      "ObjectId" : "f8ece258455e91892ff7f2c6729b296cb959ca33",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# tempororarly set variables used by findpython\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Detect the python properties\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# copy the variables to their final destination\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# to access the variables here we also need to set them in the local scope\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Remove cached variable to not confuse user\n",
+        "Line" : 49,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "python/Converters/test/CMakeLists.txt" : {
+      "ObjectId" : "1ef82cec266bc6fa064075f1b7083099be980703",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "python3/CMakeLists.txt" : {
+      "ObjectId" : "43003659b6303efc62da49ac19865af6df47966a",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# tempororarly set variables used by findpython\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Detect the python properties\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# NOTE: the name of the python3 version of boost is probably Debian/Ubuntu specific\n",
+        "Line" : 29,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# copy the variables to their final destination\n",
+        "Line" : 35,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# to access the variables here we also need to set them in the local scope\n",
+        "Line" : 48,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Remove cached variable to not confuse user\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# don't install headers if python2 cmake logic already installs it\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "scimath/CMakeLists.txt" : {
+      "ObjectId" : "7293669169470debab50b5b600ee61c9794c64c0",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA Scimath\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "scimath/Fitting/test/CMakeLists.txt" : {
+      "ObjectId" : "35d258f980dbcb06258ffc89e9d3f070e4790046",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "scimath/Functionals/test/CMakeLists.txt" : {
+      "ObjectId" : "7dc31abcc17fc34022db03d121e7007d5dda542c",
+      "LastModified" : "2016-11-03T13:55:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "scimath/Mathematics/test/CMakeLists.txt" : {
+      "ObjectId" : "2b92793a88c9dfe5dc56ed80530c17f3b0e5fbb3",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "scimath/StatsFramework/test/CMakeLists.txt" : {
+      "ObjectId" : "ad1ce4fbcf42e95a21e245e8b87242360a85019f",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "scimath_f/CMakeLists.txt" : {
+      "ObjectId" : "572995318fd6a04b29ad323c4e300f5d7fbcb5a3",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA scimath_f\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tables/CMakeLists.txt" : {
+      "ObjectId" : "3f8b710b2aefe3d9f467d09f8864aaea5694ea4e",
+      "LastModified" : "2019-03-18T09:27:08Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CASA Tables\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add SOVERSION definition for files needing it.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tables/DataMan/test/CMakeLists.txt" : {
+      "ObjectId" : "40a19b259c6fb480f47745b4c6a3b3f801ba4eea",
+      "LastModified" : "2019-01-19T11:36:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Some test sources include a test .h file.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tables/LogTables/test/CMakeLists.txt" : {
+      "ObjectId" : "3279e6aa59773d106f9edb23163f8e1b4898e80e",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tables/TaQL/test/CMakeLists.txt" : {
+      "ObjectId" : "4dc71400c3aa3551acc75e284385bae1a3754263",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Define the table files used in tests.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copying is not needed, thus outcommented.\n\n#foreach (file ${datafiles})\n\n#    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)\n\n#endforeach (file)\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Only test scripts, no test programs.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Some test sources include a test .h file.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tables/Tables/test/CMakeLists.txt" : {
+      "ObjectId" : "79570a33efbdab58b2017f0e06b89ea5c4392930",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Some test sources include a test .h file.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tables/apps/CMakeLists.txt" : {
+      "ObjectId" : "1ee3b0a8bc46d57a596c3e564000496a154cd7cc",
+      "LastModified" : "2019-01-07T08:48:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 80
+  },
+  "ElapsedTime" : 8013
+}

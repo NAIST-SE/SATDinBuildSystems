@@ -1,0 +1,600 @@
+{
+  "Repository" : "13645425",
+  "Revision" : "HEAD",
+  "ObjectId" : "be350f3f2c2fb6f135cc07c41f83fd0e4f521ac1",
+  "CommitTime" : "2015-09-24T19:25:55Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "76450dec3b4e493aebc881728ebe0c7029042bce",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Standard developer directions:\n\n#\n\n# $ make\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Nightly build directions:\n\n#\n\n# Create ci/buildnumber.properties with the following entry:\n\n#     BUILD_NUMBER=n\n\n# \n\n# $ make\n\n#\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "###########################################################################\n\n# Directories\n\n###########################################################################\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# R/\t\t\tH2O support for the R language.  Includes tests.\n\n# bench/\t\tBenchmarking support.\n\n# ci/\t\t\tSupport files for Jenkins (continuous integration).\n\n# docs/\t\t\tIndividual documents for the project.\n\n# ec2/\t\t\tEC2 scripts for use by the public.\n\n# experiments/\t\tExperimental code built on top of H2O.\n\n# hadoop/\t\tHadoop driver and mapper for H2O.\n\n# h2o-scala/\t\tScala DSL + REPL\n\n# h2o-docs/             docs.0xdata.com website content.\n\n# installer/\t\tBitRock InstallBuilder code for windows and mac.\n\n# launcher/\t\tLauncher packaged with the installer.\n\n# lib/\t\t\tLibraries used for compiling and running H2O.\n\n# packaging/\t\tVarous files used for building the H2O packages.\n\n# py/\t\t\tPython tests.\n\n# selenium/\t\tWeb UI tests.\n\n# smalldata/\t\t\"Small\" (in size) datasets used for testing.\n\n# src/\t\t\tH2O source code.\n\n# target/\t\tBuild output directory (Warning: gets wiped out!).\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "###########################################################################\n\n# Figure out how to create PROJECT_VERSION variable.\n\n###########################################################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# 'ci' directory stands for Continuous Integration, which is where the\n\n# version number stuff for a release is stored.\n\n#\n\n# ci/release.properties is a file that exists in git and is updated by\n\n# hand on a per-branch basis.  This file contains the variables\n\n#     BUILD_MAJOR_VERSION=x\n\n#     BUILD_MINOR_VERSION=y\n\n#     BUILD_INCREMENTAL_VERSION=z\n\n#\n\n# ci/buildnumber.properties is a file that gets created by jenkins.\n\n# This file contains the variable\n\n#     BUILD_NUMBER=n\n\n#\n\n# Simply cloning a git repository won't get you a real build number.\n\n# Only jenkins manages them.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Use buildnumber.properties if it exists.  Otherwise, use 99999\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "###########################################################################\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# @echo\n\n# @echo \"PHASE: Building Shalala...\"\n\n# @echo\n\n# $(MAKE) -C h2o-scala PROJECT_VERSION=$(PROJECT_VERSION)\n",
+        "Line" : 111,
+        "CharPositionInLine" : 1
+      },
+      "9" : {
+        "Text" : "# Strip out stuff from h2o.jar that isn't needed for R.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Build the file for submission to CRAN by stripping out h2o.jar.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Run Cookbook tests.\n\n# Add to make test once they are reliable.\n",
+        "Line" : 225,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# If this fails, you might need to do the following:\n\n#     $ (possibly sudo) easy_install pip\n\n#     $ (possibly sudo) pip install sphinxcontrib-fulltoc\n\n#\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# Set appropriately for your data size to quickly try out H2O.\n\n# For best results, the Java heap should be at least 4x data size.\n\n# After starting H2O, point your browser to:\n\n#     http://localhost:54321\n\n#\n",
+        "Line" : 305,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "R/Makefile" : {
+      "ObjectId" : "74c280208c2a908384c3a246de398a1744904b4c",
+      "LastModified" : "2014-10-10T16:31:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For windows NT the shell is odd.  Cygwin 'shell uname' returns CYGWIN_NT-6.1-WOW64\r\n\n# which is not really what we want.  The normal CMD shell does something else.\r\n\n# So don't ask for 'uname' if we already got Windows_NT\r\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Do a best-effort attempt to see if the R user has pdflatex installed\r\n\n# and avoid running it if they don't.\r\n\n#\r\n\n# But use the '-' to ignore failures and continue the build even if it does fail.\r\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Create file with description of all packages\r\n",
+        "Line" : 57,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# Add to repo in target directory\r\n",
+        "Line" : 61,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# Build binary for each OS\r\n",
+        "Line" : 67,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# Create repo subdirectory for MacOSX\r\n",
+        "Line" : 78,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# Create repo subdirectory for MacOSX Mavericks\r\n",
+        "Line" : 89,
+        "CharPositionInLine" : 1
+      },
+      "7" : {
+        "Text" : "# Create repo subdirectory for Windows\r\n",
+        "Line" : 95,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 8
+    },
+    "client/Makefile" : {
+      "ObjectId" : "28a3c8d881a36ef20bca47f2581c075378f656d7",
+      "LastModified" : "2014-08-14T18:07:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Common javascript files that go into both the browser and node targets.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Javascript files that go into the browser target.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Javascript files that go into the node target.\n\n# All test scripts go at the bottom of this list.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Lib javascript files that go into the browser target.\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Lib javascript files that go into the browser target. \n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Sort of pointless running this. \n\n# Pretty much all errors thrown point to coffeescript-generated code.\n\n# TODO revisit better way to lint coffeescript.\n",
+        "Line" : 255,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# This runs all tests by default. \n\n# To run specific tests, run:\n\n#   make ARGS=\"-g foobar\" test\n\n# where foobar is a regexp\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "docs/deeplearning/Makefile" : {
+      "ObjectId" : "9c03df8c6759e1af84d569181d3c5b6fd63bfc10",
+      "LastModified" : "2014-07-29T21:45:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "docs/uml/Makefile" : {
+      "ObjectId" : "2c9b2bc031ebdacc74efc8165c7ee391c6a1abb3",
+      "LastModified" : "2014-10-20T00:30:37Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# http://plantuml.sourceforge.net\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "ec2/Makefile" : {
+      "ObjectId" : "085e2e685093080683a8a624df30be8811405300",
+      "LastModified" : "2014-07-29T21:45:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "h2o-cookbook/Makefile" : {
+      "ObjectId" : "28813e1876a37669a43c12f2a8eed36d71c82d32",
+      "LastModified" : "2014-07-29T21:45:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "h2o-docs-theme/demo_docs/Makefile" : {
+      "ObjectId" : "8c907fd422a22c2f016346a4e92561c0406be987",
+      "LastModified" : "2014-07-29T21:45:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "h2o-docs/Makefile" : {
+      "ObjectId" : "cf6b3d834b0a227f2205f94da94b4f3fac721b2b",
+      "LastModified" : "2014-07-29T21:45:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "h2o-parent/pom.xml" : {
+      "ObjectId" : "6ad856a35c136c374ff7026dd8d7ca8a77428b74",
+      "LastModified" : "2014-11-05T00:39:53Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Support OSS sonatype snapshot/release management ",
+        "Line" : 4,
+        "CharPositionInLine" : 60
+      },
+      "1" : {
+        "Text" : " This is H2O parent project for sharing common settings cross H2O build stack ",
+        "Line" : 10,
+        "CharPositionInLine" : 88
+      },
+      "2" : {
+        "Text" : " We support only new version of Mave ",
+        "Line" : 32,
+        "CharPositionInLine" : 47
+      },
+      "3" : {
+        "Text" : " List of common build properties. ",
+        "Line" : 37,
+        "CharPositionInLine" : 44
+      },
+      "4" : {
+        "Text" : " Java version used by javac for -source/-target parameters.",
+        "Line" : 41,
+        "CharPositionInLine" : 71
+      },
+      "5" : {
+        "Text" : " GitHub is H2O primary SCM ",
+        "Line" : 45,
+        "CharPositionInLine" : 37
+      },
+      "6" : {
+        "Text" : " Public H2O JIRA for issue management ",
+        "Line" : 52,
+        "CharPositionInLine" : 48
+      },
+      "7" : {
+        "Text" : " Pre-configure build dependencies ",
+        "Line" : 58,
+        "CharPositionInLine" : 44
+      },
+      "8" : {
+        "Text" : " Setup plugins for this POM and all kids POMs. ",
+        "Line" : 60,
+        "CharPositionInLine" : 59
+      },
+      "9" : {
+        "Text" : " Enforce compiler version - see http://stackoverflow.com/questions/3138384/java-warning-build-path-specifies-execution-environment-j2se-1-4 ",
+        "Line" : 63,
+        "CharPositionInLine" : 156
+      },
+      "10" : {
+        "Text" : " Enfore the Java version ",
+        "Line" : 82,
+        "CharPositionInLine" : 41
+      },
+      "11" : {
+        "Text" : " Configure invocation of tests. ",
+        "Line" : 102,
+        "CharPositionInLine" : 48
+      },
+      "12" : {
+        "Text" : " Uses scalatest instead ",
+        "Line" : 108,
+        "CharPositionInLine" : 44
+      },
+      "13" : {
+        "Text" : " Add S3 wagoon for uploading artifacts into S3 repository. ",
+        "Line" : 114,
+        "CharPositionInLine" : 71
+      },
+      "CommentCount" : 14
+    },
+    "h2o-samples/devops-automation/pom.xml" : {
+      "ObjectId" : "54bba3dbe093f76e93184b0e25a6f936b06127a2",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "h2o-scala/Makefile" : {
+      "ObjectId" : "a311c4d838160d41aeccdb580eb656cafe1c8535",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# \n\n# Simple SBT wrapper for building and cleaning the project\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Setup sbt location\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Suppress printing commands\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "h2o-zookeeper/Makefile" : {
+      "ObjectId" : "2f6844ec9fab2ae34d61e47a0428c99f1606aee0",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "hadoop/Makefile" : {
+      "ObjectId" : "9a260deb066335a07d627b97111060cdccab0862",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# For each supported HADOOP_VERSION, add _JAR_DIR and _JARS below,\n\n# and add a line to the build target.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ------------------------------\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Figure out classpath separator for Unix vs. Windows\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "installer/Makefile" : {
+      "ObjectId" : "49bb85e7eaddc87253f80cb79d9d88bf010526f3",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "launcher/Makefile" : {
+      "ObjectId" : "0a683f3f42fb0d33f3d2c6b91215ec02f2137a1e",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# H2OLauncher.jar was created using IDEA's GUI builder.\n\n# The IDEA files all live in ideafiles.zip and the produced jar\n\n# file is checked in so nobody else needs to have IDEA.\n\n#\n\n# The next step here would be to have real windows and mac\n\n# binary apps.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "pom.xml" : {
+      "ObjectId" : "a885c2689b5a20f530658b5a3eb16451a90cf0d1",
+      "LastModified" : "2015-04-13T23:43:13Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Share H2O-parent POM ",
+        "Line" : 4,
+        "CharPositionInLine" : 32
+      },
+      "1" : {
+        "Text" : " This artifact setup. \n      NOTE: groupId, version are inherited from parent POM \n  ",
+        "Line" : 13,
+        "CharPositionInLine" : 6
+      },
+      "2" : {
+        "Text" : " List of build properties. ",
+        "Line" : 20,
+        "CharPositionInLine" : 37
+      },
+      "3" : {
+        "Text" : " Default compile time version of Hadoop client: in H2O lib-directory structured referenced as cdh3. ",
+        "Line" : 22,
+        "CharPositionInLine" : 112
+      },
+      "4" : {
+        "Text" : " Repositories ",
+        "Line" : 26,
+        "CharPositionInLine" : 24
+      },
+      "5" : {
+        "Text" : " Cloudera release repository ",
+        "Line" : 28,
+        "CharPositionInLine" : 41
+      },
+      "6" : {
+        "Text" : " Project dependencies ",
+        "Line" : 40,
+        "CharPositionInLine" : 32
+      },
+      "7" : {
+        "Text" : " = Test dependencies = ",
+        "Line" : 42,
+        "CharPositionInLine" : 35
+      },
+      "8" : {
+        "Text" : " = Compile time dependencies = ",
+        "Line" : 55,
+        "CharPositionInLine" : 43
+      },
+      "9" : {
+        "Text" : " == Apache dependencies == ",
+        "Line" : 56,
+        "CharPositionInLine" : 39
+      },
+      "10" : {
+        "Text" : " ===Apache math3 dependency=== ",
+        "Line" : 93,
+        "CharPositionInLine" : 43
+      },
+      "11" : {
+        "Text" : " ==Google dependencies== ",
+        "Line" : 99,
+        "CharPositionInLine" : 37
+      },
+      "12" : {
+        "Text" : " NOTE: this dependency is intentionally disabled since it is a specific\n         version of gson library with renamed classes. ",
+        "Line" : 107,
+        "CharPositionInLine" : 59
+      },
+      "13" : {
+        "Text" : "\n    <dependency>\n      <groupId>ai.h2o.gson</groupId>\n      <artifactId>gson</artifactId>\n      <version>2.3</version>\n      <scope>provided</scope>\n    </dependency>",
+        "Line" : 114,
+        "CharPositionInLine" : 21
+      },
+      "14" : {
+        "Text" : " ==Jama is given explicitely - it was modified and compiled by @tomas == ",
+        "Line" : 115,
+        "CharPositionInLine" : 85
+      },
+      "15" : {
+        "Text" : " ==POI dependencies== ",
+        "Line" : 122,
+        "CharPositionInLine" : 34
+      },
+      "16" : {
+        "Text" : " ==jets3t dependencies== ",
+        "Line" : 129,
+        "CharPositionInLine" : 37
+      },
+      "17" : {
+        "Text" : " ==Java AWS SDK dependencies== ",
+        "Line" : 136,
+        "CharPositionInLine" : 43
+      },
+      "18" : {
+        "Text" : " ==Javassist dependency ",
+        "Line" : 143,
+        "CharPositionInLine" : 36
+      },
+      "19" : {
+        "Text" : " ==Jogamp dependencies for NN== ",
+        "Line" : 150,
+        "CharPositionInLine" : 44
+      },
+      "20" : {
+        "Text" : "<dependency>\n      <groupId>org.jogamp.gluegen</groupId>\n      <artifactId>gluegen-rt-main</artifactId>\n      <version>2.0.2-rc12</version>\n      <scope>compile</scope>\n    </dependency>",
+        "Line" : 156,
+        "CharPositionInLine" : 21
+      },
+      "21" : {
+        "Text" : " ==Hadoop core dependencies== ",
+        "Line" : 162,
+        "CharPositionInLine" : 42
+      },
+      "22" : {
+        "Text" : " ==Joda time dependencies== ",
+        "Line" : 169,
+        "CharPositionInLine" : 40
+      },
+      "23" : {
+        "Text" : " ==json.org== ",
+        "Line" : 175,
+        "CharPositionInLine" : 26
+      },
+      "24" : {
+        "Text" : " ==tachyon== ",
+        "Line" : 181,
+        "CharPositionInLine" : 25
+      },
+      "25" : {
+        "Text" : " Configure build ",
+        "Line" : 206,
+        "CharPositionInLine" : 27
+      },
+      "26" : {
+        "Text" : " Setup plugins for this POM and all kids POMs. ",
+        "Line" : 215,
+        "CharPositionInLine" : 59
+      },
+      "27" : {
+        "Text" : " Configure creation of source package. ",
+        "Line" : 218,
+        "CharPositionInLine" : 53
+      },
+      "28" : {
+        "Text" : " Configure invocation of tests. ",
+        "Line" : 235,
+        "CharPositionInLine" : 47
+      },
+      "29" : {
+        "Text" : " FIXME: we still have no proper JUnit runner for H2O tests ",
+        "Line" : 241,
+        "CharPositionInLine" : 78
+      },
+      "30" : {
+        "Text" : " Plugins activation and setup ",
+        "Line" : 247,
+        "CharPositionInLine" : 42
+      },
+      "31" : {
+        "Text" : " unpack gson library into classes to force packaging of the library into resulting jar ",
+        "Line" : 249,
+        "CharPositionInLine" : 103
+      },
+      "32" : {
+        "Text" : " FIXME: DatasetCompare serves as a sandbox for Tomas. It should be\n             user private and removed! ",
+        "Line" : 271,
+        "CharPositionInLine" : 43
+      },
+      "33" : {
+        "Text" : " By default generate source jar ",
+        "Line" : 281,
+        "CharPositionInLine" : 48
+      },
+      "34" : {
+        "Text" : " By default generate javadoc jar ",
+        "Line" : 295,
+        "CharPositionInLine" : 49
+      },
+      "35" : {
+        "Text" : " Publish test-jar since it contains TestUtils for writing H2O tests ",
+        "Line" : 309,
+        "CharPositionInLine" : 84
+      },
+      "36" : {
+        "Text" : " TODO: have profiles for each end-user: Mr. Jenkins, developer, ... ",
+        "Line" : 325,
+        "CharPositionInLine" : 76
+      },
+      "CommentCount" : 37
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 14,
+    "MAVEN" : 3
+  },
+  "ElapsedTime" : 12254
+}

@@ -1,0 +1,1406 @@
+{
+  "Repository" : "11005911",
+  "Revision" : "HEAD",
+  "ObjectId" : "48e95a71308318c8ffb7ed1348e034fd9110f70c",
+  "CommitTime" : "2018-09-21T16:08:39Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "d6d30b73aecf54b814f97aee995b14df7104be3f",
+      "LastModified" : "2018-02-02T17:51:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# We have unit test projects via googletest, they're added in the places where they are defined\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Autoboost headers required everywhere but on MSVC 2015+, which doesn't rely on filesystem\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable conformance mode for newer versions of MSVC\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Recurse through source directories\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Now we can generate the version and install stuff\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake-modules/AddPCH.cmake" : {
+      "ObjectId" : "a1ead5781544c324098d1fa5bc738f6c8a893682",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#MSVC pch macro.  Copied from http://pastebin.com/84dm5rXZ and modified by Walter Gray\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake-modules/ConditionalSources.cmake" : {
+      "ObjectId" : "e24bd25b512605e8631173527bc503bda03be5b1",
+      "LastModified" : "2014-12-05T19:29:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst\n\n#ConditionalSources\n\n#---------------\n\n# Created by Walter Gray\n\n# \n\n# This module defines a set of functions for specifying conditionally compiled source files,\n\n# generally platform specific ones.  Files that are listed but whose condition is not met will\n\n# still be visible in any IDE generated projects, but will not be compiled and will be isolated in\n\n# a named filter group.  This is particularly useful for find and replace operations in multi-platform\n\n# codebases.\n\n#\n\n# There are two groups of functions\n\n# conditional_sources is sufficient for setting all the flags on a list of files so that they will be grouped\n\n# and only compiled under the given conditions.\n\n# add_conditional_sources will first call conditional_sources, and will then append the list of sources to the given\n\n# variable.\n\n#\n\n# add_named_conditional_functions is used for defining shorthand functions. Examples are at the bottom, and cover the most common\n\n# platform-specific use cases.\n\n#\n\n# It is also worth noting that this is the only example I'm aware of showing cmake macro for defining functions.\n\n# The trick was realising that referencing ${ARGV} in a macro references the ARGV of the *macro*, but you can\n\n# access the defined function's ARGV by putting \"ARGV\" in a variable, then double-dereferincing it - this prevents\n\n# the ${ARGV} from being parsed by cmake's macro preprocessor.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#as conditional_sources, but also appends the soruces to the source_list_var\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#defines 'func_name' and add_'func_name' shorthands for add_conditional_sources with pre-set conditions.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#Some good defaults\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake-modules/CreateImportTargetHelpers.cmake" : {
+      "ObjectId" : "e376d075b114f4d6253cf915f7d655187a505555",
+      "LastModified" : "2014-11-25T00:05:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst\n\n# CreateImportTargetHelpers\n\n# -------------------------\n\n# \n\n# Created by Walter Gray\n\n# A suite of functions helpful for writing Find modules that make use of the \n\n# INTERFACE targets and Usage Requirements concepts introduced in cmake 3.0.0.\n\n# \n\n# The following functions are provided by this module:\n\n# ::\n\n#   map_var_to_prop\n\n#   generate_import_target\n\n#   \n\n# ::\n\n#     GENERATE_IMPORT_TARGET(<namespace> <type> [<target>])\n\n#\n\n#   namespace - The namespace of the library\n\n#   type - The type of target.  Allowed values are SHARED, STATIC, INTERFACE and UNKNOWN\n\n#   target - Optional parameter allowing you to specify the generated target name\n\n#\n\n# Generates an import target of the specified type with the default name\n\n# <namespace>::<namespace>.\n\n#\n\n# The values for the resulting library are read from the standard variables below.\n\n# Any variable which is found is marked as advanced.\n\n# <namespace>_LIBRARY<_DEBUG/_RELEASE>\n\n#   The file to use as the IMPORTED_LOCATION.  If <type> is SHARED, this should\n\n#   be a .dll, .dylib, or .so.  If <type> is STATIC or UNKNOWN, this should be \n\n#   a .lib, or .a file.  This is unused for INTERFACE libraries\n\n# <namespace>_SHARED_LIB<_DEBUG/_RELEASE>\n\n#   The file to use as the IMPORTED_LOCATION if <type> is SHARED.  This is helpful\n\n#   for backwards compatilbility where projects expect _LIBRARY to be the import_lib.\n\n# <namespace>_IMPORT_LIB<_DEBUG/_RELEASE>\n\n#   The import library corresponding to the .dll.  Only used on Windows. \n\n#   This may not use generator expressions.\n\n# <namespace>_INTERFACE_LIBS<_DEBUG/_RELEASE>\n\n#   Additional link libraries, *excluding* the <namespace>_LIBRARY and\n\n#   <namespace>_IMPORT_LIB values, if any. Generator expressions OK.\n\n# <namespace>_INCLUDE_DIR\n\n#   Interface include directories. Generator expressions OK.\n\n#\n\n# ::\n\n#     MAP_VAR_TO_PROP(target property variable [REQUIRED])\n\n#\n\n#   target - The name of the target we're changing.\n\n#   property - The property to append to.\n\n#   variable - The root name of the variable we're appending to target::property\n\n#   REQUIRED - Optional arg, if specified will throw a fatal error if no matching variable is found\n\n#\n\n# Primarily used by GENERATE_IMPORT_TARGET, but perhaps helpful externally when dealing\n\n# with tricky libraries.  Searches for <variable> as well as <variable>_<CONFIG> values,\n\n# and appends any value found to the matching property (<variable>_DEBUG goes to <property>_DEBUG)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# message(\"Searching for ${var}\")\n",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "#mark_as_advanced(${property}${_config}) #anything that gets passed in here is an advanced variable\n",
+        "Line" : 65,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "#set the default to a nice generator expression if it is not in the blacklist\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#acceptable libtypes are SHARED, STATIC, INTERFACE, and UNKNOWN\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake-modules/DefinePostBuildResourceCopyRules.cmake" : {
+      "ObjectId" : "3fdb454fdce99b04cbf95b437dcdf15e92cff0ea",
+      "LastModified" : "2014-11-25T00:05:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst\n\n#\n\n# DefinePostBuildResourceCopyRules\n\n# --------------\n\n#\n\n# Created by Victor Dods.\n\n# Hides the nastiness of defining platform-specific rules for installing\n\n# resource files post-build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The RELATIVE_PATH_BASE option can be used to specify an (absolute) path which\n\n# will be used as the base path for determining where the resource directory is\n\n# located.  The resource directory will depend on the platform and other options,\n\n# such as if the target has MACOSX_BUNDLE specified.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Do the fancy map-style parsing of the arguments\n",
+        "Line" : 15,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# The \"base\" resources dir which may be appended to, depending on the platform and other conditions.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Override it with the RELATIVE_PATH_BASE value if specified.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Decide where the resources directory is on each platform.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# This is the correct way to detect Mac OS X operating system -- see http://www.openguru.com/2009/04/cmake-detecting-platformoperating.html\n",
+        "Line" : 40,
+        "CharPositionInLine" : 46
+      },
+      "7" : {
+        "Text" : "# TODO: apparently there is a different \"correct\" way to install files on Mac;\n\n# see: http://www.cmake.org/cmake/help/v3.0/prop_sf/MACOSX_PACKAGE_LOCATION.html\n\n# Though this seems unnecessary.  Maybe we'll do this later.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# CMAKE_BUILD_TYPE will be one of Release, Debug, etc.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 12
+      },
+      "9" : {
+        "Text" : "# Check to see if the target is a Mac OS X bundle.  If so, set the resources dir to the appropriate\n\n# directory in the bundle\n",
+        "Line" : 50,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# CMAKE_CFG_INTDIR  will be one of Release, Debug, etc.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# Add post-build rules for copying the resources into the correct place.\n\n# This should happen at the end of the build.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Add the post-build command for copying files (if different)\n",
+        "Line" : 64,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# Add the post-build command for copying files (if different)\n",
+        "Line" : 72,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# Also add install rules for Linux\n",
+        "Line" : 81,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 15
+    },
+    "cmake-modules/InstallHeaders.cmake" : {
+      "ObjectId" : "108996a2b7876076084775688357d94c27a474a5",
+      "LastModified" : "2016-02-26T20:44:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Installs headers for the named target\n\n# Syntax:\n\n# install_headers TARGET <target> DESTINATION <destination> ...\n\n#\n\n# NOEXCLUDE_STDAFX      Also install the precompiled header file\n\n# <target>              The target whose sources are to be installed\n\n# <destination>         The root of the destination folder where files will be copied\n\n#\n\n# Additional options are passed after FILES to the cmake install command\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake-modules/LeapCMakeTemplates.cmake" : {
+      "ObjectId" : "e35cb806d8684db0fe46c71b694bc6bcce7fda6d",
+      "LastModified" : "2016-02-26T20:44:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst\n\n#LeapTemplates\n\n#-------------\n\n# Created by Walter Gray\n\n#\n\n# Some Leap Motion specific boilderplate code.\n\n# Not reccomended for use outside of the Leap Motion engineering group,\n\n# though you're welcome to define your own.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Disable MinSizeRel & MaxSpeedRel\n",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake-modules/PrintTargetProperties.cmake" : {
+      "ObjectId" : "338d6221c127ccd64780e3c6fc6ac7c2e4286b3d",
+      "LastModified" : "2016-02-26T20:44:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This useful script was taken from http://www.kitware.com/blog/home/post/390 and slightly modified.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# message(\"echo_target_property -- tgt = ${tgt}, prop = ${prop}\")\n\n# v for value, d for defined, s for set\n",
+        "Line" : 3,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# only produce output for values that are set\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# LOCATION\n\n# LOCATION_DEBUG\n\n# LOCATION_RELEASE\n",
+        "Line" : 120,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# set(targets\n\n#   CMakeLib\n\n#   cmake-gui\n\n#   MathFunctions\n\n#   Tutorial\n\n#   vtkCommonCore\n\n# )\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# echo_targets(${targets})\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake-modules/SelectConfigurations.cmake" : {
+      "ObjectId" : "b0e4f33d808cbb451fea2b95579a693ede6fd138",
+      "LastModified" : "2016-02-26T20:44:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# SelectConfigurations\n\n# ---------------------------\n\n#\n\n# Originally SelectConfigurations\n\n# Modified by Walter gray to create generator expressions instead of\n\n# using the optimized and debug keywords. This makes the output\n\n# suitable for use with the INTERFACE_LINK_LIBRARIES property.\n\n#\n\n# select_configurations( basename )\n\n#\n\n# This macro takes a library base name as an argument, and will choose\n\n# good values for basename_LIBRARY, basename_LIBRARIES,\n\n# basename_LIBRARY_DEBUG, and basename_LIBRARY_RELEASE depending on what\n\n# has been found and set.  If only basename_LIBRARY_RELEASE is defined,\n\n# basename_LIBRARY will be set to the release value, and\n\n# basename_LIBRARY_DEBUG will be set to basename_LIBRARY_DEBUG-NOTFOUND.\n\n# If only basename_LIBRARY_DEBUG is defined, then basename_LIBRARY will\n\n# take the debug value, and basename_LIBRARY_RELEASE will be set to\n\n# basename_LIBRARY_RELEASE-NOTFOUND.\n\n#\n\n# If the generator supports configuration types, then basename_LIBRARY\n\n# and basename_LIBRARIES will be set with debug and optimized flags\n\n# specifying the library to be used for the given configuration.  If no\n\n# build type has been set or the generator in use does not support\n\n# configuration types, then basename_LIBRARY and basename_LIBRARIES will\n\n# take only the release value, or the debug value if the release one is\n\n# not set.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2009 Will Dicharry <wdicharry@stellarscience.com>\n\n# Copyright 2005-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This macro was adapted from the FindQt4 CMake module and is maintained by Will\n\n# Dicharry <wdicharry@stellarscience.com>.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#checking argv2 directly is bad, since the argvX variables are not reset between function calls\n",
+        "Line" : 48,
+        "CharPositionInLine" : 21
+      },
+      "4" : {
+        "Text" : "# if the generator supports configuration types or CMAKE_BUILD_TYPE\n\n# is set, then set optimized and debug options.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "#break out of local scope\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "cmake-modules/TargetImportedLibraries.cmake" : {
+      "ObjectId" : "8fc252b3019432a3f29bfa6c06d2dc9a17a5ac22",
+      "LastModified" : "2016-02-26T20:44:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# ImportTargetLibraries\n\n# ---------------------\n\n#\n\n# Created by Walter Gray\n\n# See CreateImportTargetHelpers.cmake for a suite of functions suitable for writing Find \n\n# modules compatible with this approach.\n\n#\n\n# ========================\n\n# TARGET_IMPORTED_LIBRARIES(<target> <link_type> <import_target>)\n\n#   Takes the same arguments as target_link_libraries, but for any listed library where\n\n#   <import_target> is a valid target with a TYPE property of SHARED_LIBRARY, it will\n\n#   read from the IMPORTED_LOCATION and IMPORTED_LOCATION_<CONFIG> parameters and generate\n\n#   a custom post-build step to copy the shared library files to the appropriate location.\n\n#   On windows, this is the TARGET_FILE_DIR of <target>.  link_type should be one of\n\n#   PUBLIC, PRIVATE, or INTERFACE\n\n#\n\n#  TARGET_PACKAGE(<target> <package> ...)\n\n#   Takes the same arguments as find_package, with the addition of the target you're\n\n#   linking to as the first parameter.  Upon successfully finding the package, it\n\n#   attempts to call TARGET_IMPORTED_LIBRARIES(<target> <package>::<package>)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#pop the target\n",
+        "Line" : 25,
+        "CharPositionInLine" : 25
+      },
+      "2" : {
+        "Text" : "#early out if the target isn't an EXECUTABLE\n",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#setup custom commands to copy .dll/dylib files for all dependencies\n",
+        "Line" : 37,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#foreach doesn't allow you to append to the list from within the loop.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#make sure we don't do duplicate adds.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 34
+      },
+      "6" : {
+        "Text" : "#if only the _<Config> variants are set, create a generator expression.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "#call install_name_tool and fixup the dylib paths here:\n",
+        "Line" : 90,
+        "CharPositionInLine" : 12
+      },
+      "8" : {
+        "Text" : "#an extremely verbose i++...\n",
+        "Line" : 98,
+        "CharPositionInLine" : 46
+      },
+      "9" : {
+        "Text" : "#if this is expensive, simply increment it when adding to the list.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "#this is likely to have changed\n",
+        "Line" : 100,
+        "CharPositionInLine" : 43
+      },
+      "11" : {
+        "Text" : "#This function wraps find_package, then calls target_imported_libraries on the generated package)\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# pop the target\n",
+        "Line" : 106,
+        "CharPositionInLine" : 25
+      },
+      "CommentCount" : 13
+    },
+    "cmake-modules/VerboseMessage.cmake" : {
+      "ObjectId" : "982c419c6d1050fc265962bc7ea1a4c86b27e052",
+      "LastModified" : "2016-02-26T20:44:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst\n\n#\n\n# VerboseMessage\n\n# --------------\n\n#\n\n# Handy function for printing debug info\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prints a list of vars in the format\n\n# varname1 = \"${varname1}\", varname2 = \"${varname2}\", etc.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/CMakeLists.txt" : {
+      "ObjectId" : "819cfe9b180a13595329c179351c2af13627eae0",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/gtest-1.7.0/CMakeLists.txt" : {
+      "ObjectId" : "15a92a8babdd497a3b1f0e489fb733c681ef9f48",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/CMakeLists.txt" : {
+      "ObjectId" : "f60caa1dcfe921dac5661a451aeb14ffa4a7511c",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############ Setup project and cmake\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Project name\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Minimum cmake requirement. We should require a quite recent\n\n# cmake for the dependency find macros etc. to be up to date.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Make relative paths absolute (needed later on)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Set CMake library search policy\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Disable unnecessary build types\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Include our cmake macros\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "############ Paths\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# CMake install step prefix. I assume linux users want the prefix to\n\n# be the default /usr or /usr/local so this is only adjusted on Windows.\n\n# - Windows: Build the INSTALL project in your solution file.\n\n# - Linux/OSX: make install.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "############  Build customization\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Override from command line \"CMake -D<OPTION>=TRUE/FALSE/0/1/ON/OFF\"\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "############ Compiler specific setup\n",
+        "Line" : 74,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# VC9 and C++11 reasoning\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Detect clang. Not officially reported by cmake.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# C++11 defines\n",
+        "Line" : 92,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Visual studio\n",
+        "Line" : 104,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# g++\n",
+        "Line" : 115,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# todo: should we use CMAKE_C_FLAGS for these?\n",
+        "Line" : 122,
+        "CharPositionInLine" : 58
+      },
+      "18" : {
+        "Text" : "# Try to detect version. Note: Not tested!\n",
+        "Line" : 125,
+        "CharPositionInLine" : 8
+      },
+      "19" : {
+        "Text" : "# clang\n",
+        "Line" : 133,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# todo: is libc++ really needed here?\n",
+        "Line" : 142,
+        "CharPositionInLine" : 77
+      },
+      "21" : {
+        "Text" : "# todo: should we use CMAKE_C_FLAGS for these?\n",
+        "Line" : 144,
+        "CharPositionInLine" : 57
+      },
+      "22" : {
+        "Text" : "# OSX, can override above.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "############ Dependencies\n",
+        "Line" : 161,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Set BOOST_ROOT env variable or pass with cmake -DBOOST_ROOT=path.\n\n# BOOST_ROOT can also be defined by a previous run from cmake cache.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# Scons documentation for BOOST_ROOT_CPP11:\n\n# \"look for optional second boostroot compiled with clang's libc++ STL library\n\n# this prevents warnings/errors when linking code built with two different\n\n# incompatible STL libraries.\"\n",
+        "Line" : 166,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# Cache BOOST_ROOT for runs that do not define $ENV{BOOST_ROOT}.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 8
+      },
+      "27" : {
+        "Text" : "# todo: someone who knows better spesify these!\n",
+        "Line" : 203,
+        "CharPositionInLine" : 99
+      },
+      "28" : {
+        "Text" : "# Boost is a project wide global dependency.\n",
+        "Line" : 208,
+        "CharPositionInLine" : 8
+      },
+      "29" : {
+        "Text" : "# Pretty print status\n",
+        "Line" : 212,
+        "CharPositionInLine" : 8
+      },
+      "30" : {
+        "Text" : "############ Add projects\n",
+        "Line" : 234,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Add main library\n",
+        "Line" : 236,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Add examples\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Add tests\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Install the websocketpp-config.cmake and websocketpp-configVersion.cmake\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 35
+    },
+    "contrib/websocketpp/cmake/CMakeHelpers.cmake" : {
+      "ObjectId" : "c2a20e5ad23f668e075f6f2b52d5a3af39005fe5",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Print build configuration\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Adds the given folder_name into the source files of the current project. \n\n# Use this macro when your module contains .cpp and .h files in several subdirectories.\n\n# Your sources variable needs to be WSPP_SOURCE_FILES and headers variable WSPP_HEADER_FILES.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Initialize target.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Include our own module path. This makes #include \"x.h\" \n\n# work in project subfolders to include the main directory headers.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Build executable for executables\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Build executable and register as test\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Finalize target for all types\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# install headers, directly from current source dir and look for subfolders with headers\n",
+        "Line" : 82,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 8
+    },
+    "contrib/websocketpp/examples/associative_storage/CMakeLists.txt" : {
+      "ObjectId" : "2f77e7bbcbf6945021e0ed4190eb3a99851238a9",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/broadcast_server/CMakeLists.txt" : {
+      "ObjectId" : "5fb5fe3b5ea99b74e0b1017e196dc2287f22fdc6",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/debug_client/CMakeLists.txt" : {
+      "ObjectId" : "651208a37299cacb779556750ed5dad408721100",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/debug_server/CMakeLists.txt" : {
+      "ObjectId" : "d134d318e92f20d7417d0c69880d6fbb47e09e57",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/dev/CMakeLists.txt" : {
+      "ObjectId" : "f820c6b531e4e2b4e79416cfd93409b74bb99c8a",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#init_target (dev)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#build_executable (${TARGET_NAME} ${SOURCE_FILES} ${HEADER_FILES})\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#link_boost ()\n\n#final_target ()\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#set_target_properties(${TARGET_NAME} PROPERTIES FOLDER \"examples\")\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "contrib/websocketpp/examples/echo_client/CMakeLists.txt" : {
+      "ObjectId" : "1fdf39e9ed53fca4a8861a8851fab10ab9dda9c9",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/echo_server/CMakeLists.txt" : {
+      "ObjectId" : "a48be52448035736dd4ccb890dc917110ac95fc6",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/echo_server_both/CMakeLists.txt" : {
+      "ObjectId" : "83c50dc12a09d07c708aba1c04ba1a6a3bbe62d3",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/echo_server_tls/CMakeLists.txt" : {
+      "ObjectId" : "99f0c14288053d23013d5b30b42c9659d8a30b60",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/enriched_storage/CMakeLists.txt" : {
+      "ObjectId" : "78fa7d2532c4a5a09617f52fa50cf5432e49787b",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/external_io_service/CMakeLists.txt" : {
+      "ObjectId" : "5223da1be2382cef2c9fa4cb494de19492448c8a",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/handler_switch/CMakeLists.txt" : {
+      "ObjectId" : "45917d51a1b0de7ec28491b00e164dc1b0a65c1f",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/iostream_server/CMakeLists.txt" : {
+      "ObjectId" : "962d90978e85fa88e1629fd496ed481a0beab8ed",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/print_server/CMakeLists.txt" : {
+      "ObjectId" : "32c6e0fa83a7a55b160b69e3de36649f7ac47ee2",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/simple_broadcast_server/CMakeLists.txt" : {
+      "ObjectId" : "5828edb2e4fbe7fe58e3104d95793a6c97cb2160",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/sip_client/CMakeLists.txt" : {
+      "ObjectId" : "439fdf1fb91780b546b9b57d95f27a1b58ed0870",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/subprotocol_server/CMakeLists.txt" : {
+      "ObjectId" : "fa911eba32e6c69f89a785831973f6188c3411d1",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/telemetry_client/CMakeLists.txt" : {
+      "ObjectId" : "04462e986f42910ea34cf6d9f10a789c992dfdde",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/telemetry_server/CMakeLists.txt" : {
+      "ObjectId" : "845fe863cc99f55b29185c64598ca42bc38c630b",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/testee_client/CMakeLists.txt" : {
+      "ObjectId" : "e89fcc7fa0b0453b3e630f52a04a06d3d61c04a4",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/testee_server/CMakeLists.txt" : {
+      "ObjectId" : "c95e42dc386f0a08e2a189d12864674193b5477f",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/examples/utility_client/CMakeLists.txt" : {
+      "ObjectId" : "fbfd86825edde446887bc9fbd33932bbc98be097",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/test/connection/CMakeLists.txt" : {
+      "ObjectId" : "cc501c7eed0aa537d45950b532a9d7585e3634de",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/test/endpoint/CMakeLists.txt" : {
+      "ObjectId" : "1b2535324e03e1eefc904411ba883c0f2a29d1ad",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/test/extension/CMakeLists.txt" : {
+      "ObjectId" : "9cb8f8a47ca15277ecd64b73fa91593951613c44",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Extension Tests\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Permessage-deflate tests\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/websocketpp/test/http/CMakeLists.txt" : {
+      "ObjectId" : "e005477e5dea9bbe8a72753b2cdbddc5c984f21d",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/test/logger/CMakeLists.txt" : {
+      "ObjectId" : "42d8b7c83ed75d2fcebfc5daf15532ca59bfef29",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/websocketpp/test/message_buffer/CMakeLists.txt" : {
+      "ObjectId" : "cd17e5565eb2ca3f710abd4763d91f741d586d88",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test alloc message buffer strategy\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test message buffers\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/websocketpp/test/processors/CMakeLists.txt" : {
+      "ObjectId" : "42b04680d1803f6853698db58a9470b2675adbba",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Generic processor tests\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Hybi00 processor tests\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Hybi07 processor tests\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Hybi08 processor tests\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Hybi13 processor tests\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Permessage compression extension processor tests\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "contrib/websocketpp/test/random/CMakeLists.txt" : {
+      "ObjectId" : "1fd459d57b035df790da6bdf3b98022878862ebb",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test RNG policy none\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test RNG policy random_device\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/websocketpp/test/roles/CMakeLists.txt" : {
+      "ObjectId" : "5d411370ac44fc9f62ef1e22886dab221b27f2b8",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test client role\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test server role\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/websocketpp/test/transport/CMakeLists.txt" : {
+      "ObjectId" : "6b44d98f979ed07bf4a5e97e493534ce4895bd54",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test transport integration\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test transport asio timers\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test transport asio security\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Test transport iostream base\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Test transport iostream endpoint\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Test transport iostream connection\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Test transport asio base\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "contrib/websocketpp/test/utility/CMakeLists.txt" : {
+      "ObjectId" : "3903f131830b0648deb798ebb9bc9f40b8317760",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test close utilities\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test error utilities\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test frame utilities\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Test sha1 utilities\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Test uri utilities\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Test misc utilities\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "contrib/websocketpp/websocketpp/CMakeLists.txt" : {
+      "ObjectId" : "3ea8cc1c4e66a8bf34278d90c941f3f6cd06c2b0",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/CMakeLists.txt" : {
+      "ObjectId" : "f2a98cbc5d1cc2c73a8699b6ba8195fd7e5e7235",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Clang needs special additional flags to build with C++11\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Apple needs us to tell it that we're using libc++, or it will try to use libstdc++ instead\n",
+        "Line" : 15,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Need multithreading services if available\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "c4685002bd5f086326f08c2545cbc668945ed683",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Need to make sure all of our tests can find gtest\n",
+        "Line" : 2,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# All projects in this folder have named access to other projects here\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "src/autoboost/CMakeLists.txt" : {
+      "ObjectId" : "5c568471baf0e1d9b74e84bfb37849c260e6cb9f",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Install library\n\n#\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/autonet/CMakeLists.txt" : {
+      "ObjectId" : "9d87710047dae5fe6b3b57d7370980494d92491b",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Install library\n\n#\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Install public header files\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/autonet/test/CMakeLists.txt" : {
+      "ObjectId" : "265b8db255179be68686be28fb7c43565874ac2c",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#include test helpers form autowiring\n",
+        "Line" : 2,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# This is a unit test, let CMake know this\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/autotesting/CMakeLists.txt" : {
+      "ObjectId" : "ce2975b4ad8e9cf608c7689af206c82c77e663fb",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/autowiring/CMakeLists.txt" : {
+      "ObjectId" : "24ed5d76bd1fa70b979672ceb5ec47495662c9b3",
+      "LastModified" : "2018-03-09T23:04:20Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Setup testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Configure source files\n\n#\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Configure library\n\n#\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Need multithreading services if available\n",
+        "Line" : 245,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Install library\n\n#\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/autowiring/test/CMakeLists.txt" : {
+      "ObjectId" : "63c55e26190366f6e979e95e22150123d34d0570",
+      "LastModified" : "2017-10-30T16:26:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Link AutoNet if we've got it\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This is a unit test, let CMake know this\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/benchmark/CMakeLists.txt" : {
+      "ObjectId" : "a31f0d44872375fa2f92d7eba9dfbb282003480d",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/CombinedInstaller.cmake" : {
+      "ObjectId" : "d6923afc17c10e7a185f36ddadaf076fd6ef7716",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Utility for creating a combined installer for Windows\n\n#\n\n# This utility allows a WIX installer to be created with a single PACKAGE command,\n\n# and allows both 32 and 64 variants of the installer to be installed on a system\n\n# side-by-side, and includes both the Release and Debug versions of the configured\n\n# package.\n\n#\n\n# On platforms that do not support multiple configurations, only one platform will\n\n# be packaged.\n\n#\n\n# The result of invoking this function causes CPACK_XXX variables to be given\n\n# values based on the passed arguments.  Operations that might need to consider\n\n# these variables should be staged after the call to this routine.\n\n#\n\n# Usage;\n\n# generate_wix_installer(\n\n#   VENDOR Vendor            # The name of the library vendor\n\n#   CONTACT Contact          # The E-mail address of the user point-of-contact\n\n#   [NAME Name]              # The project name, if different from CMAKE_PROJECT_NAME\n\n#   [VERSION Version]        # The project version, if different from PROJECT_VERSION\n\n#   [GUID Guid]              # A GUID used to uniquely identify this library\n\n#                            # Must be of the following form:\n\n#                            #  {FFFFFFFF-0000-1111-2222-999999999999}\n\n#                            # Defaults to a sha1 UUID generated from the major version number, vendor, project\n\n#                            # name, and architecture with the CMake string command.\n\n#   [LICENSE License]        # The path to the license file, defaults to LICENSE.txt\n\n#   [README Readme]          # The path to the library description file, defaults to README.md\n\n#   [CONFIGS Config1 [...]]  # Override the configurations to be packaged, defaults  to CMAKE_CONFIGURATION_TYPES\n\n#   [WIXFILE WixFile]        # Overrides the location where the wxs template  file will be written.  Ignored on\n\n#                            # platforms where wix isn't used.\n\n# )\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generate a GUID if the user didn't specifically request one\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# For 0. releases, we use the second digit as the indicator of an API-breaking change\n",
+        "Line" : 69,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# 64-bit installations get a different upgrade GUID\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# There are also differences from version to version of visual studio\n",
+        "Line" : 79,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Now we generate the GUID\n",
+        "Line" : 82,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# This is the upgrade GUID.  Part of the GUID is derived from the major version number.  Any time\n\n# the major version number is adjusted, the upgrade GUID changes.  This allows multiple versions\n\n# of the same product to be installed on a user's system at the same time, but also means that\n\n# manual uninstallation of older versions is required.\n\n#\n\n# For more information on the rationale for this process, see the discussion on semantic versioning\n\n# found at http://semver.org/\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Need a custom wix installation template so that we update the CMake package registry correctly\n\n# Only really needed on Windows; Mac and Linux have pretty good default search behavior, so we\n\n# leave those alone.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Run the script that will grab the debug and release configurations and install them during packaging\n",
+        "Line" : 113,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Pick the generator in an appropriate way\n",
+        "Line" : 131,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# TODO: Add Bundle as a generator here\n",
+        "Line" : 135,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Packaging stuff, if an installer is being made instead\n",
+        "Line" : 141,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Now we \"call\" cpack with the necessary variables\n",
+        "Line" : 153,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 13
+    },
+    "standard/DefaultValue.cmake" : {
+      "ObjectId" : "94e1c1dc5cf4edf0c06d17db15c5e67fc15bc259",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/GenerateVersion.cmake" : {
+      "ObjectId" : "4dce5e78eb55842c5f0c60f0651a0b19756fcdfc",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Generator function for $projectname-config.cmake and $projectname-configVersion.cmake\n\n#\n\n# This generator is used to create a version locator file compatible with find_package\n\n# that is compliant with the SemVer standard and also architecture-aware.  This ensures\n\n# that find_package for your 32-bit build will not ever accidentally bring in the 64-bit\n\n# build, and that find_packge for your 0.3.2 release will never accidentally find 0.4.0\n\n# as a forwards-compatible version, or that 2.0.0 is not considered a replacement for\n\n# 1.0.0\n\n#\n\n# Usage:\n\n# GenerateVersion(\n\n#    [DIRECTORY DirectoryName]   # Directory where the version files will be written, defaults to CMAKE_BINARY_DIR\n\n#    [NAME ProjectName]          # The project name, if different from CMAKE_PROJECT_NAME\n\n#    [VERSION Version]           # The version, if different from PROJECT_VERSION\n\n# )\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Install ${ARG_NAME}-config.cmake and ${ARG_NAME}-configVersion.cmake\n",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Export library\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Targets file is needed in order to describe how to link ${ARG_NAME} to the rest of the system\n",
+        "Line" : 50,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "standard/InstallHeaders.cmake" : {
+      "ObjectId" : "23c9cf3f3a5b8a8418778f6616af930460716c47",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Installs headers for the named target\n\n# Syntax:\n\n# install_headers TARGET <target> DESTINATION <destination> ...\n\n#\n\n# NOEXCLUDE_STDAFX      Also install the precompiled header file\n\n# <target>              The target whose sources are to be installed\n\n# <destination>         The root of the destination folder where files will be copied\n\n#\n\n# Additional options are passed after FILES to the cmake install command\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# When the path to the file is absolute, we don't know what we should be installing\n\n# it relative to. Warn\n",
+        "Line" : 36,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Determine which path the file is relative to and use intermediate directories as the install path\n",
+        "Line" : 43,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "standard/ParseVersion.cmake" : {
+      "ObjectId" : "8e1a107735e1290f1d180849f4960435821db727",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/Standard.cmake" : {
+      "ObjectId" : "069ad640063b6f5a056d0740110e46dea5aabf27",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Makes adding things a little easier\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Need these for the rest of these scripts to work properly\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Omnibus include file that brings in all standard CMake scripts\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "standard/StandardProject.cmake" : {
+      "ObjectId" : "5c214b33da68d0dd1d4c3f59b0d4ab3abd53b1c5",
+      "LastModified" : "2018-03-09T23:04:20Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#[[\nSimple project setup. There's a fair amount of boiler plate that has to happen\nin a particular order around project setup. This function wraps project() and\ndoes the following:\n\n* Changes CMake around so that the output variables follow the /bin and /lib output\n  directory convention popular on GNU.\n* Ensures that ARM and 64-bit code are built as position-independent code\n* Verifies that the compiler actually supports C++11\n* Sets the correct flags to enable C++11 on all platforms\n* Ensures compilation happens with visibility set to hidden by default\n* Builds fat binaries on mac\n* Sets standard_BUILD* variables for consumption later down the line.\n* Enforces the project has a VERSION set.\n]]",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Backwards compatibility\n",
+        "Line" : 17,
+        "CharPositionInLine" : 29
+      },
+      "2" : {
+        "Text" : "# IMPORTANT: Note that if there is no *direct* call to 'project' in the root CMakeLists.txt\n\n# file, CMake will automatically inject one with the default languages of C and CXX.\n\n# This will cause the toolchain file to be parsed multiple times, and will\n\n# make much of the work done in standard_project_preinit useless.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This must be a macro since project defines scope-local variables\n\n# that we generally rely on being in the root context.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#we generally only want to modify the root project.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 39
+      },
+      "5" : {
+        "Text" : "# Pre-initialization steps - these variables must be set before the first call to\n\n# project()\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Build Fat binaries on OSX by default\n",
+        "Line" : 59,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# CLANG_VERSION requires a sysroot to obtain, so resort to execute_process() here\n",
+        "Line" : 62,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# All of our binaries go to one place:  The binaries output directory.  We only want to tinker\n\n# with this if we're building by ourselves, otherwise we just do whatever the enclosing project\n\n# wants us to do.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Libraries not only all wind up in the libraries directory, but we also keep them all together\n\n# here by putting them in the same place, regardless of whether they are debug or release.  This\n\n# makes globbing them together much easier.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Postfix on all debug libraries should be \"d\"\n\n# PARENT_SCOPE causes the variable to not be set locally, and we\n\n# rely on this value in the following loop....\n",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# 64-bit installations should suffix with 64 regardless of the CPU type (ARM or Intel)\n",
+        "Line" : 108,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Standard environment - Position independent code, Symbols hidden by default, and standard C++11\n",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# CMAKE_OSX_DEPLOYMENT_TARGET < 10.9 implies -stdlib=libstdc++, which doesn't have\n\n# complete C++11 support. Override with libc++\n",
+        "Line" : 124,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# CMAKE_SYSTEM_PROCESSOR is set by the toolchain, so must happen strictly after project()\n",
+        "Line" : 130,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "#prevent mixing armeabi & armeabi-v7a\n",
+        "Line" : 134,
+        "CharPositionInLine" : 79
+      },
+      "CommentCount" : 16
+    },
+    "standard/cmake_package.cmake" : {
+      "ObjectId" : "927bedb86f3d5aee2df27e9e5d78527740bba3a7",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/toolchain-android.cmake" : {
+      "ObjectId" : "63286f11a95a929e7387a62f713bf0e511431a0a",
+      "LastModified" : "2018-03-09T23:04:20Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/toolchain-android32.cmake" : {
+      "ObjectId" : "3a371d9e62c2c0c187eb8514c329eeac09b7628f",
+      "LastModified" : "2018-03-09T23:04:20Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/toolchain-android64.cmake" : {
+      "ObjectId" : "7d12fabb892c6cd1b916f3b5ec1705679f08e084",
+      "LastModified" : "2018-03-09T23:04:20Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/toolchain-arm32.cmake" : {
+      "ObjectId" : "14d2fa97951f2691f273a8358d5c97e2544fd9c8",
+      "LastModified" : "2017-10-30T16:26:11Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/toolchain-arm64.cmake" : {
+      "ObjectId" : "70d9f1949ab01c4d7653495894f1fb426a7e60dd",
+      "LastModified" : "2017-10-30T16:26:11Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "standard/toolchain-rk1108.cmake" : {
+      "ObjectId" : "e2ab112677115984213e17808163f16590b2ddf0",
+      "LastModified" : "2018-03-09T23:04:20Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests.cmake" : {
+      "ObjectId" : "2507bf6b05e764f5a8588a6f157611214e36959e",
+      "LastModified" : "2017-05-16T22:32:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "version.cmake" : {
+      "ObjectId" : "250d879f75de7d9a9ce5d6b965153d6ff7a931ed",
+      "LastModified" : "2018-03-12T17:50:46Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 74
+  },
+  "ElapsedTime" : 2759
+}

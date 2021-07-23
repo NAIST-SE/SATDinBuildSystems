@@ -1,0 +1,441 @@
+{
+  "Repository" : "45945255",
+  "Revision" : "HEAD",
+  "ObjectId" : "5a562bbf12ae330d19e72becf21200f8962a9aa1",
+  "CommitTime" : "2019-04-18T22:23:29Z",
+  "Files" : {
+    "bazel/BUILD" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "2019-01-20T20:16:47Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "bazel/cython_library.bzl" : {
+      "ObjectId" : "972323b4e92531f21110cc4b7672055e072349d1",
+      "LastModified" : "2019-03-12T19:21:55Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Custom rules for gRPC Python\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Adapted from grpc/bazel/cython_library.bzl",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Adapted with modifications from\n# tensorflow/tensorflow/core/platform/default/build_config.bzl\n# Native Bazel rules don't exist yet to compile Cython code, but rules have\n# been written at cython/cython and tensorflow/tensorflow. We branch from\n# Tensorflow's version as it is more actively maintained and works for gRPC\n# Python's needs.",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "\"\"\"Compiles a group of .pyx / .pxd / .py files.\n    First runs Cython to create .cpp files for each input .pyx or .py + .pxd\n    pair. Then builds a shared object for each, passing \"deps\" to each cc_binary\n    rule (includes Python headers by default). Finally, creates a py_library rule\n    with the shared objects and any pure Python \"srcs\", with py_deps as its\n    dependencies; the shared objects can be imported like normal Python files.\n    Args:\n        name: Name for the rule.\n        deps: C/C++ dependencies of the Cython (e.g. Numpy headers).\n        py_deps: Pure Python dependencies of the final library.\n        srcs: .py, .pyx, or .pxd files to either compile or pass through.\n        **kwargs: Extra keyword arguments passed to the py_library.\n    \"\"\"",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# First filter out files that should be run compiled vs. passed through.",
+        "Line" : 25,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Invoke cython to produce the shared object libraries.",
+        "Line" : 40,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Optionally use PYTHON_BIN_PATH on Linux platforms so that python 3\n# works. Windows has issues with cython_binary so skip PYTHON_BIN_PATH.",
+        "Line" : 46,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# Now create a py_library with these shared objects as data.",
+        "Line" : 65,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 8
+    },
+    "bazel/glog.bzl" : {
+      "ObjectId" : "3fee6fbb598abf2164ec294be0d8a645f9e88da1",
+      "LastModified" : "2019-03-19T01:21:21Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# This script is copied from https://github.com/google/glog/blob/master/bazel/glog.bzl\n# with some modifications to enable printing call stack.\n# Implement a macro glog_library() that the BUILD file can load.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# By default, glog is built with gflags support.  You can change this behavior\n# by using glog_library(with_gflags=0)\n#\n# This file is inspired by the following sample BUILD files:\n#       https://github.com/google/glog/issues/61\n#       https://github.com/google/glog/files/393474/BUILD.txt",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Disable warnings that exists in glog.",
+        "Line" : 53,
+        "CharPositionInLine" : 12
+      },
+      "3" : {
+        "Text" : "# Inject a C++ namespace.",
+        "Line" : 59,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : "# Allows src/base/mutex.h to include pthread.h.",
+        "Line" : 61,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "# Allows src/logging.cc to determine the host name.",
+        "Line" : 63,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# For src/utilities.cc.",
+        "Line" : 65,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# Enable dumping stacktrace upon sigaction.",
+        "Line" : 70,
+        "CharPositionInLine" : 12
+      },
+      "8" : {
+        "Text" : "# The following 2 Macros are enabled by ray.",
+        "Line" : 72,
+        "CharPositionInLine" : 12
+      },
+      "9" : {
+        "Text" : "# For logging.cc.",
+        "Line" : 75,
+        "CharPositionInLine" : 12
+      },
+      "10" : {
+        "Text" : "# Include generated header files.",
+        "Line" : 79,
+        "CharPositionInLine" : 12
+      },
+      "11" : {
+        "Text" : "# The following Macro is enabled by ray.",
+        "Line" : 81,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# Use gflags to parse CLI arguments.",
+        "Line" : 87,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 13
+    },
+    "bazel/python_configure.bzl" : {
+      "ObjectId" : "547f30bcfa818281c6b851df3f4d0acc5778e505",
+      "LastModified" : "2019-03-19T01:21:21Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Adapted with a minor modification from grpc/third_party/py/python_configure.bzl:\n# Changed \"//third_party/py:%s.tpl\" -> \"@//bazel:%s.tpl\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Adapted with modifications from tensorflow/third_party/py/",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Repository rule for Python autoconfiguration.\n`python_configure` depends on the following environment variables:\n  * `PYTHON_BIN_PATH`: location of python binary.\n  * `PYTHON_LIB_PATH`: Location of python libraries.\n\"\"\"",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "\"\"\"Output failure message when auto configuration fails.\"\"\"",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "\"\"\"Returns true if the host operating system is windows.\"\"\"",
+        "Line" : 33,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "\"\"\"Executes an arbitrary shell command.\n    Args:\n        repository_ctx: the repository_ctx object\n        cmdline: list of strings, the command to execute\n        error_msg: string, a summary of the error if the command fails\n        error_details: string, details about the error or steps to fix it\n        empty_stdout_fine: bool, if True, an empty stdout result is fine, otherwise\n        it's an error\n    Return:\n        the result of repository_ctx.execute(cmdline)\n  \"\"\"",
+        "Line" : 43,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "\"\"\"Returns a string with all files in a directory.\n  Finds all files inside a directory, traversing subfolders and following\n  symlinks. The returned string contains the full path of all files\n  separated by line breaks.\n  \"\"\"",
+        "Line" : 65,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# src_files will be used in genrule.outs where the paths must\n# use forward slashes.",
+        "Line" : 76,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "\"\"\"Returns a string with a genrule.\n  Genrule executes the given command and produces the given outputs.\n  \"\"\"",
+        "Line" : 87,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "'    cmd = \"\"\"\\n'",
+        "Line" : 91,
+        "CharPositionInLine" : 53
+      },
+      "10" : {
+        "Text" : "'\\n   \"\"\",\\n'",
+        "Line" : 92,
+        "CharPositionInLine" : 22
+      },
+      "11" : {
+        "Text" : "\"\"\"Returns a path with '/' and remove the trailing slash.\"\"\"",
+        "Line" : 96,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "\"\"\"Returns a genrule to symlink(or copy if on Windows) a set of files.\n  If src_dir is passed, files will be read from the given directory; otherwise\n  we assume files are in src_files and dest_files\n  \"\"\"",
+        "Line" : 109,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Create a list with the src_dir stripped to use for outputs.",
+        "Line" : 118,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# If we have only one file to link we do not want to use the dest_dir, as\n# $(@D) will include the full path to the file.",
+        "Line" : 125,
+        "CharPositionInLine" : 12
+      },
+      "15" : {
+        "Text" : "# On Windows, symlink is not supported, so we just copy all the files.",
+        "Line" : 129,
+        "CharPositionInLine" : 12
+      },
+      "16" : {
+        "Text" : "\"\"\"Gets the python bin path.\"\"\"",
+        "Line" : 138,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "\"\"\"Gets the bash bin path.\"\"\"",
+        "Line" : 152,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "\"\"\"Gets the python lib path.\"\"\"",
+        "Line" : 169,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "\"\"\"Checks the python lib path.\"\"\"",
+        "Line" : 193,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "\"\"\"Checks the python bin path.\"\"\"",
+        "Line" : 201,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "\"\"\"Gets the python include path.\"\"\"",
+        "Line" : 210,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "\"\"\"Get Python import library name (pythonXY.lib) on Windows.\"\"\"",
+        "Line" : 225,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "\"\"\"Creates the repository containing files set up to build with Python.\"\"\"",
+        "Line" : 239,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# To build Python C/C++ extension on Windows, we need to link to python import library pythonXY.lib\n# See https://docs.python.org/3/extending/windows.html",
+        "Line" : 248,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "\"\"\"Creates pointers to a remotely configured repo set up to build with Python.\n  \"\"\"",
+        "Line" : 267,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "\"\"\"Implementation of the python_autoconf repository rule.\"\"\"",
+        "Line" : 275,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "\"\"\"Detects and configures the local Python.\nAdd the following to your WORKSPACE FILE:\n```python\npython_configure(name = \"local_config_python\")\n```\nArgs:\n  name: A unique name for this workspace rule.\n\"\"\"",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 28
+    },
+    "bazel/ray.bzl" : {
+      "ObjectId" : "f55d1d29009efab6eca6f238bc8c24c227a8eea5",
+      "LastModified" : "2019-03-22T06:30:05Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "doc/Makefile" : {
+      "ObjectId" : "e188f9a06d79754cc91d8f52cfa4eea5cd93b300",
+      "LastModified" : "2019-03-19T01:21:21Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "java/api/pom.xml" : {
+      "ObjectId" : "c7a910cd989f699c8712cdcf0dfea1178891b672",
+      "LastModified" : "2019-03-19T01:21:21Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "java/dependencies.bzl" : {
+      "ObjectId" : "d0178ba0f8f4953aa7aec1358c795992c3b29af5",
+      "LastModified" : "2019-04-18T08:53:25Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Fetch srcjars. Defaults to False.",
+        "Line" : 25,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 1
+    },
+    "java/pom.xml" : {
+      "ObjectId" : "ce5ffa2faa290099abfdac0e9c58f2ffb0f04921",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "java/runtime/pom.xml" : {
+      "ObjectId" : "4b2cc7d5037336a0e9c4fee6bf81705d68d459c6",
+      "LastModified" : "2019-03-28T06:33:45Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " test dependencies ",
+        "Line" : 65,
+        "CharPositionInLine" : 31
+      },
+      "CommentCount" : 1
+    },
+    "java/streaming/pom.xml" : {
+      "ObjectId" : "c95976373d3ce2a23a2fbd3ab95983acc6f5e499",
+      "LastModified" : "2019-03-30T11:32:05Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "java/test/pom.xml" : {
+      "ObjectId" : "afb8da564293358e69f3354b8342d20f7667c96f",
+      "LastModified" : "2019-03-30T11:32:05Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "java/third_party/workspace.bzl" : {
+      "ObjectId" : "175cb246af2b5447c4c250b693d7f5d59590cfe0",
+      "LastModified" : "2019-04-13T16:17:04Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Do not edit. bazel-deps autogenerates this file from java/dependencies.yaml.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"\npackage(default_visibility = ['//visibility:public'])\njava_import(\n    name = 'jar',\n    jars = ['{jar_name}'],{srcjar_attr}\n)\nfilegroup(\n    name = 'file',\n    srcs = [\n        '{jar_name}',\n        '{src_name}'\n    ],\n    visibility = ['//visibility:public']\n)\\n\"\"\"",
+        "Line" : 22,
+        "CharPositionInLine" : 26
+      },
+      "CommentCount" : 2
+    },
+    "java/tutorial/pom.xml" : {
+      "ObjectId" : "48a03dc1ca8e1f35ad5028f24d501330f84cf3a4",
+      "LastModified" : "2019-03-30T11:32:05Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "src/ray/thirdparty/hiredis/Makefile" : {
+      "ObjectId" : "cff2a84ceb9c70699df2df2b4e4bebc62cf01a21",
+      "LastModified" : "2019-03-30T11:32:05Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Hiredis Makefile\n\n# Copyright (C) 2010-2011 Salvatore Sanfilippo <antirez at gmail dot com>\n\n# Copyright (C) 2010-2011 Pieter Noordhuis <pcnoordhuis at gmail dot com>\n\n# This file is released under the BSD license, see the COPYING file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Installation related variables and target\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# redis-server configuration used for testing\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Fallback to gcc when $CC is not in $PATH.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Platform-specific overrides\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Deps (use make dep to generate this)\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Binaries:\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "thirdparty/scripts/thirdparty.cmake" : {
+      "ObjectId" : "75efd595e750a99d62cc6e63538c9e76caf57802",
+      "LastModified" : "2019-03-30T11:32:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add all thirdparty related path definitions here\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 1,
+    "MAKEFILE" : 2,
+    "BAZEL" : 7,
+    "MAVEN" : 6
+  },
+  "ElapsedTime" : 3507
+}

@@ -1,0 +1,983 @@
+{
+  "Repository" : "10055425",
+  "Revision" : "HEAD",
+  "ObjectId" : "1727f85e59932f4e0e5e9ca5b04cb11cbcddfe44",
+  "CommitTime" : "2018-11-22T09:24:48Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "b07bc6abcc198b5b444d4f777a261c1fe73f1df8",
+      "LastModified" : "2018-10-30T10:29:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# GPUSPH Makefile\n\n#\n\n# Notes:\n\n# - When adding a target, comment it with \"# target: name - desc\" and help\n\n#   will always be up-to-date\n\n# - When adding an option, comment it with \"# option: name - desc\" and help\n\n#   will always be up-to-date\n\n# - When adding an overridable setting, document it with \"# override: name - desc\" and help\n\n#   will always be up-to-date\n\n# - Makefile is assumed to be GNU (see http://www.gnu.org/software/make/manual/)\n\n# - Source C++ files have extension .cc (NOT .cpp)\n\n# - C++ Headers have extension .h\n\n# - CUDA C++ files have extension .cu\n\n# - CUDA C++ headers have extension .cuh\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Cached configuration. All settings that should be persistent across compilation\n\n# (until changed) should be stored here.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include, if present, a local Makefile.\n\n# This can be used by the user to set additional include paths\n\n# (INCPATH = ....)\n\n# library search paths\n\n# (LIBPATH = ...)\n\n# libaries\n\n# (LIBS = ...)\n\n# and general flags\n\n# CPPFLAGS, CXXFLAGS, CUFLAGS, LDFLAGS,\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# need for some substitutions\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# GPUSPH version\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# system information\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# sed syntax differs a bit\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Linux\n",
+        "Line" : 53,
+        "CharPositionInLine" : 5
+      },
+      "8" : {
+        "Text" : "# option: target_arch - if set to 32, force compilation for 32 bit architecture\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# name of the top-level Makefile (this file)\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# directories: binary, objects, sources, expanded sources\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# target binary\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# binary to list compute capabilities of installed devices\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# --------------- File lists\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# makedepend will generate dependencies in these file\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# all files under $(SRCDIR), needed by tags files\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# .cc source files (CPU)\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# list of problems\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# only one problem is active at a time, this is the list of all other problems\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# we don't want to build inactive problems, so we will filter them out\n\n# from the sources list\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# list of problem source files\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# list of .cc files, exclusing MPI sources and disabled problems\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# GPU source files: we only directly compile the current problem (if it's CUDA),\n\n# everything else gets in by nested includes\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# headers\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# object files via filename replacement\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# data files needed by some problems\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# TestTopo uses this DEM:\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# --------------- Locate and set up compilers and flags\n",
+        "Line" : 160,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# override: CUDA_INSTALL_PATH - where CUDA is installed\n\n# override:                     defaults /usr/local/cuda,\n\n# override:                     validity is checked by looking for bin/nvcc under it,\n\n# override:                     /usr is always tried as a last resort\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# We check the validity of the path by looking for bin/nvcc under it.\n\n# if not found, we look into /usr, and finally abort\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# check again\n",
+        "Line" : 172,
+        "CharPositionInLine" : 1
+      },
+      "31" : {
+        "Text" : "# Here follow experimental CUDA installation detection. These work if CUDA binaries are in\n\n# the current PATH (i.e. when using Netbeans without system PATH set, don't work).\n\n# CUDA_INSTALL_PATH=$(shell which nvcc | sed \"s/\\/bin\\/nvcc//\")\n\n# CUDA_INSTALL_PATH=$(shell which nvcc | head -c -10)\n\n# CUDA_INSTALL_PATH=$(shell echo $PATH | sed \"s/:/\\n/g\" | grep \"cuda/bin\" | sed \"s/\\/bin//g\" |  head -n 1)\n\n# ld-based CUDA location: more robust but problematic for Mac OS\n\n#CUDA_INSTALL_PATH=$(shell \\\n#\tdirname `ldconfig -p | grep libcudart | a$4}' | head -n 1` | head -c -5)\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# nvcc info\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# option: problem - Name of the problem. Default: $(PROBLEM) in makefile\n",
+        "Line" : 250,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# if choice differs from last...\n",
+        "Line" : 252,
+        "CharPositionInLine" : 1
+      },
+      "35" : {
+        "Text" : "# check that the problem is in the problem list\n",
+        "Line" : 254,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# empty string in sed for Mac compatibility\n",
+        "Line" : 258,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# user choice\n",
+        "Line" : 261,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# option: dbg - 0 no debugging, 1 enable debugging\n\n# does dbg differ from last?\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# option: compute - 11, 12, 13, 20, 21, 30, 35, etc: compute capability to compile for (default: autodetect)\n\n# does dbg differ from last?\n",
+        "Line" : 285,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# does it differ from last?\n",
+        "Line" : 288,
+        "CharPositionInLine" : 1
+      },
+      "41" : {
+        "Text" : "# user choice\n",
+        "Line" : 292,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# option: fastmath - Enable or disable fastmath. Default: 0 (disabled)\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# does it differ from last?\n",
+        "Line" : 299,
+        "CharPositionInLine" : 1
+      },
+      "44" : {
+        "Text" : "# user choice\n",
+        "Line" : 303,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# option: mpi - 0 do not use MPI (no multi-node support), 1 use MPI (enable multi-node support). Default: autodetect\n",
+        "Line" : 310,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# does it differ from last?\n",
+        "Line" : 312,
+        "CharPositionInLine" : 1
+      },
+      "47" : {
+        "Text" : "# user choice\n",
+        "Line" : 316,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# override: MPICXX - the MPI compiler\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# MPICXXOBJS will be compiled with the standard compiler\n",
+        "Line" : 341,
+        "CharPositionInLine" : 1
+      },
+      "50" : {
+        "Text" : "# We have to link with NVCC because otherwise thrust has issues on Mac OSX.\n",
+        "Line" : 344,
+        "CharPositionInLine" : 1
+      },
+      "51" : {
+        "Text" : "# We have to link with NVCC because otherwise thrust has issues on Mac OSX,\n\n# but we also need to link with MPICXX, so we would like to use:\n\n#LINKER ?= $(filter-out -ccbin=%,$(NVCC)) -ccbin=$(MPICXX)\n\n# which fails on recent Mac OSX because then NVCC thinks we're compiling with the GNU\n\n# compiler, and thus passes the -dumpspecs option to it, which fails because Mac OSX\n\n# is actually using clang in the end. ‘Gotta love them heuristics’, as Kevin puts it.\n\n# The solution is to _still_ use NVCC with -ccbin=$(CXX) as linker, but add the\n\n# options required by MPICXX at link time:\n",
+        "Line" : 349,
+        "CharPositionInLine" : 1
+      },
+      "52" : {
+        "Text" : "## TODO FIXME this is a horrible hack, there should be a better way to handle this nvcc+mpicxx mess\n\n# We use -show because it's supported by all implementations (otherwise we'd have to detect\n\n# if our compiler uses --showme:link or -link_info):\n",
+        "Line" : 358,
+        "CharPositionInLine" : 1
+      },
+      "53" : {
+        "Text" : "# But then we have to remove the compiler name from the proposed command line:\n",
+        "Line" : 362,
+        "CharPositionInLine" : 1
+      },
+      "54" : {
+        "Text" : "# mpicxx might pass to the compiler options which nvcc might not understand\n\n# (e.g. -pthread), so we need to pass mpicxx options through --compiler-options,\n\n# but that means that we cannot pass options which contains commas in them,\n\n# since commas are already used to separate the parameters in --compiler-options.\n\n# We can't do sophisticated patter-matching (e.g. filtering on strings _containing_\n\n# a comma), so for the time being we just filter out the flags that we _know_\n\n# will contain commas (i.e. -Wl,stuff,stuff,stuff).\n\n# To make things even more complicated, nvcc does not accept -Wl, so we need\n\n# to replace -Wl with --linker-options.\n\n# The other options will be gathered into the --compiler-options passed at nvcc\n\n# at link time.\n",
+        "Line" : 365,
+        "CharPositionInLine" : 1
+      },
+      "55" : {
+        "Text" : "# (the solution is not perfect as it still generates some warnings, but at least it rolls)\n",
+        "Line" : 381,
+        "CharPositionInLine" : 1
+      },
+      "56" : {
+        "Text" : "# END of MPICXX mess\n",
+        "Line" : 385,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# override: HDF5_CPP - preprocessor flags to find/use HDF5\n",
+        "Line" : 387,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# override: HDF5_CXX - compiler flags to use HDF5\n",
+        "Line" : 389,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# override: HDF5_LD - LD flags to use HDF5\n",
+        "Line" : 391,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# option: hdf5 - 0 do not use HDF5, 1 use HDF5, 2 use HDF5 and HDF5 requires MPI. Default: autodetect\n",
+        "Line" : 394,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# does it differ from last?\n",
+        "Line" : 396,
+        "CharPositionInLine" : 1
+      },
+      "62" : {
+        "Text" : "# user choice\n",
+        "Line" : 400,
+        "CharPositionInLine" : 2
+      },
+      "63" : {
+        "Text" : "# Check if we can link to the HDF5 library, and disable HDF5 otherwise.\n\n# On some configurations, HDF5 requires MPI, so we check HDF5 twice,\n\n# once with CXX and once with MPICXX.\n\n# During the CXX test we return -1 in case of failure to differentiate from\n\n# a case such as 'make hdf5=0 ; make', in which case we want to skip also\n\n# the MPICXX test.\n\n# We use a for loop in the shell to echo each line because users might have\n\n# different interactive shells that do (or do not) interpret a \\n escape,\n\n# so the only portable way seems to echo each line separately,\n\n# and grouping the echos in { } doesn't seem to work from a Makefile\n\n# shell invocation\n",
+        "Line" : 404,
+        "CharPositionInLine" : 1
+      },
+      "64" : {
+        "Text" : "# option: chrono - 0 do not use Chrono (no floating objects support), 1 use Chrono (enable floating object support). Default: 0\n",
+        "Line" : 424,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# does it differ from last?\n",
+        "Line" : 426,
+        "CharPositionInLine" : 1
+      },
+      "66" : {
+        "Text" : "# user choice\n",
+        "Line" : 430,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# option: linearization - something like xyz or yzx to indicate the order\n\n# option:                 of coordinates when linearizing cell indices,\n\n# option:                 from fastest to slowest growing coordinate\n",
+        "Line" : 437,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# split the linearization string into individual characters, space-separated\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# --- Includes and library section start ---\n",
+        "Line" : 454,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# override: TARGET_ARCH - set the target architecture\n\n# override:               defaults to -m64 for 64-bit machines\n\n# override:                           -m32 for 32-bit machines\n",
+        "Line" : 458,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# on Linux, toolkit libraries are under /lib64 for 64-bit\n",
+        "Line" : 463,
+        "CharPositionInLine" : 1
+      },
+      "72" : {
+        "Text" : "# i386 or i686\n",
+        "Line" : 467,
+        "CharPositionInLine" : 5
+      },
+      "73" : {
+        "Text" : "# override: INCPATH - paths for include files\n\n# override:           add entries in the form: -I/some/path\n",
+        "Line" : 471,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# override: LIBPATH - paths for library searches\n\n# override:           add entries in the form: -L/some/path\n",
+        "Line" : 474,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# override: LIBS - additional libraries\n\n# override:        add entries in the form: -lsomelib\n",
+        "Line" : 477,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# override: LDFLAGS - flags passed to the linker\n",
+        "Line" : 481,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "# override: LDLIBS - libraries to link against\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# Most of these settings are platform independent\n",
+        "Line" : 487,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# INCPATH\n\n# make GPUSph.cc find problem_select.opt, and problem_select.opt find the problem header\n",
+        "Line" : 489,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# access the CUDA include files from the C++ compiler too, but mark their path as a system include path\n\n# so that they can be skipped when generating dependencies. This must only be done for the host compiler,\n\n# because otherwise some nvcc version will complain about kernels not being allowed in system files\n\n# while compiling some thrust functions.\n\n# Note that we do this only if the include path is not already in the system\n\n# include path. This is particularly important in the case where CUDA_INCLUDE_PATH\n\n# is /usr/include, since otherwise GCC 6 (and later) will fail to find standard\n\n# includes such as stdint.h\n",
+        "Line" : 493,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "# LIBPATH\n",
+        "Line" : 506,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "# On Darwin, make sure we link with the GNU C++ standard library\n\n# TODO make sure this is still needed\n",
+        "Line" : 509,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "# CUDA libaries\n",
+        "Line" : 516,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "# link to the CUDA runtime library\n",
+        "Line" : 519,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "# link to HDF5 for input reading\n",
+        "Line" : 523,
+        "CharPositionInLine" : 1
+      },
+      "86" : {
+        "Text" : "# pthread needed for the UDP writer\n",
+        "Line" : 527,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# Realtime Extensions library (for clock_gettime) (not on Mac)\n",
+        "Line" : 530,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# search paths are platform-specific\n",
+        "Line" : 535,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "# override: CHRONO_PATH         - where Chrono is installed\n\n# override:                       defaults to /usr/local/, may be set to\n\n# override:                       the build directory of Chrono\n",
+        "Line" : 542,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "# override: CHRONO_INCLUDE_PATH - where Chrono include are installed\n\n# override:                       if unset, auto-detection will be attempted\n\n# override:                       from $(CHRONO_PATH) adding either include/ or src/\n\n# override: CHRONO_LIB_PATH     - where Chrono lib is installed\n\n# override:                       if unset, auto-detection will be attempted\n\n# override:                       from $(CHRONO_PATH) adding lib64/\n",
+        "Line" : 546,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# If CHRONO_INCLUDE_PATH is not set, look for chrono/core/ChChrono.h\n\n# under $(CHRONO_PATH)/include and $(CHRONO_PATH)/src in sequence,\n\n# and then build the include path by getting the up-up-up-dir\n",
+        "Line" : 558,
+        "CharPositionInLine" : 2
+      },
+      "92" : {
+        "Text" : "# otherwise, check that the user-specified path is correct\n",
+        "Line" : 567,
+        "CharPositionInLine" : 2
+      },
+      "93" : {
+        "Text" : "# If CHRONO_LIB_PATH is not set, look for libChronoEngine.*\n\n# under $(CHRONO_PATH)/lib64 and then build the include path by getting the up-dir\n",
+        "Line" : 574,
+        "CharPositionInLine" : 2
+      },
+      "94" : {
+        "Text" : "# otherwise, check that the user-specified path is correct\n",
+        "Line" : 582,
+        "CharPositionInLine" : 2
+      },
+      "95" : {
+        "Text" : "# When using Chrono from the build directory, chrono/ChConfig.h is under the build dir,\n\n# otherwise it's under the include directory\n",
+        "Line" : 588,
+        "CharPositionInLine" : 1
+      },
+      "96" : {
+        "Text" : "# This is needed because on some versions of Chrono, headers include each other without the chrono/ prefix 8-/\n",
+        "Line" : 604,
+        "CharPositionInLine" : 1
+      },
+      "97" : {
+        "Text" : "# -- Includes and library section end ---\n",
+        "Line" : 617,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "# -------------------------- CFLAGS section -------------------------- #\n\n# We have three sets of flags:\n\n# CPPFLAGS are preprocessor flags; they are common to both compilers\n\n# CXXFLAGS are flags passed to the C++ when compiling C++ files (either directly,\n\n#     for .cc files, or via nvcc, for .cu files), and when linking\n\n# CUFLAGS are flags passed to the CUDA compiler when compiling CUDA files\n",
+        "Line" : 619,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "# override: CPPFLAGS - preprocessor flags\n",
+        "Line" : 626,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "# override: CXXFLAGS - C++ host compiler options\n",
+        "Line" : 628,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "# override: CUFLAGS - nvcc compiler options\n",
+        "Line" : 630,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "# First of all, put the include paths into the CPPFLAGS\n",
+        "Line" : 633,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# We use type limits and constants (e.g. UINT64_MAX), which are defined\n\n# in C99 but not in C++ versions before C++11, so on (very) old compilers\n\n# (e.g. gcc 4.1) they will not be available. The workaround for this\n\n# is to define the __STDC_LIMIT_MACROS and __STDC_CONSTANT_MACROS.\n\n# Put their definition in the command line to ensure it precedes any\n\n# (direct or indirect) inclusion of stdint.h\n",
+        "Line" : 636,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "# Likewise, for some reasons some versions g++ (such as g++-5 on Ubuntu)\n\n# don't include functions such as isnan under std when including <cmath>\n",
+        "Line" : 643,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "# Define USE_HDF5 according to the availability of the HDF5 library\n",
+        "Line" : 647,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# We set __COMPUTE__ on the host to match that automatically defined\n\n# by the compiler on the device. Since this might be done before COMPUTE\n\n# is actually defined, substitute 0 in that case\n",
+        "Line" : 653,
+        "CharPositionInLine" : 0
+      },
+      "107" : {
+        "Text" : "# CXXFLAGS start with the target architecture\n",
+        "Line" : 663,
+        "CharPositionInLine" : 0
+      },
+      "108" : {
+        "Text" : "# We also force C++11 mode, since we are no relying on C++11 features\n\n# TODO Check if any -std is present in CXXFLAGS (added by the user) and if\n\n# the specified value is not 11, warn before removing it\n",
+        "Line" : 666,
+        "CharPositionInLine" : 0
+      },
+      "109" : {
+        "Text" : "# HDF5 might require specific flags\n",
+        "Line" : 671,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "# nvcc-specific flags\n",
+        "Line" : 676,
+        "CharPositionInLine" : 0
+      },
+      "111" : {
+        "Text" : "# We want to know the version of NVCC in the code because\n\n# the GCC pragma support depends on NVCC version. Sadly,\n\n# the pre-defined macros __NVCC__ and __CUDACC__ do not\n\n# give us anything about the version, so we will define our own\n\n# macros\n",
+        "Line" : 678,
+        "CharPositionInLine" : 0
+      },
+      "112" : {
+        "Text" : "# compute capability specification, if defined\n",
+        "Line" : 686,
+        "CharPositionInLine" : 0
+      },
+      "113" : {
+        "Text" : "# generate line info\n\n# TODO this should only be done in debug mode\n",
+        "Line" : 692,
+        "CharPositionInLine" : 0
+      },
+      "114" : {
+        "Text" : "# Note: -D_DEBUG_ is defined in $(DBG_SELECT_OPTFILE); however, to avoid adding an\n\n# include to every source, the _DEBUG_ macro is actually passed on the compiler command line\n",
+        "Line" : 701,
+        "CharPositionInLine" : 0
+      },
+      "115" : {
+        "Text" : "# option: verbose - 0 quiet compiler, 1 ptx assembler, 2 all warnings\n",
+        "Line" : 711,
+        "CharPositionInLine" : 0
+      },
+      "116" : {
+        "Text" : "# Enable host profile with gprof. Pipeline to profile:\n\n# enable -pg, make, run, gprof ./GPUSPH gmon.out > results.txt\n\n# http://gcc.gnu.org/onlinedocs/gcc/Debugging-Options.html#index-pg-621\n\n# CXXFLAGS += -pg\n\n# LDFLAGS += -pg\n",
+        "Line" : 719,
+        "CharPositionInLine" : 0
+      },
+      "117" : {
+        "Text" : "# Finally, add CXXFLAGS to CUFLAGS, except for -std, which gets moved outside\n",
+        "Line" : 725,
+        "CharPositionInLine" : 0
+      },
+      "118" : {
+        "Text" : "# CFLAGS notes\n\n# * Architecture (sm_XX and compute_XX):\n\n#    sm_10 - NOT supported: we need atomics\n\n#    sm_11 - Compute Capability 1.1: \"old\" cards, no double\n\n#    sm_12 - Compute Capability 1.2: G92... cards (e.g. GTX280), hw double\n\n#    sm_20 - Compute Capability 2.0: Fermi generation cards (e.g. GTX480), hw double\n\n#    Note: choosing only one architecture may speed up compilation up to 200%\n\n#    e.g.: for forces.o on a Vaio laptop, it takes 4m for one arch, 8m for boh\n\n# * To compile for two archs use a syntax like:\n\n#    -gencode arch=compute_12,code=sm_12 -gencode arch=compute_20,code=sm_20\n\n# * -O3 may not be supported by nvcc (check)\n\n# * To add options only for the C compiler, add them after --compiler-options.\n\n# * -fno-strict-aliasing: see http://goo.gl/cIkzG\n\n# * For Mac: it is mac-specific (but not required) to add:\n\n#    CFLAGS += -D__APPLE__ -D__MACH__\n",
+        "Line" : 730,
+        "CharPositionInLine" : 0
+      },
+      "119" : {
+        "Text" : "# ------------------------ CFLAGS section end ---------------------- #\n",
+        "Line" : 746,
+        "CharPositionInLine" : 0
+      },
+      "120" : {
+        "Text" : "# Doxygen configuration\n",
+        "Line" : 748,
+        "CharPositionInLine" : 0
+      },
+      "121" : {
+        "Text" : "# Snapshot date: date of last commit (if possible), or current date\n",
+        "Line" : 751,
+        "CharPositionInLine" : 0
+      },
+      "122" : {
+        "Text" : "# snapshot tarball filename\n",
+        "Line" : 753,
+        "CharPositionInLine" : 0
+      },
+      "123" : {
+        "Text" : "# option: plain - 0 fancy line-recycling stage announce, 1 plain multi-line stage announce\n",
+        "Line" : 756,
+        "CharPositionInLine" : 0
+      },
+      "124" : {
+        "Text" : "# when listing problems, we don't want debug info to show anywhere\n",
+        "Line" : 765,
+        "CharPositionInLine" : 0
+      },
+      "125" : {
+        "Text" : "# option: echo - 0 silent, 1 show commands\n",
+        "Line" : 771,
+        "CharPositionInLine" : 0
+      },
+      "126" : {
+        "Text" : "# target: all - Make subdirs, compile objects, link and produce $(TARGET)\n\n# link objects in target\n",
+        "Line" : 781,
+        "CharPositionInLine" : 0
+      },
+      "127" : {
+        "Text" : "# target: run - Make all && run\n",
+        "Line" : 791,
+        "CharPositionInLine" : 0
+      },
+      "128" : {
+        "Text" : "# internal targets to (re)create the \"selected option headers\" if they're missing\n",
+        "Line" : 795,
+        "CharPositionInLine" : 0
+      },
+      "129" : {
+        "Text" : "# compile CPU objects\n",
+        "Line" : 842,
+        "CharPositionInLine" : 0
+      },
+      "130" : {
+        "Text" : "# compile GPU objects\n",
+        "Line" : 851,
+        "CharPositionInLine" : 0
+      },
+      "131" : {
+        "Text" : "# compile program to list compute capabilities of installed devices.\n\n# Filter out all architecture specification flags (-arch=sm_*), since they\n\n# can cause the compiler to error out when the architecture is not supported\n\n# (for example too recent architectures on older compilers, or obsolete architectures\n\n# not supported in the most recent version of the SDK)\n",
+        "Line" : 856,
+        "CharPositionInLine" : 0
+      },
+      "132" : {
+        "Text" : "# create distdir\n",
+        "Line" : 865,
+        "CharPositionInLine" : 0
+      },
+      "133" : {
+        "Text" : "# create objdir and subs\n",
+        "Line" : 869,
+        "CharPositionInLine" : 0
+      },
+      "134" : {
+        "Text" : "# create optsdir\n",
+        "Line" : 873,
+        "CharPositionInLine" : 0
+      },
+      "135" : {
+        "Text" : "# target: clean - Clean everything but last compile choices\n\n# clean: cpuobjs, gpuobjs, deps makefiles, target, target symlink, dbg target\n",
+        "Line" : 877,
+        "CharPositionInLine" : 0
+      },
+      "136" : {
+        "Text" : "# target: cpuclean - Clean CPU stuff\n",
+        "Line" : 884,
+        "CharPositionInLine" : 0
+      },
+      "137" : {
+        "Text" : "# target: gpuclean - Clean GPU stuff\n",
+        "Line" : 888,
+        "CharPositionInLine" : 0
+      },
+      "138" : {
+        "Text" : "# target: computeclean - Clean compute capability selection stuff\n",
+        "Line" : 892,
+        "CharPositionInLine" : 0
+      },
+      "139" : {
+        "Text" : "# target: cookiesclean - Clean last dbg, problem, compute and fastmath choices,\n\n# target:                forcing .*_select.opt files to be regenerated (use if they're messed up)\n",
+        "Line" : 897,
+        "CharPositionInLine" : 0
+      },
+      "140" : {
+        "Text" : "# target: confclean - Clean all configuration options: like cookiesclean, but also purges Makefile.conf\n",
+        "Line" : 902,
+        "CharPositionInLine" : 0
+      },
+      "141" : {
+        "Text" : "# target: showobjs - List detected sources and target objects\n",
+        "Line" : 906,
+        "CharPositionInLine" : 0
+      },
+      "142" : {
+        "Text" : "# target: show - Show platform info and compiling options\n",
+        "Line" : 922,
+        "CharPositionInLine" : 0
+      },
+      "143" : {
+        "Text" : "#\t@echo \"   last:         $(LAST_PROBLEM)\"\n",
+        "Line" : 931,
+        "CharPositionInLine" : 0
+      },
+      "144" : {
+        "Text" : "#\t@echo \"Suffixes:        $(SUFFIXES)\"\n",
+        "Line" : 961,
+        "CharPositionInLine" : 0
+      },
+      "145" : {
+        "Text" : "# target: snapshot - Make a snapshot of current sourcecode in $(SNAPSHOT_FILE)\n\n# it seems tar option --totals doesn't work\n\n# use $(shell date +%F_%T) to include date and time in filename\n",
+        "Line" : 963,
+        "CharPositionInLine" : 0
+      },
+      "146" : {
+        "Text" : "# One possibility to add the source files: $(SRCDIR)/*.{cc,h} $(SRCDIR)/*.{cc,h,cu,cuh,def}\n\n# However, Makefile does not support this bash-like expansion, so we take a shortcut.\n",
+        "Line" : 969,
+        "CharPositionInLine" : 0
+      },
+      "147" : {
+        "Text" : "# target: expand - Expand euler* and forces* GPU code in $(EXPDIR)\n\n# it is safe to say we don't actualy need this\n",
+        "Line" : 974,
+        "CharPositionInLine" : 0
+      },
+      "148" : {
+        "Text" : "# target: deps - Update dependencies in $(MAKEFILE)\n",
+        "Line" : 988,
+        "CharPositionInLine" : 0
+      },
+      "149" : {
+        "Text" : "# We want all of the OPTFILES to be built before anything else, which we achieve by\n\n# making Makefile.conf depend on them.\n",
+        "Line" : 992,
+        "CharPositionInLine" : 0
+      },
+      "150" : {
+        "Text" : "# Create Makefile.conf with standard disclaimer\n",
+        "Line" : 996,
+        "CharPositionInLine" : 11
+      },
+      "151" : {
+        "Text" : "# recover value of PROBLEM from OPTFILES\n",
+        "Line" : 1001,
+        "CharPositionInLine" : 11
+      },
+      "152" : {
+        "Text" : "# recover value of _DEBUG_ from OPTFILES\n",
+        "Line" : 1003,
+        "CharPositionInLine" : 11
+      },
+      "153" : {
+        "Text" : "# recover value of COMPUTE from OPTFILES\n",
+        "Line" : 1005,
+        "CharPositionInLine" : 11
+      },
+      "154" : {
+        "Text" : "# recover value of FASTMATH from OPTFILES\n",
+        "Line" : 1007,
+        "CharPositionInLine" : 11
+      },
+      "155" : {
+        "Text" : "# recover value of USE_MPI from OPTFILES\n",
+        "Line" : 1009,
+        "CharPositionInLine" : 11
+      },
+      "156" : {
+        "Text" : "# recover value of USE_HDF5 from OPTFILES\n",
+        "Line" : 1011,
+        "CharPositionInLine" : 11
+      },
+      "157" : {
+        "Text" : "# recover value of USE_CHRONO from OPTFILES\n",
+        "Line" : 1013,
+        "CharPositionInLine" : 11
+      },
+      "158" : {
+        "Text" : "# recover value of LINEARIZATION from OPTFILES\n",
+        "Line" : 1015,
+        "CharPositionInLine" : 11
+      },
+      "159" : {
+        "Text" : "# Dependecies are generated by the C++ compiler, since nvcc does not understand the\n\n# more sophisticated -MM and -MT dependency generation options.\n\n# The -MM flag is used to not include system includes.\n\n# The -MG flag is used to add missing includes (useful to depend on the .opt files).\n\n# The -MT flag is used to define the object file.\n\n#\n\n# We need to process each source file independently because of the way -MT works.\n\n#\n\n# When generating the dependencies for the .cu files, we must specify that they are\n\n# to be interpeted as C++ files and not some other funky format. We also need\n\n# to define __CUDA_INTERNAL_COMPILATION__ to mute an error during traversal of\n\n# some CUDA system includes\n\n#\n\n# Both GPUDEPS and CPUS also depend from Makefile.conf, to ensure they are rebuilt when\n\n# e.g. the problem changes. This avoids a situation like the following:\n\n# * developer builds with problem A\n\n# * developer builds with problem B\n\n# * developer changes e.g. a kernel file\n\n# * developer builds with problem B => it gets compiled new\n\n# * developer builds with problem A => A doesn't get recompiled because the deps\n\n#   file only have the deps for B, not A, and the .o file for A is there already\n\n# This is particularly important to ensure that `make compile-problems` works correctly.\n\n# Of course, Makefile.conf has to be stripped from the list of dependencies before passing them\n\n# to the loop that builds the deps.\n",
+        "Line" : 1018,
+        "CharPositionInLine" : 0
+      },
+      "160" : {
+        "Text" : "# target: docs - Generate Doxygen documentation in $(DOCSDIR);\n\n# target:        to produce refman.pdf, run \"make pdf\" in $(DOCSDIR)/latex/.\n",
+        "Line" : 1064,
+        "CharPositionInLine" : 0
+      },
+      "161" : {
+        "Text" : "# target: docsclean - Remove $(DOCSDIR)\n",
+        "Line" : 1079,
+        "CharPositionInLine" : 0
+      },
+      "162" : {
+        "Text" : "# target: tags - Create TAGS file\n",
+        "Line" : 1083,
+        "CharPositionInLine" : 0
+      },
+      "163" : {
+        "Text" : "# target: test - Run GPUSPH with WaveTank. Compile it if needed\n",
+        "Line" : 1091,
+        "CharPositionInLine" : 0
+      },
+      "164" : {
+        "Text" : "# target: compile-problems - Test that all problems compile\n",
+        "Line" : 1096,
+        "CharPositionInLine" : 0
+      },
+      "165" : {
+        "Text" : "# target: <problem_name> - Compile the given problem\n",
+        "Line" : 1103,
+        "CharPositionInLine" : 0
+      },
+      "166" : {
+        "Text" : "# target: list-problems - List available problems\n",
+        "Line" : 1107,
+        "CharPositionInLine" : 0
+      },
+      "167" : {
+        "Text" : "# target: help - Display help\n",
+        "Line" : 1111,
+        "CharPositionInLine" : 0
+      },
+      "168" : {
+        "Text" : "# target: help-targets - Display callable targets\n",
+        "Line" : 1127,
+        "CharPositionInLine" : 0
+      },
+      "169" : {
+        "Text" : "# | sed 's/ - /\\t/'\n",
+        "Line" : 1130,
+        "CharPositionInLine" : 63
+      },
+      "170" : {
+        "Text" : "# target: help-options - Display available options\n",
+        "Line" : 1132,
+        "CharPositionInLine" : 0
+      },
+      "171" : {
+        "Text" : "# | sed 's/ - /\\t/'\n",
+        "Line" : 1135,
+        "CharPositionInLine" : 63
+      },
+      "172" : {
+        "Text" : "# target: help-overrides - Document available overrides\n",
+        "Line" : 1138,
+        "CharPositionInLine" : 0
+      },
+      "173" : {
+        "Text" : "# | sed 's/ - /\\t/'\n",
+        "Line" : 1142,
+        "CharPositionInLine" : 67
+      },
+      "174" : {
+        "Text" : "# FORCE target: add it to the dependecy f another target to force-rebuild it\n\n# Used e.g. by the LINEARIZATION_SELECT_OPTFILE to remake it when the linearization\n\n# changes (note that we use this mechanism instead of the sed commands used in\n\n# other circumstances because it's more complex to rebuild\n",
+        "Line" : 1144,
+        "CharPositionInLine" : 0
+      },
+      "175" : {
+        "Text" : "# \"sinclude\" instead of \"include\" tells make not to print errors if files are missing.\n\n# This is necessary because during the first processing of the makefile, make complains\n\n# before creating them.\n",
+        "Line" : 1150,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 176,
+      "Errorlog" : "line 38:98 token recognition error at: '\\1'\nline 452:61 token recognition error at: '\\0'\n"
+    },
+    "docs/user-guide/Makefile" : {
+      "ObjectId" : "606079be49fa3bc2e487e0b357217b927873910a",
+      "LastModified" : "2016-09-23T14:47:26Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "docs/user-guide/gpusph-install/Makefile" : {
+      "ObjectId" : "f147dbff8e36d10886e61819f5c74ebee8468929",
+      "LastModified" : "2016-09-23T14:47:26Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Command to convert an SVG to PDF\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set of general pattern rules to produce final and intermediate results\n\n# during a compilation.\n\n#\n\n# The chain is the following:\n\n# * the final PDF is generated from a .tex file, but it also depends on the\n\n#   .bbl file produced by bibtex;\n\n# * the .bbl is produced by a .bib file reading from an .aux file\n\n# * the .aux file is produced by processing the .tex file once, and there\n\n#   should also be a .bib file;\n\n# * in the end, this creates the correct chain of dependencies to regenerate\n\n#   the whole document whenever the source .tex or .bib are changed;\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Notes and TODOs: currently this (1) requires a .bib file and (2) requires\n\n# the .bib file to be called the same as the .tex source. We would like to\n\n# overcome these restrictions somehow (e.g. parse the .tex files to get the\n\n# nme of the bib file could be an idea)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#gpusph-install.pdf: gpusph-license.tex gpusph-reference.bib\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "docs/user-guide/gpusph-setup/Makefile" : {
+      "ObjectId" : "6e31b850439f3b1925cdc0c62a57868c98713942",
+      "LastModified" : "2016-09-23T14:47:26Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Command to convert an SVG to PDF\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set of general pattern rules to produce final and intermediate results\n\n# during a compilation.\n\n#\n\n# The chain is the following:\n\n# * the final PDF is generated from a .tex file, but it also depends on the\n\n#   .bbl file produced by bibtex;\n\n# * the .bbl is produced by a .bib file reading from an .aux file\n\n# * the .aux file is produced by processing the .tex file once, and there\n\n#   should also be a .bib file;\n\n# * in the end, this creates the correct chain of dependencies to regenerate\n\n#   the whole document whenever the source .tex or .bib are changed;\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Notes and TODOs: currently this (1) requires a .bib file and (2) requires\n\n# the .bib file to be called the same as the .tex source. We would like to\n\n# overcome these restrictions somehow (e.g. parse the .tex files to get the\n\n# nme of the bib file could be an idea)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#gpusph-setup.pdf: gpusph-license.tex gpusph-reference.bib\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "docs/user-guide/gpusph-theory/Makefile" : {
+      "ObjectId" : "4df395fcac3a15b63f83fd21176d75ee46dfe663",
+      "LastModified" : "2016-09-23T14:47:26Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Command to convert an SVG to PDF\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set of general pattern rules to produce final and intermediate results\n\n# during a compilation.\n\n#\n\n# The chain is the following:\n\n# * the final PDF is generated from a .tex file, but it also depends on the\n\n#   .bbl file produced by bibtex;\n\n# * the .bbl is produced by a .bib file reading from an .aux file\n\n# * the .aux file is produced by processing the .tex file once, and there\n\n#   should also be a .bib file;\n\n# * in the end, this creates the correct chain of dependencies to regenerate\n\n#   the whole document whenever the source .tex or .bib are changed;\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Notes and TODOs: currently this (1) requires a .bib file and (2) requires\n\n# the .bib file to be called the same as the .tex source. We would like to\n\n# overcome these restrictions somehow (e.g. parse the .tex files to get the\n\n# nme of the bib file could be an idea)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#gpusph-theory.pdf: gpusph-license.tex gpusph-reference.bib\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 5
+  },
+  "ElapsedTime" : 1782
+}

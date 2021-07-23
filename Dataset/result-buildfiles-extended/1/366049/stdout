@@ -1,0 +1,1128 @@
+{
+  "Repository" : "366049",
+  "Revision" : "HEAD",
+  "ObjectId" : "719f1a43f17ed396b4effed4d31139d58591feef",
+  "CommitTime" : "2014-05-09T01:46:54Z",
+  "Files" : {
+    "crawl-ref/source/Makefile" : {
+      "ObjectId" : "10855083a0436acfeb6b3c795bfd849b2b4ec556",
+      "LastModified" : "2014-04-06T03:22:10Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Crawl Light\n\n# GNU Makefile\n\n#\n\n# largely written by Steven Noonan <steven@uplinklabs.net>\n\n#    (if something breaks, blame him.)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Typical targets:\n\n#    make\n\n#    make debug\n\n#    make debug-lite    # Like \"make debug\", but without all the spew.\n\n#    make install\n\n#    make debug install\n\n#    -- note, unlike most programs, you need to specify build type when\n\n#       installing even if you just built it.\n\n# Typical parameters:\n\n#    TILES         -- set to anything to enable tiles build\n\n#\n\n#    CROSSHOST     -- target system, eg, i386-pc-msdosdjgpp or i586-mingw32msvc\n\n#\n\n#    prefix        -- installation base.  Specify eg. /usr/local on Unix systems.\n\n#    DESTDIR       -- installation staging area (the dir you intend to pack)\n\n#    DATADIR       -- place to hold immutable files.  Can be either relative to\n\n#                     \"prefix\" or absolute.\n\n#    SAVEDIR       -- place to hold writeable data (saves, database, morgue\n\n#                     dumps).  Can be relative to \"prefix\", absolute or placed\n\n#                     in the user's home dir (~).  Remember to protect the ~\n\n#                     from your shell!\n\n#                     Warning, shared directories are no longer supported.\n\n#    SHAREDDIR     -- place to hold writeable data common to multiple\n\n#                     players (scores, the logfile, ghosts).  Will be placed\n\n#                     inside the SAVEDIR if not specified.\n\n#       Layout examples:\n\n#         prefix=~/crawl DATADIR=data/ SAVEDIR=saves/\n\n#                  -- everything under ~/crawl\n\n#         prefix=/usr/local\n\n#                  -- system-wide installation\n\n#\n\n#    V             -- set to anything to enable verbose build\n\n#\n\n#    USE_ICC       -- set to use Intel's compiler\n\n#    LTO           -- set for better optimization but slower compilation,\n\n#                     requires gcc4.6+\n\n#    ASSERTS       -- set to enable assertion checks (implied in debug mode)\n\n#    NOWIZARD      -- set to disable wizard mode.  Use if you have untrusted\n\n#                     remote players without DGL.\n\n#\n\n#\n\n# Requirements:\n\n#    For tile builds, you need pkg-config.\n\n#    You also need libpng, sdl, sdl-image and libfreetype -- if you got your\n\n#    source from git, you can 'git submodule update' to fetch them; you can also\n\n#    ask for a package with convenience libraries instead -- we'll try to provide\n\n#    them somewhere in the near future.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Disable GNU Make implicit rules and variables. Leaving them enabled will slow\n\n# down MinGW and Cygwin builds by a very VERY noticeable degree. Besides, we have\n\n# _explicit_ rules defined for everything. So we don't need them.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This only works for recursive makes, i.e. contribs ...\n\n# ... so zap the suffix list to neutralize most predifined rules, too\n",
+        "Line" : 64,
+        "CharPositionInLine" : 17
+      },
+      "4" : {
+        "Text" : "#\n\n# Compiler Flags\n\n#\n\n# The compiler flag variables are separated into their individual\n\n# purposes, making it easier to deal with the various tools involved\n\n# in a compile.\n\n#\n\n# These are also divided into global vs. local flags. So for instance,\n\n# CFOPTIMIZE affects Crawl, Lua, and SQLite, while CFOPTIMIZE_L only\n\n# affects Crawl.\n\n#\n\n# The variables are as follows:\n\n# CFOPTIMIZE(_L) - Optimization flags\n\n# CFWARN(_L) - Warning flags\n\n# CFOTHERS(_L) - Anything else\n\n#\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# If you have a Core 2 processor, this _really_ makes things fly:\n\n#CFOPTIMIZE := -O2 -parallel -xT\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Optionally enable the 'ipo' feature, to facilitate inlining\n\n# across object file bounds.\n\n#CFOPTIMIZE_L := -ipo\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Some very good optimization flags.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# USE_ICC\n",
+        "Line" : 101,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "#\n\n# The GCC and GXX variables are set later.\n\n#\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# Platform Detection\n\n#\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# If needed, override uname_S so we get the appropriate\n\n# things compiled.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "#\n\n# Set up the TILES variant\n\n#\n",
+        "Line" : 264,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# For now, everything but the iPad uses the standard\n\n# SDL/OpenGL/Freetype combination.\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#\n\n# Check for an Apple-released compiler.\n\n#\n",
+        "Line" : 279,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#\n\n# Set up object file dependencies for $(GAME) target.\n\n#\n",
+        "Line" : 288,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Just a quick hack to make it clean up\n\n# tiles-specific object files too.\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Works for Mac OS X and Linux.\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# To get stack trace symbols.\n\n# Note that MinGW doesn't support -rdynamic.\n",
+        "Line" : 318,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Permissions to set on the game executable.\n",
+        "Line" : 332,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Permissions to set on the save directory.\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# The user:group to install the game as.\n",
+        "Line" : 339,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# If you're installing Crawl for multiple users, you *must* set this to a\n\n# valid path before building Crawl. This is not necessary if you are building\n\n# Crawl for a single user.\n\n# If you're installing to /usr or /usr/local, we have sane defaults.\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# SAVEDIR := saves/\n\n# DATADIR := data/\n",
+        "Line" : 363,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Mac OS X 10.4 adds a 'u' on the end of the SDK name. Everything\n\n# else is much easier to predict the name of.\n",
+        "Line" : 400,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# [ds] 10.4 SDK g++-4.0 + x86_64 runs into SDL compile issues.\n",
+        "Line" : 411,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# MacOS\n",
+        "Line" : 435,
+        "CharPositionInLine" : 6
+      },
+      "27" : {
+        "Text" : "# We do this in a separate variable because if we\n\n# specify GCC_VER on the make command-line, the\n\n# variable is immutable, and we can't add the dash.\n",
+        "Line" : 440,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Attempt to use a full compiler name, to make\n\n# distcc builds work nicely.\n",
+        "Line" : 446,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Cross-compiling is a weird case.\n",
+        "Line" : 461,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Define this to automatically generate code optimized for your machine\n\n# (GCC only as of now).\n\n#\n\n# NOTE: Don't use this with a release build, since the generated code\n\n# won't work for all machines.\n",
+        "Line" : 471,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "#\n\n# Tiles build stuff\n\n#\n",
+        "Line" : 519,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Okay, we have to assume we're on something else that\n\n# uses standard UNIX-like methods for finding libs.\n\n#\n\n# For instance, on Linux and most other UNIX-likes,\n\n# the app pkg-config can provide the appropriate\n\n# CFLAGS and LDFLAGS.\n\n#\n",
+        "Line" : 550,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# If pkg-config is available, it's the surest way to find where\n\n# the contributing libraries are located.\n\n#\n",
+        "Line" : 566,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# pkg-config\n",
+        "Line" : 580,
+        "CharPositionInLine" : 6
+      },
+      "35" : {
+        "Text" : "# TILES\n",
+        "Line" : 604,
+        "CharPositionInLine" : 6
+      },
+      "36" : {
+        "Text" : "# On clang, unknown -Wfoo is merely a warning, thus -Werror.\n",
+        "Line" : 606,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "#\n\n# Figure out the build settings for this type of build\n\n#\n",
+        "Line" : 616,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Debug\n\n# No optimization, full debugging.\n",
+        "Line" : 620,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Debug-Lite\n\n# No optimization, but little/no debugging spew.\n",
+        "Line" : 628,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Profile\n\n# Optimized, with full debugging.\n",
+        "Line" : 635,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Final\n\n# Use this for final release versions.\n",
+        "Line" : 642,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Follow the suggestions in ccache(1)\n",
+        "Line" : 670,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# ... for everything but version.cc, which uses __DATE__ and __TIME__\n",
+        "Line" : 673,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Just keep ccache blisfully ignorant of the precompiled header\n",
+        "Line" : 676,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Cygwin has a panic attack if we do this...\n",
+        "Line" : 685,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "#relative DATADIR\n",
+        "Line" : 738,
+        "CharPositionInLine" : 4
+      },
+      "47" : {
+        "Text" : "# Include path for (n)curses with Unicode support.\n",
+        "Line" : 755,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Your ncurses library may include Unicode support, and you may not have a\n\n# separate libncursesw; this is the case on Mac OS/Darwin.\n",
+        "Line" : 757,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "#the rest are private\n",
+        "Line" : 903,
+        "CharPositionInLine" : 42
+      },
+      "50" : {
+        "Text" : "#\n\n# CFLAGS difference check\n\n#\n\n# Check for flag changes between the previous build and the current one,\n\n# because any CFLAGS change could result in an inconsistent build if the\n\n# person building it isn't careful.\n\n#\n\n# This should eliminate an annoying need to use 'make clean' every time.\n\n#\n",
+        "Line" : 941,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# (stray ' for highlights)\n",
+        "Line" : 951,
+        "CharPositionInLine" : 68
+      },
+      "52" : {
+        "Text" : "# Only if we're being installed for real.  Installations to a staging dir\n\n# which are then packaged would trample existing files; these need to be\n\n# handled by packagers themselves.\n",
+        "Line" : 1098,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Dependency generation\n\n#\n",
+        "Line" : 1145,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# See info node: (gcc) Preprocessor Options\n",
+        "Line" : 1148,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Precompiled headers\n\n#\n",
+        "Line" : 1162,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Plain old compilation\n\n#\n",
+        "Line" : 1172,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "#\n\n# Contribs\n\n#\n",
+        "Line" : 1186,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "#############################################################################\n\n# Build unrandart data\n",
+        "Line" : 1202,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "#############################################################################\n\n# RLTiles\n\n#\n",
+        "Line" : 1217,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "#############################################################################\n\n# Building the unified Windows package.\n\n#\n",
+        "Line" : 1239,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# You need to have NSIS installed.\n",
+        "Line" : 1243,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "#############################################################################\n\n# Building Mac app bundles\n\n#\n",
+        "Line" : 1261,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 63
+    },
+    "crawl-ref/source/contrib/Makefile" : {
+      "ObjectId" : "83bc614cb1aa8c32f9e8c493fe5e6c7763289f8f",
+      "LastModified" : "2011-04-02T08:46:14Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/contrib/contrib/Makefile" : {
+      "ObjectId" : "83bc614cb1aa8c32f9e8c493fe5e6c7763289f8f",
+      "LastModified" : "2011-09-01T01:45:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/contrib/freetype/Makefile" : {
+      "ObjectId" : "8da3d681d4cbc8af81e4d3dcbff6af094515c28e",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for freetype\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Since Windows builds could be done with MinGW or Cygwin,\n\n# set a TARGET_OS_WINDOWS flag when either shows up.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "crawl-ref/source/contrib/freetype/src/tools/ftrandom/Makefile" : {
+      "ObjectId" : "2e619299cdfcdb13ec98282f200b013d60a002c3",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# TOP_DIR and OBJ_DIR should be set by the user to the right directories,\n\n# if necessary.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The setup below is for gcc on a Unix-like platform.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# EOF\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "crawl-ref/source/contrib/libpng/Makefile" : {
+      "ObjectId" : "610d66bb1020fe4671738141845f99670bc4a87f",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for libpng\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "crawl-ref/source/contrib/libpng/Makefile.am" : {
+      "ObjectId" : "da8c2426767c8e11281536ee5da80665c58c71ce",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am:\n\n#   Source file for Makefile.in (and hence Makefile)\n\n#\n\n# Makefile.am need only be changed on a major version number\n\n# change (e.g. libpng12 --> libpng13).  In that case seach\n\n# this file for every instance of the old base name (libpng12)\n\n# and change to the new one (libpng13), then change the\n\n# -version-number settings below so that the new values have\n\n# the correct major part (first field).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# libpng does not follow GNU file name conventions\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# test programs - run on make check, make distcheck\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# man pages\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# generate the -config scripts if required\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# rules to build libpng, only build the old library on request\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# MAJOR UPGRADE: the version-number settings below must be changed.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Versioned symbols and restricted exports\n",
+        "Line" : 47,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Only restricted exports when possible\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Avoid depending upon Character Ranges.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#distribute headers in /usr/include/libpng/*\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# pkg-config stuff, note that libpng.pc is always required in order\n\n# to get the correct library\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#extra source distribution files.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# install the .../include headers as links to the new ones\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# do evil things to libpng to cause libpng14 to be used\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15,
+      "Errorlog" : "line 101:65 token recognition error at: '\\1'\nline 102:64 token recognition error at: '\\1'\n"
+    },
+    "crawl-ref/source/contrib/lua/Makefile" : {
+      "ObjectId" : "6e78f66fa5b1763b119236e1bd7de95f42093e52",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# makefile for installing Lua\n\n# see INSTALL for installation instructions\n\n# see src/Makefile and src/luaconf.h for further customization\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# == CHANGE THE SETTINGS BELOW TO SUIT YOUR ENVIRONMENT =======================\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Your platform. See PLATS for possible values.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to install. The installation starts in the src and doc directories,\n\n# so take care if INSTALL_TOP is not an absolute path.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# You probably want to make INSTALL_LMOD and INSTALL_CMOD consistent with\n\n# LUA_ROOT, LUA_LDIR, and LUA_CDIR in luaconf.h (and also with etc/lua.pc).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# How to install. If your install program does not support \"-p\", then you\n\n# may have to run ranlib on the installed liblua.a (do \"make ranlib\").\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# If you don't have install you can use cp instead.\n\n# INSTALL= cp -p\n\n# INSTALL_EXEC= $(INSTALL)\n\n# INSTALL_DATA= $(INSTALL)\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Utilities.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# == END OF USER SETTINGS. NO NEED TO CHANGE ANYTHING BELOW THIS LINE =========\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Convenience platforms targets.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# What to install.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Lua version and release.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# make may get confused with test/ and INSTALL in a case-insensitive OS\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# echo config parameters\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# echo private config parameters\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# echo config parameters as Lua code\n\n# uncomment the last sed expression if you want nil instead of empty strings\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#-e 's/\"\"/nil/'\n",
+        "Line" : 122,
+        "CharPositionInLine" : 58
+      },
+      "17" : {
+        "Text" : "# list targets that do not create files (but not all makes understand .PHONY)\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# (end of Makefile)\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "crawl-ref/source/contrib/lua/etc/Makefile" : {
+      "ObjectId" : "6d00008d98157eb4c3c83db0e74682f756c8104d",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# makefile for Lua etc\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#MYLIBS= -lm -Wl,-E -ldl -lreadline -lhistory -lncurses\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "crawl-ref/source/contrib/lua/src/Makefile" : {
+      "ObjectId" : "c60a6cce326488dc4f90be3df4e91a11d49016e3",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for lua\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "crawl-ref/source/contrib/pcre/CMakeLists.txt" : {
+      "ObjectId" : "44e119ff325f2d140570f88daae6faa4b87fba1a",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMakeLists.txt\n\n#\n\n#\n\n# This file allows building PCRE with the CMake configuration and build\n\n# tool. Download CMake in source or binary form from http://www.cmake.org/\n\n#\n\n# Original listfile by Christian Ehrlicher <Ch.Ehrlicher@gmx.de>\n\n# Refined and expanded by Daniel Richard G. <skunk@iSKUNK.ORG>\n\n# 2007-09-14 mod by Sheri so 7.4 supported configuration options can be entered\n\n# 2007-09-19 Adjusted by PH to retain previous default settings\n\n# 2007-12-26 (a) On UNIX, use names libpcre instead of just pcre\n\n#            (b) Ensure pcretest and pcregrep link with the local library,\n\n#                not a previously-installed one.\n\n#            (c) Add PCRE_SUPPORT_LIBREADLINE, PCRE_SUPPORT_LIBZ, and\n\n#                PCRE_SUPPORT_LIBBZ2.\n\n# 2008-01-20 Brought up to date to include several new features by Christian\n\n#            Ehrlicher.\n\n# 2008-01-22 Sheri added options for backward compatibility of library names\n\n#            when building with minGW:\n\n#            if \"ON\", NON_STANDARD_LIB_PREFIX causes shared libraries to\n\n#            be built without \"lib\" as prefix. (The libraries will be named\n\n#            pcre.dll, pcreposix.dll and pcrecpp.dll).\n\n#            if \"ON\", NON_STANDARD_LIB_SUFFIX causes shared libraries to\n\n#            be built with suffix of \"-0.dll\". (The libraries will be named\n\n#            libpcre-0.dll, libpcreposix-0.dll and libpcrecpp-0.dll - same names\n\n#            built by default with Configure and Make.\n\n# 2008-01-23 PH removed the automatic build of pcredemo.\n\n# 2008-04-22 PH modified READLINE support so it finds NCURSES when needed.\n\n# 2008-07-03 PH updated for revised UCP property support (change of files)\n\n# 2009-03-23 PH applied Steven Van Ingelgem's patch to change the name\n\n#            CMAKE_BINARY_DIR to PROJECT_BINARY_DIR so that it works when PCRE\n\n#            is included within another project.\n\n# 2009-03-23 PH applied a modified version of Steven Van Ingelgem's patches to\n\n#            add options to stop the building of pcregrep and the tests, and\n\n#            to disable the final configuration report.\n\n# 2009-04-11 PH applied Christian Ehrlicher's patch to show compiler flags that\n\n#            are set by specifying a release type.\n\n# 2010-01-02 PH added test for stdint.h\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# for FindReadline.cmake\n",
+        "Line" : 44,
+        "CharPositionInLine" : 51
+      },
+      "2" : {
+        "Text" : "# external packages\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Configuration checks\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# User-configurable options\n\n#\n\n# (Note: CMakeSetup displays these in alphabetical order, regardless of\n\n# the order we use here)\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# bzip2 lib\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# zlib\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# readline lib\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Prepare build configuration\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# This next one used to contain\n\n#       SET(PCRETEST_LIBS ${READLINE_LIBRARY})\n\n# but I was advised to add the NCURSES test as well, along with\n\n# some modifications to cmake/FindReadline.cmake which should\n\n# make it possible to override the default if necessary. PH\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Output files\n",
+        "Line" : 254,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# What about pcre-config and libpcre.pc?\n",
+        "Line" : 263,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Character table generation\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Source code\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Build setup\n",
+        "Line" : 340,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# needed to make sure to not link debug libs\n\n# against release libs and vice versa\n",
+        "Line" : 349,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Libraries\n\n# pcre\n",
+        "Line" : 357,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# pcrecpp\n",
+        "Line" : 379,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Executables\n",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Removed by PH (2008-01-23) because pcredemo shouldn't really be built\n\n# automatically, and it gave trouble in some environments anyway.\n\n# ADD_EXECUTABLE(pcredemo pcredemo.c)\n\n# TARGET_LINK_LIBRARIES(pcredemo pcreposix)\n\n# IF(NOT BUILD_SHARED_LIBS)\n\n#     # make sure to not use declspec(dllimport) in static mode on windows\n\n#         SET_TARGET_PROPERTIES(pcredemo PROPERTIES COMPILE_FLAGS \"-DPCRE_STATIC\")\n\n# ENDIF(NOT BUILD_SHARED_LIBS)\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Testing\n",
+        "Line" : 419,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Write out a CTest configuration file that sets some needed environment\n\n# variables for the test scripts.\n\n#\n",
+        "Line" : 450,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# Installation\n",
+        "Line" : 485,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Remove pcrecpp.3\n",
+        "Line" : 502,
+        "CharPositionInLine" : 8
+      },
+      "24" : {
+        "Text" : "# help, only for nice output\n",
+        "Line" : 517,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# end CMakeLists.txt\n",
+        "Line" : 580,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "crawl-ref/source/contrib/pcre/Makefile" : {
+      "ObjectId" : "f0f7e7c30d0b12e72b834eb5cd0c84ffe3fe7d70",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for PCRE (Win32, MinGW)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "crawl-ref/source/contrib/pcre/Makefile.am" : {
+      "ObjectId" : "4e5cbca7b4fa347784385cb5caf5261799025aa6",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## Process this file with automake to produce Makefile.in.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The Libtool libraries to install.  We'll add to this later.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Unit tests you want to run when people type 'make check'.\n\n# TESTS is for binary unit tests, check_SCRIPTS for script-based tests\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Some of the binaries we make are to be installed, and others are\n\n# (non-user-visible) helper programs needed to build libpcre.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Additional files to delete on 'make clean' and 'make maintainer-clean'.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Additional files to bundle with the distribution, over and above what\n\n# the Autotools include by default.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# These files contain maintenance information\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# These files are used in the preparation of a release\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# These files are to do with building for Virtual Pascal\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# These files are usable versions of pcre.h and config.h that are distributed\n\n# for the benefit of people who are building PCRE manually, without the\n\n# Autotools support.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# These are the header files we'll install. We do not distribute pcre.h because\n\n# it is generated from pcre.h.in.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# These additional headers will be be installed if C++ support is enabled. We\n\n# do not distribute pcrecpparg.h or pcre_stringpiece.h, as these are generated\n\n# from corresponding .h.in files (which we do distribute).\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# WITH_PCRE_CPP\n",
+        "Line" : 138,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "## ---------------------------------------------------------------\n\n## The dftables program is used to rebuild character tables before compiling\n\n## PCRE, if --enable-rebuild-chartables is specified. It is not a user-visible\n\n## program. The default (when --enable-rebuild-chartables is not specified) is\n\n## to copy a distributed set of tables that are defined for ASCII code. In this\n\n## case, dftables is not needed.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# WITH_REBUILD_CHARTABLES\n",
+        "Line" : 162,
+        "CharPositionInLine" : 6
+      },
+      "15" : {
+        "Text" : "## The main pcre library\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "## This file is generated as part of the building process, so don't distribute.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The pcre_printint.src file is #included by some source files, so it must be\n\n# distributed. The pcre_chartables.c.dist file is the default version of\n\n# pcre_chartables.c, used unless --enable-rebuild-chartables is specified.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "## A version of the main pcre library that has a posix re API.\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "## There's a C++ library as well.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# WITH_PCRE_CPP\n",
+        "Line" : 237,
+        "CharPositionInLine" : 6
+      },
+      "21" : {
+        "Text" : "## The main unit tests\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Each unit test is a binary plus a script that runs that binary in various\n\n# ways. We install these test binaries in case folks find it helpful.\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# PCRE demonstration program. No longer built automatcally. The point is that\n\n# the users should build it themselves. So just distribute the source.\n\n# noinst_PROGRAMS += pcredemo\n\n# pcredemo_SOURCES = pcredemo.c\n\n# pcredemo_LDADD = libpcre.la\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "## Utility rules, documentation, etc.\n",
+        "Line" : 310,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# A compatibility line, the old build system worked with 'make test'\n",
+        "Line" : 312,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# A PCRE user submitted the following addition, saying that it \"will allow\n\n# anyone using the 'mingw32' compiler to simply type 'make pcre.dll' and get a\n\n# nice DLL for Windows use\". (It is used by the pcre.dll target.)\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# A PCRE user submitted the following addition, saying that it \"will allow\n\n# anyone using the 'mingw32' compiler to simply type 'make pcre.dll' and get a\n\n# nice DLL for Windows use\".\n",
+        "Line" : 328,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# We have .pc files for pkg-config users.\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "## CMake support\n",
+        "Line" : 388,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "## end Makefile.am\n",
+        "Line" : 397,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 31
+    },
+    "crawl-ref/source/contrib/pcre/cmake/FindPackageHandleStandardArgs.cmake" : {
+      "ObjectId" : "151d81250318e646a3baf86b4515fa237f725b5d",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIND_PACKAGE_HANDLE_STANDARD_ARGS(NAME (DEFAULT_MSG|\"Custom failure message\") VAR1 ... )\n\n#    This macro is intended to be used in FindXXX.cmake modules files.\n\n#    It handles the REQUIRED and QUIET argument to FIND_PACKAGE() and\n\n#    it also sets the <UPPERCASED_NAME>_FOUND variable.\n\n#    The package is found if all variables listed are TRUE.\n\n#    Example:\n\n#\n\n#    FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibXml2 DEFAULT_MSG LIBXML2_LIBRARIES LIBXML2_INCLUDE_DIR)\n\n#\n\n#    LibXml2 is considered to be found, if both LIBXML2_LIBRARIES and \n\n#    LIBXML2_INCLUDE_DIR are valid. Then also LIBXML2_FOUND is set to TRUE.\n\n#    If it is not found and REQUIRED was used, it fails with FATAL_ERROR, \n\n#    independent whether QUIET was used or not.\n\n#    If it is found, the location is reported using the VAR1 argument, so \n\n#    here a message \"Found LibXml2: /usr/lib/libxml2.so\" will be printed out.\n\n#    If the second argument is DEFAULT_MSG, the message in the failure case will \n\n#    be \"Could NOT find LibXml2\", if you don't like this message you can specify\n\n#    your own custom failure message there.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "crawl-ref/source/contrib/pcre/cmake/FindReadline.cmake" : {
+      "ObjectId" : "1d4cc55843136c7802eb4892b0b6fcffb13e95e3",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# from http://websvn.kde.org/trunk/KDE/kdeedu/cmake/modules/FindReadline.cmake\n\n# http://websvn.kde.org/trunk/KDE/kdeedu/cmake/modules/COPYING-CMAKE-SCRIPTS\n\n# --> BSD licensed\n\n#\n\n# GNU Readline library finder\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 2008-04-22 The next clause used to read like this:\n\n#\n\n#  FIND_LIBRARY(READLINE_LIBRARY NAMES readline)\n\n#        FIND_LIBRARY(NCURSES_LIBRARY NAMES ncurses )\n\n#        include(FindPackageHandleStandardArgs)\n\n#        FIND_PACKAGE_HANDLE_STANDARD_ARGS(Readline DEFAULT_MSG NCURSES_LIBRARY READLINE_INCLUDE_DIR READLINE_LIBRARY )\n\n#\n\n# I was advised to modify it such that it will find an ncurses library if\n\n# required, but not if one was explicitly given, that is, it allows the\n\n# default to be overridden. PH \n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "crawl-ref/source/contrib/sdl-image/Makefile" : {
+      "ObjectId" : "3c809227385741f3595fb9e680824a0c6352ff17",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for sdl-image\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "crawl-ref/source/contrib/sdl-image/Makefile.am" : {
+      "ObjectId" : "d16ab42a91a8297a2a989665d1d1edb6d98fbbdd",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am for the SDL sample image loading library and viewer\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Rule to build tar-gzipped distribution package\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Rule to build RPM distribution package\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "crawl-ref/source/contrib/sdl/Makefile" : {
+      "ObjectId" : "d29a0bea0a6303cede80f2d35a05abd5cc6ec2cf",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for sdl\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Since Windows builds could be done with MinGW or Cygwin,\n\n# set a TARGET_OS_WINDOWS flag when either shows up.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# First handle .c files\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Now .m files\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "crawl-ref/source/contrib/sdl/src/main/macos/exports/Makefile" : {
+      "ObjectId" : "5f37ae0760c14dd475d5cda17e4968a5b51554df",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/contrib/sdl/src/video/ps3/spulibs/Makefile" : {
+      "ObjectId" : "dc580d94360c1505db233f34165ec2862f16b52e",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This Makefile is for building the CELL BE SPU libs\n\n# libfb_writer_spu.so, libyuv2rgb_spu.so, libbilin_scaler_spu.so\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Toolchain\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Usually /usr/lib, depending on your distribution\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# fb_writer\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# yuv2rgb_converter\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# bilin_scaler\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "crawl-ref/source/contrib/sqlite/Makefile" : {
+      "ObjectId" : "7244e18c777038b9e707b11973afd25bec7aff26",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for stripped down SQLite 3 static lib.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Omit SQLite features we don't need.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "crawl-ref/source/contrib/zlib/Makefile" : {
+      "ObjectId" : "76d5fac4bd9ec5c33db3f089e72254ce073b6692",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# -*- Makefile -*- for zlib\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "crawl-ref/source/contrib/zlib/contrib/blast/Makefile" : {
+      "ObjectId" : "9be80bafe050eed57029ef2e690f36677a3003c0",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/contrib/zlib/contrib/minizip/Makefile" : {
+      "ObjectId" : "84eaad20d4fb19b00965268dd75d7e9b66c8cc21",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/contrib/zlib/contrib/puff/Makefile" : {
+      "ObjectId" : "b6b69404c7453bd3707f1c258ac238fe93dac867",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/contrib/zlib/contrib/untgz/Makefile" : {
+      "ObjectId" : "b54266fba20a167a1d83b7afd503dfd2f849ca57",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/rltiles/Makefile" : {
+      "ObjectId" : "90bc1efee7dd4544b16a070e9b5197f1d65a73ec",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Attempt to use a full compiler name, to make\n\n# distcc builds work nicely.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# MSVCRT's tmpfile() is broken, so use our own version instead.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# CFLAGS difference check\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# (stray ' for highlights)\n",
+        "Line" : 91,
+        "CharPositionInLine" : 62
+      },
+      "4" : {
+        "Text" : "##########################################################################\n\n# Dependencies \n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "crawl-ref/source/util/Makefile" : {
+      "ObjectId" : "d138a640cebb7c6c76918e56909963704cf12209",
+      "LastModified" : "2012-11-11T07:03:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 3,
+    "MAKEFILE" : 22,
+    "AUTOMAKE" : 3
+  },
+  "ElapsedTime" : 8363
+}

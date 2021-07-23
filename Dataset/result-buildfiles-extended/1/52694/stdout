@@ -1,0 +1,2298 @@
+{
+  "Repository" : "52694",
+  "Revision" : "HEAD",
+  "ObjectId" : "d640e72c218a8631fe942f1d90cdd961d0959ba8",
+  "CommitTime" : "2019-04-19T01:40:16Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "28d6a592e1ac375f7dee4d4bdb74b526c7c11547",
+      "LastModified" : "2019-04-04T17:25:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMake build for CompilerRT.\n\n#\n\n# An important constraint of the build is that it only produces libraries\n\n# based on the ability of the host toolchain to target various platforms.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check if compiler-rt is built as a standalone project.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add path for custom compiler-rt modules.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Check that the shadow scale value is valid.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Loading the llvm config causes this target to be imported so place it\n\n# under the appropriate folder in an IDE.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Find Python interpreter.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Ensure that fat libraries are built correctly on Darwin\n",
+        "Line" : 85,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Workaround SIP :-(\n",
+        "Line" : 129,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Define default arguments to lit.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We support running instrumented tests when we're not cross compiling\n\n# and target a UNIX-like system or Windows.\n\n# We can run tests on Android even when we are cross-compiling.\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# COMPILER_RT_DEBUG_PYBOOL is used by lit.common.configured.in.\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Always enable on Apple platforms.\n",
+        "Line" : 200,
+        "CharPositionInLine" : 11
+      },
+      "12" : {
+        "Text" : "# Mac OS X prior to 10.9 had problems with exporting symbols from\n\n# libc++/libc++abi.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# This is either directly the C++ ABI library or the full C++ library\n\n# which pulls in the ABI transitively.\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# This needs to be a full C++ library for linking gtest and unit tests.\n",
+        "Line" : 247,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#================================\n\n# Setup Compiler Flags\n\n#================================\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Override any existing /W flags with /W4. This is what LLVM does.  Failing to\n\n# remove other /W[0-4] flags will result in a warning about overriding a\n\n# previous flag.\n",
+        "Line" : 287,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Emulate C99 and C++11's __func__ for MSVC prior to 2013 CTP.\n",
+        "Line" : 305,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Provide some common commmandline flags for Sanitizer runtimes.\n",
+        "Line" : 310,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# The following is a workaround for powerpc64le. This is the only architecture\n\n# that requires -fno-function-sections to work properly. If lacking, the ASan\n\n# Linux test function-sections-are-bad.cc fails with the following error:\n\n# 'undefined symbol: __sanitizer_unaligned_load32'.\n",
+        "Line" : 328,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Replace the /M[DT][d] flags with /MT, and strip any definitions of _DEBUG,\n\n# which cause definition mismatches at link time.\n\n# FIXME: In fact, sanitizers should support both /MT and /MD, see PR20214.\n",
+        "Line" : 337,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# VS 2015 (version 1900) added support for thread safe static initialization.\n\n# However, ASan interceptors run before CRT initialization, which causes the\n\n# new thread safe code to crash. Disable this feature for now.\n",
+        "Line" : 353,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# If we're using MSVC,\n\n# always respect the optimization flags set by CMAKE_BUILD_TYPE instead.\n",
+        "Line" : 363,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Build with optimization, unless we're in debug mode.\n",
+        "Line" : 367,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Determine if we should restrict stack frame sizes.\n\n# Stack frames on PowerPC and Mips and in debug biuld can be much larger than\n\n# anticipated.\n\n# FIXME: Fix all sanitizers and add -Wframe-larger-than to\n\n# SANITIZER_COMMON_FLAGS\n",
+        "Line" : 375,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Build sanitizer runtimes with debug info.\n",
+        "Line" : 393,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Use /Z7 instead of /Zi for the asan runtime. This avoids the LNK4099\n\n# warning from the MS linker complaining that it can't find the 'vc140.pdb'\n\n# file used by our object library compilations.\n",
+        "Line" : 395,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Sanitizers cannot be built with -fmodules. The interceptors intentionally\n\n# don't include system headers, which is incompatible with modules.\n",
+        "Line" : 413,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Turn off several warnings.\n",
+        "Line" : 418,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Set common link flags.\n",
+        "Line" : 431,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Warnings to turn off for all libraries, not just sanitizers.\n",
+        "Line" : 485,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Silence MSVC linker warnings caused by empty object files. The\n\n# sanitizer libraries intentionally use ifdefs that result in empty\n\n# files, rather than skipping these files in the build system.\n\n# Ideally, we would pass this flag only for the libraries that need\n\n# it, but CMake doesn't seem to have a way to set linker flags for\n\n# individual static libraries, so we enable the suppression flag for\n\n# the whole compiler-rt project.\n",
+        "Line" : 489,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# If we have a valid source tree, generate llvm-lit into the bin directory.\n\n# The user can still choose to have the check targets *use* a different lit\n\n# by specifying -DLLVM_EXTERNAL_LIT, but we generate it regardless.\n",
+        "Line" : 543,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 33
+    },
+    "cmake/Modules/AddCompilerRT.cmake" : {
+      "ObjectId" : "bed0826ff871a4c4da74b41eefebf5fec30ca928",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# For RUNTIME_OUTPUT_DIRECTORY variable, Multi-configuration generators\n\n# append a per-configuration subdirectory to the specified directory.\n\n# To avoid the appended folder, the configuration specific variable must be\n\n# set 'RUNTIME_OUTPUT_DIRECTORY_${CONF}':\n\n# RUNTIME_OUTPUT_DIRECTORY_DEBUG, RUNTIME_OUTPUT_DIRECTORY_RELEASE, ...\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# Tries to add an \"object library\" target for a given list of OSs and/or\n\n# architectures with name \"<name>.<arch>\" for non-Darwin platforms if\n\n# architecture can be targeted, and \"<name>.<os>\" for Darwin platforms.\n\n# add_compiler_rt_object_libraries(<name>\n\n#                                  OS <os names>\n\n#                                  ARCHS <architectures>\n\n#                                  SOURCES <source files>\n\n#                                  CFLAGS <compile flags>\n\n#                                  DEFS <compile definitions>\n\n#                                  DEPS <dependencies>\n\n#                                  ADDITIONAL_HEADERS <header files>)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add headers to LIB_SOURCES for IDEs\n",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Strip out -msse3 if this isn't macOS.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Takes a list of object library targets, and a suffix and appends the proper\n\n# TARGET_OBJECTS string to the output variable.\n\n# format_object_libs(<output> <suffix> ...)\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Xcode will try to compile asm files as C ('clang -x c'), and that will fail.\n",
+        "Line" : 111,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Pass ASM file directly to the C++ compiler.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Adds static or shared runtime for a list of architectures and operating\n\n# systems and puts it in the proper directory in the build and install trees.\n\n# add_compiler_rt_runtime(<name>\n\n#                         {STATIC|SHARED}\n\n#                         ARCHS <architectures>\n\n#                         OS <os list>\n\n#                         SOURCES <source files>\n\n#                         CFLAGS <compile flags>\n\n#                         LINK_FLAGS <linker flags>\n\n#                         DEFS <compile definitions>\n\n#                         LINK_LIBS <linked libraries> (only for shared library)\n\n#                         OBJECT_LIBS <object libraries to use as sources>\n\n#                         PARENT_TARGET <convenience parent target>\n\n#                         ADDITIONAL_HEADERS <header files>)\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Until we support this some other way, build compiler-rt runtime without LTO\n\n# to allow non-LTO projects to link with it.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Add headers to LIB_SOURCES for IDEs. It doesn't make sense to\n\n# do this for a runtime library that only consists of OBJECT\n\n# libraries, so only add the headers when source files are present.\n",
+        "Line" : 167,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Strip out -msse3 if this isn't macOS.\n",
+        "Line" : 179,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# If the parent targets aren't created we should create them\n",
+        "Line" : 234,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# The parent install target specifies the parent component to scrape up\n\n# anything not installed by the individual install targets, and to handle\n\n# installation when running the multi-configuration generators.\n",
+        "Line" : 241,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# If you are using a multi-configuration generator we don't generate\n\n# per-library install rules, so we fall back to the parent target COMPONENT\n",
+        "Line" : 265,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Ad-hoc sign the dylibs\n",
+        "Line" : 294,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# We only want to generate per-library install targets if you aren't using\n\n# an IDE because the extra targets get cluttered in IDEs.\n",
+        "Line" : 310,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# If you have a parent target specified, we bind the new install target\n\n# to the parent install target.\n",
+        "Line" : 324,
+        "CharPositionInLine" : 6
+      },
+      "17" : {
+        "Text" : "# when cross compiling, COMPILER_RT_TEST_COMPILER_CFLAGS help\n\n# in compilation and linking of unittests.\n",
+        "Line" : 345,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Unittests support.\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Mocking support.\n",
+        "Line" : 360,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# gtest use a lot of stuff marked as deprecated on Windows.\n",
+        "Line" : 374,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Compile and register compiler-rt tests.\n\n# generate_compiler_rt_tests(<output object files> <test_suite> <test_name>\n\n#                           <test architecture>\n\n#                           KIND <custom prefix>\n\n#                           SUBDIR <subdirectory for testing binary>\n\n#                           SOURCES <sources to compile>\n\n#                           RUNTIME <tests runtime to link in>\n\n#                           CFLAGS <compile-time flags>\n\n#                           COMPILE_DEPS <compile-time dependencies>\n\n#                           DEPS <dependencies>\n\n#                           LINK_FLAGS <flags to use during linking>\n\n# )\n",
+        "Line" : 378,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Link objects into a single executable with COMPILER_RT_TEST_COMPILER,\n\n# using specified link flags. Make executable a part of provided\n\n# test_suite.\n\n# add_compiler_rt_test(<test_suite> <test_name> <arch>\n\n#                      SUBDIR <subdirectory for binary>\n\n#                      OBJECTS <object files>\n\n#                      DEPS <deps (e.g. runtime libs)>\n\n#                      LINK_FLAGS <link flags>)\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Use host compiler in a standalone build, and just-built Clang otherwise.\n",
+        "Line" : 441,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# If we're not on MSVC, include the linker flags from CMAKE but override them\n\n# with the provided link flags. This ensures that flags which are required to\n\n# link programs at all are included, but the changes needed for the test\n\n# trump. With MSVC we can't do that because CMake is set up to run link.exe\n\n# when linking, not the compiler. Here, we hack it to use the compiler\n\n# because we want to use -fsanitize flags.\n",
+        "Line" : 449,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Make the test suite depend on the binary.\n",
+        "Line" : 468,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Install in Clang resource directory.\n",
+        "Line" : 480,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Builds custom version of libc++ and installs it in <prefix>.\n\n# Can be used to build sanitized versions of libc++ for running unit tests.\n\n# add_custom_libcxx(<name> <prefix>\n\n#                   DEPS <list of build deps>\n\n#                   CFLAGS <list of compile flags>\n\n#                   USE_TOOLCHAIN)\n",
+        "Line" : 502,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Configure lit configuration files, including compiler-rt specific variables.\n",
+        "Line" : 665,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 29
+    },
+    "cmake/Modules/BuiltinTests.cmake" : {
+      "ObjectId" : "eee77ad0200915adcf9f6610f82c0dbd3e854311",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test compiler can compile simple C/C++/Objective-C program without invoking\n\n# the linker.\n\n#\n\n# try_compile_only(\n\n#   OUTPUT_VAR\n\n#   [SOURCE source_text]\n\n#   [FLAGS flag_0 [ flag_1 ]]\n\n# )\n\n#\n\n# OUTPUT_VAR - The variable name to store the result. The result is a boolean\n\n#              `True` or `False`.\n\n#\n\n# SOURCE     - Optional. If specified use source the source text string\n\n#              specified. If not specified source code will be used that is C,\n\n#              C++, and Objective-C compatible.\n\n#\n\n# FLAGS      - Optional. If specified pass the one or more specified flags to\n\n#              the compiler.\n\n#\n\n# EXAMPLES:\n\n#\n\n# try_compile_only(HAS_F_NO_RTTI FLAGS \"-fno-rtti\")\n\n#\n\n# try_compile_only(HAS_CXX_AUTO_TYPE_DECL\n\n#   SOURCE \"int foo(int x) { auto y = x + 1; return y;}\"\n\n#   FLAGS \"-x\" \"c++\" \"-std=c++11\" \"-Werror=c++11-extensions\"\n\n# )\n\n#\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NOTE: `SOURCE` needs to be a multi-argument because source code\n\n# often contains semicolons which happens to be CMake's list separator\n\n# which confuses `cmake_parse_arguments()`.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/CompilerRTCompile.cmake" : {
+      "ObjectId" : "07b589beb2d10824303a9c5a6264f0a041e2dda0",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# On Windows, CMAKE_*_FLAGS are built for MSVC but we use the GCC clang.exe,\n\n# which uses completely different flags. Translate some common flag types, and\n\n# drop the rest.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Insert an empty string in the list to simplify processing.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Canonicalize /flag to -flag.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Make space separated -D and -U flags into joined flags.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Pass through basic command line macro definitions (-DNDEBUG).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# Canonicalize normal optimization flags to -O2.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# Compile a sanitizer test with a freshly built clang\n\n# for a given architecture, adding the result to the object list.\n\n#  - obj_list: output list of objects, populated by path\n\n#              of a generated object file.\n\n#  - source:   source file of a test.\n\n#  - arch:     architecture to compile for.\n\n# sanitizer_test_compile(<obj_list> <source> <arch>\n\n#                        KIND <custom namespace>\n\n#                        COMPILE_DEPS <list of compile-time dependencies>\n\n#                        DEPS <list of dependencies>\n\n#                        CFLAGS <list of flags>\n\n# )\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Write out architecture-specific flags into TARGET_CFLAGS variable.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Compile a source into an object file with COMPILER_RT_TEST_COMPILER using\n\n# a provided compile flags and dependenices.\n\n# clang_compile(<object> <source>\n\n#               CFLAGS <list of compile flags>\n\n#               DEPS <list of dependencies>)\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Ignore unknown warnings. CMAKE_CXX_FLAGS may contain GCC-specific options\n\n# which are not supported by Clang.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# On Darwin, there are no system-wide C++ headers and the just-built clang is\n\n# therefore not able to compile C++ files unless they are copied/symlinked into\n\n# ${LLVM_BINARY_DIR}/include/c++\n\n# The just-built clang is used to build compiler-rt unit tests. Let's detect\n\n# this before we try to build the tests and print out a suggestion how to fix\n\n# it.\n\n# On other platforms, this is currently not an issue.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "cmake/Modules/CompilerRTDarwinUtils.cmake" : {
+      "ObjectId" : "48f761a2e7c19cb9e6981c6bfade512a32b45037",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# On OS X SDKs can be installed anywhere on the base system and xcode-select can\n\n# set the default Xcode to use. This function finds the SDKs that are present in\n\n# the current Xcode.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Let's first try the internal SDK, otherwise use the public SDK.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# There isn't a clear mapping of what architectures are supported with a given\n\n# target platform, but ld's version output does list the architectures it can\n\n# link for.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If auto-detecting fails, fall back to a default set\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# This function takes an OS and a list of architectures and identifies the\n\n# subset of the architectures list that the installed toolchain can target.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The simple program will build for x86_64h on the simulator because it is \n\n# compatible with x86_64 libraries (mostly), but since x86_64h isn't actually\n\n# a valid or useful architecture for the iOS simulator we should drop it.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# This function checks the host cpusubtype to see if it is post-haswell. Haswell\n\n# and later machines can run x86_64h binaries. Haswell is cpusubtype 8.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Read and process the exclude file into a list of symbols\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# this function takes an OS, architecture and minimum version and provides a\n\n# list of builtin functions to exclude\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# adds a single builtin library for a single OS & ARCH\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Make a copy of the compilation flags.\n",
+        "Line" : 204,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Strip out any inappropriate flags for the target.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Generates builtin libraries for all operating systems specified in ARGN. Each\n\n# OS library is constructed by lipo-ing together single-architecture libraries.\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Don't build cc_kext libraries for simulator platforms\n",
+        "Line" : 295,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# By not specifying MIN_VERSION this only reads the OS and OS-arch lists.\n\n# We don't want to filter out the builtins that are present in libSystem\n\n# because kexts can't link libSystem.\n",
+        "Line" : 298,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# In addition to the builtins cc_kext includes some profile sources\n",
+        "Line" : 309,
+        "CharPositionInLine" : 8
+      },
+      "16" : {
+        "Text" : "# We put the x86 sim slices into the archives for their base OS\n",
+        "Line" : 331,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# this is a hacky opt-out. If you can't target both intel and arm\n\n# architectures we bail here.\n",
+        "Line" : 346,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# x86 targets are hard float by default, but the complain about the\n\n# float ABI flag, so don't pass it unless we're targeting arm.\n",
+        "Line" : 417,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 19
+    },
+    "cmake/Modules/CompilerRTLink.cmake" : {
+      "ObjectId" : "05c535f623b339a456a6817f51ce9ccd89748ca8",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Link a shared library with COMPILER_RT_TEST_COMPILER.\n\n# clang_link_shared(<output.so>\n\n#                   OBJECTS <list of input objects>\n\n#                   LINK_FLAGS <list of link flags>\n\n#                   DEPS <list of dependencies>)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/CompilerRTUtils.cmake" : {
+      "ObjectId" : "957452cffecc428f8a18b637e0ba588cc26b493d",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Because compiler-rt spends a lot of time setting up custom compile flags,\n\n# define a handy helper function for it. The compile flags setting in CMake\n\n# has serious issues that make its syntax challenging at best.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the variable var_PYBOOL to True if var holds a true-ish string,\n\n# otherwise set it to False.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Appends value to all lists in ARGN, if the condition is true.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Appends value to all strings in ARGN, if the condition is true.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Takes ${ARGN} and puts only supported architectures in @out_var list.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Add $arch as supported with no additional flags.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# test_target_arch(<arch> <def> <target flags...>)\n\n# Checks if architecture is supported: runs host compiler with provided\n\n# flags to verify that:\n\n#   1) <def> is defined (if non-empty)\n\n#   2) simple file can be successfully built.\n\n# If successful, saves target flags for this architecture.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Bail out if we cannot target the architecture we plan to test.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# must be checked before __MIPS\n",
+        "Line" : 175,
+        "CharPositionInLine" : 19
+      },
+      "9" : {
+        "Text" : "# Detect if we have the LLVMXRay and TestingSupport library installed and\n\n# available from llvm-config.\n",
+        "Line" : 231,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Make use of LLVM CMake modules.\n\n# --cmakedir is supported since llvm r291218 (4.0 release)\n",
+        "Line" : 271,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Get some LLVM variables from LLVMConfig.\n",
+        "Line" : 286,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Backwards compatibility: this variable used to be called\n\n# COMPILER_RT_TEST_TARGET_TRIPLE.\n",
+        "Line" : 306,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Determine if test target triple is specified explicitly, and doesn't match the\n\n# default.\n",
+        "Line" : 313,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Filter out generic versions of routines that are re-implemented in\n\n# architecture specific manner.  This prevents multiple definitions of the\n\n# same symbols, making the symbol selection non-deterministic.\n",
+        "Line" : 322,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Use exact spelling when building only for the target specified to CMake.\n",
+        "Line" : 355,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# compiler_rt_process_sources(\n\n#   <OUTPUT_VAR>\n\n#   <SOURCE_FILE> ...\n\n#  [ADDITIONAL_HEADERS <header> ...]\n\n# )\n\n#\n\n# Process the provided sources and write the list of new sources\n\n# into `<OUTPUT_VAR>`.\n\n#\n\n# ADDITIONAL_HEADERS     - Adds the supplied header to list of sources for IDEs.\n\n#\n\n# This function is very similar to `llvm_process_sources()` but exists here\n\n# because we need to support standalone builds of compiler-rt.\n",
+        "Line" : 383,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# For IDEs we need to tell CMake about header files.\n\n# Otherwise they won't show up in UI.\n",
+        "Line" : 407,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 18
+    },
+    "cmake/Modules/CustomLibcxx/CMakeLists.txt" : {
+      "ObjectId" : "683b88e020a486c86ebe4d1e40a6e6b6125e13bb",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build static libcxxabi.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build static libcxx without exceptions.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use above libcxxabi.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Modules/HandleCompilerRT.cmake" : {
+      "ObjectId" : "61b7792789e7c63e58badffa1b64ecf4dd19dc4f",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/Modules/SanitizerUtils.cmake" : {
+      "ObjectId" : "64d3ed92cb6e5de95cd41b9cd9d14bb5a66b0970",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create a target \"<name>-<arch>-symbols\" that would generate the list of\n\n# symbols that need to be exported from sanitizer runtime \"<name>\". Function\n\n# interceptors are exported automatically, user can also provide files with\n\n# symbol names that should be exported as well.\n\n#   add_sanitizer_rt_symbols(<name>\n\n#                            ARCHS <architectures>\n\n#                            PARENT_TARGET <convenience parent target>\n\n#                            EXTRA <files with extra symbols to export>)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This function is only used on Darwin, where undefined symbols must be specified\n\n# in the linker invocation.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add this file as a configure-time dependency so that changes to this\n\n# file trigger a re-configure. This is necessary so that `${link_flags}`\n\n# is changed when appropriate.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Add target to check code style for sanitizer runtimes.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/base-config-ix.cmake" : {
+      "ObjectId" : "ee9426b715d757a1f29cf92cc6710b0a78bd4947",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The CompilerRT build system requires CMake version 2.8.8 or higher in order\n\n# to use its support for building convenience \"libraries\" as a collection of\n\n# .o files. This is particularly useful in producing larger, more complex\n\n# runtime libraries.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Used by sanitizer_common and tests.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Top level target used to build all compiler-rt libraries.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Setting these variables from an LLVM build is sufficient that compiler-rt can\n\n# construct the output paths, so it can behave as if it were in-tree here.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Compute the Clang version from the LLVM version.\n\n# FIXME: We should be able to reuse CLANG_VERSION variable calculated\n\n#        in Clang cmake files, instead of copying the rules here.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Setup the paths where compiler-rt runtimes and headers should be stored.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Use just-built Clang to compile/link tests on all platforms.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Take output dir and install path from the user.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Use a host compiler to compile/link tests.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# On Darwin if /usr/include doesn't exist, the user probably has Xcode but not\n\n# the command line tools. If this is the case, we need to find the OS X\n\n# sysroot to pass to clang.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Find and run MSVC (not clang-cl) and get its version. This will tell clang-cl\n\n# what version of MSVC to pretend to be so that the STL works.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Add this flag into the host build if this is clang-cl.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# Add this flag to test compiles to suppress clang's auto-detection\n\n# logic.\n",
+        "Line" : 139,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# Generate the COMPILER_RT_SUPPORTED_ARCH list.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Examine compiler output to determine target architecture.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Supported archs for Apple platforms are generated later\n",
+        "Line" : 151,
+        "CharPositionInLine" : 20
+      },
+      "16" : {
+        "Text" : "# Strip out -nodefaultlibs when calling TEST_BIG_ENDIAN. Configuration\n\n# will fail with this option when building with a sanitizer.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 6
+      },
+      "17" : {
+        "Text" : "# Gcc doesn't accept -m32/-m64 so we do the next best thing and use\n\n# -mips32r2/-mips64r2. We don't use -mips1/-mips3 because we want to match\n\n# clang's default CPU's. In the 64-bit case, we must also specify the ABI\n\n# since the default ABI differs between gcc and clang.\n\n# FIXME: Ideally, we would build the N32 library too.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 18
+    },
+    "cmake/builtin-config-ix.cmake" : {
+      "ObjectId" : "c4d0940f9f87c3d4117225c0cedcf71b9fd745e8",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make all the tests only check the compiler\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check host compiler support for certain flags\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We're setting the flag manually for each target OS\n",
+        "Line" : 90,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# If we're not building the builtins standalone, just rely on the  tests in\n\n# config-ix.cmake to tell us what to build. Otherwise we need to do some leg\n\n# work here...\n",
+        "Line" : 156,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Architectures supported by compiler-rt libraries.\n",
+        "Line" : 162,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "cmake/caches/Apple.cmake" : {
+      "ObjectId" : "cdee3c088057297c823475797107288f0e379824",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for Apple-style builds of compiler-rt.\n\n# This configuration matches Apple uses when shipping Xcode releases.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/config-ix.cmake" : {
+      "ObjectId" : "b072c1180e334f0fee248079f8ce2966fa103aee",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Mingw64 requires quite a few \"C\" runtime libraries in order for basic\n\n# programs to link successfully with -nodefaultlibs.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# CodeGen options.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# MinGW warns if -fvisibility-inlines-hidden is used.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Debug info flags.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Warnings.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Symbols.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Libraries.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Look for terminfo library, used in unittests that depend on LLVMSupport.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Android's libstdc++ has a dependency on libdl.\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Linker flags.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Architectures.\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# List of all architectures we can target.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Try to compile a very simple source file to ensure we can target the given\n\n# platform. We use the results of these tests to build only the various target\n\n# runtime libraries supported by our current compilers cross-compiling\n\n# abilities.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Detect whether the current target platform is 32-bit or 64-bit, and setup\n\n# the correct commandline flags needed to attempt to target 32-bit and 64-bit.\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Returns a list of architecture specific target cflags in @out_var list.\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# This is only called in constructing cflags for tests executing on the\n\n# host. This will need to all be cleaned up to support building tests\n\n# for cross-targeted hardware (i.e. iOS).\n",
+        "Line" : 182,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# Returns a compiler and CFLAGS that should be used to run tests for the\n\n# specific architecture.  When cross-compiling, this is controled via\n\n# COMPILER_RT_TEST_COMPILER and COMPILER_RT_TEST_COMPILER_CFLAGS.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# This is only true if we are cross-compiling.\n\n# Build all tests with host compiler and use host tools.\n",
+        "Line" : 195,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Note: In order to target x86_64h on OS X the minimum deployment target must\n\n# be 10.8 or higher.\n",
+        "Line" : 296,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# We're setting the flag manually for each target OS\n",
+        "Line" : 321,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Figure out which arches to use for each OS\n",
+        "Line" : 347,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# for list_intersect\n",
+        "Line" : 419,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# Architectures supported by compiler-rt libraries.\n",
+        "Line" : 475,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# LSan and UBSan common files should be available on all architectures\n\n# supported by other sanitizers (even if they build into dummy object files).\n",
+        "Line" : 478,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# See if the DIA SDK is available and usable.\n",
+        "Line" : 504,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# TODO: Add builtins support.\n",
+        "Line" : 561,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#TODO(kostyak): add back Android & Fuchsia when the code settles a bit.\n",
+        "Line" : 632,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 27
+    },
+    "include/CMakeLists.txt" : {
+      "ObjectId" : "38bd6e41a912baf56d41c0f7175bf1d3776aaf25",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copy compiler-rt headers to the build tree.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Install sanitizer headers.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install xray headers.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# don't add this for IDEs.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 35
+      },
+      "CommentCount" : 4
+    },
+    "lib/CMakeLists.txt" : {
+      "ObjectId" : "e7a2c7bcfe1f038b654389186349e69a2a7c7037",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# First, add the subdirectories which contain feature-based runtime libraries\n\n# and several convenience helper libraries.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Hoist the building of sanitizer_common on whether we're building either the\n\n# sanitizers or xray (or both).\n\n#\n\n#TODO: Refactor sanitizer_common into smaller pieces (e.g. flag parsing, utils).\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "lib/asan/CMakeLists.txt" : {
+      "ObjectId" : "3c443469031d0bdcc1d0fc9452e81c3627fe7204",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for the AddressSanitizer runtime support library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Put most Sanitizer shared libraries in the global group. For more details, see\n\n# android-changes-for-ndk-developers.md#changes-to-library-search-order\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Compile ASan sources into an object library.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build ASan runtimes shipped with Clang.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Build separate libraries for each target.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# The Solaris 11.4 linker supports a subset of GNU ld version scripts,\n\n# but requires a special option to enable it.\n",
+        "Line" : 227,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# The only purpose of RTAsan_dynamic_version_script_dummy is to\n\n# carry a dependency of the shared runtime on the version script.\n\n# Replacing it with a straightforward\n\n# add_dependencies(clang_rt.asan-dynamic-${arch} clang_rt.asan-dynamic-${arch}-version-list)\n\n# generates an order-only dependency in ninja.\n",
+        "Line" : 261,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 7
+    },
+    "lib/asan/scripts/CMakeLists.txt" : {
+      "ObjectId" : "e5ab8ebed024211d4b8c18a367608d1ef1f4dd11",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/asan/tests/CMakeLists.txt" : {
+      "ObjectId" : "d7116f7ff4a381b00a3238f7f7ec72cc7d243897",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Testing rules for AddressSanitizer.\n\n#\n\n# These are broken into two buckets. One set of tests directly interacts with\n\n# the runtime library and checks its functionality. These are the\n\n# no-instrumentation tests.\n\n#\n\n# Another group of tests relies upon the ability to compile the test with\n\n# address sanitizer instrumentation pass. These tests form \"integration\" tests\n\n# and have some elements of version skew -- they test the *host* compiler's\n\n# instrumentation against the just-built runtime library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This will ensure the target linker is used\n\n# during cross compilation\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# -gline-tables-only must be enough for ASan, so use it if possible.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Use -D instead of definitions to please custom compile command.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# x86_64 FreeBSD 9.2 additionally requires libc++ to build the tests.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Unit tests on Mac depend on Foundation.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# NDK r10 requires -latomic almost always.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# TODO(eugenis): move all -l flags above to _LIBS?\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NDK r10 requires -latomic almost always.\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Main AddressSanitizer unit tests.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# AddressSanitizer unit tests with dynamic runtime (on platforms where it's\n\n# not the default).\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# ASan benchmarks (not actively used now).\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Closure to keep the values.\n",
+        "Line" : 160,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# With the MSVC CRT, the choice between static and dynamic CRT is made at\n\n# compile time with a macro. Simulate the effect of passing /MD to clang-cl.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# Otherwise, reuse ASAN_INST_TEST_OBJECTS.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 6
+      },
+      "15" : {
+        "Text" : "# Uninstrumented tests.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Add static ASan runtime that will be linked with uninstrumented tests.\n",
+        "Line" : 236,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Test w/o ASan instrumentation. Link it with ASan statically.\n",
+        "Line" : 274,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# FIXME: .arch?\n",
+        "Line" : 275,
+        "CharPositionInLine" : 34
+      },
+      "19" : {
+        "Text" : "# Test with ASan instrumentation. Link with ASan dynamic runtime.\n",
+        "Line" : 290,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# Setup correct output directory and link flags.\n",
+        "Line" : 298,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Add unit tests to the test suite.\n",
+        "Line" : 301,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 22
+    },
+    "lib/builtins/CMakeLists.txt" : {
+      "ObjectId" : "d0bd07b636a3713de1e758c8e56e91dcddb89967",
+      "LastModified" : "2019-04-18T19:29:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This directory contains a large amount of C code which provides\n\n# generic implementations of the core runtime library along with optimized\n\n# architecture-specific code in various subdirectories.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: Need to add a mechanism for logging errors when builtin source files are\n\n# added to a sub-directory and not this CMakeLists file.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# These sources work on all x86 variants, but only x86 variants.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# MSVC\n",
+        "Line" : 286,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Use C versions of functions when building on MSVC\n\n# MSVC's assembler takes Intel syntax, not AT&T syntax.\n\n# Also use only MSVC compilable builtin implementations.\n",
+        "Line" : 287,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# if (NOT MSVC)\n",
+        "Line" : 298,
+        "CharPositionInLine" : 9
+      },
+      "6" : {
+        "Text" : "# TODO the EABI sources should only be added to EABI targets\n",
+        "Line" : 453,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# macho_embedded archs\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# hexagon arch\n",
+        "Line" : 489,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# These flags would normally be added to CMAKE_C_FLAGS by the llvm\n\n# cmake step. Add them manually if this is a standalone build.\n",
+        "Line" : 577,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# NOTE: some architectures (e.g. i386) have multiple names.  Ensure that\n\n# we catch them all.\n",
+        "Line" : 598,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# For ARM archs, exclude any VFP builtins if VFP is not supported\n",
+        "Line" : 607,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# Filter out generic versions of routines that are re-implemented in\n\n# architecture specific manner.  This prevents multiple definitions of the\n\n# same symbols, making the symbol selection non-deterministic.\n",
+        "Line" : 616,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# Needed for clear_cache on debug mode, due to r7's usage in inline asm.\n\n# Release mode already sets it via -O2/3, Debug mode doesn't.\n",
+        "Line" : 627,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# For RISCV32, we must force enable int128 for compiling long\n\n# double routines.\n",
+        "Line" : 633,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 15
+    },
+    "lib/builtins/Darwin-excludes/CMakeLists.txt" : {
+      "ObjectId" : "266e422152436475a5942ca47653a7640b1ce177",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/builtins/macho_embedded/CMakeLists.txt" : {
+      "ObjectId" : "266e422152436475a5942ca47653a7640b1ce177",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/cfi/CMakeLists.txt" : {
+      "ObjectId" : "9a641d33ac48341b77c3a7842f05e8e50cc0eedf",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/dfsan/CMakeLists.txt" : {
+      "ObjectId" : "b3ae713cf02c5c3037e0b00e2321c788f7d9f56e",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Runtime library sources and build flags.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent clang from generating libc calls.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Static runtime library.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "lib/fuzzer/CMakeLists.txt" : {
+      "ObjectId" : "aa62995e72985b4e588e4e108a731518201ea269",
+      "LastModified" : "2019-04-19T01:40:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Remove -stdlib= which is unused when passing -nostdinc++.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# Silence warnings by turning off exceptions in MSVC headers and avoid an\n\n# error by unecessarily defining thread_local when it isn't even used on\n\n# Windows.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "lib/fuzzer/tests/CMakeLists.txt" : {
+      "ObjectId" : "f338d9993bdd4b88a4cafb504355e73d37158ab7",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Match visibility settings.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# libFuzzer unit tests are only run on the host machine.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "lib/hwasan/CMakeLists.txt" : {
+      "ObjectId" : "8fa59199ef5311068f3330b6d75cdbaf67fd8189",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Runtime library sources and build flags.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent clang from generating libc calls.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Put most Sanitizer shared libraries in the global group. For more details, see\n\n# android-changes-for-ndk-developers.md#changes-to-library-search-order\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Static runtime library.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The only purpose of RTHWAsan_dynamic_version_script_dummy is to\n\n# carry a dependency of the shared runtime on the version script.\n\n# Replacing it with a straightforward\n\n# add_dependencies(clang_rt.asan-dynamic-${arch} clang_rt.asan-dynamic-${arch}-version-list)\n\n# generates an order-only dependency in ninja.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "# if(COMPILER_RT_INCLUDE_TESTS)\n\n#   add_subdirectory(tests)\n\n# endif()\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "lib/interception/CMakeLists.txt" : {
+      "ObjectId" : "7f0de81892f77a61f599ba8c7e34a29d460d2591",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for the runtime interception helper library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/interception/tests/CMakeLists.txt" : {
+      "ObjectId" : "1da0a455bf331798b2ffb532602df4d9815f73ee",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# -gline-tables-only must be enough for these tests, so use it if possible.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NDK r10 requires -latomic almost always.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# x86_64 FreeBSD 9.2 additionally requires libc++ to build the tests. Also,\n\n# 'libm' shall be specified explicitly to build i386 tests.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Adds static library which contains interception object file\n\n# (universal binary on Mac and arch-specific object files on Linux).\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Interception unit tests testsuite.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Adds interception tests for architecture.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We use just-built clang to build interception unittests, so we must\n\n# be sure that produced binaries would work.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 7
+    },
+    "lib/lsan/CMakeLists.txt" : {
+      "ObjectId" : "34f686135ac47e2d87058f80ff79e74fef0e7d61",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/msan/CMakeLists.txt" : {
+      "ObjectId" : "15cc513c20e9447d71a81c7ce2c98be732569a73",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Runtime library sources and build flags.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent clang from generating libc calls.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Static runtime library.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "lib/msan/tests/CMakeLists.txt" : {
+      "ObjectId" : "ae3c1326969cfdf8bb19479d8df1a1499fe2e6c4",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Unittest sources and build flags.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Remove -stdlib= which is unused when passing -nostdinc++.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Don't need -stdlib=libc++ because we explicitly list libc++.a in the linker\n\n# inputs.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Main MemorySanitizer unit tests.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Adds MSan unit tests and benchmarks for architecture.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Build gtest instrumented with MSan.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Instrumented tests.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Instrumented loadable module objects.\n",
+        "Line" : 98,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Instrumented loadable library tests.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We should only build MSan unit tests if we can build instrumented libcxx.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "lib/profile/CMakeLists.txt" : {
+      "ObjectId" : "9774be6a8ba4eadaf8d7140b9855be50ef6dafe9",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This appears to be a C-only warning banning the use of locals in aggregate\n\n# initializers. All other compilers accept this, though.\n\n# nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/safestack/CMakeLists.txt" : {
+      "ObjectId" : "aa259e8d6b61d6ea364821ff380c32bd611bcea6",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/sanitizer_common/CMakeLists.txt" : {
+      "ObjectId" : "094d8293c25e48db0c1f2ab0b8d2ef694540f1f2",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build system for the common Sanitizer runtime support library components.\n\n# These components are shared between AddressSanitizer and ThreadSanitizer.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Libc functions stubs. These sources should be linked instead of\n\n# SANITIZER_LIBCDEP_SOURCES when sanitizer_common library must not depend on\n\n# libc.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Explicitly list all sanitizer_common headers. Not all of these are\n\n# included in sanitizer_common source files, but we need to depend on\n\n# headers when building our custom unit tests.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Solaris ld doesn't support the non-standard GNU ld extension of adding\n\n# __start_SECNAME and __stop_SECNAME labels to sections whose names are\n\n# valid C identifiers.  Instead we add our own definitions for the\n\n# __sancov_guards section.\n",
+        "Line" : 278,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Unit tests for common sanitizer runtime.\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "lib/sanitizer_common/tests/CMakeLists.txt" : {
+      "ObjectId" : "21ffe2528c25e858d86541425325809d64f79bb2",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME: use SANITIZER_COMMON_SUPPORTED_ARCH here\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# -gline-tables-only must be enough for these tests, so use it if possible.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# MSVC linker is allocating 1M for the stack by default, which is not\n\n# enough for the unittests. Some unittests require more than 2M.\n\n# The default stack size for clang is 8M.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NDK r10 requires -latomic almost always.\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# x86_64 FreeBSD 9.2 additionally requires libc++ to build the tests. Also,\n\n# 'libm' shall be specified explicitly to build i386 tests.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Adds static library which contains sanitizer_common object file\n\n# (universal binary on Mac and arch-specific object files on Linux).\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanitizer_common unit tests testsuite.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Adds sanitizer tests for architecture.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Test that the libc-independent part of sanitizer_common is indeed\n\n# independent of libc, by linking this binary without libc (here) and\n\n# executing it (unit test in sanitizer_nolibc_test.cc).\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# We use just-built clang to build sanitizer_common unittests, so we must\n\n# be sure that produced binaries would work.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Setup correct output directory and link flags.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Add unit test to test suite.\n",
+        "Line" : 215,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 12
+    },
+    "lib/scudo/CMakeLists.txt" : {
+      "ObjectId" : "bbb8a1a9cbe4f1ce379d8c438792501003d9bc81",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# SANITIZER_COMMON_CFLAGS include -fno-builtin, but we actually want builtins!\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use gc-sections by default to avoid unused code being pulled in.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Put most Sanitizer shared libraries in the global group. For more details, see\n\n# android-changes-for-ndk-developers.md#changes-to-library-search-order\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The minimal Scudo runtime does not inlude the UBSan runtime.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Enable the SSE 4.2 instruction set for scudo_crc32.cpp, if available.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Enable the AArch64 CRC32 feature for scudo_crc32.cpp, if available.\n\n# Note that it is enabled by default starting with armv8.1-a.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "lib/scudo/standalone/CMakeLists.txt" : {
+      "ObjectId" : "c6626c3897373fa15489d7e1eaf479c638554a8e",
+      "LastModified" : "2019-04-18T19:29:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Remove -stdlib= which is unused when passing -nostdinc++.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Put the shared library in the global group. For more details, see\n\n# android-changes-for-ndk-developers.md#changes-to-library-search-order\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable the SSE 4.2 instruction set for crc32_hw.cc, if available.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Enable the AArch64 CRC32 feature for crc32_hw.cc, if available.\n\n# Note that it is enabled by default starting with armv8.1-a.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "lib/scudo/standalone/tests/CMakeLists.txt" : {
+      "ObjectId" : "41a4a28920ccd90dff755edd8fcc27e5d83e4109",
+      "LastModified" : "2019-04-18T19:29:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# gtests requires c++\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_scudo_unittest(<name>\n\n#                   SOURCES <sources list>\n\n#                   HEADERS <extra headers list>)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "lib/stats/CMakeLists.txt" : {
+      "ObjectId" : "23c80843195d2dd8ee078f2016859a5007976606",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/tsan/CMakeLists.txt" : {
+      "ObjectId" : "43dbe864416aa3c9136f38a0f5f3cee1cd5c6256",
+      "LastModified" : "2019-04-18T19:29:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for the ThreadSanitizer runtime support library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# SANITIZER_COMMON_CFLAGS contains -fPIC, but it's performance-critical for\n\n# TSan runtime to be built with -fPIE to reduce the number of register spills.\n\n# On FreeBSD however it provokes linkage issue thus we disable it.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add extra debug information to TSan runtime. This configuration is rarely\n\n# used, but we need to support it so that debug output will not bitrot.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Assume Linux\n",
+        "Line" : 67,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Build and check Go runtime.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Sanity check for Go runtime.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# Sanity check for Go runtime.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Sanity check for Go runtime.\n",
+        "Line" : 176,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# Make sure that non-platform-specific files don't include any system headers.\n\n# FreeBSD/NetBSD do not install a number of Clang-provided headers for the\n\n# compiler in the base system due to incompatibilities between FreeBSD/NetBSD's\n\n# and Clang's versions. As a workaround do not use --sysroot=. on FreeBSD/NetBSD\n\n# until this is addressed.\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Build libcxx instrumented with TSan.\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "lib/tsan/dd/CMakeLists.txt" : {
+      "ObjectId" : "c3f5915dd8b2f56e9e34a7c0f79eaeda5b08a92e",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for the experimental deadlock detector runtime library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Deadlock detector is currently supported on 64-bit Linux only.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "lib/tsan/tests/CMakeLists.txt" : {
+      "ObjectId" : "3bf02ed5d617ae3a67369aa406d522ee38a6031b",
+      "LastModified" : "2019-04-18T19:29:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create a static library for test dependencies.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# add_tsan_unittest(<name>\n\n#                   SOURCES <sources list>\n\n#                   HEADERS <extra headers list>)\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "lib/tsan/tests/rtl/CMakeLists.txt" : {
+      "ObjectId" : "a34f08ea965b820ad17ff531be7d7a61a2f585a6",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/tsan/tests/unit/CMakeLists.txt" : {
+      "ObjectId" : "c08508d507917ba3f20fc7d5a637f24a03d4c5ec",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/ubsan/CMakeLists.txt" : {
+      "ObjectId" : "49a3aa121c7805cc2e247a3ec1c3a6a60dbcbbbd",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for the undefined behavior sanitizer runtime support library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Common parts of UBSan runtime.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Initializer of standalone UBSan runtime.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Common parts of UBSan runtime.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# C++-specific parts of UBSan runtime. Requires a C++ ABI library.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Dummy target if we don't have C++ ABI library.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Standalone UBSan runtimes.\n",
+        "Line" : 178,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 7
+    },
+    "lib/ubsan_minimal/CMakeLists.txt" : {
+      "ObjectId" : "e0910e80f97e3c6d7d95262f167efd18a787df36",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for the minimal undefined behavior sanitizer runtime support library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Common parts of minimal UBSan runtime.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Standalone minimal UBSan runtimes.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "lib/xray/CMakeLists.txt" : {
+      "ObjectId" : "0a86c52e62089be80447256200a2a2aee89b1c0e",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build for all components of the XRay runtime support library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# XRay runtime library implementation files.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Implementation files for all XRay modes.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Implementation files for all XRay architectures.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create list of all source files for\n\n# consumption by tests.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Make list that uses absolute paths\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Now put it all together...\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We don't need RTTI in XRay, so turn that off.\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We only support running on osx for now.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# not Apple\n",
+        "Line" : 225,
+        "CharPositionInLine" : 7
+      },
+      "10" : {
+        "Text" : "# Common XRay archive for instrumented binaries.\n",
+        "Line" : 259,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# FDR mode runtime archive (addon for clang_rt.xray)\n",
+        "Line" : 267,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Basic mode runtime archive (addon for clang_rt.xray)\n",
+        "Line" : 275,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Profiler Mode runtime\n",
+        "Line" : 283,
+        "CharPositionInLine" : 3
+      },
+      "14" : {
+        "Text" : "# not Apple\n",
+        "Line" : 292,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 15
+    },
+    "lib/xray/tests/CMakeLists.txt" : {
+      "ObjectId" : "609120c83d0be0da59e9049b68b03d009085ea92",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Sanity check XRAY_ALL_SOURCE_FILES_ABS_PATHS\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We add the include directories one at a time in our CFLAGS.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Needed by LLVMSupport.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# We add the library directories one at a time in our CFLAGS.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# We also add the actual libraries to link as dependencies.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Note that any change in the implementations will cause all the unit\n\n# tests to be re-built. This is by design, but may be cumbersome during\n\n# the build/test cycle.\n",
+        "Line" : 98,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 6
+    },
+    "lib/xray/tests/unit/CMakeLists.txt" : {
+      "ObjectId" : "d10524b8d030a246fea3b7f1f1c1d486218ba4a4",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "a8b86b2e44d17fb3ad7c29c73543928407b22be1",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Needed for lit support in standalone builds.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BlocksRuntime (and most of builtins) testsuites are not yet ported to lit.\n\n# add_subdirectory(BlocksRuntime)\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# When ANDROID, we build tests with the host compiler (i.e. CMAKE_C_COMPILER),\n\n# and run tests with tools from the host toolchain.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Use LLVM utils and Clang from the same build tree.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Run sanitizer tests only if we're sure that clang would produce\n\n# working binaries.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# CFI tests require diagnostic mode, which is implemented in UBSan.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# OpenBSD not supporting asan, cannot run the tests\n",
+        "Line" : 58,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# cfi testing is gated on ubsan\n",
+        "Line" : 64,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# ShadowCallStack does not yet provide a runtime with compiler-rt, the tests\n\n# include their own minimal runtime\n",
+        "Line" : 76,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Now that we've traversed all the directories and know all the lit testsuites,\n\n# introduce a rule to run to run all of them.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 10
+    },
+    "test/asan/CMakeLists.txt" : {
+      "ObjectId" : "2a44aebd55dd89a631dbd1b74318ea23c1686d37",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Before Windows 8 (CMAKE_SYSTEM_VERSION 6.2), reserving large regions of shadow\n\n# memory allocated physical memory for page tables, which made it very\n\n# unreliable. Remove the asan tests from check-all in this configuration.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# iOS and iOS simulator test suites\n\n# These are not added into \"check-all\", in order to run these tests, use\n\n# \"check-asan-iossim-x86_64\" and similar. They also require that an extra env\n\n# variable to select which iOS device or simulator to use, e.g.:\n\n# SANITIZER_IOSSIM_TEST_DEVICE_IDENTIFIER=\"iPhone 6\"\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add unit tests.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME: support unit test in the android test runner\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Reset EXCLUDE_FROM_ALL to its initial value.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "test/builtins/CMakeLists.txt" : {
+      "ObjectId" : "eb4391fcab480d4ced8c1a3f8c1be3ee5cc1096b",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test cases.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#Unit tests.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Indicate if this is an MSVC environment.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Indicate if the compiler for the builtins library was MSVC. If the builtins\n\n# compiler was clang-cl, we will enable some features that the host compiler\n\n# will not, like C99 _Complex and int128.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#TODO: Add support for Apple.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "test/cfi/CMakeLists.txt" : {
+      "ObjectId" : "d99213632d006d9ef62d230ab760d7d6b9843c4b",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME: enable ThinLTO tests after fixing http://llvm.org/pr32741\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "test/dfsan/CMakeLists.txt" : {
+      "ObjectId" : "04035faeddfe9bab5b46ad99ee7f10a3a4aa70fe",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/fuzzer/CMakeLists.txt" : {
+      "ObjectId" : "ef46ec4a90616a5865ee4af82d25a0759ab6987e",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# libFuzzer unit tests.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# LIT-based libFuzzer tests.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "test/hwasan/CMakeLists.txt" : {
+      "ObjectId" : "3e397ac067f246b77f043681f677c2a0869be01e",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME: Set this.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "test/interception/CMakeLists.txt" : {
+      "ObjectId" : "ff9e4b0adb86dbbfe48ffb12d76f19dd77b0fd39",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Unit tests. There are currently no unit tests capable to running on Apple or\n\n# Android targets.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/lsan/CMakeLists.txt" : {
+      "ObjectId" : "3324928ddb1c129cc193ca8a613889f321b1c739",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/msan/CMakeLists.txt" : {
+      "ObjectId" : "c6408c1edb0350ab2e7567c889c0f6e0c53ea997",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/profile/CMakeLists.txt" : {
+      "ObjectId" : "5a4cfa1012b081bd84096c5228e20f6efb04fb5f",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/safestack/CMakeLists.txt" : {
+      "ObjectId" : "e30a676d74a1ae6862a4d4700e96e1ca39429e4d",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Some tests require LTO, so add a dependency on the relevant LTO plugin.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "test/sanitizer_common/CMakeLists.txt" : {
+      "ObjectId" : "dd251c6ef5ef46da2b8cb04bbe4a0790655abf35",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME(dliew): We should switch to COMPILER_RT_SANITIZERS_TO_BUILD instead of\n\n# the hard coded `SUPPORTED_TOOLS_INIT` list once we know that the other\n\n# sanitizers work.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME(dliew): Remove this.\n\n# Temporary helper for https://reviews.llvm.org/D55740\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FIXME(dliew): These tests should be made to work on all platforms.\n\n# Use the legacy list for now.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME(dliew): Remove this.\n\n# Temporary helper for https://reviews.llvm.org/D55740\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create a separate config for each tool we support.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# TODO(dliew): We should iterate over the different\n\n# Apple platforms, not just macOS.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# FIXME(dliew): LSan i386 on Darwin is completly broken right now.\n\n# so don't run the tests by default.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Unit tests.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# FIXME: support unit test in the android test runner\n",
+        "Line" : 87,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 9
+    },
+    "test/scudo/CMakeLists.txt" : {
+      "ObjectId" : "7e0702e9bf199b83186ba02a41de13b5cb127550",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/scudo/standalone/CMakeLists.txt" : {
+      "ObjectId" : "9d28d655aab2692035377f05cb8f9870ed25b351",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/shadowcallstack/CMakeLists.txt" : {
+      "ObjectId" : "ab2b18819d4958b4a4f7d4b89157a21856d308a3",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/tsan/CMakeLists.txt" : {
+      "ObjectId" : "c62eb1d6b3d3b8273f23916db09cb8707acfcceb",
+      "LastModified" : "2019-04-18T19:29:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# iOS and iOS simulator test suites\n\n# These are not added into \"check-all\", in order to run these tests, use\n\n# \"check-tsan-iossim-x86_64\" and similar. They also require an extra environment\n\n# variable to select which iOS device or simulator to use, e.g.:\n\n# SANITIZER_IOSSIM_TEST_DEVICE_IDENTIFIER=\"iPhone 6\"\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/ubsan/CMakeLists.txt" : {
+      "ObjectId" : "351bf3b829da3c3f4eba727cec966403ca490676",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO(wwchrome): Re-enable ubsan for asan win 64-bit when ready.\n\n# Disable ubsan with AddressSanitizer tests for Windows 64-bit.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# Note we expect the caller to have already set UBSAN_TEST_TARGET_CFLAGS\n",
+        "Line" : 66,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "#list(APPEND UBSAN_TESTSUITES ${CMAKE_CURRENT_BINARY_DIR}/${CONFIG_NAME})\n",
+        "Line" : 80,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Device and simulator test suites.\n\n# These are not added into \"check-all\", in order to run these tests, use\n\n# \"check-asan-iossim-x86_64\" and similar. They also require that an extra env\n\n# variable to select which iOS device or simulator to use, e.g.:\n\n# SANITIZER_IOSSIM_TEST_DEVICE_IDENTIFIER=\"iPhone 6\"\n",
+        "Line" : 98,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "test/ubsan_minimal/CMakeLists.txt" : {
+      "ObjectId" : "5da5fcd02b94cf46f231b54daca106107655b095",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/xray/CMakeLists.txt" : {
+      "ObjectId" : "d049ac0f979fef997285753d0c7602dde511ec60",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Add unit tests.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "unittests/CMakeLists.txt" : {
+      "ObjectId" : "88f9865a6e7d78f46db1c4ada570af0e1bb8af88",
+      "LastModified" : "2019-03-30T14:38:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Needed for lit support in standalone builds.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 71
+  },
+  "ElapsedTime" : 4252
+}

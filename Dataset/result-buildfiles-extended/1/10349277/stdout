@@ -1,0 +1,1464 @@
+{
+  "Repository" : "10349277",
+  "Revision" : "HEAD",
+  "ObjectId" : "30066d49c1297f8119b48d43d7a01803ecaf0953",
+  "CommitTime" : "2019-04-03T09:40:17Z",
+  "Files" : {
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/build/Makefile" : {
+      "ObjectId" : "dacf3b419b371e2aae7f51ef31aa2b42ad72b99a",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We borrow heavily from the kernel build setup, though we are simpler since\n\n# we don't have Kconfig tweaking settings on us.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The implicit make rules have it looking for RCS files, among other things.\n\n# We instead explicitly write all the rules we care about.\n\n# It's even quicker (saves ~200ms) to pass -r on the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The source directory tree.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The name of the builddir.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The V=1 flag on command line makes us verbosely print command lines.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Specify BUILDTYPE=Release on the command line for a release build.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Directory all our build output goes into.\n\n# Note that this must be two directories beneath src/ for unit tests to pass,\n\n# as they reach into the src/ directory for data with relative paths.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Object output directory.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We build up a list of every single one of the targets so we can slurp in the\n\n# generated dependency rule Makefiles in one pass.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# C++ apps need to be linked with g++.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# TODO(evan): move all cross-compilation logic to gyp-time so we don't need\n\n# to replicate this environment fallback in make as well.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Define a dir function that can handle spaces.\n\n# http://www.gnu.org/software/make/manual/make.html#Syntax-of-Functions\n\n# \"leading spaces cannot appear in the text of the first argument as written.\n\n# These characters can be put into the argument value by variable substitution.\"\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# http://stackoverflow.com/questions/1189781/using-make-dir-or-notdir-on-a-path-with-spaces\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Flags to make gcc output dependency info.  Note that you need to be\n\n# careful here to use the flags that ccache and distcc can understand.\n\n# We write to a dep file on the side first and then rename at the end\n\n# so we can't end up with a broken dep file.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# We have to fixup the deps output in a few ways.\n\n# (1) the file output should mention the proper .o file.\n\n# ccache or distcc lose the path to the target, so we convert a rule of\n\n# the form:\n\n#   foobar.o: DEP1 DEP2\n\n# into\n\n#   path/to/foobar.o: DEP1 DEP2\n\n# (2) we want missing files not to cause us to fail to build.\n\n# We want to rewrite\n\n#   foobar.o: DEP1 DEP2 \\\n#               DEP3\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# to\n\n#   DEP1:\n\n#   DEP2:\n\n#   DEP3:\n\n# so if the files are missing, they're just considered phony rules.\n\n# We have to do some pretty insane escaping to get those backslashes\n\n# and dollar signs past make, the shell, and sed at the same time.\n\n# Doesn't work with spaces, but that's fine: .d files have spaces in\n\n# their names replaced with other characters.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The depfile may not exist if the input file didn't have any #includes.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Fixup path as in (1).\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Add extra rules as in (2).\n\n# We remove slashes and replace spaces with new lines;\n\n# remove blank lines;\n\n# delete the first line and append a colon to the remaining lines.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Command definitions:\n\n# - cmd_foo is the actual command to run;\n\n# - quiet_cmd_foo is the brief-output summary of the command.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# send stderr to /dev/null to ignore messages when linking directories.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Due to circular dependencies between libraries :(, we wrap the\n\n# special \"figure out circular dependencies\" flags around the entire\n\n# input list during linking.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# We support two kinds of shared objects (.so):\n\n# 1) shared_library, which is just bundling together many dependent libraries\n\n# into a link line.\n\n# 2) loadable_module, which is generating a module intended for dlopen().\n\n#\n\n# They differ only slightly:\n\n# In the former case, we want to package all dependent code into the .so.\n\n# In the latter case, we want to package just the API exposed by the\n\n# outermost module.\n\n# This means shared_library uses --whole-archive, while loadable_module doesn't.\n\n# (Note that --whole-archive is incompatible with the --start-group used in\n\n# normal linking.)\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Other shared-object link notes:\n\n# - Set SONAME to the library filename so our binaries don't reference\n\n# the local, absolute paths used on the link command-line.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Define an escape_quotes function to escape single quotes.\n\n# This allows us to handle quotes properly as long as we always use\n\n# use single quotes and escape_quotes.\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# This comment is here just to include a ' to unconfuse syntax highlighting.\n\n# Define an escape_vars function to escape '$' variable syntax.\n\n# This allows us to read/write command lines with shell variables (e.g.\n\n# $LD_LIBRARY_PATH), without triggering make substitution.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Helper that expands to a shell command to echo a string exactly as it is in\n\n# make. This uses printf instead of echo because printf's behaviour with respect\n\n# to escape sequences is more portable than echo's across different shells\n\n# (e.g., dash, bash).\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Helper to compare the command we're about to run against the command\n\n# we logged the last time we ran the command.  Produces an empty\n\n# string (false) when the commands match.\n\n# Tricky point: Make has no string-equality test function.\n\n# The kernel uses the following, but it seems like it would have false\n\n# positives, where one string reordered its arguments.\n\n#   arg_check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) \\\n#                       $(filter-out $(cmd_$@), $(cmd_$(1))))\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# We instead substitute each for the empty string into the other, and\n\n# say they're equal if both substitutions produce the empty string.\n\n# .d files contain ? instead of spaces, take that into account.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Helper that is non-empty when a prerequisite changes.\n\n# Normally make does this implicitly, but we force rules to always run\n\n# so we can check their command lines.\n\n#   $? -- new prerequisites\n\n#   $| -- order-only dependencies\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Helper that executes all postbuilds until one fails.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# do_cmd: run a command via the above cmd_foo names, if necessary.\n\n# Should always run for a given target to handle command-line changes.\n\n# Second argument, if non-zero, makes it do asm/C/C++ dependency munging.\n\n# Third argument, if non-zero, makes it do POSTBUILDS processing.\n\n# Note: We intentionally do NOT call dirx for depfile, since it contains ? for\n\n# spaces already and dirx strips the ? characters.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Declare the \"all\" target first so it is the default,\n\n# even though we don't have the deps yet.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# make looks for ways to re-generate included makefiles, but in our case, we\n\n# don't have a direct way. Explicitly telling make that it has nothing to do\n\n# for them makes it go faster.\n",
+        "Line" : 251,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Use FORCE_DO_CMD to force a target to run.  Should be coupled with\n\n# do_cmd.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Suffix rules, putting all outputs into $(obj).\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Try building from generated source, too.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# \"all\" is a concatenation of the \"all\" targets from all the included\n\n# sub-makefiles. This is just here to clarify.\n",
+        "Line" : 320,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Add in dependency-tracking rules.  $(all_deps) is the list of every single\n\n# target in our tree. Only consider the ones with .d (dependency) info:\n",
+        "Line" : 324,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/CMakeLists.txt" : {
+      "ObjectId" : "df874e98fabee023d605958ab69b6d4d91cf5d3d",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Setup\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use LINK_INTERFACE_LIBRARIES instead of INTERFACE_LINK_LIBRARIES\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This does nothing except when using MinGW.  CMAKE_BUILD_TYPE has no meaning\n\n# in Visual Studio, and it always defaults to Debug when using NMake.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This only works if building from the command line.  There is currently no way\n\n# to set a variable's value based on the build type when using Visual Studio.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Use the static C library for all build types\n",
+        "Line" : 129,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Detect whether compiler is 64-bit\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Targets\n\n#\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# This tells CMake that the \"source\" files haven't been generated yet\n",
+        "Line" : 217,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "#\n\n# Tests\n\n#\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# These tests are carefully chosen to provide full coverage of as many of the\n\n# underlying algorithms as possible (including all of the SIMD-accelerated\n\n# ones.)\n",
+        "Line" : 472,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# CC: null  SAMP: fullsize  FDCT: islow  ENT: huff\n",
+        "Line" : 476,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# CC: null  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 483,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# CC: RGB->RGB565  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 491,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# CC: RGB->RGB565 (dithered)  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 499,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/h2v1  FDCT: ifast  ENT: 2-pass huff\n",
+        "Line" : 509,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/h2v1 fancy  IDCT: ifast  ENT: huff\n",
+        "Line" : 518,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v1 merged  IDCT: ifast  ENT: huff\n",
+        "Line" : 525,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# CC: YCC->RGB565  SAMP: h2v1 merged  IDCT: ifast  ENT: huff\n",
+        "Line" : 533,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# CC: YCC->RGB565 (dithered)  SAMP: h2v1 merged  IDCT: ifast  ENT: huff\n",
+        "Line" : 541,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/h2v2  FDCT: ifast  ENT: prog huff\n",
+        "Line" : 551,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/h2v2 fancy  IDCT: ifast  ENT: prog huff\n",
+        "Line" : 560,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: ifast  ENT: prog huff\n",
+        "Line" : 568,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# CC: RGB->Gray  SAMP: fullsize  FDCT: islow  ENT: huff\n",
+        "Line" : 577,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# CC: Gray->Gray  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 585,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# CC: Gray->RGB  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 593,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# CC: Gray->RGB565  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 602,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# CC: Gray->RGB565 (dithered)  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 610,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize smooth/h2v2 smooth  FDCT: islow\n\n# ENT: 2-pass huff\n",
+        "Line" : 620,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/int  FDCT: float  ENT: prog huff\n",
+        "Line" : 630,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/int  IDCT: float  ENT: prog huff\n",
+        "Line" : 639,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/h2v2  FDCT: islow  ENT: arith\n",
+        "Line" : 648,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize  FDCT: islow  ENT: prog arith\n",
+        "Line" : 665,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# CC: RGB->YCC  SAMP: h2v2 merged  IDCT: ifast  ENT: arith\n",
+        "Line" : 676,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# 2/1--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 16x16 islow  ENT: huff\n\n# 15/8--  CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 15x15 islow  ENT: huff\n\n# 13/8--  CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 13x13 islow  ENT: huff\n\n# 11/8--  CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 11x11 islow  ENT: huff\n\n# 9/8--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 9x9 islow  ENT: huff\n\n# 7/8--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 7x7 islow/14x14 islow\n\n#         ENT: huff\n\n# 3/4--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 6x6 islow/12x12 islow\n\n#         ENT: huff\n\n# 5/8--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 5x5 islow/10x10 islow\n\n#         ENT: huff\n\n# 1/2--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 4x4 islow/8x8 islow\n\n#         ENT: huff\n\n# 3/8--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 3x3 islow/6x6 islow\n\n#         ENT: huff\n\n# 1/4--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 2x2 islow/4x4 islow\n\n#         ENT: huff\n\n# 1/8--   CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 1x1 islow/2x2 islow\n\n#         ENT: huff\n",
+        "Line" : 693,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# CC: YCC->RGB (dithered)  SAMP: h2v2 fancy  IDCT: islow  ENT: huff\n",
+        "Line" : 725,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# CC: YCC->RGB565  SAMP: h2v2 fancy  IDCT: islow  ENT: huff\n",
+        "Line" : 734,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# CC: YCC->RGB565 (dithered)  SAMP: h2v2 fancy  IDCT: islow  ENT: huff\n",
+        "Line" : 743,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "# CC: YCC->RGB565  SAMP: h2v2 merged  IDCT: islow  ENT: huff\n",
+        "Line" : 752,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# CC: YCC->RGB565 (dithered)  SAMP: h2v2 merged  IDCT: islow  ENT: huff\n",
+        "Line" : 761,
+        "CharPositionInLine" : 4
+      },
+      "39" : {
+        "Text" : "# Partial decode tests.  These tests are designed to cover all of the\n\n# possible code paths in jpeg_skip_scanlines().\n",
+        "Line" : 772,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: Yes  iMCU row prefetch: No   ENT: huff\n",
+        "Line" : 775,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: No   iMCU row prefetch: Yes  ENT: arith\n",
+        "Line" : 784,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: No   iMCU row prefetch: No   ENT: prog huff\n",
+        "Line" : 795,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: No   iMCU row prefetch: No   ENT: arith\n",
+        "Line" : 806,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Context rows: No   Intra-iMCU row: Yes  ENT: huff\n",
+        "Line" : 817,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# Context rows: No   Intra-iMCU row: No   ENT: prog huff\n",
+        "Line" : 828,
+        "CharPositionInLine" : 2
+      },
+      "46" : {
+        "Text" : "# Context rows: No   Intra-iMCU row: No   ENT: arith\n",
+        "Line" : 840,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "#\n\n# Installer\n\n#\n",
+        "Line" : 871,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 48
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/Makefile.am" : {
+      "ObjectId" : "18bd2d2afb42853fe213d7d2f33c2032c65ddbc5",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# See README-turbo.txt for more details on why this next bit is necessary.\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test compressing from/decompressing to an arbitrary subregion of a larger\n\n# image buffer\n",
+        "Line" : 323,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# These tests are carefully crafted to provide full coverage of as many of the\n\n# underlying algorithms as possible (including all of the SIMD-accelerated\n\n# ones.)\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# CC: null  SAMP: fullsize  FDCT: islow  ENT: huff\n",
+        "Line" : 365,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# CC: null  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 368,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# CC: RGB->RGB565  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 375,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CC: RGB->RGB565 (dithered)  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 379,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/h2v1  FDCT: ifast  ENT: 2-pass huff\n",
+        "Line" : 385,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/h2v1 fancy  IDCT: ifast  ENT: huff\n",
+        "Line" : 388,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v1 merged  IDCT: ifast  ENT: huff\n",
+        "Line" : 392,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# CC: YCC->RGB565  SAMP: h2v1 merged  IDCT: ifast  ENT: huff\n",
+        "Line" : 399,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# CC: YCC->RGB565 (dithered)  SAMP: h2v1 merged  IDCT: ifast  ENT: huff\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/h2v2  FDCT: ifast  ENT: prog huff\n",
+        "Line" : 409,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/h2v2 fancy  IDCT: ifast  ENT: prog huff\n",
+        "Line" : 412,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: ifast  ENT: prog huff\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# CC: RGB->Gray  SAMP: fullsize  FDCT: islow  ENT: huff\n",
+        "Line" : 421,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# CC: Gray->Gray  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 424,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# CC: Gray->RGB  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 428,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# CC: Gray->RGB565  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 435,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# CC: Gray->RGB565 (dithered)  SAMP: fullsize  IDCT: islow  ENT: huff\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize smooth/h2v2 smooth  FDCT: islow\n\n# ENT: 2-pass huff\n",
+        "Line" : 445,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# The output of the floating point tests is not validated by default, because\n\n# the output differs depending on the type of floating point math used, and\n\n# this is only deterministic if the DCT/IDCT are implemented using SIMD\n\n# instructions on a particular platform.  Pass one of the following on the make\n\n# command line to validate the floating point tests against one of the expected # results:\n\n#\n\n# FLOATTEST=sse  validate against the expected results from the libjpeg-turbo\n\n#                SSE SIMD extensions\n\n# FLOATTEST=32bit  validate against the expected results from the C code\n\n#                  when running on a 32-bit FPU (or when SSE is being used for\n\n#                  floating point math, which is generally the default with\n\n#                  x86-64 compilers)\n\n# FLOATTEST=64bit  validate against the exepected results from the C code\n\n#                  when running on a 64-bit FPU\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/int  FDCT: float  ENT: prog huff\n",
+        "Line" : 466,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/int  IDCT: float  ENT: prog huff\n",
+        "Line" : 473,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# CC: RGB->YCC  SAMP: fullsize/int  FDCT: ifast  ENT: prog huff\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/int  IDCT: ifast  ENT: prog huff\n",
+        "Line" : 487,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize/h2v2  FDCT: islow  ENT: arith\n",
+        "Line" : 493,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# CC: YCC->RGB  SAMP: fullsize  FDCT: islow  ENT: prog arith\n",
+        "Line" : 500,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# CC: RGB->YCC  SAMP: h2v2 merged  IDCT: ifast  ENT: arith\n",
+        "Line" : 506,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 16x16 islow  ENT: huff\n",
+        "Line" : 515,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 15x15 islow  ENT: huff\n",
+        "Line" : 519,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 13x13 islow  ENT: huff\n",
+        "Line" : 523,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 11x11 islow  ENT: huff\n",
+        "Line" : 527,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 9x9 islow  ENT: huff\n",
+        "Line" : 531,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 7x7 islow/14x14 islow  ENT: huff\n",
+        "Line" : 535,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 6x6 islow/12x12 islow  ENT: huff\n",
+        "Line" : 539,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 5x5 islow/10x10 islow  ENT: huff\n",
+        "Line" : 543,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 4x4 islow/8x8 islow  ENT: huff\n",
+        "Line" : 547,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 3x3 islow/6x6 islow  ENT: huff\n",
+        "Line" : 551,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 2x2 islow/4x4 islow  ENT: huff\n",
+        "Line" : 555,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# CC: YCC->RGB  SAMP: h2v2 merged  IDCT: 1x1 islow/2x2 islow  ENT: huff\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# CC: YCC->RGB (dithered)  SAMP: h2v2 fancy  IDCT: islow  ENT: huff\n",
+        "Line" : 565,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# CC: YCC->RGB565  SAMP: h2v2 fancy  IDCT: islow  ENT: huff\n",
+        "Line" : 569,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# CC: YCC->RGB565 (dithered)  SAMP: h2v2 fancy  IDCT: islow  ENT: huff\n",
+        "Line" : 573,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# CC: YCC->RGB565  SAMP: h2v2 merged  IDCT: islow  ENT: huff\n",
+        "Line" : 577,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# CC: YCC->RGB565 (dithered)  SAMP: h2v2 merged  IDCT: islow  ENT: huff\n",
+        "Line" : 581,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Partial decode tests.  These tests are designed to cover all of the possible\n\n# code paths in jpeg_skip_scanlines().\n",
+        "Line" : 587,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: Yes  iMCU row prefetch: No   ENT: huff\n",
+        "Line" : 590,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: No   iMCU row prefetch: Yes  ENT: arith\n",
+        "Line" : 594,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: No   iMCU row prefetch: No   ENT: prog huff\n",
+        "Line" : 600,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Context rows: Yes  Intra-iMCU row: No   iMCU row prefetch: No   ENT: arith\n",
+        "Line" : 605,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Context rows: No   Intra-iMCU row: Yes  ENT: huff\n",
+        "Line" : 611,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Context rows: No   Intra-iMCU row: No   ENT: prog huff\n",
+        "Line" : 616,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Context rows: No   Intra-iMCU row: No   ENT: arith\n",
+        "Line" : 621,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "#--\\>//g \\\n\t\t> $$TMPDIR/SPECS/libjpeg-turbo.spec; \\\n\trpmbuild -bs --define \"_topdir $$TMPDIR\" $$TMPDIR/SPECS/libjpeg-turbo.spec; \\\n\tcp $$TMPDIR/SRPMS/${PKGNAME}-${VERSION}-${BUILD}.src.rpm \\\n\t\t${PKGNAME}-${VERSION}.src.rpm; \\\n\trm -rf $$TMPDIR\n",
+        "Line" : 712,
+        "CharPositionInLine" : 10
+      },
+      "CommentCount" : 55,
+      "Errorlog" : "line 328:59 token recognition error at: '\\x'\nline 341:57 token recognition error at: '\\x'\nline 348:58 token recognition error at: '\\x'\nline 352:58 token recognition error at: '\\x'\n"
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/cmakescripts/md5cmp.cmake" : {
+      "ObjectId" : "c315aa8a655831eb1602726e9cd9444f012429f4",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/cmakescripts/testclean.cmake" : {
+      "ObjectId" : "e35778755139537e38fc24d9f15fc93214e0ba8e",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/java/CMakeLists.txt" : {
+      "ObjectId" : "0af8ae15593b177aeca19e6342c201e4d756c915",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/java/Makefile.am" : {
+      "ObjectId" : "475dd3feb9d2251f26b1af53b026596edd70669a",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/md5/Makefile.am" : {
+      "ObjectId" : "b36f01913029b6f0b703a3e6ffc69ab11d41fc5f",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/sharedlib/CMakeLists.txt" : {
+      "ObjectId" : "d423ccefe56e8ad457c09bd91e763ea9c9562d63",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Anything that must be linked against the shared C library on Windows must\n\n# be built in this subdirectory, because CMake doesn't allow us to override\n\n# the compiler flags for each build type except at directory scope.  Note\n\n# to CMake developers:  Add a COMPILE_FLAGS_<CONFIG> target property, or\n\n# better yet, provide a friendly way of configuring a Windows target to use the\n\n# static C library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build all configurations against shared C library\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# This tells CMake that the \"source\" files haven't been generated yet\n",
+        "Line" : 23,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/simd/CMakeLists.txt" : {
+      "ObjectId" : "25bd290f4738fdc0c2261f12661cb243dbcd702a",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This only works if building from the command line.  There is currently no way\n\n# to set a variable's value based on the build type when using the MSVC IDE.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "hardware/codebase/N7G1/node_modules/node-jpeg-turbo/deps/libjpeg-turbo/simd/Makefile.am" : {
+      "ObjectId" : "ebb9ec6d0c16c05df4124eb7ecfd95f93c06e196",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-manatee/build/Makefile" : {
+      "ObjectId" : "6e6ca207523c8e3123fec3983be16761f1db31f0",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We borrow heavily from the kernel build setup, though we are simpler since\n\n# we don't have Kconfig tweaking settings on us.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The implicit make rules have it looking for RCS files, among other things.\n\n# We instead explicitly write all the rules we care about.\n\n# It's even quicker (saves ~200ms) to pass -r on the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The source directory tree.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The name of the builddir.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The V=1 flag on command line makes us verbosely print command lines.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Specify BUILDTYPE=Release on the command line for a release build.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Directory all our build output goes into.\n\n# Note that this must be two directories beneath src/ for unit tests to pass,\n\n# as they reach into the src/ directory for data with relative paths.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Object output directory.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We build up a list of every single one of the targets so we can slurp in the\n\n# generated dependency rule Makefiles in one pass.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# C++ apps need to be linked with g++.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# TODO(evan): move all cross-compilation logic to gyp-time so we don't need\n\n# to replicate this environment fallback in make as well.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Define a dir function that can handle spaces.\n\n# http://www.gnu.org/software/make/manual/make.html#Syntax-of-Functions\n\n# \"leading spaces cannot appear in the text of the first argument as written.\n\n# These characters can be put into the argument value by variable substitution.\"\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# http://stackoverflow.com/questions/1189781/using-make-dir-or-notdir-on-a-path-with-spaces\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Flags to make gcc output dependency info.  Note that you need to be\n\n# careful here to use the flags that ccache and distcc can understand.\n\n# We write to a dep file on the side first and then rename at the end\n\n# so we can't end up with a broken dep file.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# We have to fixup the deps output in a few ways.\n\n# (1) the file output should mention the proper .o file.\n\n# ccache or distcc lose the path to the target, so we convert a rule of\n\n# the form:\n\n#   foobar.o: DEP1 DEP2\n\n# into\n\n#   path/to/foobar.o: DEP1 DEP2\n\n# (2) we want missing files not to cause us to fail to build.\n\n# We want to rewrite\n\n#   foobar.o: DEP1 DEP2 \\\n#               DEP3\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# to\n\n#   DEP1:\n\n#   DEP2:\n\n#   DEP3:\n\n# so if the files are missing, they're just considered phony rules.\n\n# We have to do some pretty insane escaping to get those backslashes\n\n# and dollar signs past make, the shell, and sed at the same time.\n\n# Doesn't work with spaces, but that's fine: .d files have spaces in\n\n# their names replaced with other characters.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The depfile may not exist if the input file didn't have any #includes.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Fixup path as in (1).\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Add extra rules as in (2).\n\n# We remove slashes and replace spaces with new lines;\n\n# remove blank lines;\n\n# delete the first line and append a colon to the remaining lines.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Command definitions:\n\n# - cmd_foo is the actual command to run;\n\n# - quiet_cmd_foo is the brief-output summary of the command.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# send stderr to /dev/null to ignore messages when linking directories.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Due to circular dependencies between libraries :(, we wrap the\n\n# special \"figure out circular dependencies\" flags around the entire\n\n# input list during linking.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# We support two kinds of shared objects (.so):\n\n# 1) shared_library, which is just bundling together many dependent libraries\n\n# into a link line.\n\n# 2) loadable_module, which is generating a module intended for dlopen().\n\n#\n\n# They differ only slightly:\n\n# In the former case, we want to package all dependent code into the .so.\n\n# In the latter case, we want to package just the API exposed by the\n\n# outermost module.\n\n# This means shared_library uses --whole-archive, while loadable_module doesn't.\n\n# (Note that --whole-archive is incompatible with the --start-group used in\n\n# normal linking.)\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Other shared-object link notes:\n\n# - Set SONAME to the library filename so our binaries don't reference\n\n# the local, absolute paths used on the link command-line.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Define an escape_quotes function to escape single quotes.\n\n# This allows us to handle quotes properly as long as we always use\n\n# use single quotes and escape_quotes.\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# This comment is here just to include a ' to unconfuse syntax highlighting.\n\n# Define an escape_vars function to escape '$' variable syntax.\n\n# This allows us to read/write command lines with shell variables (e.g.\n\n# $LD_LIBRARY_PATH), without triggering make substitution.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Helper that expands to a shell command to echo a string exactly as it is in\n\n# make. This uses printf instead of echo because printf's behaviour with respect\n\n# to escape sequences is more portable than echo's across different shells\n\n# (e.g., dash, bash).\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Helper to compare the command we're about to run against the command\n\n# we logged the last time we ran the command.  Produces an empty\n\n# string (false) when the commands match.\n\n# Tricky point: Make has no string-equality test function.\n\n# The kernel uses the following, but it seems like it would have false\n\n# positives, where one string reordered its arguments.\n\n#   arg_check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) \\\n#                       $(filter-out $(cmd_$@), $(cmd_$(1))))\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# We instead substitute each for the empty string into the other, and\n\n# say they're equal if both substitutions produce the empty string.\n\n# .d files contain ? instead of spaces, take that into account.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Helper that is non-empty when a prerequisite changes.\n\n# Normally make does this implicitly, but we force rules to always run\n\n# so we can check their command lines.\n\n#   $? -- new prerequisites\n\n#   $| -- order-only dependencies\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Helper that executes all postbuilds until one fails.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# do_cmd: run a command via the above cmd_foo names, if necessary.\n\n# Should always run for a given target to handle command-line changes.\n\n# Second argument, if non-zero, makes it do asm/C/C++ dependency munging.\n\n# Third argument, if non-zero, makes it do POSTBUILDS processing.\n\n# Note: We intentionally do NOT call dirx for depfile, since it contains ? for\n\n# spaces already and dirx strips the ? characters.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Declare the \"all\" target first so it is the default,\n\n# even though we don't have the deps yet.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# make looks for ways to re-generate included makefiles, but in our case, we\n\n# don't have a direct way. Explicitly telling make that it has nothing to do\n\n# for them makes it go faster.\n",
+        "Line" : 251,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Use FORCE_DO_CMD to force a target to run.  Should be coupled with\n\n# do_cmd.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Suffix rules, putting all outputs into $(obj).\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Try building from generated source, too.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# \"all\" is a concatenation of the \"all\" targets from all the included\n\n# sub-makefiles. This is just here to clarify.\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Add in dependency-tracking rules.  $(all_deps) is the list of every single\n\n# target in our tree. Only consider the ones with .d (dependency) info:\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "hardware/codebase/N7G1/node_modules/node-serialport/build/Makefile" : {
+      "ObjectId" : "1062e2bfabb195cca63a90a2ede77ab70b1ff583",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We borrow heavily from the kernel build setup, though we are simpler since\n\n# we don't have Kconfig tweaking settings on us.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The implicit make rules have it looking for RCS files, among other things.\n\n# We instead explicitly write all the rules we care about.\n\n# It's even quicker (saves ~200ms) to pass -r on the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The source directory tree.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The name of the builddir.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The V=1 flag on command line makes us verbosely print command lines.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Specify BUILDTYPE=Release on the command line for a release build.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Directory all our build output goes into.\n\n# Note that this must be two directories beneath src/ for unit tests to pass,\n\n# as they reach into the src/ directory for data with relative paths.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Object output directory.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We build up a list of every single one of the targets so we can slurp in the\n\n# generated dependency rule Makefiles in one pass.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# C++ apps need to be linked with g++.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# TODO(evan): move all cross-compilation logic to gyp-time so we don't need\n\n# to replicate this environment fallback in make as well.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Define a dir function that can handle spaces.\n\n# http://www.gnu.org/software/make/manual/make.html#Syntax-of-Functions\n\n# \"leading spaces cannot appear in the text of the first argument as written.\n\n# These characters can be put into the argument value by variable substitution.\"\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# http://stackoverflow.com/questions/1189781/using-make-dir-or-notdir-on-a-path-with-spaces\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Flags to make gcc output dependency info.  Note that you need to be\n\n# careful here to use the flags that ccache and distcc can understand.\n\n# We write to a dep file on the side first and then rename at the end\n\n# so we can't end up with a broken dep file.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# We have to fixup the deps output in a few ways.\n\n# (1) the file output should mention the proper .o file.\n\n# ccache or distcc lose the path to the target, so we convert a rule of\n\n# the form:\n\n#   foobar.o: DEP1 DEP2\n\n# into\n\n#   path/to/foobar.o: DEP1 DEP2\n\n# (2) we want missing files not to cause us to fail to build.\n\n# We want to rewrite\n\n#   foobar.o: DEP1 DEP2 \\\n#               DEP3\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# to\n\n#   DEP1:\n\n#   DEP2:\n\n#   DEP3:\n\n# so if the files are missing, they're just considered phony rules.\n\n# We have to do some pretty insane escaping to get those backslashes\n\n# and dollar signs past make, the shell, and sed at the same time.\n\n# Doesn't work with spaces, but that's fine: .d files have spaces in\n\n# their names replaced with other characters.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The depfile may not exist if the input file didn't have any #includes.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Fixup path as in (1).\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Add extra rules as in (2).\n\n# We remove slashes and replace spaces with new lines;\n\n# remove blank lines;\n\n# delete the first line and append a colon to the remaining lines.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Command definitions:\n\n# - cmd_foo is the actual command to run;\n\n# - quiet_cmd_foo is the brief-output summary of the command.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# send stderr to /dev/null to ignore messages when linking directories.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Due to circular dependencies between libraries :(, we wrap the\n\n# special \"figure out circular dependencies\" flags around the entire\n\n# input list during linking.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# We support two kinds of shared objects (.so):\n\n# 1) shared_library, which is just bundling together many dependent libraries\n\n# into a link line.\n\n# 2) loadable_module, which is generating a module intended for dlopen().\n\n#\n\n# They differ only slightly:\n\n# In the former case, we want to package all dependent code into the .so.\n\n# In the latter case, we want to package just the API exposed by the\n\n# outermost module.\n\n# This means shared_library uses --whole-archive, while loadable_module doesn't.\n\n# (Note that --whole-archive is incompatible with the --start-group used in\n\n# normal linking.)\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Other shared-object link notes:\n\n# - Set SONAME to the library filename so our binaries don't reference\n\n# the local, absolute paths used on the link command-line.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Define an escape_quotes function to escape single quotes.\n\n# This allows us to handle quotes properly as long as we always use\n\n# use single quotes and escape_quotes.\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# This comment is here just to include a ' to unconfuse syntax highlighting.\n\n# Define an escape_vars function to escape '$' variable syntax.\n\n# This allows us to read/write command lines with shell variables (e.g.\n\n# $LD_LIBRARY_PATH), without triggering make substitution.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Helper that expands to a shell command to echo a string exactly as it is in\n\n# make. This uses printf instead of echo because printf's behaviour with respect\n\n# to escape sequences is more portable than echo's across different shells\n\n# (e.g., dash, bash).\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Helper to compare the command we're about to run against the command\n\n# we logged the last time we ran the command.  Produces an empty\n\n# string (false) when the commands match.\n\n# Tricky point: Make has no string-equality test function.\n\n# The kernel uses the following, but it seems like it would have false\n\n# positives, where one string reordered its arguments.\n\n#   arg_check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) \\\n#                       $(filter-out $(cmd_$@), $(cmd_$(1))))\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# We instead substitute each for the empty string into the other, and\n\n# say they're equal if both substitutions produce the empty string.\n\n# .d files contain ? instead of spaces, take that into account.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Helper that is non-empty when a prerequisite changes.\n\n# Normally make does this implicitly, but we force rules to always run\n\n# so we can check their command lines.\n\n#   $? -- new prerequisites\n\n#   $| -- order-only dependencies\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Helper that executes all postbuilds until one fails.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# do_cmd: run a command via the above cmd_foo names, if necessary.\n\n# Should always run for a given target to handle command-line changes.\n\n# Second argument, if non-zero, makes it do asm/C/C++ dependency munging.\n\n# Third argument, if non-zero, makes it do POSTBUILDS processing.\n\n# Note: We intentionally do NOT call dirx for depfile, since it contains ? for\n\n# spaces already and dirx strips the ? characters.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Declare the \"all\" target first so it is the default,\n\n# even though we don't have the deps yet.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# make looks for ways to re-generate included makefiles, but in our case, we\n\n# don't have a direct way. Explicitly telling make that it has nothing to do\n\n# for them makes it go faster.\n",
+        "Line" : 251,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Use FORCE_DO_CMD to force a target to run.  Should be coupled with\n\n# do_cmd.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Suffix rules, putting all outputs into $(obj).\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Try building from generated source, too.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# \"all\" is a concatenation of the \"all\" targets from all the included\n\n# sub-makefiles. This is just here to clarify.\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Add in dependency-tracking rules.  $(all_deps) is the list of every single\n\n# target in our tree. Only consider the ones with .d (dependency) info:\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "hardware/codebase/N7G1/node_modules/node-serialport/node_modules/debug/Makefile" : {
+      "ObjectId" : "584da8bf938e639ece3ba2bd4105c215c2b1ff51",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# get Makefile directory name: http://stackoverflow.com/a/5982798/376773\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BIN directory\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Path\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# applications\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "hardware/codebase/N7G1/node_modules/node-serialport/node_modules/prebuild-install/node_modules/delegates/Makefile" : {
+      "ObjectId" : "a9dcfd50dbdb227343ca0ca3193d78d135e4298d",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-serialport/node_modules/prebuild-install/node_modules/isarray/Makefile" : {
+      "ObjectId" : "787d56e1e982e48588bc199f36f0d50cb4724066",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-serialport/node_modules/prebuild-install/node_modules/noop-logger/Makefile" : {
+      "ObjectId" : "e3672785b912c94dfca6b951cae271f4141e6e68",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-serialport/node_modules/prebuild-install/node_modules/xtend/Makefile" : {
+      "ObjectId" : "d583fcf49dc1a343087a932f9912fab74e2b2f6b",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "hardware/codebase/N7G1/node_modules/node-v4l2camera/build/Makefile" : {
+      "ObjectId" : "5a2afc5611a9f2531cf55e51462ebbc639487287",
+      "LastModified" : "2017-08-16T13:11:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We borrow heavily from the kernel build setup, though we are simpler since\n\n# we don't have Kconfig tweaking settings on us.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The implicit make rules have it looking for RCS files, among other things.\n\n# We instead explicitly write all the rules we care about.\n\n# It's even quicker (saves ~200ms) to pass -r on the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The source directory tree.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The name of the builddir.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The V=1 flag on command line makes us verbosely print command lines.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Specify BUILDTYPE=Release on the command line for a release build.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Directory all our build output goes into.\n\n# Note that this must be two directories beneath src/ for unit tests to pass,\n\n# as they reach into the src/ directory for data with relative paths.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Object output directory.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We build up a list of every single one of the targets so we can slurp in the\n\n# generated dependency rule Makefiles in one pass.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# C++ apps need to be linked with g++.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# TODO(evan): move all cross-compilation logic to gyp-time so we don't need\n\n# to replicate this environment fallback in make as well.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Define a dir function that can handle spaces.\n\n# http://www.gnu.org/software/make/manual/make.html#Syntax-of-Functions\n\n# \"leading spaces cannot appear in the text of the first argument as written.\n\n# These characters can be put into the argument value by variable substitution.\"\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# http://stackoverflow.com/questions/1189781/using-make-dir-or-notdir-on-a-path-with-spaces\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Flags to make gcc output dependency info.  Note that you need to be\n\n# careful here to use the flags that ccache and distcc can understand.\n\n# We write to a dep file on the side first and then rename at the end\n\n# so we can't end up with a broken dep file.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# We have to fixup the deps output in a few ways.\n\n# (1) the file output should mention the proper .o file.\n\n# ccache or distcc lose the path to the target, so we convert a rule of\n\n# the form:\n\n#   foobar.o: DEP1 DEP2\n\n# into\n\n#   path/to/foobar.o: DEP1 DEP2\n\n# (2) we want missing files not to cause us to fail to build.\n\n# We want to rewrite\n\n#   foobar.o: DEP1 DEP2 \\\n#               DEP3\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# to\n\n#   DEP1:\n\n#   DEP2:\n\n#   DEP3:\n\n# so if the files are missing, they're just considered phony rules.\n\n# We have to do some pretty insane escaping to get those backslashes\n\n# and dollar signs past make, the shell, and sed at the same time.\n\n# Doesn't work with spaces, but that's fine: .d files have spaces in\n\n# their names replaced with other characters.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The depfile may not exist if the input file didn't have any #includes.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Fixup path as in (1).\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Add extra rules as in (2).\n\n# We remove slashes and replace spaces with new lines;\n\n# remove blank lines;\n\n# delete the first line and append a colon to the remaining lines.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Command definitions:\n\n# - cmd_foo is the actual command to run;\n\n# - quiet_cmd_foo is the brief-output summary of the command.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# send stderr to /dev/null to ignore messages when linking directories.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Due to circular dependencies between libraries :(, we wrap the\n\n# special \"figure out circular dependencies\" flags around the entire\n\n# input list during linking.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# We support two kinds of shared objects (.so):\n\n# 1) shared_library, which is just bundling together many dependent libraries\n\n# into a link line.\n\n# 2) loadable_module, which is generating a module intended for dlopen().\n\n#\n\n# They differ only slightly:\n\n# In the former case, we want to package all dependent code into the .so.\n\n# In the latter case, we want to package just the API exposed by the\n\n# outermost module.\n\n# This means shared_library uses --whole-archive, while loadable_module doesn't.\n\n# (Note that --whole-archive is incompatible with the --start-group used in\n\n# normal linking.)\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Other shared-object link notes:\n\n# - Set SONAME to the library filename so our binaries don't reference\n\n# the local, absolute paths used on the link command-line.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Define an escape_quotes function to escape single quotes.\n\n# This allows us to handle quotes properly as long as we always use\n\n# use single quotes and escape_quotes.\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# This comment is here just to include a ' to unconfuse syntax highlighting.\n\n# Define an escape_vars function to escape '$' variable syntax.\n\n# This allows us to read/write command lines with shell variables (e.g.\n\n# $LD_LIBRARY_PATH), without triggering make substitution.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Helper that expands to a shell command to echo a string exactly as it is in\n\n# make. This uses printf instead of echo because printf's behaviour with respect\n\n# to escape sequences is more portable than echo's across different shells\n\n# (e.g., dash, bash).\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Helper to compare the command we're about to run against the command\n\n# we logged the last time we ran the command.  Produces an empty\n\n# string (false) when the commands match.\n\n# Tricky point: Make has no string-equality test function.\n\n# The kernel uses the following, but it seems like it would have false\n\n# positives, where one string reordered its arguments.\n\n#   arg_check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) \\\n#                       $(filter-out $(cmd_$@), $(cmd_$(1))))\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# We instead substitute each for the empty string into the other, and\n\n# say they're equal if both substitutions produce the empty string.\n\n# .d files contain ? instead of spaces, take that into account.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Helper that is non-empty when a prerequisite changes.\n\n# Normally make does this implicitly, but we force rules to always run\n\n# so we can check their command lines.\n\n#   $? -- new prerequisites\n\n#   $| -- order-only dependencies\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Helper that executes all postbuilds until one fails.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# do_cmd: run a command via the above cmd_foo names, if necessary.\n\n# Should always run for a given target to handle command-line changes.\n\n# Second argument, if non-zero, makes it do asm/C/C++ dependency munging.\n\n# Third argument, if non-zero, makes it do POSTBUILDS processing.\n\n# Note: We intentionally do NOT call dirx for depfile, since it contains ? for\n\n# spaces already and dirx strips the ? characters.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Declare the \"all\" target first so it is the default,\n\n# even though we don't have the deps yet.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# make looks for ways to re-generate included makefiles, but in our case, we\n\n# don't have a direct way. Explicitly telling make that it has nothing to do\n\n# for them makes it go faster.\n",
+        "Line" : 251,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Use FORCE_DO_CMD to force a target to run.  Should be coupled with\n\n# do_cmd.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Suffix rules, putting all outputs into $(obj).\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Try building from generated source, too.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# \"all\" is a concatenation of the \"all\" targets from all the included\n\n# sub-makefiles. This is just here to clarify.\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Add in dependency-tracking rules.  $(all_deps) is the list of every single\n\n# target in our tree. Only consider the ones with .d (dependency) info:\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 6,
+    "MAKEFILE" : 9,
+    "AUTOMAKE" : 4
+  },
+  "ElapsedTime" : 2595
+}

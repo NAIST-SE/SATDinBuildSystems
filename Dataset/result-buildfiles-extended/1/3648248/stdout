@@ -1,0 +1,2489 @@
+{
+  "Repository" : "3648248",
+  "Revision" : "HEAD",
+  "ObjectId" : "8e42ffaa42a4a486affe9e4d61b48733747ca58e",
+  "CommitTime" : "2019-04-18T06:10:02Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "a15e4a10c8aaffce4ffaef9d77638d40b6abf818",
+      "LastModified" : "2019-04-16T17:58:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# OpenSIPS makefile\n\n#\n\n# WARNING: requires gmake (GNU Make)\n\n#  Arch supported: Linux, FreeBSD, SunOS (tested on Solaris 8), OpenBSD (3.2),\n\n#  NetBSD (1.6).\n\n#\n\n#  History:\n\n#  --------\n\n#              created by andrei\n\n#  2003-02-24  make install no longer overwrites opensips.cfg  - patch provided\n\n#               by Maxim Sobolev   <sobomax@FreeBSD.org> and\n\n#                  Tomas Bjoerklund <tomas@webservices.se>\n\n#  2003-03-11  PREFIX & LOCALBASE must also be exported (andrei)\n\n#  2003-04-07  hacked to work with solaris install (andrei)\n\n#  2003-04-17  exclude modules overwritable from env. or cmd. line,\n\n#               added include_modules and skip_modules (andrei)\n\n#  2003-05-30  added extra_defs & EXTRA_DEFS\n\n#               Makefile.defs force-included to allow recursive make\n\n#               calls -- see comment (andrei)\n\n#  2003-06-02  make tar changes -- unpacks in $NAME-$RELEASE  (andrei)\n\n#  2003-06-03  make install-cfg will properly replace the module path\n\n#               in the cfg (re: /usr/.*lib/opensips/modules)\n\n#              opensips.cfg.default is installed only if there is a previous\n\n#               cfg. -- fixes packages containing opensips.cfg.default (andrei)\n\n#  2003-08-29  install-modules-doc split from install-doc, added\n\n#               install-modules-all, removed README.cfg (andrei)\n\n#              added skip_cfg_install (andrei)\n\n#  2004-09-02  install-man will automatically \"fix\" the path of the files\n\n#               referred in the man pages\n\n#  2007-09-28  added db_berkeley (wiquan)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#SQLITE_BIND=1\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#lexx, yacc etc\n",
+        "Line" : 36,
+        "CharPositionInLine" : 30
+      },
+      "3" : {
+        "Text" : "# whether or not to install opensips.cfg or just opensips.cfg.default\n\n# (opensips.cfg will never be overwritten by make install, this is useful\n\n#  when creating packages)\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#extra modules to exclude\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# whether or not to overwrite TLS certificates\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# default debian version when running 'make deb'\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#TODO: can we determine this?\n",
+        "Line" : 50,
+        "CharPositionInLine" : 25
+      },
+      "8" : {
+        "Text" : "# create the template only if the file is not yet created\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# always exclude the SVN dir\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#always include this modules\n\n#include_modules?=\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# first 2 lines are excluded because of the experimental or incomplete\n\n# status of the modules\n\n# the rest is excluded because it depends on external libraries\n\n#\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# If modules is supplied, only do those. If not, use all modules when\n\n# building documentation.\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Take subset of all modules, excluding the exclude_modules and the\n\n# static_modules.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Let modules consist of modules and include_modules (but remove\n\n# duplicates).\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#include general defs (like CC, CFLAGS  a.s.o)\n\n# hack to force makefile.defs re-inclusion (needed when make calls itself with\n\n# other options -- e.g. make bin)\n\n#DEFS:=\n\n#include Makefile.defs\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#export relevant variables to the sub-makes\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# export relevant variables for recursive calls of this makefile\n\n# (e.g. make deb)\n\n#export LIBS\n\n#export TAR\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# extra excludes for tar\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# include the common rules\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#extra targets\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# static_modules\n",
+        "Line" : 163,
+        "CharPositionInLine" : 23
+      },
+      "22" : {
+        "Text" : "# binary dist. tar.gz\n",
+        "Line" : 429,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# dpkg-source cannot use links for debian source\n",
+        "Line" : 444,
+        "CharPositionInLine" : 1
+      },
+      "24" : {
+        "Text" : "# Install app only, excluding console, modules and module docs\n",
+        "Line" : 470,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Install all module stuff (except modules-docbook?)\n",
+        "Line" : 474,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Install everything (except modules-docbook?)\n",
+        "Line" : 477,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# note: on solaris 8 sed: ? or \\(...\\)* (a.s.o) do not work\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# opensipsctl config\n",
+        "Line" : 516,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# install opensips binary\n",
+        "Line" : 526,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# install opensips menuconfig\n",
+        "Line" : 529,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# install opensipsctl (and family) tool\n",
+        "Line" : 532,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# install db setup base script\n",
+        "Line" : 553,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# disable call graphes, because of the DOT dependencies\n",
+        "Line" : 672,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 34
+    },
+    "cachedb/example/Makefile" : {
+      "ObjectId" : "7678018dde529546feb33eb0e396555b51a8384a",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 6253 2009-10-12 19:00:53Z bogdan_iancu $\n\n#\n\n# Presence Agent\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "db/example/Makefile" : {
+      "ObjectId" : "0c34a00fe9c294cc66fe8b4c3c7c486f1f85fad6",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# database example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "db/schema/Makefile" : {
+      "ObjectId" : "ad1e37fe1afa66fdc7924cad4274ea42d3e98a69",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# $Id$\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# OpenSIPS database descriptions for modules\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Stylesheet used to generate db_table nodes for pi_framework XML schema\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Stylesheet used to generate mod nodes for pi_framework XML schema\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Stylesheet used to generate MySQL database schema\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Stylesheet used to generate Postgres database schema\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Stylesheet used to generate dbtext database schema\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Stylesheet used to generate berkeley database schema\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Stylesheet used to generate oracle database schema\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#Stylesheet used to generate sqlite database schema\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Stylesheet used to generate docbook documentation\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Enable/disable DTD validation\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Enable/disable verbose output (and DTD validation)\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# XML Catalog used to resolve entities\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# link all documents to one file, to get nicer output\n",
+        "Line" : 201,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# create entities, as xi:include is not available in sgml docbook\n\n# substitute '-' for '_', docbook smgl don't like this\n",
+        "Line" : 204,
+        "CharPositionInLine" : 1
+      },
+      "16" : {
+        "Text" : "#Include general documentation entities\n",
+        "Line" : 209,
+        "CharPositionInLine" : 1
+      },
+      "17" : {
+        "Text" : "# add bookinfo\n",
+        "Line" : 212,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "# actually include the entities\n",
+        "Line" : 214,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 19
+    },
+    "menuconfig/Makefile" : {
+      "ObjectId" : "371ccea07ad443fecebed55cd3e95970d7e3ea96",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/aaa_radius/Makefile" : {
+      "ObjectId" : "535c8855736e54a5cf2add09fd4903b7ef9a84e4",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# radius module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Find the radius library we shall use\n\n#\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## we didn't find the packet with pkg-config\n\n## last chance try it without knowing lib path\n",
+        "Line" : 54,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# Comment the next two line and uncomment the following two if you want\n\n# to enable Radius support\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "modules/acc/Makefile" : {
+      "ObjectId" : "b1b239495584152c1adae7e47e567e10c7532db6",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# acc module makefile\n\n#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set ENABLE_DIAMETER_ACC to true if you wish to enable DIAMETER accounting\n\n#   (uncomment next line or 'ENABLE_DIAMETER_ACC=true make all')\n\n#ENABLE_DIAMETER_ACC=true\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/alias_db/Makefile" : {
+      "ObjectId" : "15b18faea1d34a5aef3ec9bc742816db47da731e",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# User aliases\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/auth/Makefile" : {
+      "ObjectId" : "10dcb76bcce53fe1a77b12361227956346cbe22a",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# auth example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/auth_aaa/Makefile" : {
+      "ObjectId" : "d1908ee1bab8e0412885600f86b70c9500f080e6",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Digest Authentication - AAA generic support\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/auth_db/Makefile" : {
+      "ObjectId" : "9939eace3880396cd5a6955134ba4a85a81a1d60",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Digest Authentication - Database support\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/avpops/Makefile" : {
+      "ObjectId" : "c578df87c630b2d444654ada35d4b6854786b30b",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# avpops module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/b2b_entities/Makefile" : {
+      "ObjectId" : "1754da1257fb4f81a45337036a9c9d7b0cc2eb71",
+      "LastModified" : "2011-10-21T11:32:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 806 2006-04-14 11:00:10Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/b2b_logic/Makefile" : {
+      "ObjectId" : "5dcc1b1f039ea0dd4224f24aa03f6e1bbb7d44f5",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 806 2006-04-14 11:00:10Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/b2b_sca/Makefile" : {
+      "ObjectId" : "862cd6c0555215fc75bfde15249b79a3041232d7",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 806 2006-04-14 11:00:10Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/benchmark/Makefile" : {
+      "ObjectId" : "cdcdc54f2e58ea01734a544c9bad8b31d6f96017",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# User aliases\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# nanosec precision - requires realtime library\n\n#DEFS+= -DBM_CLOCK_REALTIME\n\n#LIBS+= -lrt\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/cachedb_cassandra/Makefile" : {
+      "ObjectId" : "a0d34bf58b88b4a4ce4074424c6210ad642ac1e6",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cachedb_couchbase/Makefile" : {
+      "ObjectId" : "5715b99e1de61548b08bd854648ae1d736725338",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 6253 2009-10-12 19:00:53Z vladut_paiu $\n\n#\n\n# Couchbase connector\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cachedb_local/Makefile" : {
+      "ObjectId" : "d5dbd9261431b0844a73d91cc31c3d2469cbbc0e",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 6253 2009-10-12 19:00:53Z bogdan_iancu $\n\n#\n\n# Memory Cache module\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cachedb_memcached/Makefile" : {
+      "ObjectId" : "1672069cdb49a4d68358641fef13ee15d1a652ba",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5862 2009-07-15 10:06:05Z andreidragus $\n\n#\n\n# Memcached implementation for memcache API.\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cachedb_mongodb/Makefile" : {
+      "ObjectId" : "2bf6453733055a7bd6bcbf165113a619de6adf67",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# MongoDB C client\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cachedb_redis/Makefile" : {
+      "ObjectId" : "0c379d86575dce67a859c548593bc51b192ca5d2",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 6253 2009-10-12 19:00:53Z bogdan_iancu $\n\n#\n\n# Presence Agent\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cachedb_sql/Makefile" : {
+      "ObjectId" : "9a5c61e1941ab4ecf2f474c7c98b402b62b8a9d0",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 6253 2009-10-12 19:00:53Z bogdan_iancu $\n\n#\n\n# DB Cache module\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/call_center/Makefile" : {
+      "ObjectId" : "88b31941c936ce6049ae19f069022079bca65697",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/call_control/Makefile" : {
+      "ObjectId" : "d086392fa32ae00e5160aaf7d0a4e42208337749",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# call_control module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/carrierroute/Makefile" : {
+      "ObjectId" : "c96e59cfbdec0e49af6eeb2232891be8ddb4ff7e",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# carrierroute Makefile\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cfgutils/Makefile" : {
+      "ObjectId" : "38b0069f054d6572f2a35aa55ac30cf9d861b307",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# cfgutils module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cgrates/Makefile" : {
+      "ObjectId" : "72133b04878b260d553abacff85330123fa75113",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# CGRateS billing engine implementation\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/clusterer/Makefile" : {
+      "ObjectId" : "708e97bf18c83ecb741bee923f24f0fa0b11b8c7",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#DEFS+= -DCLUSTERER_EXTRA_BIN_DBG\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/compression/Makefile" : {
+      "ObjectId" : "dc91821ff66cdf1c0cea17c2f94115a822e10bc8",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cpl_c/Makefile" : {
+      "ObjectId" : "24d95612e19860dfba528a6741304420cd547b80",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/db_berkeley/Makefile" : {
+      "ObjectId" : "5994f3ad757710325b0a55e6fc8d577fd2d804f7",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# extra debug messages\n\n# -DBDB_EXTRA_DEBUG is optional\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/db_cachedb/Makefile" : {
+      "ObjectId" : "daa9a3e189c08966e7a3e490eef76eb2db265a87",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/db_flatstore/Makefile" : {
+      "ObjectId" : "6b53fdbe6d9bf3022b12de93806a599413a33e68",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/db_http/Makefile" : {
+      "ObjectId" : "84bd2fe471e2320996d621797cda7006e83fa45f",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5862 2009-07-15 10:06:05Z andreidragus $\n\n#\n\n# HTTP implementation for DB API.\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# use autodetection\n",
+        "Line" : 17,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "# use standard know paths\n",
+        "Line" : 24,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3
+    },
+    "modules/db_mysql/Makefile" : {
+      "ObjectId" : "5ca170f2d2e5028c85f00e578e46157038b84e31",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set CROSS_COMPILE to true if you want to skip\n\n# the autodetection\n\n# CROSS_COMPILE=true\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use autodetection\n",
+        "Line" : 21,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# use standard know paths\n\n# mysql.h locations (freebsd,openbsd  solaris)\n",
+        "Line" : 27,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# libmysqlclient locations on RH/Suse, Solaris /OpenBSD, FreeBSD\n\n# (Debian does the right thing and puts it in /usr/lib)\n",
+        "Line" : 32,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 5
+    },
+    "modules/db_oracle/Makefile" : {
+      "ObjectId" : "bd0d82a6e201560ea08cb40df946f0dae0c058a3",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# can be defined for non standard placement of oracle so's\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use for multiple client sdk version install\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use include/library path's for full client installation\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# use standard know paths oci.h locations (linux)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# search 'so' path if it non standard (possible liboclntsh locations on linux)\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#DEFS+=-DLINUX -D_GNU_SOURCE -D_REENTRANT\n\n#LIBS+=-lpthread\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "modules/db_perlvdb/Makefile" : {
+      "ObjectId" : "49fa77b80d7510f61dd84de42fe439f1dcd349f5",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# if perl requires _FORTIFY_SOURCE, we need to enable optimizations\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/db_postgres/Makefile" : {
+      "ObjectId" : "12456b02cbad8a51aa41d01430ca7f8ba4bf49af",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set CROSS_COMPILE to true if you want to skip\n\n# the autodetection\n\n# CROSS_COMPILE=true\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use autodetection\n",
+        "Line" : 22,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# use standard know paths\n\n# libpq-fe.h locations\n",
+        "Line" : 28,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 4
+    },
+    "modules/db_sqlite/Makefile" : {
+      "ObjectId" : "133b7dc03bda3cc04406e4f598428c9a57bd1cbc",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/db_text/Makefile" : {
+      "ObjectId" : "f115c9bd403da72243659a164b1d2c409ae85a61",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# extra debug messages\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/db_unixodbc/Makefile" : {
+      "ObjectId" : "6fd67ae64d3ce4d1eed8f3c5d369402e5e442cf5",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# sql.h locations (freebsd,openbsd  solaris)\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# libodbc locations on RH/Suse, Solaris /OpenBSD, FreeBSD\n\n# (Debian does the right thing and puts it in /usr/lib)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "modules/db_virtual/Makefile" : {
+      "ObjectId" : "85ef7a34c6377f850102ebdc4fe9c53e8e7cbff2",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/dialog/Makefile" : {
+      "ObjectId" : "f3014433ad315f716ec2203967db8ba61d306cba",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/dialplan/Makefile" : {
+      "ObjectId" : "59218eb878cb428f4d4f8c0899cec9acc91360f7",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set CROSS_COMPILE to true if you want to skip\n\n# the autodetection\n\n# CROSS_COMPILE=true\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/dispatcher/Makefile" : {
+      "ObjectId" : "1566aaf05b6cc0ee8dedb1f31cc0c153e9446d0d",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/diversion/Makefile" : {
+      "ObjectId" : "5f9a396247f6815878444a96873b92822aa3a318",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Diversion Header Field Support2\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/dns_cache/Makefile" : {
+      "ObjectId" : "2ff12251af6563327b5a24f1d198ff564434d288",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 6253 2009-10-12 19:00:53Z bogdan_iancu $\n\n#\n\n# DNS caching\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/domain/Makefile" : {
+      "ObjectId" : "24b4ebe681ec8288ea61c50d021241bc121b2a7f",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile v 1.0 2002/12/27\n\n#\n\n# Domain module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/domainpolicy/Makefile" : {
+      "ObjectId" : "6015debe35d1f1e20863f2294c2e91d0964dc3fa",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile v 1.0 2002/12/27\n\n#\n\n# Domain Policy module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/drouting/Makefile" : {
+      "ObjectId" : "ae63437230e4907bee930c03695ad29591d81208",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/emergency/Makefile" : {
+      "ObjectId" : "dcb5a43fb047af3af3152b1ee2003455d004884b",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/enum/Makefile" : {
+      "ObjectId" : "5850e65499f7174b663904f392dfc55cf234ed4f",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile v 1.0 2002/12/27\n\n#\n\n# Enum module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_datagram/Makefile" : {
+      "ObjectId" : "1e47f71d5ee5710e73a1fe252f0a243d4e6f0d8a",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_flatstore/Makefile" : {
+      "ObjectId" : "957f9d5e3b411f8a2ef959e784aaf5604eac9c33",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_jsonrpc/Makefile" : {
+      "ObjectId" : "17ac5f6f902151a583e249dbb61d2e0cff5239bd",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_rabbitmq/Makefile" : {
+      "ObjectId" : "b8d5ef609d653f5f845cdada6f39f038fd0c2ecf",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_route/Makefile" : {
+      "ObjectId" : "719ab8219dec96a9f3e9d355fee159c22e9b420d",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_routing/Makefile" : {
+      "ObjectId" : "7b29787e38599b4e88513566bf7e0f49ad3b695e",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_virtual/Makefile" : {
+      "ObjectId" : "ae4dc2e0084f9099b6e1b323e2b17b0df08d0b18",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/event_xmlrpc/Makefile" : {
+      "ObjectId" : "9b875519f67ff4dc3100f634a62d2aaa9c844438",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/exec/Makefile" : {
+      "ObjectId" : "31cc9913d5411ce1dcd7a1c4cab2e79a1f44fe0e",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# exec module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/fraud_detection/Makefile" : {
+      "ObjectId" : "8f482eceea23a12c9937710760e73d83ab7d9849",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# New module name\n\n#\n\n#-\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/freeswitch/Makefile" : {
+      "ObjectId" : "76aee1289c9bf224474a2d38fcabb8a7ce54dfaa",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Temporary import of the FreeSWITCH ESL library code until packages are out\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/freeswitch_scripting/Makefile" : {
+      "ObjectId" : "bc03a5aac4c9892d30c1870ab5edac8e47bf0232",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/gflags/Makefile" : {
+      "ObjectId" : "46ad3406e177f54c1854b71c5b9c52151fd1509d",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/group/Makefile" : {
+      "ObjectId" : "75f38805bf4f64855f80fcff044cc0c60fb8751c",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# group example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/h350/Makefile" : {
+      "ObjectId" : "b626169f25530b17bd89a9bb78217cfbfc6e586a",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# H350\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/httpd/Makefile" : {
+      "ObjectId" : "be971c2bfd0ad3bac958f4fc561e1ebc48ed1664",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set CROSS_COMPILE to true if you want to skip\n\n# the autodetection\n\n# CROSS_COMPILE=true\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/identity/Makefile" : {
+      "ObjectId" : "cb3ed0c35ab5f4cf94750e421ec81456eab25216",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/imc/Makefile" : {
+      "ObjectId" : "b709cb42c5b372e2db380b14234d91c59d20d0c4",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/jabber/Makefile" : {
+      "ObjectId" : "08af78ab21e1ceeab2568fecef2489a69e6b149a",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# extra debug messages\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# -DHAVE_IHTTP\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# expat.h location\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "modules/json/Makefile" : {
+      "ObjectId" : "42ba9146f148206b26034aa1556e14a7d82980f9",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Json object manipulation\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/jsonrpc/Makefile" : {
+      "ObjectId" : "b5c01e3a537ec15e1ccf1a070ca459cca4e2034a",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Provides integration with a JSON-RPC Server\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/ldap/Makefile" : {
+      "ObjectId" : "98de46e74bd09136a490dec9ffe2efb24f694622",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# LDAP_H350\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#DEFS += -DLDAP_PERF\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/load_balancer/Makefile" : {
+      "ObjectId" : "d942485138033b35f593cc4985bf8cc19bac8eca",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/lua/Makefile" : {
+      "ObjectId" : "07b9dd295b7d8990d4a8268589de7adc6c28184e",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile,v 1.12 2009/01/20 03:00:05 folays Exp $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1,
+      "Errorlog" : "line 15:63 token recognition error at: '\\1'\n"
+    },
+    "modules/mangler/Makefile" : {
+      "ObjectId" : "e64eb60868f8c677342f23c87f37485aba81d7ee",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile v 1.0 2002/12/27\n\n#\n\n# Enum module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mathops/Makefile" : {
+      "ObjectId" : "40d89f8c9fbe00ea5a9151453013046c441f2c52",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile v 1.0 2002/12/27\n\n#\n\n# Mathops module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/maxfwd/Makefile" : {
+      "ObjectId" : "b3b41371acbf77616aaff73ced8b0cb43d7b1ce7",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mediaproxy/Makefile" : {
+      "ObjectId" : "9a11ff4fd31a7297c2133468ba479d646924ae8d",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# mediaproxy module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mi_datagram/Makefile" : {
+      "ObjectId" : "df529b9a7fd2d6c0c9f5dd6317a4e7a5b549b000",
+      "LastModified" : "2019-01-15T17:09:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mi_fifo/Makefile" : {
+      "ObjectId" : "0ea7a346c4725f1719274d132e5e4fbe9f2f6322",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# mi_fifo module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mi_html/Makefile" : {
+      "ObjectId" : "69d9816ffdfa95d70dd7539d981c65646cbc5066",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mi_http/Makefile" : {
+      "ObjectId" : "860524914db56167b5e3fa333de424bfa8b3681b",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mi_xmlrpc_ng/Makefile" : {
+      "ObjectId" : "f54e5bc33349a117fbb873213c20d63f405ce84c",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mid_registrar/Makefile" : {
+      "ObjectId" : "a6958ebbce77fce40173c5d40a4128fd64230fbd",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/mmgeoip/Makefile" : {
+      "ObjectId" : "b51e41fb5bc6246b731b0bbb794553e3df20abac",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n\n#\n\n#\n\n# This file is part of openser, a free SIP server.\n\n#\n\n# openser is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 2 of the License, or\n\n# (at your option) any later version\n\n#\n\n# openser is distributed in the hope that it will be useful, but\n\n# WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, write to the Free Software\n\n# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301\n\n# USA\n\n#\n\n# History:\n\n# --------\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/msilo/Makefile" : {
+      "ObjectId" : "6457d8492ac2d363e715666bf36b125040a1a64c",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/nat_traversal/Makefile" : {
+      "ObjectId" : "8d04bc69332dc7cff1ce46dd475e980367656a10",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# nat_traversal module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/nathelper/Makefile" : {
+      "ObjectId" : "91ac4f130005af3eb1d5736788c5db228e20f423",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/options/Makefile" : {
+      "ObjectId" : "dddc0efbed8e2069f08a3187e45031beb1c21f1b",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# opt_rpl module makefile\n\n#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/osp/Makefile" : {
+      "ObjectId" : "d393bc0a2e6f3b43ea455edfecfce8caa0bff2d0",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# osp module makefile\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/path/Makefile" : {
+      "ObjectId" : "9b089b18c28a718da839906d7c79e5d3ac504b8f",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# path module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/peering/Makefile" : {
+      "ObjectId" : "ea4ba1f05d377f0d601b2c1b0a648ce54b89372d",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Peering module Makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/perl/Makefile" : {
+      "ObjectId" : "5283f6176f51351e3a87d75febfb1dd37e8a75f7",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# perl module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define it (or export this) to the dir where xsubpp is on your system (if\n\n# not on the default path.\n\n#PERLBINDIR=\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# if perl requires _FORTIFY_SOURCE, we need to enable optimizations\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "modules/permissions/Makefile" : {
+      "ObjectId" : "b7a45443b75bd0fb0053361e61919747898aa7ff",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PERMISSIONS module makefile\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pi_http/Makefile" : {
+      "ObjectId" : "b09e1ea7ceb2e65d5c862da08f266ac6642626ee",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pike/Makefile" : {
+      "ObjectId" : "9c7844976ef187508e31904aace6883c707cfd3c",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/presence/Makefile" : {
+      "ObjectId" : "7429daaaddd035d3ac0ff55ecb1a26f137b017e9",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Presence Agent\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/presence_callinfo/Makefile" : {
+      "ObjectId" : "b1f494cb3b77d7666273ef15169497c2e5a841db",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Presence_MWI Makefile\n\n# \n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/presence_dialoginfo/Makefile" : {
+      "ObjectId" : "ffa8908a44f29da2367243585f42770d744eeb51",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Presence_MWI Makefile\n\n# \n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/presence_mwi/Makefile" : {
+      "ObjectId" : "14a26472f575cb7894841b9b9c3819febb6b0c1f",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Presence_MWI Makefile\n\n# \n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/presence_xcapdiff/Makefile" : {
+      "ObjectId" : "e7d64e5eb109e2e53ee8a8682ba6b973377f27cf",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/presence_xml/Makefile" : {
+      "ObjectId" : "b16b61a57566624b1786829c8ecb4d49abc22edb",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Presence_XML \n\n# \n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/proto_bin/Makefile" : {
+      "ObjectId" : "1527f18a9664bde35cf89e2f6804d9d014102571",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/proto_hep/Makefile" : {
+      "ObjectId" : "d68ae2aa722b9c75c7fce34d10c7d7849acfb3d7",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/proto_sctp/Makefile" : {
+      "ObjectId" : "e0664fd688d3301e44f37bdf6a85b16b8865d8b0",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/proto_smpp/Makefile" : {
+      "ObjectId" : "353f513c41b320bbf1cb317a7ffc91a40efc8bd1",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/proto_tls/Makefile" : {
+      "ObjectId" : "68d9bc243d076d188c8b6bb0bc162bdef9ef74c2",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/proto_ws/Makefile" : {
+      "ObjectId" : "cb18aad86ae4db5ac70c3e14e1a1b7eb56d5f97f",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Network WebSocket implementation\n\n#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#ALLOCATOR_VER = 104\n\n#\n\n## set CROSS_COMPILE to true if you want to skip\n\n## the autodetection\n\n## CROSS_COMPILE=true\n\n#ifeq ($(CROSS_COMPILE),)\n\n#LIBWEBSOCKETS_BUILDER = $(shell \\\n#\tif pkg-config --exists libwebsockets; then \\\n#\t\techo 'pkg-config libwebsockets'; \\\n#\tfi)\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#endif\n\n#\n\n#ifneq ($(LIBWEBSOCKETS_BUILDER),)\n\n#\tDEFS += $(shell $(LIBWEBSOCKETS_BUILDER) --cflags)\n\n#\tLIBS += $(shell $(LIBWEBSOCKETS_BUILDER) --libs)\n\n#\tLIBWEBSOCKETS_VER = $(shell $(LIBWEBSOCKETS_BUILDER) --modversion)\n\n#else\n\n#\tDEFS +=-I$(LOCALBASE)/include\n\n#\tLIBS +=-L$(LOCALBASE)/lib -lwebsockets\n\n#\tLIBWEBSOCKETS_VER = 1.3\n\n#endif\n\n#\n\n#WEBSOCKETS_VER = $(shell echo $(LIBWEBSOCKETS_VER) | \\\n#\t\t\t\t\t\tsed  \"s/\\.\\([0-9]\\)\\./.0\\1./g\" | \\\n#\t\t\t\t\t\tsed  \"s/\\.\\([0-9]\\)\\$$/.0\\1/g\" | \\\n#\t\t\t\t\t\ttr -d \".\" | sed -e \"s/^0*//\" )\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n#HAVE_ALLOCATOR = $(shell echo $(WEBSOCKETS_VER) $(ALLOCATOR_VER) | \\\n#\t\t\tawk '{ if (($$1 >= $$2)) print \"-DHAVE_WEBSOCK_ALLOCATOR\" }')\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n#ifeq ($(HAVE_ALLOCATOR),)\n\n#$(warning \"Your libwebsockets library does not support custom allocators\")\n\n#endif\n\n#\n\n#DEFS += $(HAVE_ALLOCATOR)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "modules/proto_wss/Makefile" : {
+      "ObjectId" : "f5158e2b2a627dce13dcf98c8f789121e5093ea6",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pua/Makefile" : {
+      "ObjectId" : "288576330c8ce7d168da0a528fd595bd16421b1b",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PUBLISH\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pua_bla/Makefile" : {
+      "ObjectId" : "ac5e69fa01488d502cc44927047b96a80ef3dd28",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PUA_BLA\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pua_dialoginfo/Makefile" : {
+      "ObjectId" : "6e0ea0f68eea9fcc8da3a1b1d1b85ed55c2445a0",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PUBLISH\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pua_mi/Makefile" : {
+      "ObjectId" : "549471cae221668464cc69c91c8a0f5bffa57cf1",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PUBLISH\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pua_usrloc/Makefile" : {
+      "ObjectId" : "17da53179c16da1f5242bb4a83acb1127442377e",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PUBLISH\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/pua_xmpp/Makefile" : {
+      "ObjectId" : "cbf30a58b453b4d7db597691845143807f12d5c0",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# PUBLISH\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/python/Makefile" : {
+      "ObjectId" : "7b6a69d3661c9ea7b08e819a2566ef862ec53825",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If you have multiple Python versions installed make sure to modify the\n\n# the following to point to the correct instance. Module has been tested\n\n# to work with 2.6 and 2.5. Python 2.4 has been only confirmed to compile,\n\n# but no testing has been done with that.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# try an autodetection for python2\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3,
+      "Errorlog" : "line 19:61 token recognition error at: '\\1'\n"
+    },
+    "modules/qos/Makefile" : {
+      "ObjectId" : "e6b304a7f11c7978bd855f66c73855c17439a35e",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n\n#\n\n# Copyright (C) 2006 SOMA Networks, Inc.\n\n# Written by: Ovidiu Sas\n\n#\n\n# This file is part of OpenSIPS, a free SIP server.\n\n#\n\n# OpenSIPS is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 2 of the License, or\n\n# (at your option) any later version\n\n#\n\n# OpenSIPS is distributed in the hope that it will be useful, but\n\n# WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, write to the Free Software\n\n# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301\n\n# USA\n\n#\n\n# History:\n\n# --------\n\n#  2007-07-16  initial version (osas)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/rabbitmq/Makefile" : {
+      "ObjectId" : "309c68230b329998912a1c46bd2ed5efa027973b",
+      "LastModified" : "2019-01-31T16:57:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Provides integration with a RabbitMQ Server\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make sure travis does not fail this module for older RabbitMQ versions\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# this only works in gcc > 4.5\n",
+        "Line" : 27,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3,
+      "Errorlog" : "line 29:76 token recognition error at: '\\1'\nline 29:78 token recognition error at: '\\2'\n"
+    },
+    "modules/rabbitmq_consumer/Makefile" : {
+      "ObjectId" : "a8dabcfa666b5ddd44ba0e2fab569efaf72ebb7a",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make sure travis does not fail this module for older RabbitMQ versions\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# this only works in gcc > 4.5\n",
+        "Line" : 26,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3,
+      "Errorlog" : "line 28:76 token recognition error at: '\\1'\nline 28:78 token recognition error at: '\\2'\n"
+    },
+    "modules/ratelimit/Makefile" : {
+      "ObjectId" : "e5cfd882cbce53716a3381a9f5542aef674e4241",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# ratelimit module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/regex/Makefile" : {
+      "ObjectId" : "f7143446b90bf4dbe84a58fdc3f9784b4eb235b7",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set CROSS_COMPILE to true if you want to skip\n\n# the autodetection\n\n# CROSS_COMPILE=true\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/registrar/Makefile" : {
+      "ObjectId" : "458f083143f3ce2dc9f264d22afde194d5ae4761",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# registrar module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/rest_client/Makefile" : {
+      "ObjectId" : "b0f9775bd210e9dbfa7703bdccfefcf7e24f7748",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile v 1.0 2002/12/27\n\n#\n\n# rest_client module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/rls/Makefile" : {
+      "ObjectId" : "4157963e048afc697e10dcc6ae4065e111a9a22e",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Resource List Server\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/rr/Makefile" : {
+      "ObjectId" : "0ce2f5c14455e176c903ae3d2da4a83fcb8ac24e",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# rr module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#DEFS+=-DENABLE_USER_CHECK\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/rtpengine/Makefile" : {
+      "ObjectId" : "33d6853a768d5f423fbd6009d656afcb1552a7af",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# print example module makefile\n\n#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/rtpproxy/Makefile" : {
+      "ObjectId" : "03fd8186d7cde41ea6e951e05ee683132fb5844b",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/script_helper/Makefile" : {
+      "ObjectId" : "81ce913416a75e006aeb53fc502a9b244b7e3889",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/seas/Makefile" : {
+      "ObjectId" : "68f39d2a7f80025cd67796b70a9371b47c9d39f6",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/signaling/Makefile" : {
+      "ObjectId" : "680bfa2c6bee1d59027e170a471e8788e645cabf",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sip_i/Makefile" : {
+      "ObjectId" : "7bdb8901b91b09ddef5dd7c9cacd73782d7a2903",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sipcapture/Makefile" : {
+      "ObjectId" : "1c380e748dd61e4bc56e10205c05d88213be2f81",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# sipcapture module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sipmsgops/Makefile" : {
+      "ObjectId" : "73b6b4e983a833c7b5a430fad4c59d29d759ba80",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/siprec/Makefile" : {
+      "ObjectId" : "8f7731af4f4bd3c88c7d122083b4dbf5ef767a3d",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# siprec module\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sl/Makefile" : {
+      "ObjectId" : "97f1808bbe2d3fdbb0cc49bad9ac46cef19ac6e8",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sms/Makefile" : {
+      "ObjectId" : "4e65ded783cba39db611a9995f9ac6285281fe07",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sngtc/Makefile" : {
+      "ObjectId" : "f3dc00a6e35d5f3060ce6dca93f07c90ed147958",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/snmpstats/Makefile" : {
+      "ObjectId" : "1652a80b2b6b0278e29ae523ad8d945aef854793",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# use autodetection\n",
+        "Line" : 11,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "# use standard know paths\n",
+        "Line" : 17,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3
+    },
+    "modules/speeddial/Makefile" : {
+      "ObjectId" : "f05b319bfbdbb5227c77eb0248bfacdee841eec0",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# SPEEDDIAL Module\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sql_cacher/Makefile" : {
+      "ObjectId" : "0351bf9acd0a24d35e8bb9d6cea288945f3b0e98",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/sst/Makefile" : {
+      "ObjectId" : "4e778e21526b2f806f083e5d0f7b0857fecd1e6f",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n\n#\n\n# Copyright (C) 2006 SOMA Networks, INC.\n\n# Written by: Ron Winacott\n\n#\n\n# This file is part of opensips, a free SIP server.\n\n#\n\n# opensips is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 2 of the License, or\n\n# (at your option) any later version\n\n#\n\n# opensips is distributed in the hope that it will be useful, but\n\n# WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, write to the Free Software\n\n# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301\n\n# USA\n\n#\n\n# History:\n\n# --------\n\n#  2006-05-11  initial version (ronw)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/statistics/Makefile" : {
+      "ObjectId" : "6f0935a6818cbd4caf8096086e67eafa33508eef",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/stun/Makefile" : {
+      "ObjectId" : "8969f50e0873431ba5a93661f7d77f3b07a963ee",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/textops/Makefile" : {
+      "ObjectId" : "59afa883c2f9e62c2ce764c3e887c4e39f963ecc",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/tls_mgm/Makefile" : {
+      "ObjectId" : "947f797db037f1482066a27339d89965067a4f35",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/tm/Makefile" : {
+      "ObjectId" : "10c4f423360420712e7146b07540a49efa5d287d",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/topology_hiding/Makefile" : {
+      "ObjectId" : "9d496f4be7b185e331d3e7112f8b741bd2c89192",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/tracer/Makefile" : {
+      "ObjectId" : "33b85f3b266ff2dd7b5ed8d8de68d03427d140a4",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/uac/Makefile" : {
+      "ObjectId" : "e39c027fb7f334e6c9f52bea7a6de3bfc3f1ad60",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/uac_auth/Makefile" : {
+      "ObjectId" : "3a3642adea5f6e37c98bab28a116fdcb035863d9",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 5901 2009-07-21 07:45:05Z bogdan_iancu $\n\n#\n\n# auth example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/uac_redirect/Makefile" : {
+      "ObjectId" : "88e70c8433aa8f78b9d9f515c510b1836e7c1ebb",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/uac_registrant/Makefile" : {
+      "ObjectId" : "82fb1272a0e37d813cf37e187061bfb49e880504",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id: Makefile 806 2006-04-14 11:00:10Z bogdan_iancu $\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/userblacklist/Makefile" : {
+      "ObjectId" : "cd682e838417a6ac692da36c6ea407b8373fe5c5",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/usrloc/Makefile" : {
+      "ObjectId" : "ce52544a2c8731a8523748619c7ae9b526c8b962",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Usrloc module Makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/xcap/Makefile" : {
+      "ObjectId" : "86ecc0550854a7db8a47b8afca43202d523afd96",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# XCAP operations module for OpenSIPs\n\n#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/xcap_client/Makefile" : {
+      "ObjectId" : "902b084b0eac3381b95d625b95bad4fa39aa5b13",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# XCAP client for OpenSIPs\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/xml/Makefile" : {
+      "ObjectId" : "0411963a9b92f436eba51277a7718d9c6cb94804",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/xmpp/Makefile" : {
+      "ObjectId" : "e1a50f3b13fe1e59c13793fdf858a2514d4a3c1b",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# xmpp module makefile\n\n#\n\n#\n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# expat.h location\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "obsolete_modules/auth_diameter/Makefile" : {
+      "ObjectId" : "91b55f97c16dcb06f6d6b4f519159bfa11ef87b0",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# Digest Authentication - Diameter support\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "obsolete_modules/closeddial/Makefile" : {
+      "ObjectId" : "e65d206992bb0dcc831e125254414af788b6a854",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# SPEEDDIAL Module\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "obsolete_modules/mi_xmlrpc/Makefile" : {
+      "ObjectId" : "762c2dda281da00d6e257b53d91fa2a3f6bb7465",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 1.06.42\n\n# 1.03.10\n",
+        "Line" : 8,
+        "CharPositionInLine" : 39
+      },
+      "2" : {
+        "Text" : "# 0.09.10\n\n# 0.09.10\n",
+        "Line" : 11,
+        "CharPositionInLine" : 39
+      },
+      "3" : {
+        "Text" : "# set CROSS_COMPILE to true if you want to skip\n\n# the autodetection\n\n# CROSS_COMPILE=true\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# get the version\n",
+        "Line" : 25,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# try new version\n",
+        "Line" : 28,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 6,
+      "Errorlog" : "line 33:49 token recognition error at: '\"s/\\.\\([0-9]\\)\\./.0\\1'\nline 33:102 token recognition error at: '\\1'\nline 40:104 token recognition error at: '\"}' ) \\n\\n\\n# supported version ?\\nifeq ($(OLD),yes)\\n\\tDEFS+=-DXMLRPC_OLD_VERSION\\nelse\\nifeq ($(NEW),yes)\\n\\t# we need filio.h for Solaris\\n\\tifeq ($(OS),solaris)\\n\\t\\tDEFS+=-DHAVE_SYS_FILIO_H\\n\\tendif\\nelse\\n$(warning\\t\\t\\tYou are using an unsupported libxmlrpc-c3 \\\\n\\t\\t\\t\\t\\t version  ($(XMLRPC_VER)), compile at your own risk!)\\nendif\\nendif\\n\\nifeq ($(HAS_XMLRPC-C-CONFIG),YES)\\n\\t# use autodetection\\n\\tMY_DEFS=$(shell xmlrpc-c-config abyss-server --cflags)\\n\\tMY_LIBS=$(shell xmlrpc-c-config abyss-server --libs)\\nelse\\n\\t# use standard know paths\\n\\tMY_DEFS=-I$(LOCALBASE)/include -I$(LOCALBASE)/include/xmlrpc-c \\\\n\\t\\t-I$(SYSBASE)/include/xmlrpc-c -D_UNIX\\n\\tMY_LIBS=-L$(SYSBASE)/lib  -L$(LOCALBASE)/lib -lxmlrpc -lxmlrpc_xmlparse \\\\n\\t\\t-lxmlrpc_xmltok -lxmlrpc_abyss -lxmlrpc_abyss_server \\\\n\\t\\t-lxmlrpc_client -lwwwinit -lwwwstream -lwwwxml \\\\n\\t\\t-lwwwapp -lwwwcache -lwwwcore -lwwwdir -lwwwfile \\\\n\\t\\t-lwwwftp -lwwwgopher -lwwwhtml -lwwwhttp \\\\n\\t\\t-lwwwmime -lwwwmux -lwwwnews -lwwwtelnet \\\\n\\t\\t-lwwwtrans -lwwwzip\\nendif\\n\\nifeq ($(NEW),yes)\\n\\t# remove the abyss library - we already have\\n\\t# the code in the module\\n\\tMY_DEFS+=-D_UNIX\\n\\tMY_LIBS:=$(filter-out %xmlrpc_abyss %xmlrpc_server_abyss %pthread, $(MY_LIBS))\\nelse\\n\\t# remove from compiling the code we have in the\\n\\t# module for abyss server\\n\\texclude_files=$(wildcard abyss_*.c)\\nendif\\n\\nifeq ($(FORCE),yes)\\n\\tMY_DEFS+=-DXMLRPC_HAS_FORCE_CHARS\\nendif\\n\\n\\n\\nDEFS+=$(MY_DEFS)\\nLIBS=$(MY_LIBS)\\n\\n\\ninclude ../../Makefile.modules\\n\\n\u0000'\n"
+    },
+    "obsolete_modules/pdt/Makefile" : {
+      "ObjectId" : "b46cb3f940ca227a5b2bea7f799fdbd39af5ea2d",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n# print example module makefile\n\n#\n\n# \n\n# WARNING: do not run this directly, it should be run by the master Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "packaging/freebsd/Makefile" : {
+      "ObjectId" : "347ee5f391d1febae52d533278de35cfbe1b30be",
+      "LastModified" : "2019-04-17T08:39:29Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# New ports collection makefile for:\topensips\n\n# Date created:\t\t\t\t20 October 2005\n\n# Whom:\t\t\t\t\tjesusr\n\n#\n\n# $FreeBSD: ports/net/opensips/Makefile,v 1.9 2007/08/20 09:12:42 miwi Exp $\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "packaging/netbsd/Makefile" : {
+      "ObjectId" : "37acc74f1e2260bf8299e44d9ab7fac6685e18a6",
+      "LastModified" : "2019-04-17T08:39:29Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# New ports collection makefile for:    opensips\n\n#\n\n# $NetBSD$\n\n#\n\n# $Id$\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# MANCOMPRESSED must not be specified (if defined is assumed to be yes)\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# we override the DISTFILE NAME\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# build by default mysql and jabber\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# depends on expat and mysqlclient because of the above modules\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#.include \"/usr/pkgsrc/mk/bsd.prefs.mk\"\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "packaging/openbsd/Makefile" : {
+      "ObjectId" : "a712830d0b1935cfd5c98bfb45dcf4cf10122677",
+      "LastModified" : "2019-04-17T08:39:29Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# New ports collection makefile for:    opensips\n\n#\n\n# $OpenBSD$\n\n#\n\n# $Id$\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# MANCOMPRESSED must not be defined in openbsd (defined==yes)\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# GPL\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# we override the DISTFILE NAME\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# build by default mysql and jabber\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# depends on mysql and libexpat because of the above modules\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "test/Makefile" : {
+      "ObjectId" : "6425b30719b898772f7baa9ec443c64e1e62ad38",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "utils/db_berkeley/Makefile" : {
+      "ObjectId" : "1ee03c23d319e14cbb498eeee99c3aeece2d23ce",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n#  db_berkeley Makefile\n\n# \n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# if you want to tune or reset flags\n\n#DEFS:=-DEXTRA_DEBUG  -I$(LOCALBASE)/BerkeleyDB.4.6/include\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "utils/db_oracle/Makefile" : {
+      "ObjectId" : "1f1af8ed65592bb50fb3451f409741c94c4e47a6",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n#  db_orasel Makefile\n\n# \n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# use for multiple client sdk version install\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use include/library path's for full client installation\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use standard know paths oci.h locations (linux)\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# search 'so' path if it non standard (possible liboclntsh locations on linux)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#DEFS +=-DLINUX -D_GNU_SOURCE -D_REENTRANT\n\n#LIBS +=-lpthread\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "utils/opensipsunix/Makefile" : {
+      "ObjectId" : "a0b2ff9b02f2c8272a74e2793c78925abf74011c",
+      "LastModified" : "2019-04-16T17:24:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Id$\n\n#\n\n#  serunix Makefile\n\n# \n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# if you want to tune or reset flags\n\n#DEFS:= \n\n#LDFLAGS:= \n\n#LIBS:= \n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 172
+  },
+  "ElapsedTime" : 10719
+}

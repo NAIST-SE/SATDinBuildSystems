@@ -1,0 +1,360 @@
+{
+  "Repository" : "31652154",
+  "Revision" : "HEAD",
+  "ObjectId" : "8f8ad2ee39598f033b9c2ffdc9523b3d60465201",
+  "CommitTime" : "2019-04-18T04:32:38Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "ae3dc8c14aa0d4d2a05e7550f14ddc3f56ead897",
+      "LastModified" : "2019-02-27T12:59:12Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2011 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n\n#\n\n# Embedded Controller firmware build system\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Allow for masking of some targets based on the build architecture. When\n\n# building using a portage package (such as chromeos-ec), this variable will\n\n# already be set. To support the typical developer workflow a default value is\n\n# provided matching the typical architecture of developer workstations. Note\n\n# that amd64 represents the entire x84_64 architecture including intel CPUs.\n\n# This is used to exclude build targets that depend on sanitizers such as\n\n# fuzzers on architectures that don't support sanitizers yet (e.g. arm).\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Directory where the board is configured (includes /$(BOARD) at the end)\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Private board directory\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We need either public, or private board directory, or both.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Setup PDIR (private directory root).\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If only private is present, use that as BDIR.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Output directory for build objects\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# CTS builds need different directories per board per suite.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# File containing configuration information\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# If no key file is provided, use the default dev key\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# If CONFIG_BOOTBLOCK is set, includes AP-FW bootblock in the EC image.\n\n# If no bootblock is provided, just pack an empty file.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# If CONFIG_TOUCHPAD_HASH_FW is set, include hashes of a touchpad firmware in\n\n# the EC image (if no touchpad firmware is provided, just output blank hashes).\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# If TEST_FUZZ is set make sure at least one sanitizer is enabled.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Define the traditional first target. The dependencies of this are near the\n\n# bottom as they can be altered by chip and board files.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Returns the opposite of a configuration variable\n\n# y  ->\n\n# ro -> rw\n\n# rw -> ro\n\n#    -> y\n\n# usage: common-$(call not_cfg,$(CONFIG_FOO))+=bar.o\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The board makefile sets $CHIP and the chip makefile sets $CORE.\n\n# Include those now, since they must be defined for _flag_cfg below.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Baseboard directory\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# If BASEBOARD is not defined, then assign BASEDIR to BDIR. This avoids\n\n# the need to have so many conditional checks wherever BASEDIR is used\n\n# below.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Create uppercase config variants, to avoid mixed case constants.\n\n# Also translate '-' to '_', so 'cortex-m' turns into 'CORTEX_M'.  This must\n\n# be done before evaluating config.h.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Transform the configuration into make variables.  This must be done after\n\n# the board/baseboard/project/chip/core variables are defined, since some of\n\n# the configs are dependent on particular configurations.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Get the CONFIG_ and VARIANT_ options that are defined for this target and make\n\n# them into variables available to this build script\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Compute RW firmware size and offset\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Private subdirectories may call this from their build.mk\n\n# First arg is the path to be prepended to configured *.o files.\n\n# Second arg is the config variable (ie, \"FOO\" to select with $(FOO-$3)).\n\n# Third arg is the config variable value (\"y\" for configuration options\n\n#   that are set for both RO and RW, \"rw\" for RW-only configuration options)\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Get build configuration from sub-directories\n\n# Note that this re-includes the board and chip makefiles\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Wrapper for fetching all the sources relevant to this build\n\n# target.\n\n# First arg is \"y\" indicating sources for all segments,\n\n#   or \"rw\" indicating sources for rw segment.\n",
+        "Line" : 238,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Get sources to build for this target\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Get all sources to build\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Add RW-only sources to build\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Don't include the shared objects in the RO/RW image if we're enabling\n\n# the shared objects library.\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Shared objects library\n",
+        "Line" : 317,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 31
+    },
+    "extra/ftdi_hostcmd/Makefile" : {
+      "ObjectId" : "d46b4b1c7260de6ddba2d9be5752f377a528efd5",
+      "LastModified" : "2015-07-09T12:30:38Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use your own libmpsse if you want, but we're going to use the files\n\n# that are part of the Chromium OS trunks_client program.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/i2c_pseudo/Makefile" : {
+      "ObjectId" : "c8dcb1e3b4594c66f70de7fcea94304895e3d22b",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "extra/lightbar/Makefile" : {
+      "ObjectId" : "920483b7818e3802d72d3fcd5b55a1cca7c44bd5",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2014 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# comment this out if you don't have libreadline installed\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/rma_reset/Makefile" : {
+      "ObjectId" : "4a640c5b4cb40e70fe02bbaf79a2037d2a31e206",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2017 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Add libusb-1.0 required flags\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/sps_errs/Makefile" : {
+      "ObjectId" : "12224ad803cb2d13207a500fbc021ff67f5d9416",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use your own libmpsse if you want, but we're going to use the files\n\n# that are part of the Chromium OS trunks_client program.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/touchpad_updater/Makefile" : {
+      "ObjectId" : "fd858a152d50ae9325e2cbc7173796d871efc994",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2017 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Add libusb-1.0 required flags\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/usb_console/Makefile" : {
+      "ObjectId" : "bddca1d0a23dfe38fe4e08facf5cb31dede862e6",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Add libusb-1.0 required flags\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/usb_gpio/Makefile" : {
+      "ObjectId" : "2006c8ca672e6b3d603f34bc0c997e105a712885",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2014 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Add libusb-1.0 required flags\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extra/usb_serial/Makefile" : {
+      "ObjectId" : "9c478050ccfc601bae8a867996a18b6cd43bec6c",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "extra/usb_updater/Makefile" : {
+      "ObjectId" : "2f8f70a6d37ccc0b5f9e915af84c31144d648fe1",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Add libusb-1.0 required flags\n\n#\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# chip/g updater\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# common EC code USB updater\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Make sure ${BOARD} not set to anything when invoking getversion.sh,\n\n# as even when building with Cr50 enabled, other directories do not\n\n# matter for gsctool.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 5
+    },
+    "test/tpm_test/Makefile" : {
+      "ObjectId" : "eeed4c2650df843d98239c15a9210be7fec7155a",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# V unset for normal output, V=1 for verbose output, V=0 for silent build\n\n# (warnings/errors only). Use echo thus: $(call echo,\"stuff  to  echo\")\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/usb_test/Makefile" : {
+      "ObjectId" : "e18e4a7c3bccba222f6768b1dc7c2ff8c58dd8cf",
+      "LastModified" : "2019-03-30T09:53:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Add libusb-1.0 required flags\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 13
+  },
+  "ElapsedTime" : 2907
+}

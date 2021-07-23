@@ -1,0 +1,1839 @@
+{
+  "Repository" : "6238023",
+  "Revision" : "HEAD",
+  "ObjectId" : "4a4b3a616e551c059e3e02ed60baf92c75882105",
+  "CommitTime" : "2019-04-09T20:50:13Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "a09ebfd63d074b023cefff870a2d015ba4fb7222",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Ensure functions/modules are available\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#------------------------\n\n# Project Version\n\n#------------------------\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#---------------\n\n# Options\n\n#---------------\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Handle testing dependencies\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Enable integration and unit tests\n",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Required for integration tests\n",
+        "Line" : 55,
+        "CharPositionInLine" : 27
+      },
+      "6" : {
+        "Text" : "# Required for tests\n",
+        "Line" : 59,
+        "CharPositionInLine" : 28
+      },
+      "7" : {
+        "Text" : "# Determine which driver target should be used as a dependency\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Not all driver internals are exported for test executable (e.g. CASS_EXPORT)\n",
+        "Line" : 66,
+        "CharPositionInLine" : 31
+      },
+      "9" : {
+        "Text" : "# Ensure the driver is configured to build\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#---------------\n\n# Dependencies\n\n#---------------\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#------------------------\n\n# Optional Dependencies\n\n#------------------------\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#----------------------\n\n# Generating API docs\n\n#----------------------\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Doxygen\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#------------------------------\n\n# Cassandra static and shared\n\n#------------------------------\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Assign the include directories\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Determine if the dynamic/shared library should be built\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Determine if the static library should be built\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Update the test flags to indicate the use of the static library\n",
+        "Line" : 148,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "#-----------------------------\n\n# Unit and integration tests\n\n#-----------------------------\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#-----------\n\n# Examples\n\n#-----------\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Determine example directories at cmake execution time.\n\n# When a new example dir is added, the user just runs cmake again to pull it in;\n\n# no need to update CMakeLists.txt!\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#-------------------------------------\n\n# Installation information\n\n#-------------------------------------\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#-------------------\n\n# Uninstall target\n\n#-------------------\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#-----------------------------------\n\n# Build an RPM.\n\n#-----------------------------------\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 25
+    },
+    "cmake/modules/CppDriver.cmake" : {
+      "ObjectId" : "7572656d83d52e7294be309f1201c240aac59cff",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------\n\n# Includes\n\n#-----------\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#------------------------\n\n# CassInitProject\n\n#\n\n# Set some PROJECT_* variables, given the project name.\n\n# Also declare the project itself.\n\n#\n\n# Output: PROJECT_NAME_STRING, PROJECT_LIB_NAME, PROJECT_LIB_NAME_STATIC\n\n#------------------------\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#------------------------\n\n# CassExtractHeaderVersion\n\n#\n\n# Read the given 'version header file', looking for version tokens that start\n\n# with 'prefix'. Parse the discovered version and set ${project_name}_VERSION_*\n\n# variables.\n\n#\n\n# Output: ${project_name}_VERSION_MAJOR, ${project_name}_VERSION_MINOR,\n\n#         ${project_name}_VERSION_PATCH, ${project_name}_VERSION_STRING\n\n#------------------------\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Retrieve version from header file (include string suffix)\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Extract version numbers\n",
+        "Line" : 45,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Verify version parts\n",
+        "Line" : 52,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "#------------------------\n\n# CassProjectVersion\n\n#\n\n# Read the given 'version header file', looking for version tokens that start\n\n# with 'prefix'. Parse the discovered version and set PROJECT_VERSION_*\n\n# variables.\n\n#\n\n# Output: PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH,\n\n#         PROJECT_VERSION_STRING\n\n#------------------------\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#------------------------\n\n# CassOptionalDependencies\n\n#\n\n# Configure enabled optional dependencies if found or if Windows use an\n\n# external project to build Boost, OpenSSL, zlib.\n\n#\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Boost\n",
+        "Line" : 96,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# OpenSSL\n",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# tcmalloc\n",
+        "Line" : 106,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# zlib\n",
+        "Line" : 111,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#------------------------\n\n# CassDoxygen\n\n#\n\n# Configure docs target\n\n#------------------------\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#------------------------\n\n# CassConfigureShared\n\n#\n\n# Configure the project to build a shared library.\n\n#\n\n# Arguments:\n\n#    prefix - prefix of global variable names that contain specific\n\n#        info on building the library (e.g. CASS or DSE).\n\n# Input: PROJECT_LIB_NAME, PROJECT_VERSION_STRING, PROJECT_VERSION_MAJOR,\n\n#        PROJECT_CXX_LINKER_FLAGS, *_DRIVER_CXX_FLAGS\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#------------------------\n\n# CassConfigureStatic\n\n#\n\n# Configure the project to build a static library.\n\n#\n\n# Arguments:\n\n#    prefix - prefix of global variable names that contain specific\n\n#        info on building the library (e.g. CASS or DSE).\n\n# Input: PROJECT_LIB_NAME_STATIC, PROJECT_VERSION_STRING, PROJECT_VERSION_MAJOR,\n\n#        PROJECT_CXX_LINKER_FLAGS, *_DRIVER_CXX_FLAGS\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#------------------------\n\n# CassConfigureExamples\n\n#\n\n# Configure the project to build examples.\n\n#\n\n# Arguments:\n\n#    examples_dir - directory containing all example sub-directories.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#------------------------\n\n# CassConfigureInstall\n\n#\n\n# Configure the project to be able to \"install\" (e.g. make install).\n\n#\n\n# Arguments:\n\n#    var_prefix - prefix of install-related CMake variables.\n\n#    pkg_config_stem - base name of package config files for this project.\n\n# Input: CMAKE_CURRENT_BINARY_DIR, CMAKE_SYSTEM_NAME, CMAKE_INSTALL_PREFIX,\n\n#        CMAKE_LIBRARY_ARCHITECTURE, *_API_HEADER_FILES, *_BUILD_SHARED, *_BUILD_STATIC,\n\n#        *_INSTALL_HEADER, *_INSTALL_PKG_CONFIG, PROJECT_LIB_NAME, PROJECT_LIB_NAME_STATIC,\n\n#        PROJECT_SOURCE_DIR, PROJECT_VERSION_STRING\n\n# Output: CMAKE_INSTALL_LIBDIR, INSTALL_DLL_EXE_DIR\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Determine if the library directory needs to be determined\n",
+        "Line" : 212,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Create a binary directory executable and DLLs (windows only)\n",
+        "Line" : 234,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Determine if the header should be installed\n",
+        "Line" : 250,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Install the dynamic/shared library\n",
+        "Line" : 255,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# for dll/executable/pdb files\n",
+        "Line" : 258,
+        "CharPositionInLine" : 52
+      },
+      "22" : {
+        "Text" : "# for shared library\n\n# for static library\n",
+        "Line" : 259,
+        "CharPositionInLine" : 53
+      },
+      "23" : {
+        "Text" : "# for dll/executable/pdb files\n",
+        "Line" : 279,
+        "CharPositionInLine" : 52
+      },
+      "24" : {
+        "Text" : "# for shared library\n\n# for static library\n",
+        "Line" : 280,
+        "CharPositionInLine" : 53
+      },
+      "25" : {
+        "Text" : "#-----------\n\n# Policies\n\n#-----------\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#------------------------\n\n# CassPolicies\n\n#\n\n# Tweak some CMake behaviors.\n\n#------------------------\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# TODO: Figure out Mac OS X rpath\n",
+        "Line" : 305,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Force OLD style of project versioning variables\n",
+        "Line" : 310,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "#------------------------\n\n# CassCheckPlatform\n\n#\n\n# Check to ensure the platform is valid for the driver\n\n#------------------------\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Ensure Windows platform is supported\n",
+        "Line" : 322,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "#------------------------\n\n# CassConfigureTests\n\n#\n\n# Add test subdirs for core driver to the build if testing is enabled.\n\n#\n\n# Input: CASS_BUILD_INTEGRATION_TESTS, CASS_BUILD_UNIT_TESTS, CASS_ROOT_DIR\n\n#------------------------\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Add CCM bridge as a dependency for integration tests\n",
+        "Line" : 344,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "#---------------\n\n# Dependencies\n\n#---------------\n",
+        "Line" : 355,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#------------------------\n\n# CassUseLibuv\n\n#\n\n# Add includes and libraries required for using libuv if found or if Windows\n\n# use an external project to build libuv.\n\n#\n\n# Input: CASS_INCLUDES and CASS_LIBS\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 359,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Setup the paths and hints for libuv\n",
+        "Line" : 369,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# Ensure libuv was found\n",
+        "Line" : 378,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# Assign libuv include and libraries\n",
+        "Line" : 398,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "#------------------------\n\n# Optional Dependencies\n\n#------------------------\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Minimum supported version of Boost\n",
+        "Line" : 407,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#------------------------\n\n# CassRapidJson\n\n#\n\n# Set some RAPID_JSON_* variables, set up some source_group's,\n\n# and add the RapidJson include dir to our list of include dirs.\n\n#\n\n# Input: CASS_SRC_DIR\n\n# Output: RAPID_JSON_INCLUDE_DIR, RAPIDJSON_HEADER_FILES, RAPIDJSON_ERROR_HEADER_FILES\n\n#         RAPIDJSON_INTERNAL_HEADER_FILES, RAPIDJSON_MSIINTTYPES_HEADER_FILES\n\n#------------------------\n",
+        "Line" : 410,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "#------------------------\n\n# CassSimulacron\n\n#\n\n# Set up Simulacron for use in tests.\n\n#\n\n# Input: TESTS_SIMULACRON_SERVER_DIR\n\n# Output: SIMULACRON_SERVER_JAR\n\n#------------------------\n",
+        "Line" : 433,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Determine if Simulacron server can be executed (Java runtime is available)\n",
+        "Line" : 442,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Determine the Simulacron jar file\n",
+        "Line" : 445,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "# Determine if the Simulacron server will be available for the tests\n",
+        "Line" : 450,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "#------------------------\n\n# CassUseBoost\n\n#\n\n# Add includes, libraries, define flags required for using Boost if found or if\n\n# Windows use an external project to build Boost.\n\n#\n\n# Input: CASS_USE_STATIC_LIBS, CASS_USE_BOOST_ATOMIC, CASS_INCLUDES, CASS_LIBS\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 457,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Allow for boost directory to be specified on the command line\n",
+        "Line" : 467,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "# Ensure Boost auto linking is disabled (defaults to auto linking on Windows)\n",
+        "Line" : 481,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# Determine if shared or static boost libraries should be used\n",
+        "Line" : 486,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "# Force the use of Boost static libraries for Windows (e.g. executables)\n",
+        "Line" : 488,
+        "CharPositionInLine" : 47
+      },
+      "50" : {
+        "Text" : "# Check for general Boost availability\n",
+        "Line" : 498,
+        "CharPositionInLine" : 2
+      },
+      "51" : {
+        "Text" : "# Ensure the driver components exist (optional)\n",
+        "Line" : 506,
+        "CharPositionInLine" : 4
+      },
+      "52" : {
+        "Text" : "# Assign Boost include for atomics\n",
+        "Line" : 512,
+        "CharPositionInLine" : 6
+      },
+      "53" : {
+        "Text" : "# Determine if Boost components are available for test executables\n",
+        "Line" : 516,
+        "CharPositionInLine" : 4
+      },
+      "54" : {
+        "Text" : "# Handle new required version of CMake for Boost v1.66.0 (Windows only)\n",
+        "Line" : 518,
+        "CharPositionInLine" : 6
+      },
+      "55" : {
+        "Text" : "# Ensure CMake version is v3.11.0+\n",
+        "Line" : 522,
+        "CharPositionInLine" : 12
+      },
+      "56" : {
+        "Text" : "# Ensure Boost components are available\n",
+        "Line" : 531,
+        "CharPositionInLine" : 6
+      },
+      "57" : {
+        "Text" : "# Ensure Boost was not found due to minimum version requirement\n",
+        "Line" : 534,
+        "CharPositionInLine" : 8
+      },
+      "58" : {
+        "Text" : "# Determine if additional Boost definitions are required for driver/executables\n",
+        "Line" : 546,
+        "CharPositionInLine" : 2
+      },
+      "59" : {
+        "Text" : "# Handle explicit initialization warning in atomic/details/casts\n",
+        "Line" : 548,
+        "CharPositionInLine" : 4
+      },
+      "60" : {
+        "Text" : "#------------------------\n\n# CassUseOpenSSL\n\n#\n\n# Add includes and libraries required for using OpenSSL if found or if Windows\n\n# use an external project to build OpenSSL.\n\n#\n\n# Input: CASS_INCLUDES and CASS_LIBS\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 553,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# FindOpenSSL overrides _OPENSSL_ROOT_HINTS and _OPENSSL_ROOT_PATHS on Windows\n\n# however it utilizes OPENSSL_ROOT_DIR when it sets these values\n",
+        "Line" : 571,
+        "CharPositionInLine" : 6
+      },
+      "62" : {
+        "Text" : "# Discover OpenSSL and assign OpenSSL include and libraries\n",
+        "Line" : 578,
+        "CharPositionInLine" : 2
+      },
+      "63" : {
+        "Text" : "# Store the current version of OpenSSL to prevent corruption\n",
+        "Line" : 579,
+        "CharPositionInLine" : 32
+      },
+      "64" : {
+        "Text" : "#------------------------\n\n# CassUseTcmalloc\n\n#\n\n# Add libraries required for using tcmalloc.\n\n#\n\n# Input: CASS_LIBS\n\n# Output: CASS_LIBS\n\n#------------------------\n",
+        "Line" : 603,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# Setup the paths and hints for gperftools\n",
+        "Line" : 612,
+        "CharPositionInLine" : 2
+      },
+      "66" : {
+        "Text" : "# Ensure gperftools (tcmalloc) was found\n",
+        "Line" : 622,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# Assign gperftools (tcmalloc) library\n",
+        "Line" : 630,
+        "CharPositionInLine" : 2
+      },
+      "68" : {
+        "Text" : "#------------------------\n\n# CassUseZlib\n\n#\n\n# Add includes and libraries required for using zlib if found or if Windows use\n\n# an external project to build zlib.\n\n#\n\n# Input: CASS_INCLUDES and CASS_LIBS\n\n# Output: CASS_INCLUDES and CASS_LIBS\n\n#------------------------\n",
+        "Line" : 634,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# Setup the root directory for zlib\n",
+        "Line" : 645,
+        "CharPositionInLine" : 4
+      },
+      "70" : {
+        "Text" : "# Ensure zlib was found (assign zlib include/libraries or present warning)\n",
+        "Line" : 650,
+        "CharPositionInLine" : 4
+      },
+      "71" : {
+        "Text" : "# Determine if the static library needs to be used for Windows\n",
+        "Line" : 653,
+        "CharPositionInLine" : 6
+      },
+      "72" : {
+        "Text" : "# Assign zlib properties\n",
+        "Line" : 658,
+        "CharPositionInLine" : 6
+      },
+      "73" : {
+        "Text" : "# Assign zlib properties\n",
+        "Line" : 666,
+        "CharPositionInLine" : 4
+      },
+      "74" : {
+        "Text" : "#-------------------\n\n# Compiler Flags\n\n#-------------------\n",
+        "Line" : 672,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "#------------------------\n\n# CassSetCompilerFlags\n\n#\n\n# Detect compiler version and set compiler flags and defines\n\n#\n\n# Input: CASS_USE_STD_ATOMIC, CASS_USE_BOOST_ATOMIC, CASS_MULTICORE_COMPILATION\n\n#        CASS_USE_STATIC_LIBS\n\n# Output: CASS_USE_STD_ATOMIC, CASS_DRIVER_CXX_FLAGS, CASS_TEST_CXX_FLAGS,\n\n#         CASS_EXAMPLE_C_FLAGS\n\n#------------------------\n",
+        "Line" : 676,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# Force OLD style of implicitly dereferencing variables\n",
+        "Line" : 687,
+        "CharPositionInLine" : 2
+      },
+      "77" : {
+        "Text" : "# Determine if all GNU extensions should be enabled\n",
+        "Line" : 692,
+        "CharPositionInLine" : 2
+      },
+      "78" : {
+        "Text" : "# CMAKE_CXX_COMPILER variables do not exist in 2.6.4 (min version)\n\n# Parse the -dumpversion argument into the variable not already set\n",
+        "Line" : 699,
+        "CharPositionInLine" : 4
+      },
+      "79" : {
+        "Text" : "# Enable debug \"operator new\" and operator delete\" and strip symbols from shared library\n",
+        "Line" : 705,
+        "CharPositionInLine" : 4
+      },
+      "80" : {
+        "Text" : "# Determine if std::atomic can be used for GCC, Clang, or MSVC\n",
+        "Line" : 756,
+        "CharPositionInLine" : 2
+      },
+      "81" : {
+        "Text" : "# Version determined from: https://gcc.gnu.org/wiki/Atomic/GCCMM\n",
+        "Line" : 759,
+        "CharPositionInLine" : 6
+      },
+      "82" : {
+        "Text" : "# Version determined from: http://clang.llvm.org/cxx_status.html\n\n# 3.2 includes the full C++11 memory model, but 3.1 had atomic\n\n# support.\n",
+        "Line" : 766,
+        "CharPositionInLine" : 4
+      },
+      "83" : {
+        "Text" : "# Version determined from https://msdn.microsoft.com/en-us/library/hh874894\n\n# VS2012+/VS 11.0+/WindowsSDK v8.0+\n",
+        "Line" : 774,
+        "CharPositionInLine" : 4
+      },
+      "84" : {
+        "Text" : "# Enable specific cass::Atomic implementation\n",
+        "Line" : 782,
+        "CharPositionInLine" : 2
+      },
+      "85" : {
+        "Text" : "# Assign compiler specific flags\n",
+        "Line" : 791,
+        "CharPositionInLine" : 2
+      },
+      "86" : {
+        "Text" : "# Determine if multicore compilation should be enabled\n",
+        "Line" : 793,
+        "CharPositionInLine" : 4
+      },
+      "87" : {
+        "Text" : "# Default multicore compilation with effective processors (see https://msdn.microsoft.com/en-us/library/bb385193.aspx)\n",
+        "Line" : 795,
+        "CharPositionInLine" : 6
+      },
+      "88" : {
+        "Text" : "# Enable link time optimization for all MSVC build configurations\n",
+        "Line" : 799,
+        "CharPositionInLine" : 4
+      },
+      "89" : {
+        "Text" : "# On Visual C++ -pedantic flag is not used,\n\n# -fPIC is not used on Windows platform (all DLLs are\n\n# relocable), -Wall generates about 30k stupid warnings\n\n# that can hide useful ones.\n\n# Create specific warning disable compiler flags\n\n# TODO(mpenick): Fix these \"possible loss of data\" warnings\n",
+        "Line" : 818,
+        "CharPositionInLine" : 4
+      },
+      "90" : {
+        "Text" : "# Performance warning due to automatic compiler casting from int to bool\n",
+        "Line" : 826,
+        "CharPositionInLine" : 29
+      },
+      "91" : {
+        "Text" : "# Add preprocessor definitions for proper compilation\n",
+        "Line" : 828,
+        "CharPositionInLine" : 4
+      },
+      "92" : {
+        "Text" : "# Remove warnings for not using safe functions (TODO: Fix codebase to be more secure for Visual Studio)\n\n# Does not define min/max macros\n",
+        "Line" : 829,
+        "CharPositionInLine" : 48
+      },
+      "93" : {
+        "Text" : "# Remove warnings for TR1 deprecation (Visual Studio 15 2017); caused by sparsehash\n",
+        "Line" : 831,
+        "CharPositionInLine" : 66
+      },
+      "94" : {
+        "Text" : "# Create the project, example, and test flags\n",
+        "Line" : 833,
+        "CharPositionInLine" : 4
+      },
+      "95" : {
+        "Text" : "# Enable bigobj for large object files during compilation (Cassandra types integration test)\n",
+        "Line" : 836,
+        "CharPositionInLine" : 4
+      },
+      "96" : {
+        "Text" : "# Assign additional library requirements for Windows\n",
+        "Line" : 839,
+        "CharPositionInLine" : 4
+      },
+      "97" : {
+        "Text" : "# GCC specific compiler options\n\n# I disabled long-long warning because boost generates about 50 such warnings\n",
+        "Line" : 842,
+        "CharPositionInLine" : 4
+      },
+      "98" : {
+        "Text" : "# OpenSSL is deprecated on later versions of Mac OS X. The long-term solution\n\n# is to provide a CommonCryto implementation.\n",
+        "Line" : 851,
+        "CharPositionInLine" : 4
+      },
+      "99" : {
+        "Text" : "# Enable C++11 support to use std::atomic\n",
+        "Line" : 858,
+        "CharPositionInLine" : 4
+      },
+      "100" : {
+        "Text" : "# Clang/Intel specific compiler options\n\n# I disabled long-long warning because boost generates about 50 such warnings\n",
+        "Line" : 868,
+        "CharPositionInLine" : 4
+      },
+      "101" : {
+        "Text" : "# OpenSSL is deprecated on later versions of Mac OS X. The long-term solution\n\n# is to provide a CommonCryto implementation.\n",
+        "Line" : 874,
+        "CharPositionInLine" : 4
+      },
+      "102" : {
+        "Text" : "# Enable C++11 support to use std::atomic\n",
+        "Line" : 881,
+        "CharPositionInLine" : 4
+      },
+      "103" : {
+        "Text" : "#-------------------\n\n# Internal Includes and Source Files\n\n#-------------------\n",
+        "Line" : 895,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "#------------------------\n\n# CassAddIncludes\n\n#\n\n# Add internal includes\n\n#\n\n# Input: CASS_INCLUDES\n\n# Output: CASS_INCLUDES\n\n#------------------------\n",
+        "Line" : 899,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "#------------------------\n\n# CassFindSourceFiles\n\n#\n\n# Gather the header and source files\n\n#\n\n# Input: CASS_ROOT_DIR, CASS_USE_BOOST_ATOMIC, CASS_USE_STD_ATOMIC\n\n#        CASS_USE_OPENSSL\n\n# Output: CASS_ALL_SOURCE_FILES\n\n#------------------------\n",
+        "Line" : 920,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# Determine atomic library to include\n",
+        "Line" : 948,
+        "CharPositionInLine" : 2
+      },
+      "107" : {
+        "Text" : "# Determine if OpenSSL should be compiled in (or not)\n",
+        "Line" : 973,
+        "CharPositionInLine" : 2
+      },
+      "108" : {
+        "Text" : "# Shorten the source file pathing for log messages\n",
+        "Line" : 991,
+        "CharPositionInLine" : 2
+      },
+      "109" : {
+        "Text" : "#------------------------\n\n# CassConfigure\n\n#\n\n# Generate cassconfig.hpp from cassconfig.hpp.in\n\n#\n\n# Input: CASS_ROOT_DIR, CASS_SRC_DIR\n\n#------------------------\n",
+        "Line" : 998,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "# Determine random availability\n",
+        "Line" : 1006,
+        "CharPositionInLine" : 2
+      },
+      "111" : {
+        "Text" : "# Determine if sigpipe is available\n",
+        "Line" : 1015,
+        "CharPositionInLine" : 2
+      },
+      "112" : {
+        "Text" : "# Determine if hash is in the tr1 namespace\n",
+        "Line" : 1023,
+        "CharPositionInLine" : 2
+      },
+      "113" : {
+        "Text" : "# Check for GCC compiler builtins\n",
+        "Line" : 1031,
+        "CharPositionInLine" : 2
+      },
+      "114" : {
+        "Text" : "# Generate the cassconfig.hpp file\n",
+        "Line" : 1037,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 115
+    },
+    "cmake/modules/ExternalProject-Boost.cmake" : {
+      "ObjectId" : "b3d2ba3fa3c5b21e6c3b586a6183af345702c9eb",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Boost related CMake options\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Handle the CMake version requirement for for modern Boost version(s)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Ensure CMake version is v3.11.0+\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Break down the Boost version into its components\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Determine the Boost archive name to download\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Boost external project variables\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Make sure Visual Studio is available\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Boost library configuration variables\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Create the debug/release libraries to add for Boost\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Aliases to stay consistent with FindBoost\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Create a package name for the binaries\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Create the configure script\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Create the build/install script\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Add Boost as an external project\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Update the include directory to use Boost\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "cmake/modules/ExternalProject-OpenSSL.cmake" : {
+      "ObjectId" : "7b357e57a749f6ff9bef0080893815f1962c054d",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# OpenSSL related CMake options\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# TODO: Should we default to OpenSSL 1.1 (e.g. 1.1.1a)?\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Determine the major and minor version of OpenSSL used\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Determine the OpenSSL archive name to download\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Determine if OpenSSL installation directory should be set\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# OpenSSL external project variables\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Make sure Visual Studio is available\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Perl is required to create NMake files for OpenSSL build\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# OpenSSL library configuration variables\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Alias to stay consistent with FindOpenSSL\n",
+        "Line" : 81,
+        "CharPositionInLine" : 98
+      },
+      "11" : {
+        "Text" : "# Create build options for the platform build scripts\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Determine if shared or static library should be built\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Determine which compiler to use for configuration script\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Determine which Makefile is being used\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Create a package name for the binaries\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Create a place holder for the configure script (source_dir property required from external project)\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Create the make script\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Create the install script\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Add OpenSSL as an external project\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Create the configure script\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# OpenSSL requires zlib paths to be relative (otherwise build errors may occur)\n",
+        "Line" : 277,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# Determine if zlib should be added as a dependency\n",
+        "Line" : 320,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Update the include directory to use OpenSSL\n",
+        "Line" : 325,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "cmake/modules/ExternalProject-libssh2.cmake" : {
+      "ObjectId" : "3b9b1e5316d962902b8d38ca2d2c33e92da8a557",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# libssh2 related CMake options\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Determine the libssh2 archive name to download\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# libssh2 external project variables\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Make sure Visual Studio is available\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# libssh2 library configuration variables\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Alias to stay consistent with FindLibssh2\n",
+        "Line" : 49,
+        "CharPositionInLine" : 98
+      },
+      "7" : {
+        "Text" : "# Create a package name for the binaries\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Create an additional install script step for libssh2\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Add libssh2 as an external project\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Only build static for test linking\n",
+        "Line" : 81,
+        "CharPositionInLine" : 28
+      },
+      "11" : {
+        "Text" : "# Update the include directory to use libssh2\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "cmake/modules/ExternalProject-libuv.cmake" : {
+      "ObjectId" : "8d8e553083c3d348121b6aa9d93a7b593857cf8a",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# libuv related CMake options\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Determine the libuv archive name to download\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# libuv external project variables\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Make sure Visual Studio is available\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# libuv library configuration variables\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Alias to stay consistent with FindLibuv\n",
+        "Line" : 49,
+        "CharPositionInLine" : 92
+      },
+      "7" : {
+        "Text" : "# Create a package name for the binaries\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Create an additional install script step for libuv\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Add libuv as an external project\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Update the include directory to use libuv\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "cmake/modules/ExternalProject-zlib.cmake" : {
+      "ObjectId" : "4dbdcddb3a251103c9874c657d36758f03fe22b2",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# zlib related CMake options\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Determine the zlib archive name to download\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# zlib external project variables\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Make sure Visual Studio is available\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# zlib library configuration variables\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Alias to stay consistent with FindZlib\n",
+        "Line" : 49,
+        "CharPositionInLine" : 89
+      },
+      "7" : {
+        "Text" : "# Create a package name for the binaries\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Create an additional install script step for zlib\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Add zlib as an external project\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Disable assembly compiling (does not build on all compilers)\n",
+        "Line" : 86,
+        "CharPositionInLine" : 17
+      },
+      "11" : {
+        "Text" : "# Disable assembly compiling (does not build on all compilers)\n",
+        "Line" : 87,
+        "CharPositionInLine" : 16
+      },
+      "12" : {
+        "Text" : "# Update the include directory to use zlib\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "cmake/modules/FindLibssh2.cmake" : {
+      "ObjectId" : "67a49584ff21b3c6bb8cb2049754cece389ebb3b",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Try to find the libssh2 library; once done this will define:\n\n#\n\n# LIBSSH2_FOUND         - True if libssh2 was found, false otherwise.\n\n# LIBSSH2_INCLUDE_DIRS  - Include directories needed to include libssh2\n\n#                         headers.\n\n# LIBSSH2_LIBRARIES     - Libraries needed to link to libssh2.\n\n# LIBSSH2_VERSION       - The version of libssh2 found.\n\n# LIBSSH2_VERSION_MAJOR - The major version of libssh2.\n\n# LIBSSH2_VERSION_MINOR - The minor version of libssh2.\n\n# LIBSSH2_VERSION_PATCH - The patch version of libssh2.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Restore the original find library ordering\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/modules/FindLibuv.cmake" : {
+      "ObjectId" : "b0c30a3c42f4106c6eaa65b73e8fc2ecbaad93c6",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Try to find the libuv library; once done this will define\n\n#\n\n# LIBUV_FOUND         - True if libuv was found, false otherwise.\n\n# LIBUV_INCLUDE_DIRS  - Include directories needed to include libuv headers.\n\n# LIBUV_LIBRARIES     - Libraries needed to link to libuv.\n\n# LIBUV_VERSION       - The version of libuv found.\n\n# LIBUV_VERSION_MAJOR - The major version of libuv.\n\n# LIBUV_VERSION_MINOR - The minor version of libuv.\n\n# LIBUV_VERSION_PATCH - The patch version of libuv.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Extract version number if possible.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Complete the extraction from the major, minor, patch components\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Assign the libuv version for the defined components\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Restore the original find library ordering\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/modules/FindOpenSSL.cmake" : {
+      "ObjectId" : "5176d0fc36a05e768739f3029c16dcb82570f9fc",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# FindOpenSSL\n\n# -----------\n\n#\n\n# Find the OpenSSL encryption library.\n\n#\n\n# Imported Targets\n\n# ^^^^^^^^^^^^^^^^\n\n#\n\n# This module defines the following :prop_tgt:`IMPORTED` targets:\n\n#\n\n# ``OpenSSL::SSL``\n\n#   The OpenSSL ``ssl`` library, if found.\n\n# ``OpenSSL::Crypto``\n\n#   The OpenSSL ``crypto`` library, if found.\n\n#\n\n# Result Variables\n\n# ^^^^^^^^^^^^^^^^\n\n#\n\n# This module will set the following variables in your project:\n\n#\n\n# ``OPENSSL_FOUND``\n\n#   System has the OpenSSL library.\n\n# ``OPENSSL_INCLUDE_DIR``\n\n#   The OpenSSL include directory.\n\n# ``OPENSSL_CRYPTO_LIBRARY``\n\n#   The OpenSSL crypto library.\n\n# ``OPENSSL_SSL_LIBRARY``\n\n#   The OpenSSL SSL library.\n\n# ``OPENSSL_LIBRARIES``\n\n#   All OpenSSL libraries.\n\n# ``OPENSSL_VERSION``\n\n#   This is set to ``$major.$minor.$revision$patch`` (e.g. ``0.9.8s``).\n\n#\n\n# Hints\n\n# ^^^^^\n\n#\n\n# Set ``OPENSSL_ROOT_DIR`` to the root directory of an OpenSSL installation.\n\n# Set ``OPENSSL_USE_STATIC_LIBS`` to ``TRUE`` to look for static libraries.\n\n# Set ``OPENSSL_MSVC_STATIC_RT`` set ``TRUE`` to choose the MT version of the lib.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Support preference of static libs by adjusting CMAKE_FIND_LIBRARY_SUFFIXES\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# http://www.slproweb.com/products/Win32OpenSSL.html\n",
+        "Line" : 66,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# /MD and /MDd are the standard values - if someone wants to use\n\n# others, the libnames have to change here too\n\n# use also ssl and ssleay32 in debug as fallback for openssl < 0.9.8b\n\n# enable OPENSSL_MSVC_STATIC_RT to get the libs build /MT (Multithreaded no-DLL)\n\n# In Visual C++ naming convention each of these four kinds of Windows libraries has it's standard suffix:\n\n#   * MD for dynamic-release\n\n#   * MDd for dynamic-debug\n\n#   * MT for static-release\n\n#   * MTd for static-debug\n",
+        "Line" : 108,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Implementation details:\n\n# We are using the libraries located in the VC subdir instead of the parent directory eventhough :\n\n# libeay32MD.lib is identical to ../libeay32.lib, and\n\n# ssleay32MD.lib is identical to ../ssleay32.lib\n\n# enable OPENSSL_USE_STATIC_LIBS to use the static libs located in lib/VC/static\n",
+        "Line" : 118,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Since OpenSSL 1.1, lib names are like libcrypto32MTd.lib and libssl32MTd.lib\n",
+        "Line" : 130,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# same player, for MinGW\n",
+        "Line" : 214,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Not sure what to pick for -say- intel, let's use the toplevel ones and hope someone report issues:\n",
+        "Line" : 243,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# compat defines\n",
+        "Line" : 300,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# The version number is encoded as 0xMNNFFPPS: major minor fix patch status\n\n# The status gives if this is a developer or prerelease and is ignored here.\n\n# Major, minor, and fix directly translate into the version numbers shown in\n\n# the string. The patch field translates to the single character suffix that\n\n# indicates the bug fix state, which 00 -> nothing, 01 -> a, 02 -> b and so\n\n# on.\n",
+        "Line" : 352,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# 96 is the ASCII code of 'a' minus 1\n",
+        "Line" : 370,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# Once anyone knows how OpenSSL would call the patch versions beyond 'z'\n\n# this should be updated to handle that, too. This has not happened yet\n\n# so it is simply ignored here for now.\n",
+        "Line" : 373,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# Restore the original find library ordering\n",
+        "Line" : 487,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "cmake/modules/Gtest.cmake" : {
+      "ObjectId" : "7d8df577a7191f23967f02e9ca9d08e0a3271000",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#------------------------\n\n# GtestFramework\n\n#\n\n# Initialize the Google Test framework\n\n#\n\n# Input: VENDOR_DIR\n\n# Output: GOOGLE_TEST_DIR, GOOGLE_TEST_HEADER_FILES, GOOGLE_TEST_SOURCE_FILES,\n\n#         GOOGLE_TEST_LIBRARIES\n\n#------------------------\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#------------------------------\n\n# Google test framework\n\n#------------------------------\n",
+        "Line" : 13,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Summary of tuple support for Microsoft Visual Studio:\n\n# Compiler    version(MS)  version(cmake)  Support\n\n# ----------  -----------  --------------  -----------------------------\n\n# <= VS 2010  <= 10        <= 1600         Use Google Tests's own tuple.\n\n# VS 2012     11           1700            std::tr1::tuple + _VARIADIC_MAX=10\n\n# VS 2013     12           1800            std::tr1::tuple\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "#------------------------\n\n# GtestOptions\n\n#\n\n# Initialize CMake options for projects that use Google Test\n\n#\n\n# Output: INTEGRATION_VERBOSE_LOGGING, CCM_VERBOSE_LOGGING, USE_VISUAL_LEAK_DETECTOR\n\n#------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Project options\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# VS2013+/VS 12.0+\n",
+        "Line" : 59,
+        "CharPositionInLine" : 61
+      },
+      "6" : {
+        "Text" : "#------------------------\n\n# GtestSourceGroups\n\n#\n\n# Configure source groups for various core driver files.\n\n#\n\n# Input: CASS_SRC_DIR, CASS_API_HEADER_FILES, LIBUV_INCLUDE_FILES\n\n# Output: CPP_DRIVER_HEADER_SOURCE_FILES, CPP_DRIVER_HEADER_SOURCE_ATOMIC_FILES,\n\n#         CPP_DRIVER_SOURCE_FILES\n\n#------------------------\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Add utility functionality from the Cassandra driver\n",
+        "Line" : 76,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Group dependencies\n",
+        "Line" : 93,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "#------------------------\n\n# GtestIntegrationTestFiles\n\n#\n\n# Gather the names of all integration test files into various output\n\n# variables, scoped by the project (e.g. CASS_* vs. DSE_* variables).\n\n#\n\n# Arguments:\n\n#   integration_tests_source_dir - directory containing integration test\n\n#      sources. Note, this is the 'src' directory, not the 'src/tests'\n\n#      directory.\n\n#   prefix - CASS or DSE, used to prefix the variables being set.\n\n#------------------------\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#------------------------\n\n# GtestIntegrationTestSourceGroups\n\n#\n\n# Configure source groups for various integration test files.\n\n#\n\n# Input: INTEGRATION_TESTS_INCLUDE_FILES, INTEGRATION_TESTS_OBJECTS_INCLUDE_FILES,\n\n#        INTEGRATION_TESTS_VALUES_INCLUDE_FILES, INTEGRATION_TESTS_SOURCE_FILES,\n\n#        INTEGRATION_TESTS_OBJECTS_SOURCE_FILES, INTEGRATION_TESTS_TESTS_SOURCE_FILES\n\n#------------------------\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#------------------------\n\n# GtestCommonIntegrationTestSourceFiles\n\n#\n\n# Gather the names of all shared files used in building the test executable for\n\n# the project.\n\n#\n\n# Input: many\n\n# Output: COMMON_INTEGRATION_TEST_SOURCE_FILES\n\n#------------------------\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#------------------------\n\n# GtestUnitTests\n\n#\n\n# Configure unit tests to be built.\n\n#\n\n# Arguments:\n\n#   project_name        - Name of project that has Google Test unit tests.\n\n#   extra_files         - List of extra files to build into the test executable, if\n\n#                         any.\n\n#   extra_includes      - List of extra includes to include into the text\n\n#                         executable, if any.\n\n#   excluded_test_files - List of test files to exclude from the build.\n\n#------------------------\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# The unit tests use `test::Utils::msleep()` and this is the minimum include\n\n# and source files required to shared that code.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Add the unit tests to be executed by ctest (see CMake BUILD_TESTING)\n",
+        "Line" : 239,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "cmake/modules/Windows-Environment.cmake" : {
+      "ObjectId" : "124ee2e0febe346e9b0ed72ac84dfc99908f35e5",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define library package type\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define package architecture type\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Determine if Visual Studio is available\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Get the internal and toolset version and VC root directory\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Attempt to handle express/community editions (VS 2010) on AppVeyor\n",
+        "Line" : 41,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# Get the command VC directories for environment scripts\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Attempt to handle express/community editions (VS 2010/2012) on AppVeyor\n",
+        "Line" : 55,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# Determine if a modern version of MSVC is being used\n",
+        "Line" : 64,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Visual Studio 2017\n",
+        "Line" : 65,
+        "CharPositionInLine" : 71
+      },
+      "10" : {
+        "Text" : "# Determine the target architecture for the Visual Studio environment\n",
+        "Line" : 66,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Determine if we are in a CI environment\n",
+        "Line" : 73,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Determine the target architecture for the Visual Studio environment\n",
+        "Line" : 82,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# Ensure the script exists\n",
+        "Line" : 91,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Ensure the Visual Studio environment script can be invoked by a batch script\n",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "examples/async/CMakeLists.txt" : {
+      "ObjectId" : "83dd9a54069c753ebbb0d48610e9316f7c49e829",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/auth/CMakeLists.txt" : {
+      "ObjectId" : "75ffeac9a7d4650def424f60ef8e5c6aae3487f4",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/basic/CMakeLists.txt" : {
+      "ObjectId" : "fe54ecce5883b8a3db9fff2538ecdf0749f19c7c",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/batch/CMakeLists.txt" : {
+      "ObjectId" : "496b6a1684b6fdfdf3de346ebe7e5be3e60c83d9",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/bind_by_name/CMakeLists.txt" : {
+      "ObjectId" : "d89178243008f15048d9d0c777c8b0084717b667",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/callbacks/CMakeLists.txt" : {
+      "ObjectId" : "4c17e89fd2f6a991c39dc97548be804403c9d31c",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/collections/CMakeLists.txt" : {
+      "ObjectId" : "c3f1c8e8ae8fcc99ab5c435a3c8b16e92e3ae5bd",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/date_time/CMakeLists.txt" : {
+      "ObjectId" : "10aca827ded2fb309854dd356116109a0cc614f7",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/duration/CMakeLists.txt" : {
+      "ObjectId" : "238ddbf667a80abab1ad6643410b97307d09c6c6",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/execution_profiles/CMakeLists.txt" : {
+      "ObjectId" : "e11becbee6cfdf162fbbe27c968637657778c400",
+      "LastModified" : "2018-09-26T19:36:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/host_listener/CMakeLists.txt" : {
+      "ObjectId" : "ab77f645fb89b30cfc4d358c48b3ce82b6ae53d5",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/logging/CMakeLists.txt" : {
+      "ObjectId" : "ab7240f2826501edb3d21e7a4333f7dae606bb20",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/maps/CMakeLists.txt" : {
+      "ObjectId" : "f6e2677b68260a053feaf93a4ce55f7fe33b5d2d",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/named_parameters/CMakeLists.txt" : {
+      "ObjectId" : "02310f092a5500b1e52b0d6f5ae9f320c1bde32f",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/paging/CMakeLists.txt" : {
+      "ObjectId" : "4f56b7b23768955c162be620b66dc3b870f7456e",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/perf/CMakeLists.txt" : {
+      "ObjectId" : "b7dc4fa03ce6c9b149c7c9f666fa121e449cd0b4",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/prepared/CMakeLists.txt" : {
+      "ObjectId" : "b8154777b66d4ffd5329736d2f77be3f0ac659ea",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/schema_meta/CMakeLists.txt" : {
+      "ObjectId" : "059c27ae6c5cb2352008f4d89476bcb5d4dd2b1d",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/simple/CMakeLists.txt" : {
+      "ObjectId" : "8210ce63b1723eb6408e27e6009f8ddfbe360721",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/ssl/CMakeLists.txt" : {
+      "ObjectId" : "5865ddecbf514cd7397710e6e599e1a5045730c5",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/tracing/CMakeLists.txt" : {
+      "ObjectId" : "5c9ca583b34ebde79ab35e043daedf11b1c1ff8d",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/tuple/CMakeLists.txt" : {
+      "ObjectId" : "d1645eecf754976f174e7bc184e69bb6dda874a4",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/udt/CMakeLists.txt" : {
+      "ObjectId" : "94f2ab8d90f6dd960ca79a7126b51dd9dfaf66af",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/uuids/CMakeLists.txt" : {
+      "ObjectId" : "5659381e26ca58ada84181d7ed7eaa08356bc052",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "gtests/CMakeLists.txt" : {
+      "ObjectId" : "87389271c8b7af7f608e38645ca44a16856aead8",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n# Copyright (c) DataStax, Inc.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n# http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build the base include paths for the tests\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#------------------------------\n\n# Google test framework\n\n#------------------------------\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#------------------------------\n\n# Integration test executable\n\n#------------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Promote the CASS_* variables to be non-prefixed \"final\" variables.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Configure the integration tests to use Simulacron\n",
+        "Line" : 57,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Copy the test related dependencies to their proper locations\n",
+        "Line" : 106,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Copy the standalone Simulacron server JAR file to output directory\n",
+        "Line" : 108,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Copy Simulacron server to additional locations for use with IDE\n",
+        "Line" : 111,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "#------------------------------\n\n# Unit test executable\n\n#------------------------------\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "src/third_party/sparsehash/CMakeLists.txt" : {
+      "ObjectId" : "4b21cd310005e9de917780b9899b5a99b1f835f5",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/third_party/sparsehash/config.h.cmake" : {
+      "ObjectId" : "ecaf8bf809469cc737dc373e6bdbcb4a5fb00fe2",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKESOURCE",
+      "0" : {
+        "Text" : "/* the namespace of the hash<> function */",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "/* Define to 1 if you have the <inttypes.h> header file. */",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "/* Define to 1 if you have the <stdint.h> header file. */",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "/* Define to 1 if you have the <sys/types.h> header file. */",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "/* Define to 1 if the system has the type `long long'. */",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "/* Define to 1 if you have the `memcpy' function. */",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "/* Define to 1 if the system has the type `uint16_t'. */",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "/* Define to 1 if the system has the type `u_int16_t'. */",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "/* Define to 1 if the system has the type `__uint16'. */",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "/* The system-provided hash function including the namespace. */",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "/* The system-provided hash function, in namespace HASH_NAMESPACE. */",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "/* Namespace for Google classes */",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "/* Stops putting the code inside the Google namespace */",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "/* Puts following code inside the Google namespace */",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "test/ccm_bridge/CMakeLists.txt" : {
+      "ObjectId" : "2248ebff8fc52e654f5a4f87707b36a2f78e1a40",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Clear INCLUDE_DIRECTORIES to not include project-level includes\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Force OLD style of leaving VERSION variables untouched\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Title the project\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Options\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Constants\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# CCM configuration file\n",
+        "Line" : 27,
+        "CharPositionInLine" : 73
+      },
+      "6" : {
+        "Text" : "# Gather the header and source files\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Create header and source groups (mainly for Visual Studio generator)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Allow for boost directory to be specified on the command line\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Check for libssh2 availability (build if necessary on Windows)\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Store the current version of libssh2 to prevent corruption\n",
+        "Line" : 56,
+        "CharPositionInLine" : 32
+      },
+      "11" : {
+        "Text" : "# Build up the includes and libraries for CCM dependencies\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Assign the include directories\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Build the CCM bridge static library\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Copy data file to output directory\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "test/integration_tests/CMakeLists.txt" : {
+      "ObjectId" : "c4cf22719c0db18d09e3f7c25ebef38ff0f43405",
+      "LastModified" : "2018-12-10T14:24:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Clear INCLUDE_DIRECTORIES to not include project-level includes\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Assign the project settings\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Gather the header and source files\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build up the include paths\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Assign the include directories\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Create header and source groups (mainly for Visual Studio generator)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Build integreation tests\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Ignore system calls that might have a non-zero exit code\n",
+        "Line" : 31,
+        "CharPositionInLine" : 57
+      },
+      "8" : {
+        "Text" : "# Allow linking of different Boost libraries\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# test_basics requires pthread\n",
+        "Line" : 55,
+        "CharPositionInLine" : 67
+      },
+      "CommentCount" : 10
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 40,
+    "CMAKESOURCE" : 1
+  },
+  "ElapsedTime" : 1389
+}

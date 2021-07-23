@@ -1,0 +1,1018 @@
+{
+  "Repository" : "1524715",
+  "Revision" : "HEAD",
+  "ObjectId" : "c2355fc87bb2a6e03c0468e1679eb0db8d79e58d",
+  "CommitTime" : "2019-04-14T18:28:25Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "70766a6ddab52d460ef59d9b184a04605179c8c3",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Top-level Makefile for Akaros\n\n# Barret Rhoden\n\n#\n\n#\n\n# Notes:\n\n# - I downloaded the kbuild guts from git://github.com/lacombar/kconfig.git,\n\n# and added things from a recent linux makefile.  It is from aug 2011, so\n\n# some things might not match up.\n\n# - Kernel output in obj/: So Linux has the ability to output into another\n\n# directory, via the KBUILD_OUTPUT variable.  This induces a recursive make\n\n# in the output directory.  I mucked with it for a little, but didn't get it\n\n# to work quite right.  Also, there will be other Akaros issues since this\n\n# makefile is also used for userspace and tests.  For now, I'm leaving things\n\n# the default Linux way.\n\n# - Kconfig wants to use include/ in the root directory.  We can change some\n\n# of the default settings that silentoldconfig uses, but I'll leave it as-is\n\n# for now, and just symlink that into kern/include.  It'll be easier for us,\n\n# and also potentially easier if we ever move kern/ up a level.  Similarly,\n\n# there are default Kconfigs in arch/, not in kern/arch.  I just symlinked\n\n# arch->kern/arch to keep everything simple.\n\n#\n\n# TODO:\n\n# - Consider merging the two target-detection bits (Linux's config, mixed, or\n\n# dot target, and the symlink handling).  Also, could consider moving around\n\n# the KFS target.  Clean doesn't need to know about it, for instance.\n\n#\n\n# - Review, with an eye for being better about $(srctree).  It might only be\n\n# necessary in this file, if we every do the KBUILD_OUTPUT option.  But\n\n# we don't always want it (like for the implicit rule for Makefile)\n\n#\n\n# - It's a bit crazy that we build symlinks for parlib, instead of it\n\n# managing its own links based on $(ARCH)\n\n#\n\n# - Consider using Kbuild to build userspace and tests\n\n#\n\n# - There are a few other TODOs sprinkled throughout the makefile.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Number of make jobs to spawn.  Can override this in Makelocal\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Allow people to override our setting of the --no-print-directory option in\n\n# their Makelocal. This is useful, for example, to allow emacs to find the\n\n# correct file when errors are encountered using its builtin 'M-x compile'\n\n# command.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Save the ability to export the parent's original environment for future use\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Save the ability to clear the current environment for future use\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define a set of commands to reset the environment to the parent's environment\n\n# and then run a local make target\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Do not:\n\n# o  use make's built-in rules and variables\n\n#    (this increases performance and avoids hard-to-debug behaviour);\n\n# o  print \"Entering directory ...\";\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# That's our default target when none is given on the command line\n\n# This can be overriden with a Makelocal\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Export the location of this top level directory\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Setup dumping ground for object files and any temporary files we need to\n\n# generate for non-kbuild targets\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Don't need to export these, since the Makelocal is included.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Symlinks\n\n# =========================================================================\n\n# We have a few symlinks so that code can include <arch/whatever.h>.  This\n\n# section builds and maintains those, as best we can.\n\n#\n\n# When invoking make, we can pass in ARCH=some-arch.  This value gets 'saved'\n\n# in the symlink, so that later invocations do not need ARCH=.  If this value\n\n# differs from the symlink, it appears like we are changing arches, which\n\n# triggers a clean and symlink reconstruction.\n\n#\n\n# When the user changes from one arch to another, they ought to reconfig, since\n\n# many of the CONFIG_ vars will depend on the arch.  If they try anything other\n\n# than one of the \"non-build-goals\" (cleans or configs), we'll abort.\n\n#\n\n# Make targets that need these symlinks (like building userspace, the kernel,\n\n# configs, etc, should depend on symlinks.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# ifneq ($(ARCH),$(arch-link))\n",
+        "Line" : 152,
+        "CharPositionInLine" : 10
+      },
+      "13" : {
+        "Text" : "# $(ARCH) is empty\n",
+        "Line" : 153,
+        "CharPositionInLine" : 5
+      },
+      "14" : {
+        "Text" : "# Only allow a clean\n",
+        "Line" : 159,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# catch bugs\n",
+        "Line" : 164,
+        "CharPositionInLine" : 21
+      },
+      "16" : {
+        "Text" : "# ifneq ($(arch-link),)\n",
+        "Line" : 165,
+        "CharPositionInLine" : 10
+      },
+      "17" : {
+        "Text" : "# ifeq ($(ARCH),)\n",
+        "Line" : 166,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Generic Kbuild Environment\n\n# =========================================================================\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# To put more focus on warnings, be less verbose as default\n\n# Use 'make V=1' to see the full commands\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Beautify output\n\n# ---------------------------------------------------------------------------\n\n#\n\n# Normally, we echo the whole command before executing it. By making\n\n# that echo $($(quiet)$(cmd)), we now have the possibility to set\n\n# $(quiet) to choose other forms of output instead, e.g.\n\n#\n\n#         quiet_cmd_cc_o_c = Compiling $(RELDIR)/$@\n\n#         cmd_cc_o_c       = $(CC) $(c_flags) -c -o $@ $<\n\n#\n\n# If $(quiet) is empty, the whole command will be printed.\n\n# If it is set to \"quiet_\", only the short version will be printed.\n\n# If it is set to \"silent_\", nothing will be printed at all, since\n\n# the variable $(silent_cmd_cc_o_c) doesn't exist.\n\n#\n\n# A simple variant is to prefix commands with $(Q) - that's useful\n\n# for commands that shall be hidden in non-verbose mode.\n\n#\n\n#\t$(Q)ln $@ :<\n\n#\n\n# If KBUILD_VERBOSE equals 0 then the above command will be hidden.\n\n# If KBUILD_VERBOSE equals 1 then the above command is displayed.\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We need some generic definitions (do not try to remake the file).\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Kbuild Target/Goals Parsing\n\n# =========================================================================\n\n# Need to figure out if we're a config or not, and whether or not to include\n\n# our .config / auto.conf.  Configs are basically their own makefile, (ifeq),\n\n# and cleans are allowed to proceed without worrying about the dot-config.\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Basic helpers built in scripts/\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# ===========================================================================\n\n# We're called with mixed targets (*config and build targets).\n\n# Handle them one by one.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# ===========================================================================\n\n# *config targets only - make sure prerequisites are updated, and descend\n\n# in scripts/kconfig to make the *config target\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Default config file, per arch.  This path will resolve to\n\n# arch/$ARCH/configs/defconfig (arch -> kern/arch).  Each arch can override\n\n# this if they want, or just symlink to one in the main root directory.\n",
+        "Line" : 286,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# ===========================================================================\n\n# Build targets only - this includes vmlinux, arch specific targets, clean\n\n# targets and others. In general all targets except *config targets.\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Read in config\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Read in dependencies to all Kconfig* files, make sure to run\n\n# oldconfig if changes are detected.\n",
+        "Line" : 312,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# To avoid any implicit rule to kick in, define an empty command\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# If .config is newer than include/config/auto.conf, someone tinkered\n\n# with it and forgot to run make oldconfig.\n\n# if auto.conf.cmd is missing then we are probably in a cleaned tree so\n\n# we execute the config step to be sure to catch updated Kconfig files\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Dummy target needed, because used as prerequisite\n",
+        "Line" : 327,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# $(dot-config)\n",
+        "Line" : 329,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# Akaros Build Environment\n\n# =========================================================================\n",
+        "Line" : 331,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# CROSS_COMPILE is defined per-arch.  Each arch can set other makeflags, kbuild\n\n# directories, etc.\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# These may have bogus values if there is no compiler.  The kernel and user\n\n# build targets will check cc-exists.  Hopefully no cleaning targets rely on\n\n# these.  Note that if you change configs, these will get computed once, before\n\n# silentoldconfig kicks in to regenerate auto.conf, and these values will\n\n# temporarily be stale.\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# TODO: do we need this, or can we rely on the compiler's defines?\n",
+        "Line" : 379,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# TODO: this requires our own strchr (kern/src/stdio.c), which is a potential\n\n# source of bugs/problems.\n\n# note we still pull in stdbool and stddef from the compiler\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Akaros include stuff (includes custom make targets and user overrides)\n\n# =========================================================================\n",
+        "Line" : 405,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# The user can override this, though it won't apply for any of the in-tree\n\n# kernel build output.  Right now, it's only passed down to tests/\n",
+        "Line" : 408,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Since we're doing this outside of the dot-config part, some targets, such as\n\n# clean, won't read in our .config/auto.conf, and won't know about the\n\n# KFS_PATH.  Future rules related to KFS will have issues (mkdir with no\n\n# argument, or a find of the entire pwd).  It's also possible someone provided\n\n# an empty path.  To deal with both, we'll just have a sensible default.\n",
+        "Line" : 412,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Avoiding implicit rules\n",
+        "Line" : 427,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# TODO: one issue is that we import all types of targets: build, clean, etc.\n\n# That makes it a bit tougher to reorganize with ifeqs.\n",
+        "Line" : 429,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Akaros Kernel Build\n\n# =========================================================================\n\n# Add top level directories, either to an existing entry (core-y) or to its\n\n# own.\n\n#\n\n# From these, we determine deps and dirs.  We recursively make through the\n\n# dirs, generating built-in.o at each step, which are the deps from which we\n\n# link akaros.\n\n#\n\n# We have all-arch-dirs and all-dirs, so that we can still clean even without\n\n# an arch symlink.\n",
+        "Line" : 433,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# a bit hacky: we want to make sure the directories exist, and error out\n\n# otherwise.  we also want to error out before the initramfs target, otherwise\n\n# we might not get the error (if initramfs files are all up to date).  the\n\n# trickiest thing here is that kfs-paths-check could be stale and require an\n\n# oldconfig.  running make twice should suffice.\n",
+        "Line" : 462,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Need to make an empty cpio, then append each kfs-path's contents\n",
+        "Line" : 482,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Our makefile doesn't detect a change in subarch, and old binary objects that\n\n# don't need to be updated won't get rebuilt, but they also can't link with the\n\n# new subarch (32 bit vs 64 bit).  If we detect the wrong type, we'll force a\n\n# rebuild.\n",
+        "Line" : 500,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Not the worlds most elegant link command.  link-kernel takes the obj output\n\n# name, then the linker script, then everything else you'd dump on the ld\n\n# command line, including linker options and objects to link together.\n\n#\n\n# After the script is done, we run the arch-specific command directly.\n",
+        "Line" : 530,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# For some reason, the if_changed doesn't work with FORCE (like it does in\n\n# Linux).  It looks like it can't find the .cmd file or something (also\n\n# complaints of $(targets), so that all is probably messed up).\n",
+        "Line" : 543,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Recursively Kbuild all of our directories.  If we're changing arches\n\n# mid-make, we might have issues ( := on akaros-dirs, etc).\n",
+        "Line" : 553,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# TODO: not sure what all we want to have available for config targets\n\n# (anything after this is allowed.  We currently need clean targets available\n\n# (config->symlinks->clean).\n",
+        "Line" : 568,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "#ifeq ($(config-targets),1)\n\n#ifeq ($(mixed-targets),1)\n",
+        "Line" : 571,
+        "CharPositionInLine" : 6
+      },
+      "53" : {
+        "Text" : "# Akaros Userspace Building and Misc Helpers\n\n# =========================================================================\n\n# Recursively make user libraries and tests.\n\n#\n\n# User library makefiles are built to expect to be called from their own\n\n# directories.  The test code can be called from the root directory.\n",
+        "Line" : 574,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# List all userspace directories here, and state any dependencies between them,\n\n# such as how pthread depends on parlib.\n",
+        "Line" : 581,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Critical libraries, also built during the toolchain install\n",
+        "Line" : 584,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Higher-level libraries.  Built before tests/, but after apps-install.\n\n# TODO: would like to move perfmon here, since it's not meant to be low-level.\n\n# But the apps-install has perf, which depends on user/perfmon.\n",
+        "Line" : 591,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# KFS related stuff\n",
+        "Line" : 629,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Use doxygen to make documentation for ROS (Untested since 2010 or so)\n",
+        "Line" : 653,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# Bundled apps\n\n# =========================================================================\n",
+        "Line" : 673,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Cross Compiler\n\n# =========================================================================\n",
+        "Line" : 721,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# Cleaning\n\n# =========================================================================\n\n# This is mostly the Linux kernel cleaning.  We could hook in to the userspace\n\n# cleaning with the 'userclean' target attached to clean, though historically\n\n# 'clean' means the kernel.\n",
+        "Line" : 767,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# Shorthand for $(Q)$(MAKE) -f scripts/Makefile.clean obj=dir\n\n# Usage:\n\n# $(Q)$(MAKE) $(clean)=dir\n",
+        "Line" : 773,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# clean - Delete all generated files\n\n#\n",
+        "Line" : 778,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# Could add in an archclean if we need arch-specific cleanup, or a userclean if\n\n# we want to start cleaning that too.\n\n#clean: archclean\n\n#clean: userclean\n",
+        "Line" : 797,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# mrproper - Delete all generated files, including .config, and reset ARCH\n\n#\n",
+        "Line" : 802,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# Epilogue\n\n# =========================================================================\n",
+        "Line" : 820,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# Don't put the srctree on this, make is looking for Makefile, not\n\n# /full/path/to/Makefile.\n",
+        "Line" : 826,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# avoid implicit rule on Makefile\n",
+        "Line" : 828,
+        "CharPositionInLine" : 12
+      },
+      "69" : {
+        "Text" : "# Declare the contents of the .PHONY variable as phony.  We keep that\n\n# information in a variable so we can use it in if_changed and friends.\n",
+        "Line" : 830,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 70
+    },
+    "kern/arch/riscv/Makefile" : {
+      "ObjectId" : "2bd6e7e47128d27c5a5ca72366071ecbc75ae9a5",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# basically a nop.  this runs post-link of the kernel\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "kern/arch/x86/Makefile" : {
+      "ObjectId" : "e1fdaaa35c240d6563a8f67d2d8bcdb9a09891db",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Need to change the format to 32 bit, to trick multiboot/grub1 into loading\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BITS is used in Kbuilds, so we can select bit-specific source files.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "kern/drivers/net/mlx4/Makefile" : {
+      "ObjectId" : "172cb72b144777ec797664e523d7d345d320395f",
+      "LastModified" : "2015-09-23T20:46:27Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "kern/drivers/net/mlx4u/Makefile" : {
+      "ObjectId" : "62b47190552743a1bc2cadb623f7387cfde09ff3",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#mlx4_ib-y :=\tah.o cq.o doorbell.o mad.o main.o mr.o qp.o srq.o mcg.o cm.o alias_GUID.o sysfs.o\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "kern/drivers/net/udrvr/Makefile" : {
+      "ObjectId" : "e8462bc16d98555f1544527255362e200dc4493a",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "scripts/Makefile" : {
+      "ObjectId" : "161620febeb63622b6b7b67f1c5fb67cc5f8b817",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Let clean descend into subdirs\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "scripts/basic/Makefile" : {
+      "ObjectId" : "4fcef87bb8759894435a395224c7d92cd7a14214",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "###\n\n# Makefile.basic lists the most basic programs used during the build process.\n\n# The programs listed herein are what are needed to do the basic stuff,\n\n# such as fix file dependencies.\n\n# This initial step is needed to avoid files to be recompiled\n\n# when kernel configuration changes (which is what happens when\n\n# .config is included by main Makefile.\n\n# ---------------------------------------------------------------------------\n\n# fixdep: \t Used to generate dependency information during build process\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# fixdep is needed to compile other host programs\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "scripts/kconfig/Makefile" : {
+      "ObjectId" : "3091794e935488c797e73207e6d0b82a7dbf99b4",
+      "LastModified" : "2016-06-16T15:48:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# ===========================================================================\n\n# Kernel configuration targets\n\n# These targets are used from top-level makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create new linux.pot file\n\n# Adjust charset to UTF-8 in .po file to accept UTF-8 in Kconfig files\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# oldnoconfig is an alias of olddefconfig, because people already are dependent\n\n# on its behavior(sets new symbols to their default value but not 'n') with the\n\n# counter-intuitive name.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Help text used by make help\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# lxdialog stuff\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Use recursively expanded variables so we do not call gcc unless\n\n# we really need to do so. (Do not call gcc as part of make mrproper)\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ===========================================================================\n\n# Shared Makefile for the various kconfig executables:\n\n# conf:\t  Used for defconfig, oldconfig and related targets\n\n# nconf:  Used for the nconfig target.\n\n#         Utilizes ncurses\n\n# mconf:  Used for the menuconfig target\n\n#         Utilizes the lxdialog package\n\n# qconf:  Used for the xconfig target\n\n#         Based on QT which needs to be installed to compile it\n\n# gconf:  Used for the gconfig target\n\n#         Based on GTK which needs to be installed to compile it\n\n# object files used by all kconfig flavours\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Check that we have the required ncurses stuff installed for lxdialog (menuconfig)\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Add environment specific flags\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# generated files seem to need this to find local include files\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# QT needs some extra effort...\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# GTK needs some extra effort, too...\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Extract gconf menu items for I18N support\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "tests/Makefile" : {
+      "ObjectId" : "b8c4095ffbd93663a73ef55d9c8c6df50749b8aa",
+      "LastModified" : "2017-06-07T15:38:14Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Default target is to just make\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: when we clean this up, if we ditch OBJDIR, change the root makefile\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Note that we don't disassemble CPPs by default, even if they aren't static.\n\n# The files are pretty large regardless (9MB for a simple stream test asm).\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "tools/app-arch/cpio/Makefile" : {
+      "ObjectId" : "ae5b3ef4b454d92d2b466c8f48049d2fc0f2a293",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########## Package-specific variables\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/app-arch/tar/Makefile" : {
+      "ObjectId" : "a0779ae5d3599170c62d68b69028cb2540ca5728",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########## Package-specific variables\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/apps/busybox/Makefile" : {
+      "ObjectId" : "b0387a5614dff8db5430c98c5baeaf313570d685",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for busybox.\n\n# Barret Rhoden\n\n#\n\n# make [all] will do a full install with the default config.\n\n#\n\n# make x86_64|riscv will set the cross compiler in the .config.  You can also\n\n# pass CROSS_COMPILE.  The top-level Makefile should be able to call this, but\n\n# it is not necessary to do so.\n\n#\n\n# Uppercase variables are 'global', in the sense that we may have them exported\n\n# from parent makefiles or overridden by a Makelocal.\n\n#\n\n# You can also maintain your own config and override BUSYBOX_CONFIG.  Anything\n\n# named local-config-* will be ignored by git.\n\n#\n\n# If you are porting new versions of busybox, you'll have to download the\n\n# upstream patches manually.  It wasn't worth the effort to automate that.\n\n#\n\n# As new patches are added, you should just need to make.  Busybox is small\n\n# enough that I just trash the old one and rebuild whenever there is a change.\n\n# If there is a new CC, you may need to make clean.\n\n#\n\n# TODO:\n\n# \t- make target for building a clone of -akaros for fast diffing and such\n\n# \t- make busybox target from the top-level Makefile\n\n# \t- port to the latest busybox version\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid implicit rule on Makefile\n",
+        "Line" : 84,
+        "CharPositionInLine" : 12
+      },
+      "2" : {
+        "Text" : "# Declare the contents of the .PHONY variable as phony.  We keep that\n\n# information in a variable so we can use it in if_changed and friends.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "tools/apps/ipconfig/Makefile" : {
+      "ObjectId" : "ffeabfb8636cae1d4e813ffb669ab5805ce49e6b",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "tools/compilers/gcc-glibc/Makefile" : {
+      "ObjectId" : "c91aabaa47878eb5a346292e9fc1d583dff74ca9",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Number of make jobs to spawn.  Define it in Makelocal\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Defines where to install the toolchain\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure the list of targets is sane!\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# AKAROS_COMPILER_REAL_BUILD\n",
+        "Line" : 95,
+        "CharPositionInLine" : 5
+      },
+      "4" : {
+        "Text" : "# Set up some global variables to help us through the make based on the\n\n# platform we are building for.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Check for additional errors before building\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# BUILD_ERROR\n",
+        "Line" : 229,
+        "CharPositionInLine" : 5
+      },
+      "7" : {
+        "Text" : "# Make sure that LD_LIBRARY_PATH is not set during the build process\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#################################\n\n########### BINUTILS ############\n\n#################################\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#################################\n\n########## GCC Stage 1 ##########\n\n#################################\n",
+        "Line" : 348,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#################################\n\n########## GCC Stage 2 ##########\n\n#################################\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#################################\n\n############ Headers ############\n\n#################################\n",
+        "Line" : 470,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#################################\n\n###### Dummy Libs Install #######\n\n#################################\n",
+        "Line" : 490,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#################################\n\n######### Glibc Stage 1 #########\n\n#################################\n",
+        "Line" : 498,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# On occasion, include/pthread.h was getting installed in stage 2, clobbering\n\n# parlib's pthread.h.\n",
+        "Line" : 510,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "####################################\n\n########## Glibc Stage 2  ##########\n\n####################################\n",
+        "Line" : 569,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "###################################\n\n####### AKAROS Libs Install #######\n\n###################################\n",
+        "Line" : 618,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "##################################\n\n########### Gcc Stage 3 ##########\n\n##################################\n",
+        "Line" : 626,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "##################################\n\n######### GMP, MPFR, MPC #########\n\n##################################\n",
+        "Line" : 720,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# BUILD_ERROR\n\n# AKAROS_COMPILER_REAL_BUILD\n",
+        "Line" : 804,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 20
+    },
+    "tools/compilers/gcc-glibc/glibc-2.19-akaros/sysdeps/akaros/Makefile" : {
+      "ObjectId" : "613bcaa213ca7162e90753ec97dd4175bdf02db1",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# from nptl/sysdeps/unix/sysv/linux/Makefile\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# From nptl/Makefile\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Weak alias functions for linking without parlib\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Any sysdep .c file you want needs to be added here, if it's not somewhere\n\n# else already.  Many posix-ish .c files already are taken care of.  We also\n\n# need to be careful to only include some of them for specific subdirs.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We don't have the resolv subdir, but we still want parts of it.  Since we\n\n# lack the subdir, we need to include the C files and headers manually.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# plan 9 conversion routines.  all C files need to be in exactly one directory.\n\n# stdlib seems like a reasonable place. */\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Scheduling related routines.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Imports from OpenBSD.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Syscall pack arg routines\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# TLS related functions\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Plan 9 Shims\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# User FDs\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Epoll: uses User FDs, implemented in iplib\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Eventfd, implemented in glibc\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Timerfd, implemented in glibc\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# time.h, override for struct timespec.  This overrides time/time.h from glibc,\n\n# installed as usr/inc/time.h.\n\n#\n\n# It's pretty nasty though.  We need to have the sysdep twice in the Akaros\n\n# directory, both copies of the same file.  First, we need regular time.h\n\n# listed here to eventually get installed as usr/include/time.h.  This file is\n\n# sysdeps/akaros/time.h.  We also need the same file at\n\n# sysdeps/akaros/time/time.h, which will be used during compilation.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "tools/compilers/gcc-glibc/glibc-2.19-akaros/sysdeps/akaros/x86_64/Makefile" : {
+      "ObjectId" : "9640c8d043be5a0e5d6470a58c2f212d8704e75a",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (C) 2002, 2003, 2004 Free Software Foundation, Inc.\n\n# This file is part of the GNU C Library.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The GNU C Library is free software; you can redistribute it and/or\n\n# modify it under the terms of the GNU Lesser General Public\n\n# License as published by the Free Software Foundation; either\n\n# version 2.1 of the License, or (at your option) any later version.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The GNU C Library is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n# Lesser General Public License for more details.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# You should have received a copy of the GNU Lesser General Public\n\n# License along with the GNU C Library; if not, write to the Free\n\n# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA\n\n# 02111-1307 USA.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tools/dev-libs/elfutils/Makefile" : {
+      "ObjectId" : "997a6fc38c8bcd4095621cb41ff5263144577e27",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2016 Google Inc\n\n# Barret Rhoden <brho@cs.berkeley.edu>\n\n# See LICENSE for details.\n\n#\n\n# Makefile for elfutils\n\n#\n\n# Most of this is not specific to this library.  You can copy the bulk of it,\n\n# modify the variables at the top, and maybe change the configure/make commands\n\n# to suit your package.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Package-specific variables\n\n# 0.165 needs glibc > 2.22 and zlib\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "tools/dev-util/perf/Makefile" : {
+      "ObjectId" : "1a90f4968f57bf41e42f7a8d22b74f3e22d7d3d5",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "tools/packetizer/Makefile" : {
+      "ObjectId" : "a0381b91b3b22293cf1e2c1fc9fdb4c220648694",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "tools/sys-apps/bash/Makefile" : {
+      "ObjectId" : "97db874197e9643c0cf3170d4729793db8a03545",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########## Package-specific variables\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/sys-apps/coreutils/Makefile" : {
+      "ObjectId" : "bad2a579c3f2ce4f8bbf2967ad34148ae593dfa2",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########## Package-specific variables\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/sys-apps/diffutils/Makefile" : {
+      "ObjectId" : "05553644f0e60656d808e2ba538885b6a169e39d",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########## Package-specific variables\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/sys-apps/grep/Makefile" : {
+      "ObjectId" : "4aa754607bda80aefd6e02c366ab8e767f0047ad",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########## Package-specific variables\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## Generic Infrastructure\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tools/syscall_server/Makefile" : {
+      "ObjectId" : "7c2e3c7e9cde5374e845a4f2948f7b9db2df251a",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/benchutil/Makefile" : {
+      "ObjectId" : "d1dd83b231235dbc18efb72bb21bfd0402744a43",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/electric-fence/Makefile" : {
+      "ObjectId" : "dd720226810f69882fdc6316a30d28ce89687d60",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/iplib/Makefile" : {
+      "ObjectId" : "1964d0f8df6740b3fd0242d40360eef04699ac75",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/ndblib/Makefile" : {
+      "ObjectId" : "2e1a0b5aa5e23d23d0aa0e97c9e86be924477668",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/parlib/Makefile" : {
+      "ObjectId" : "eb38f88ea65b9b9b7b0b12d422b7dbd9e3c7dd3e",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/perfmon/Makefile" : {
+      "ObjectId" : "6a7ae231516ad5e891efa2894f13ccf4f977bfb2",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/perfmon/examples/Makefile" : {
+      "ObjectId" : "ed39ed8a14a54a5c9dec2821113c63dc3bbf783c",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2002-2006 Hewlett-Packard Development Company, L.P.\n\n# Contributed by Stephane Eranian <eranian@hpl.hp.com>\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy \n\n# of this software and associated documentation files (the \"Software\"), to deal \n\n# in the Software without restriction, including without limitation the rights \n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies \n\n# of the Software, and to permit persons to whom the Software is furnished to do so, \n\n# subject to the following conditions:\n\n# \n\n# The above copyright notice and this permission notice shall be included in all \n\n# copies or substantial portions of the Software.  \n\n# \n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, \n\n# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A \n\n# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT \n\n# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF \n\n# CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE \n\n# OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# examples are installed as part of the RPM install, typically in /usr/share/doc/libpfm-X.Y/\n\n#\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "user/perfmon/tests/Makefile" : {
+      "ObjectId" : "7dd82c32272436029ab6bf7c4b4b1f0cf6362639",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2010 Google, Inc\n\n# Contributed by Stephane Eranian <eranian@gmail.com>\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy \n\n# of this software and associated documentation files (the \"Software\"), to deal \n\n# in the Software without restriction, including without limitation the rights \n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies \n\n# of the Software, and to permit persons to whom the Software is furnished to do so, \n\n# subject to the following conditions:\n\n# \n\n# The above copyright notice and this permission notice shall be included in all \n\n# copies or substantial portions of the Software.  \n\n# \n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, \n\n# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A \n\n# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT \n\n# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF \n\n# CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE \n\n# OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# examples are installed as part of the RPM install, typically in /usr/share/doc/libpfm-X.Y/\n\n#\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "user/pthread/Makefile" : {
+      "ObjectId" : "c3b5fa6e7352359f799b49cd3b5da3ebf38aa4e3",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "user/utest/Makefile" : {
+      "ObjectId" : "17089ea61260c2604b48b787cabc2cca99b8d171",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# catch bugs\n",
+        "Line" : 1,
+        "CharPositionInLine" : 13
+      },
+      "1" : {
+        "Text" : "# DEPLIBS passed in from the top-level Makefile\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Note that we don't disassemble CPPs by default, even if they aren't static.\n\n# The files are pretty large regardless (9MB for a simple stream test asm).\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "user/vmm/Makefile" : {
+      "ObjectId" : "643bccf94a61551411413ee0bc0998be740e2189",
+      "LastModified" : "2019-03-26T22:32:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 36
+  },
+  "ElapsedTime" : 2556
+}

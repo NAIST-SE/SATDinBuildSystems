@@ -1,0 +1,735 @@
+{
+  "Repository" : "19663802",
+  "Revision" : "HEAD",
+  "ObjectId" : "dccea9ae88059c8cb7dff76d2682835184fc8338",
+  "CommitTime" : "2019-04-15T09:06:22Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "a3b4a808f804adac9d5e6f530c15c340de29221b",
+      "LastModified" : "2019-04-13T08:32:05Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2013 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile normally builds in a 'build' subdir, but use\n\n#\n\n#    make BUILD=<dir>\n\n#\n\n# to put the output somewhere else.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##############################################################################\n\n# Make variables come in two flavors, immediate or deferred.\n\n#\n\n#   Variable definitions are parsed like this:\n\n#\n\n#        IMMEDIATE = DEFERRED\n\n#    or\n\n#        IMMEDIATE := IMMEDIATE\n\n#\n\n#   Rules are parsed this way:\n\n#\n\n#        IMMEDIATE : IMMEDIATE\n\n#           DEFERRED\n\n#\n\n# So you can assign variables in any order if they're only to be used in\n\n# actions, but if you use a variable in either the target or prerequisite of a\n\n# rule, the rule will be constructed using only the top-down, immediate value.\n\n#\n\n# So we'll try to define all the variables first. Then the rules.\n\n#\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "##############################################################################\n\n# Configuration variables come first.\n\n#\n\n# Our convention is that we only use := for variables that will never be\n\n# changed or appended. They must be defined before being used anywhere.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We should only run pwd once, not every time we refer to ${BUILD}.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Stuff for 'make install'\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Default values\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Where exactly do the pieces go?\n\n#  UB_DIR = utility binary directory\n\n#  ULP_DIR = pkgconfig directory, usually /usr/lib/pkgconfig\n\n#  UI_DIR = include directory for library headers\n\n#  US_DIR = shared data directory (for static content like devkeys)\n\n#  DF_DIR = utility defaults directory\n\n#  VB_DIR = vboot binary directory for dev-mode-only scripts\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Host install just puts everything where it's told\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Target install puts things into different places\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Where to install the (exportable) executables for testing?\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Verbose? Use V=1\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Quiet? Use QUIET=1\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Architecture detection\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# ARCH and/or FIRMWARE_ARCH are defined by the Chromium OS ebuild.\n\n# Pick a sane target architecture if none is defined.\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# FIRMWARE_ARCH is only defined by the Chromium OS ebuild if compiling\n\n# for a firmware target (such as u-boot or depthcharge). It must map\n\n# to the same consistent set of architectures as the host.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Provide default CC and CFLAGS for firmware builds; if you have any -D flags,\n\n# please add them after this point (e.g., -DVBOOT_DEBUG).\n\n#\n\n# TODO(crosbug.com/16808) We hard-code u-boot's compiler flags here just\n\n# temporarily. As we are still investigating which flags are necessary for\n\n# maintaining a compatible ABI, etc. between u-boot and vboot_reference.\n\n#\n\n# As a first step, this makes the setting of CC and CFLAGS here optional, to\n\n# permit a calling script or Makefile to set these.\n\n#\n\n# Flag ordering: arch, then -f, then -m, then -W\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Note: FIRMWARE_ARCH is defined by the Chromium OS ebuild.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Drop -march=i386 to permit use of SSE instructions\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# FIRMWARE_ARCH not defined; assuming local compile.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# enable all features during local compile (permits testing)\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# pass DIAGNOSTIC_UI= (or =0) to make to disable feature\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# NOTE: We don't use these files but they are useful for other packages to\n\n# query about required compiling/linking flags.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Create / use dependency files\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Creates position independent code for non firmware target.\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# These are required to access large disks and files on 32-bit systems.\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Code coverage\n",
+        "Line" : 221,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Musl doesn't have execinfo.h.\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# And a few more default utilities\n",
+        "Line" : 238,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Static?\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Optional Libraries\n",
+        "Line" : 249,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Determine QEMU architecture needed, if any\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Same architecture; no need for QEMU\n",
+        "Line" : 259,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# 64-bit host can run 32-bit targets directly\n",
+        "Line" : 262,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# The top of the chroot for qemu must be passed in via the SYSROOT environment\n\n# variable.  In the Chromium OS chroot, this is done automatically by the\n\n# ebuild.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Path to build output for running tests is same as for building\n",
+        "Line" : 273,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# Path to build output for running tests is different in the chroot\n",
+        "Line" : 278,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "##############################################################################\n\n# The default target is here, to allow dependencies to be expressed below\n\n# without accidentally changing the default target.\n",
+        "Line" : 291,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Default target.\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "##############################################################################\n\n# Now we need to describe everything we might want or need to build\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Everything wants these headers.\n",
+        "Line" : 304,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# If we're not building for a specific target, just stub out things like the\n\n# TPM commands and various external functions that are provided by the BIOS.\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Firmware library, used by the other firmware components (depthcharge,\n\n# coreboot, etc.). It doesn't need exporting to some other place; they'll build\n\n# this source tree locally and link to it directly.\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Smaller firmware library common to all vboot 2.x, used only for\n\n# 1) compile-time tests of the public API or\n\n# 2) linking with an actual 2.0 or 2.1 implementation\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Vboot 2.0 (deprecated - see firmware/README)\n",
+        "Line" : 331,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Vboot 2.1 (not yet ready - see firmware/README)\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Static library containing firmware APIs for common boot flow\n",
+        "Line" : 336,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Firmware library sources needed by VbInit() call\n",
+        "Line" : 339,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Additional firmware library sources needed by VbSelectFirmware() call\n",
+        "Line" : 344,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Additional firmware library sources needed by VbSelectAndLoadKernel() call\n",
+        "Line" : 348,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Code common to both vboot 2.0 (old structs) and 2.1 (new structs)\n",
+        "Line" : 365,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# TPM lightweight command library\n",
+        "Line" : 406,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Support real TPM unless BIOS sets MOCK_TPM\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Include BIOS stubs in the firmware library when compiling for host\n\n# TODO: split out other stub funcs too\n",
+        "Line" : 436,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Intermediate library for the vboot_reference utilities to link against.\n",
+        "Line" : 467,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Static library containing both host and firmware APIs\n",
+        "Line" : 470,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Source files containing host side APIs for common boot flow\n",
+        "Line" : 505,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# Externally exported library for some target userspace apps to link with\n\n# (cryptohome, updater, etc.)\n",
+        "Line" : 512,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Now for the userspace binaries\n",
+        "Line" : 554,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# Utility defaults\n",
+        "Line" : 596,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Scripts to install directly (not compiled)\n",
+        "Line" : 599,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# These utilities should also provide static linked version (*_s).\n",
+        "Line" : 610,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# TODO: Do we still need eficompress and efidecompress for anything?\n",
+        "Line" : 622,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Scripts for signing stuff.\n",
+        "Line" : 644,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# These go in a different place.\n",
+        "Line" : 649,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# Installed, but not made executable.\n",
+        "Line" : 658,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# The unified firmware utility will eventually replace all the others\n",
+        "Line" : 662,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# These are the executables that are now built in to futility. We'll create\n\n# symlinks for these so the old names will still work.\n",
+        "Line" : 665,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# List of commands built in futility.\n",
+        "Line" : 708,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# Library of handy test functions.\n",
+        "Line" : 719,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# And some compiled tests.\n",
+        "Line" : 731,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# TODO(apronin): tests for TPM2 case?\n",
+        "Line" : 752,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# And a few more...\n",
+        "Line" : 806,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# TODO(apronin): tests for TPM2 case?\n",
+        "Line" : 821,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Finally\n",
+        "Line" : 827,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# Directory containing test keys\n",
+        "Line" : 837,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "##############################################################################\n\n# Finally, some targets. High-level ones first.\n",
+        "Line" : 841,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "# Create output directories if necessary.  Do this via explicit shell commands\n\n# so it happens before trying to generate/include dependencies.\n",
+        "Line" : 844,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# Host targets\n",
+        "Line" : 851,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# Don't delete intermediate object files\n",
+        "Line" : 878,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Firmware library\n",
+        "Line" : 881,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "# TPM-specific flags.  These depend on the particular TPM we're targeting for.\n\n# They are needed here only for compiling parts of the firmware code into\n\n# user-level tests.\n",
+        "Line" : 884,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "# TPM_BLOCKING_CONTINUESELFTEST is defined if TPM_ContinueSelfTest blocks until\n\n# the self test has completed.\n",
+        "Line" : 888,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "# TPM_MANUAL_SELFTEST is defined if the self test must be started manually\n\n# (with a call to TPM_ContinueSelfTest) instead of starting automatically at\n\n# power on.\n\n#\n\n# We sincerely hope that TPM_BLOCKING_CONTINUESELFTEST and TPM_MANUAL_SELFTEST\n\n# are not both defined at the same time.  (See comment in code.)\n",
+        "Line" : 893,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "# CFLAGS += -DTPM_MANUAL_SELFTEST\n",
+        "Line" : 900,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "# Unrolling loops in cryptolib makes it faster\n",
+        "Line" : 903,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "# Workaround for coreboot on x86, which will power off asynchronously\n\n# without giving us a chance to react. This is not an example of the Right\n\n# Way to do things. See chrome-os-partner:7689, and the commit message\n\n# that made this change.\n",
+        "Line" : 910,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# On x86 we don't actually read the GBB data into RAM until it is needed.\n\n# Therefore it makes sense to cache it rather than reading it each time.\n\n# Enable this feature.\n",
+        "Line" : 916,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# Disable rollback TPM when compiling locally, since otherwise\n\n# load_kernel_test attempts to talk to the TPM.\n",
+        "Line" : 923,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "# Linktest ensures firmware lib doesn't rely on outside libraries\n",
+        "Line" : 931,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Host library(s)\n",
+        "Line" : 984,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# Link tests for local utilities\n",
+        "Line" : 987,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "# TODO: better way to make .a than duplicating this recipe each time?\n",
+        "Line" : 996,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# Link tests for external repos\n",
+        "Line" : 1010,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "# TODO: better way to make .a than duplicating this recipe each time?\n",
+        "Line" : 1020,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# CGPT library and utility\n",
+        "Line" : 1049,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Utilities\n",
+        "Line" : 1083,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "# These have their own headers too.\n",
+        "Line" : 1086,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "# Utilities for auto-update toolkits must be statically linked.\n",
+        "Line" : 1092,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "# And some signing stuff for the target\n",
+        "Line" : 1109,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# new Firmware Utility\n",
+        "Line" : 1118,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "# FUTIL_LIBS is shared by FUTIL_BIN and TEST_FUTIL_BINS.\n",
+        "Line" : 1124,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Utility to generate TLCL structure definition header file.\n",
+        "Line" : 1140,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Tests\n",
+        "Line" : 1156,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "# Futility tests need almost everything that futility needs.\n",
+        "Line" : 1166,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Generic build rules. LIBS and OBJS can be overridden to tweak the generic\n\n# rules for specific targets.\n",
+        "Line" : 1190,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# Rules to recompile a single source file for library and test\n\n# TODO: is there a tidier way to do this?\n",
+        "Line" : 1210,
+        "CharPositionInLine" : 0
+      },
+      "107" : {
+        "Text" : "# TODO: C++ files don't belong in vboot reference at all.  Convert to C.\n",
+        "Line" : 1222,
+        "CharPositionInLine" : 0
+      },
+      "108" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Here are the special tweaks to the generic rules.\n",
+        "Line" : 1227,
+        "CharPositionInLine" : 0
+      },
+      "109" : {
+        "Text" : "# Always create the defaults file, since it depends on input variables\n",
+        "Line" : 1230,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "# Some utilities need external crypto functions\n",
+        "Line" : 1240,
+        "CharPositionInLine" : 0
+      },
+      "111" : {
+        "Text" : "# Allow multiple definitions, so tests can mock functions from other libraries\n",
+        "Line" : 1282,
+        "CharPositionInLine" : 0
+      },
+      "112" : {
+        "Text" : "# TODO(apronin): tests for TPM2 case?\n",
+        "Line" : 1288,
+        "CharPositionInLine" : 0
+      },
+      "113" : {
+        "Text" : "# TODO(apronin): tests for TPM2 case?\n",
+        "Line" : 1297,
+        "CharPositionInLine" : 0
+      },
+      "114" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# Here are the special rules that don't fit in the generic rules.\n",
+        "Line" : 1304,
+        "CharPositionInLine" : 0
+      },
+      "115" : {
+        "Text" : "# Generates the list of commands defined in futility by running grep in the\n\n# source files looking for the DECLARE_FUTIL_COMMAND() macro usage.\n",
+        "Line" : 1307,
+        "CharPositionInLine" : 0
+      },
+      "116" : {
+        "Text" : "##############################################################################\n\n# Targets that exist just to run tests\n",
+        "Line" : 1329,
+        "CharPositionInLine" : 0
+      },
+      "117" : {
+        "Text" : "# Frequently-run tests\n",
+        "Line" : 1332,
+        "CharPositionInLine" : 0
+      },
+      "118" : {
+        "Text" : "# Bitmap utility isn't compiled for minimal variant\n",
+        "Line" : 1337,
+        "CharPositionInLine" : 0
+      },
+      "119" : {
+        "Text" : "# Scripts don't work under qemu testing\n\n# TODO: convert scripts to makefile so they can be called directly\n",
+        "Line" : 1339,
+        "CharPositionInLine" : 0
+      },
+      "120" : {
+        "Text" : "# Qemu setup for cross-compiled tests.  Need to copy qemu binary into the\n\n# sysroot.\n",
+        "Line" : 1347,
+        "CharPositionInLine" : 0
+      },
+      "121" : {
+        "Text" : "# Generate test keys\n",
+        "Line" : 1366,
+        "CharPositionInLine" : 0
+      },
+      "122" : {
+        "Text" : "# Generate test cases\n",
+        "Line" : 1371,
+        "CharPositionInLine" : 0
+      },
+      "123" : {
+        "Text" : "# Generate test cases for fuzzing\n",
+        "Line" : 1376,
+        "CharPositionInLine" : 0
+      },
+      "124" : {
+        "Text" : "# Run long tests, including all permutations of encryption keys (instead of\n\n# just the ones we use) and tests of currently-unused code.\n\n# Not run by automated build.\n",
+        "Line" : 1462,
+        "CharPositionInLine" : 0
+      },
+      "125" : {
+        "Text" : "# TODO: There were a number of ancient tests that hadn't been run in years.\n\n# They were removed with https://chromium-review.googlesource.com/#/c/214610/\n\n# Some day it might be nice to see what they were supposed to do.\n",
+        "Line" : 1473,
+        "CharPositionInLine" : 0
+      },
+      "126" : {
+        "Text" : "# Code coverage\n",
+        "Line" : 1480,
+        "CharPositionInLine" : 0
+      },
+      "127" : {
+        "Text" : "# Generate addtional coverage stats just for firmware subdir, because the stats\n\n# for the whole project don't include subdirectory summaries. This will print\n\n# the summary for just the firmware sources.\n",
+        "Line" : 1492,
+        "CharPositionInLine" : 0
+      },
+      "128" : {
+        "Text" : "# Include generated dependencies\n",
+        "Line" : 1507,
+        "CharPositionInLine" : 0
+      },
+      "129" : {
+        "Text" : "# We want to use only relative paths in cscope.files, especially since the\n\n# paths inside and outside the chroot are different.\n",
+        "Line" : 1513,
+        "CharPositionInLine" : 0
+      },
+      "130" : {
+        "Text" : "# Note: vboot 2.0 is deprecated, so don't index those files\n",
+        "Line" : 1517,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 131,
+      "Errorlog" : "line 1314:45 token recognition error at: '\\1'\nline 1520:45 token recognition error at: '\\0'\n"
+    },
+    "bdb/Makefile" : {
+      "ObjectId" : "2140b67938497e25c881496fc8663e1977f3d5fb",
+      "LastModified" : "2015-12-16T11:35:12Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2015 The Chromium OS Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile normally builds in a 'build' subdir, but use\n\n#\n\n#    make BUILD=<dir>\n\n#\n\n# to put the output somewhere else.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##############################################################################\n\n# Configuration variables come first.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Verbose? Use V=1\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Quiet? Use QUIET=1\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Create / use dependency files\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "##############################################################################\n\n# Create output directories if necessary.  Do this via explicit shell commands\n\n# so it happens before trying to generate/include dependencies.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "##############################################################################\n\n# Sources\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "##############################################################################\n\n# Targets\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "##############################################################################\n\n# Generic build rules. LIBS and OBJS can be overridden to tweak the generic\n\n# rules for specific targets.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Include generated dependencies\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 2503
+}

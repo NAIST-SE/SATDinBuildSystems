@@ -1,0 +1,2063 @@
+{
+  "Repository" : "35181289",
+  "Revision" : "HEAD",
+  "ObjectId" : "b07cb333385c2e5b93745f82489292f2307863ef",
+  "CommitTime" : "2018-12-01T01:47:55Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "f66a51a6c941d0d43ee9e3c012b69c6316e0c574",
+      "LastModified" : "2018-10-23T02:31:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make Windows compilers shut up about using standard libc functions.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Option to enable/disable LTO.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# TODO(chasseur): There are some interesting performance experiments we could\n\n# do with short-circuiting turned on and off. We could even make it selective\n\n# based on the density of the filter bitmap.\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Turn on the QUICKSTEP_DEBUG flag in the source if this is a debug build.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Include Google Perftools CPU Profiler. You probably want to\n\n# use this option with CMAKE_BUILD_TYPE=RelWithDebInfo.\n\n# Pass profiler_file_name to quickstep_cli_shell to actually\n\n# run the profiler. The profiler only starts collecting\n\n# samples after the first query, so that it runs against a\n\n# warm buffer pool and caches. If you want to profile everything,\n\n# including the first query run, set the environment variable\n\n# CPUPROFILE instead of passing the flag profile_file_name\n\n# Use google-pprof on the output file to convert it into a useful\n\n# format like graphviz (dot).\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# TODO(navsan) Add a FindGperftools.cmake module and use that here.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Link against the system's threading library.\n",
+        "Line" : 215,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Link with libnuma library if it's present\n",
+        "Line" : 220,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Enable C++14 support.\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Also define _ISOC11_SOURCE, which turns on C library declarations from C11.\n",
+        "Line" : 283,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Enable all warnings.\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Treat warnings as errors, 'cause we hardcore.\n",
+        "Line" : 305,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Clang reports such warning when using Protoc 3.0 beta.\n",
+        "Line" : 311,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# OSX 10.12+ has deprecated certain system-level APIs which causes protobuf & glog\n\n# builds to fail. As a short-term workaround for now, we turn off deprecated\n\n# warnings so that they do not cause build failures anymore.\n\n# TODO: Remove this workaround by fixing the protobuf_cmake and glog_cmake.\n",
+        "Line" : 319,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# One of the protobuf headers includes a nested anonymous union within\n\n# another anonymous type. Ordinarily we work around this by compiling the\n\n# protobuf libraries themselves with \"-Wno-nested-anon-types\" and including\n\n# the protobuf headers as \"system\" headers so that the compiler automatically\n\n# suppresses warnings originating from them. XCode does not honor the\n\n# system-include setting, however, so we must instead suppress the warnings\n\n# with global CXXFLAGS for the project.\n\n#\n\n# TODO(chasseur): Once protobuf 3.0 has a stable release and Quickstep has\n\n# upgraded, remove this workaround.\n",
+        "Line" : 338,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Option to use LLVM's libc++ even if it is not the default C++ standard\n\n# library on this platform.\n\n#\n\n# NOTE(chasseur): clang is the default compiler and libc++ is the default\n\n# standard library on recent versions of FreeBSD and Mac OS X. On some other\n\n# OSes (e.g. most Linux distributions), clang will compile against the\n\n# platform's default C++ library (e.g. GNU libstdc++) instead for reasons of\n\n# ABI/linking compatibility. This option allows us to override that behavior if\n\n# we want to.\n",
+        "Line" : 356,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Check that a minimal program compiles and links. Clang will accept the\n\n# command-line flag for libc++ even if the library isn't actually installed.\n",
+        "Line" : 377,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Optimization flags for GCC.\n",
+        "Line" : 395,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Strip binaries for release builds, except on Mac OS X, where this confuses\n\n# the linker.\n",
+        "Line" : 397,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# If using tcmalloc, prevent GCC from optimizing for builtin malloc and friends.\n",
+        "Line" : 404,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Automatically optimize for host processor.\n",
+        "Line" : 409,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# On 32-bit x86, GCC defaults to using i387 (not a typo) for floating-point\n\n# math. This is slower than SSE, and also uses 80-bit temporaries that don't\n\n# correspond to any of the IEEE 754 floating-point formats, so that rounding\n\n# errors may be introduced relative to FPUs that do math in a normal IEEE 754\n\n# encoding. Using SSE is preferable for both performance and correctness, so\n\n# we enable it here.\n",
+        "Line" : 415,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# Loop-transformation optimizations that aren't turned on by -O3\n",
+        "Line" : 430,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# If GCC supports inter-procedural (link-time) optimizations, turn them on.\n",
+        "Line" : 460,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# Optimization flags for Clang.\n",
+        "Line" : 479,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Strip binaries for release builds, except on Mac OS X, where this confuses\n\n# the linker.\n",
+        "Line" : 481,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Automatically optimize for host processor.\n",
+        "Line" : 488,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "#  Getting LTO to work with clang is a bit of a nightmare because of linker and ar dependencies, so it's not enabled.\n\n#  set(CMAKE_CXX_FLAGS_RELEASE \"${CMAKE_CXX_FLAGS_RELEASE} -O4\")\n\n#  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO \"${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O4\")\n\n#  set(CMAKE_CXX_FLAGS_MINSIZEREL \"${CMAKE_CXX_FLAGS_MINSIZEREL} -Os\")\n",
+        "Line" : 493,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Optimization flags for the Intel C++ compiler.\n",
+        "Line" : 498,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# /fast implies /O3 /Qipo /no-prec-div\n\n# /QxHost automatically optimizes for host processor.\n",
+        "Line" : 500,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "# Inter-procedural optimization requires using Intel's xiar tool instead\n\n# of vanilla ar.\n",
+        "Line" : 511,
+        "CharPositionInLine" : 6
+      },
+      "32" : {
+        "Text" : "# Microsoft Visual studio.\n\n# Work around variadic template bug.\n",
+        "Line" : 527,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# Set the include directories to the project root directory and the root of the build tree (where\n\n# generated headers will go).\n",
+        "Line" : 532,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Setup for third-party libs.\n\n#\n\n# NOTE(chasseur): If USE_LIBCXX is on, we should assume that we need to build\n\n# external third-party C++ libraries ourselves even if they are installed on\n\n# the system, because they may be linked against a different C++ standard\n\n# library (e.g. GNU libstdc++) that is not ABI-compatible. This applies only to\n\n# C++ libraries; pure C libraries should have no such issue.\n",
+        "Line" : 537,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Build tcmalloc as a cmake ExternalProject.\n",
+        "Line" : 564,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# Uncomment the next line to change the path of the build by products\n\n#   as some generators, e.g. Ninja, may need it to build properly\n\n# BUILD_BYPRODUCTS <INSTALL_DIR>/lib/libtcmalloc_minimal.a\n",
+        "Line" : 579,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "# Linking against tcmalloc also requires linking against the system threading\n\n# library.\n",
+        "Line" : 590,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# With tcmalloc enabled, utility/Alignment.hpp includes tcmalloc.h, which can\n\n# trigger a compiler warning about the linkage of the tc_mallinfo() function.\n\n# This supresses that warning.\n",
+        "Line" : 596,
+        "CharPositionInLine" : 2
+      },
+      "39" : {
+        "Text" : "# Add Protocol Buffers.\n\n# First, see if protobufs are already installed on this system (unless\n\n# USE_LIBCXX is on, in which case we compile ourselves to be safe, in\n\n# accordance with the above note).\n",
+        "Line" : 607,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Build the copy of protobufs in third_party/\n",
+        "Line" : 616,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "# Add gtest unit-testing framework.\n",
+        "Line" : 626,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Add google/benchmark micro-benchmarking framework.\n\n# This does not build in Windows. It builds fine on NetBSD, but produces\n\n# executables that always segfault on startup.\n",
+        "Line" : 634,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Add required cmake-controlled third-party libraries (farmhash, gflags, glog, and re2).\n",
+        "Line" : 651,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Add optional linenoise command-line editing library.\n",
+        "Line" : 673,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Add optional libhdfs3 library\n",
+        "Line" : 685,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Check if the BitWeaving index is included.\n",
+        "Line" : 691,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Add TMB, but only enable the PureMemory implementation.\n",
+        "Line" : 698,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# The distributed version requires to use the NativeNet implementation.\n",
+        "Line" : 704,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Add all of the module subdirectories. CMakeLists.txt in each of the subdirectories\n\n# defines how to build that module's libraries.\n",
+        "Line" : 722,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Build the quickstep_cli_shell executable.\n",
+        "Line" : 739,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Link against direct deps (will transitively pull in everything needed).\n",
+        "Line" : 742,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Link against other required system and third-party libraries.\n",
+        "Line" : 784,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Build the quickstep_distributed_cli_shell executable.\n",
+        "Line" : 788,
+        "CharPositionInLine" : 2
+      },
+      "54" : {
+        "Text" : "# Link against direct deps (will transitively pull in everything needed).\n",
+        "Line" : 793,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 55
+    },
+    "catalog/CMakeLists.txt" : {
+      "ObjectId" : "a1e4ba609caa1fa5bdb38d85c95d4a87a9df713f",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cli/CMakeLists.txt" : {
+      "ObjectId" : "fef1de36c89f50cc5f5a74e141bdb6696f0dcbbc",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Compile the protos for Single Node Server mode.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We will need some of the TMBs libraries\n",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Include subdirectories\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Declare micro-libs and link dependencies:\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "cli/distributed/CMakeLists.txt" : {
+      "ObjectId" : "c2c578a73d2ea3c10da0bbb74a23580339ca407f",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs and link dependencies:\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cli/tests/CMakeLists.txt" : {
+      "ObjectId" : "18d321d6565c828b60b200ff8d935d09cc889be7",
+      "LastModified" : "2018-05-21T21:47:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cli/tests/command_executor/CMakeLists.txt" : {
+      "ObjectId" : "86ebe9800b3fd041c29511f7f4f412dc68796656",
+      "LastModified" : "2018-05-21T21:47:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create the folders where the unit tests will store their data blocks for the\n\n# duration of their test.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/FindGSasl.cmake" : {
+      "ObjectId" : "28fb5b8f84b6fc9efee5b273d94847d0a5dd31be",
+      "LastModified" : "2016-08-07T06:29:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Try to find the GNU sasl library (gsasl)\n\n#\n\n# Once done this will define\n\n#\n\n#  GSASL_FOUND - System has gnutls\n\n#  GSASL_INCLUDE_DIR - The gnutls include directory\n\n#  GSASL_LIBRARY - The libraries needed to use gnutls\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# in cache already\n",
+        "Line" : 28,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set GSASL_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/FindKerberos.cmake" : {
+      "ObjectId" : "11835fb931fad60d140db0150c11e27ca1cbab07",
+      "LastModified" : "2016-08-07T06:29:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find kerberos\n\n# Find the native KERBEROS includes and library\n\n#\n\n#  KERBEROS_INCLUDE_DIR - where to find krb5.h, etc.\n\n#  KERBEROS_LIBRARY    - List of libraries when using krb5.\n\n#  KERBEROS_FOUND        - True if krb5 found.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set KERBEROS_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/FindLibNuma.cmake" : {
+      "ObjectId" : "47a65f4992e2df537573049fba69f78dd7d4b3d8",
+      "LastModified" : "2016-08-07T06:29:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find LibNuma\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/FindLibhdfs3.cmake" : {
+      "ObjectId" : "7bd7c7c14ddd7da2629dbe1cf15cfd99a2f460fa",
+      "LastModified" : "2016-08-07T06:29:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find the Pivotal libhdfs3.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Linking against libhdfs3 also requires linking against gsasl and kerberos.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/QsProtobufGenerateCpp.cmake" : {
+      "ObjectId" : "de5de7a432eb3f43a93016ef2183d4a19fe571f2",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This function is partially based on a similar one from FindProtobuf.cmake,\n\n# but it adds the ability to scan .proto files for imports and automatically\n\n# set the proper dependencies.\n\n#\n\n#  QS_PROTOBUF_GENERATE_CPP(SRCS HDRS [PROTOFILES ...])\n\n#\n\n# - Example\n\n#\n\n# include(QsProtobufGenerateCpp)  NOTE: already included in /CMakeLists.txt\n\n# QsProtobufGenerateCpp(storage_AggregationOperationState_proto_srcs\n\n#                       storage_AggregationOperationState_proto_hdrs\n\n#                       AggregationOperationState.proto)\n\n# Requires CMake 2.6+\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Scan for other protos imported in the .proto file.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Note that this adds dependencies for the .proto file itself, as well as\n\n# for any proto imports and the protobuf library if we have to build it\n\n# ourselves.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Make a custom global target so that we have something that protos in\n\n# other directories can depend on for imports.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "compression/CMakeLists.txt" : {
+      "ObjectId" : "6d9263cba6257ebbf5b301fab8a3bc0447403366",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "expressions/CMakeLists.txt" : {
+      "ObjectId" : "5e43e4f1cd12aeada4972a1a3ba9aa99f1253f69",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "expressions/aggregation/CMakeLists.txt" : {
+      "ObjectId" : "de3930ec2b43f57a34d314b6d324620d4586ee31",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Submodule all-in-one library:\n",
+        "Line" : 236,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Unified executable to ammortize cost of linking.\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "expressions/predicate/CMakeLists.txt" : {
+      "ObjectId" : "90cda0b38b274aa35a09c156c593623fedaa7827",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Submodule all-in-one library:\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "expressions/scalar/CMakeLists.txt" : {
+      "ObjectId" : "6a03ffaa824338af247c1644cd8ff2c2257a315e",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Submodule all-in-one library:\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "expressions/table_generator/CMakeLists.txt" : {
+      "ObjectId" : "756b4259c6e47611ccb809de8c66835d2ed52d5a",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "expressions/window_aggregation/CMakeLists.txt" : {
+      "ObjectId" : "2fe1396b2fefc5dc8f385037f3582b7e348345de",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Submodule all-in-one library:\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Unified executable to ammortize cost of linking.\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "parser/CMakeLists.txt" : {
+      "ObjectId" : "c8a86a5d1f4d0d7c8847e8795fcc09793100413f",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Although flex option nounistd works fine for the generated cpp file, we need\n\n# to make sure this is also set for the header.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# TODO(chasseur): This might not be the exact version to test for.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Dependencies on generated sources.\n",
+        "Line" : 395,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# The dependency is on the header, but this picks up the generated sources\n\n# from the CMake environment.\n",
+        "Line" : 397,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Lexers generated by some versions of Flex use the C \"register\" keyword. This\n\n# supresses warnings about that for the lexer ONLY.\n",
+        "Line" : 402,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# GCC will make a warning for unsigned-signed comparisons which are inherent\n\n# in the lexer. For this, we turn off the sign compare.\n",
+        "Line" : 410,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "parser/tests/CMakeLists.txt" : {
+      "ObjectId" : "ae817b03dd922c6b6744d440d25bf3ff491d6496",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "query_execution/CMakeLists.txt" : {
+      "ObjectId" : "6e817aeaef2bf6cb68159d4752387273bce0540b",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "query_optimizer/CMakeLists.txt" : {
+      "ObjectId" : "17d6eb0490e639537e9831d07b4644f1755026ba",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/cost_model/CMakeLists.txt" : {
+      "ObjectId" : "ad48584c274a32106512372123530080f32cbcbd",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/expressions/CMakeLists.txt" : {
+      "ObjectId" : "03a82472a7a1b2a276f1abbdf44ce133c190be5d",
+      "LastModified" : "2018-05-21T21:47:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/logical/CMakeLists.txt" : {
+      "ObjectId" : "0fbbf713e9628f49ece59329822d2887eca08f6c",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 298,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/physical/CMakeLists.txt" : {
+      "ObjectId" : "437488a296ef054345b540c39363d8691617951e",
+      "LastModified" : "2018-05-21T21:47:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 340,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/resolver/CMakeLists.txt" : {
+      "ObjectId" : "adabf71e08a5ef8a8f950583d8016a8646be9ac3",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/rules/CMakeLists.txt" : {
+      "ObjectId" : "8465c896b02e751dc85a9ccf8cbc7415c07483f9",
+      "LastModified" : "2018-05-21T21:47:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 464,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/rules/tests/CMakeLists.txt" : {
+      "ObjectId" : "13f9eaca171bf9356a53e638a9fe4bc825f4d80a",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Unified test executable.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "query_optimizer/strategy/CMakeLists.txt" : {
+      "ObjectId" : "20a4eb4bfe2f4d779dd874f2b3c1f42638dbee60",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "query_optimizer/strategy/tests/CMakeLists.txt" : {
+      "ObjectId" : "1fa181a7213ad6a356faa5bd561b9bab8668a1fc",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Unified test executable.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "query_optimizer/tests/CMakeLists.txt" : {
+      "ObjectId" : "e806e66dd025ce214ab59e5e11256753e193fd8e",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "query_optimizer/tests/execution_generator/CMakeLists.txt" : {
+      "ObjectId" : "ebcb0b6c2ee9577ff00e827d4f941a8c2fa98520",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# No union test for the distributed version due to its nondeterminism.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Create the folders where the unit tests will store their data blocks for the\n\n# duration of their test.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "query_optimizer/tests/logical_generator/CMakeLists.txt" : {
+      "ObjectId" : "32e3626a7b8b6f794975b9575b94a2b4f5585f44",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "query_optimizer/tests/physical_generator/CMakeLists.txt" : {
+      "ObjectId" : "7c5f08c9d75b281f62ceb466d6e64eafa0ea22b8",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "query_optimizer/tests/resolver/CMakeLists.txt" : {
+      "ObjectId" : "ba7bfff2b35dd3f1d0da9b3a08ba785ab46792de",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "relational_operators/CMakeLists.txt" : {
+      "ObjectId" : "12fd0e7931360e0f8dd1897b8e0aaf29098465b9",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 643,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 680,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "storage/CMakeLists.txt" : {
+      "ObjectId" : "3ab1b2f4bf82e5decbd6b16c4ab0a9b988e521c3",
+      "LastModified" : "2018-06-05T05:15:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# See if mmap can be used to allocate Linux hugetlb pages.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Failing that, try FreeBSD superpages (a different name for the same feature).\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Failing that, try mmap without any special flags for big pages (still\n\n# preferable to malloc, because it gives us a page-aligned allocation that is\n\n# zeroed-out \"for free\").\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# CMAKE_VALIDATE_IGNORE_BEGIN\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CMAKE_VALIDATE_IGNORE_END\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# CMAKE_VALIDATE_IGNORE_BEGIN\n",
+        "Line" : 1008,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# CMAKE_VALIDATE_IGNORE_END\n",
+        "Line" : 1079,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 1172,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# CMAKE_VALIDATE_IGNORE_BEGIN\n",
+        "Line" : 1237,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# CMAKE_VALIDATE_IGNORE_END\n",
+        "Line" : 1244,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Tests:\n",
+        "Line" : 1271,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "third_party/patches/linenoise/CMakeLists.txt" : {
+      "ObjectId" : "f77a26e230d47dbfc4e023b2dda5884638b6cddf",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "third_party/src/farmhash/CMakeLists.txt" : {
+      "ObjectId" : "eac40de532bf291081d1cce588457e6ef66b7418",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Compile FarmHash with C++11 support.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check if __builtin_expect is available.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check endianness.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# TODO(chasseur): FarmHash conditionally compiles fast versions of hash\n\n# functions that use SSSE3, SSE4.1, SSE4.2, AES-NI, and AVX, where available,\n\n# which are turned on based on preprocessor macros defined by GCC and other\n\n# similar compilers (e.g. Clang, ICC) when those instructions sets are usable.\n\n# MSVC sets __AVX__ when AVX is available, but does NOT set symbols for any\n\n# other instruction set extensions optionally used by FarmHash, so building\n\n# with MSVC will fall back on generic x86 versions of some internal hashing\n\n# functions. Try to work out a portable way of detecting the other extensions\n\n# and enabling them under MSVC.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Supress GCC warnings about overflow in farmhash only.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "third_party/src/protobuf_cmake/CMakeLists.txt" : {
+      "ObjectId" : "7e08056be90caaeb8292c6f17335baa46b1a5c15",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This CMakeLists file allows building protobufs as part of the regular CMake\n\n# build process instead of using autotools (on UNIX) or Visual Studio projects\n\n# (on Windows). Note that the beta releases of protobufs 3.0 already use CMake\n\n# to manage builds for Visual Studio (and the CMake files may work on other\n\n# platforms). This file accomplishes the same thing for protobufs 2.6.1.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Quickstep is normally compiled with -Wall, but we disable some warnings ONLY\n\n# when compiling protobuf that would otherwise produce a flurry of warnings\n\n# during the build that have nothing to do with actual Quickstep code.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# For MSVC, just copy the premade config.h\n",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# The premade config.h is set up to use non-standard extensions that are\n\n# now deprecated. This allows them to continue being used.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Everywhere else, do actual platform checks and make config.h from template.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Add the \"lib\" prefix for generated .lib outputs.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# When building with \"make\", \"lib\" prefix will be added automatically by\n\n# the build tool.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Library sources taken from src/Makefile.am in protobuf source tree.\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# protoc compiler executable\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "third_party/src/tmb/CMakeLists.txt" : {
+      "ObjectId" : "14046753a72ce0105810f97120e51323ca306e67",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare TMB project.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Look for flags to enable C++11 support, if any.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Disable warnings about using standard C library functions on Windows.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Turn on all warnings.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We don't do -Wall on MSVC, because that is interpreted as /W4, which in\n\n# turn implies /WX, meaning that warnings are treated as errors.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# For release builds, disable warnings about unused variables that are only\n\n# used in assertions.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Find the system's threading library.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Find necessary third-party libraries.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Check for necessary POSIX I/O syscalls.\n",
+        "Line" : 141,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Check for fdatasync() syscall. It is part of the POSIX realtime\n\n# extensions, not the core spec. Linux has it, for example, but FreeBSD\n\n# does not.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Alternately, check for F_FULLFSYNC fcntl on Mac.\n",
+        "Line" : 181,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# Try to find a way to sync stdio file streams.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# VoltDB C++ bindings.\n",
+        "Line" : 328,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Compile Java stored procedures.\n",
+        "Line" : 337,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# Compile VoltDB catalog.\n",
+        "Line" : 357,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Include path for TMB.\n",
+        "Line" : 384,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Where TMB libraries will be found.\n",
+        "Line" : 389,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Build TMB library.\n",
+        "Line" : 392,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Build the tmb_net_server executable if enabled.\n",
+        "Line" : 424,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Tests\n",
+        "Line" : 436,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Internal components\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Message Bus Implementations\n",
+        "Line" : 447,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "third_party/src/tmb/benchmarks/CMakeLists.txt" : {
+      "ObjectId" : "d21548910722298015463bcfb5e7054b8f39ae31",
+      "LastModified" : "2018-06-19T01:20:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check for some version pthread_setaffinity_np() we can use to affinitize\n\n# threads.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "third_party/src/tmb/cmake/FindGrpc++.cmake" : {
+      "ObjectId" : "371d870e70e70115f28780271d0277768ddc9a68",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find grpc core library and c++ bindings (grpc++).\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Based on a similar function from FindProtobuf.cmake. The variables SRCS and\n\n# HDRS in the calling environment will be set to the generated C++ source and\n\n# header files, respectively. Files will be generated in the build directory\n\n# under OUTPUT_PATH.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# grpc++ needs proto3.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Include path for C core library.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Include path for C++ bindings.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Core library.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Portable run time library (must also link against this).\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# C++ bindings library.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Plugin for protoc.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "third_party/src/tmb/cmake/FindLevelDB.cmake" : {
+      "ObjectId" : "0b0a76114187607d8ec27cb43748d503fcf00d98",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find LevelDB.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "third_party/src/tmb/cmake/FindProtobuf3.cmake" : {
+      "ObjectId" : "9a5ad4a02f5d821cb8666e558fb13dc03dc9d810",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find Protocol Buffers supporting proto3 syntax.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Specifically look for map.h, which is a new header for the proto3 syntax.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "third_party/src/tmb/cmake/FindSQLite3.cmake" : {
+      "ObjectId" : "98e78c6f2b22fa4190e3f44248b30ab746e686e1",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find SQLite 3.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "third_party/src/tmb/cmake/FindVoltDB.cmake" : {
+      "ObjectId" : "0b3c5a6fbfc623980ad3266d5166e004c944201a",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find VoltDB C++ client library.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Extra libraries needed, bundled with VoltDB C++.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "third_party/src/tmb/cmake/FindZookeeper.cmake" : {
+      "ObjectId" : "e8d1877debb1908eb235e7c59b688fdfe6e56e54",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Module to find Zookeeper C Binding.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "threading/CMakeLists.txt" : {
+      "ObjectId" : "fb8b4d4e6a7156147e8c6c4bfa1f8c30b33c9f5f",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Find a threading library we can use.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Try to find some yield function we can use.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Try to find a thread-affinitization function that we can use. First, try the\n\n# Linux version of pthread_setaffinity_np().\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Next, try the FreeBSD version of pthread_setaffinity_np(). It is almost\n\n# identical to the Linux version, except that it is in the special header\n\n# pthread_np.h, and the CPU set type is called cpuset_t instead of cpu_set_t.\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Finally, try the NetBSD version of pthread_setaffinity_np(). Unlike Linux or\n\n# FreeBSD, NetBSD's version of cpuset_t is dynamically allocated/freed on the\n\n# heap by some special functions in sched.h.\n",
+        "Line" : 225,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 375,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Tests:\n",
+        "Line" : 388,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "transaction/CMakeLists.txt" : {
+      "ObjectId" : "80a741edc0453754b27cff26a7b1dfbe0b731101",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "types/CMakeLists.txt" : {
+      "ObjectId" : "328ad9e7681bb9b953eab8a1e2bb3e681c0d1efe",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 225,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We intentionally test self-move of TypedValues in the unittest. This disables\n\n# compiler warnings about self-moves in the test ONLY.\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "types/containers/CMakeLists.txt" : {
+      "ObjectId" : "60b14ea88188b1544ca1fe0ba1567b49337c5f84",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "types/operations/CMakeLists.txt" : {
+      "ObjectId" : "88fd2f95bcf8cb6490c3996bf52ed13936919d38",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "types/operations/binary_operations/CMakeLists.txt" : {
+      "ObjectId" : "87b0b7a5d5beaedba5457ed428f748bf5e762b7b",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Unified test executable.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "types/operations/comparisons/CMakeLists.txt" : {
+      "ObjectId" : "872259f8969f9a06bb5ca56211848b3b6e8af56e",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "types/operations/unary_operations/CMakeLists.txt" : {
+      "ObjectId" : "13442b9b9d65ed5455833031dd1bcfcd8efd6b73",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests:\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Unified test executable.\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "types/port/CMakeLists.txt" : {
+      "ObjectId" : "cb16c324ef241c3f95ab482b3f7b1ab819395c40",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# strnlen, gmtime_r, and localtime_r are POSIX extensions, not strictly ANSI C.\n\n# timegm is a nonstandard extension present on Linux and the BSDs, but missing\n\n# on other systems.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Try Windows gmtime_s\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Try Windows localtime_s\n",
+        "Line" : 39,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Tests\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Benchmarks\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "utility/CMakeLists.txt" : {
+      "ObjectId" : "a429947ac4c88d00adfd1dfd1855bdeffe837c1c",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Look for GCC-style builtins (also in clang, ICC, and possibly others) that\n\n# translate to fast assembly instructions for fancy bitwise operations.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Look for c++11 std::align (still not available in G++ 4.8.3).\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Try to find some version of malloc that we can use to do aligned allocations.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# TCMalloc provides its own version of posix_memalign we can use directly.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Try C11's aligned_alloc.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Try posix_memalign\n",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Try memalign (now deprecated in favor of posix_memalign)\n",
+        "Line" : 92,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Try windows _aligned_malloc\n",
+        "Line" : 106,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Check for sysconf on Linux\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Check for POSIX.1-2008 memstreams.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Note that TextBasedTest.{hpp, cpp} are not in this static library.\n\n# Any tests that use them need to include them in the\n\n# executable.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 220,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Module all-in-one library:\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Tests:\n",
+        "Line" : 402,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Benchmarks:\n",
+        "Line" : 526,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "utility/lip_filter/CMakeLists.txt" : {
+      "ObjectId" : "497e32137ef34fa5ab23c57b9d27bb7e416eefab",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Declare micro-libs:\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link dependencies:\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "yarn/CMakeLists.txt" : {
+      "ObjectId" : "6a1ea7b07e1b08bc83959ecc34b0ef5f98ee154e",
+      "LastModified" : "2018-04-27T22:18:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 61
+  },
+  "ElapsedTime" : 1927
+}

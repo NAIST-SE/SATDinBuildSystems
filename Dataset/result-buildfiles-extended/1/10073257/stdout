@@ -1,0 +1,1022 @@
+{
+  "Repository" : "10073257",
+  "Revision" : "HEAD",
+  "ObjectId" : "1f66062c814403c385990c1f3ae4a4cd77dc6286",
+  "CommitTime" : "2019-04-15T15:27:25Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "c9dddb547795259c4db7ceb7279bc2f34e19f5d7",
+      "LastModified" : "2019-04-15T15:27:25Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n\n#\n\n# Generally, this CMakeLists.txt will find all the dependencies for Calamares\n\n# and complain appropriately. See below (later in this file) for CMake-level\n\n# options. There are some \"secret\" options as well:\n\n#\n\n#   SKIP_MODULES    : a space or semicolon-separated list of directory names\n\n#                     under src/modules that should not be built.\n\n#   USE_<foo>       : fills in SKIP_MODULES for modules called <foo>-<something>\n\n#   BUILD_<foo>     : choose additional things to build\n\n#   DEBUG_<foo>     : special developer flags for debugging\n\n#\n\n# Example usage:\n\n#\n\n#   cmake . -DSKIP_MODULES=\"partition luksbootkeycfg\"\n\n#\n\n# One special target is \"show-version\", which can be built\n\n# to obtain the version number from here.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set to 0 during release cycle, 1 during development\n",
+        "Line" : 43,
+        "CharPositionInLine" : 31
+      },
+      "2" : {
+        "Text" : "### OPTIONS\n\n#\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "### USE_*\n\n#\n\n# By convention, when there are multiple modules that implement similar\n\n# functionality, and it only makes sense to have **at most one** of them\n\n# enabled at any time, those modules are named <foo>-<implementation>.\n\n# For example, services-systemd and services-openrc.\n\n#\n\n# Setting up SKIP_MODULES to ignore \"the ones you don't want\" can be\n\n# annoying and error-prone (e.g. if a new module shows up). The USE_*\n\n# modules provide a way to do automatic selection. To pick exactly\n\n# one of the implementations from group <foo>, set USE_<foo> to the\n\n# name of the implementation. If USE_<foo> is unset, or empty, then\n\n# all the implementations are enabled (this just means they are\n\n# **available** to `settings.conf`, not that they are used).\n\n#\n\n# Currently, only USE_services is in use (to pick only one of the two\n\n# modules, systemd or openrc).\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "### Calamares application info\n\n#\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "### Transifex (languages) info\n\n#\n\n# complete = 100% translated,\n\n# good = nearly complete (use own judgement, right now >= 75%)\n\n# ok = incomplete (more than 25% untranslated, at least 5% translated),\n\n# bad = 0% translated, placeholder in tx; these are not included.\n\n#\n\n# Language en (source language) is added later. It isn't listed in\n\n# Transifex either. Get the list of languages and their status\n\n# from https://transifex.com/calamares/calamares/ , or (preferably)\n\n# use ci/txstats.py to automatically check.\n\n#\n\n# When adding a new language, take care that it is properly loaded\n\n# by the translation framework. Languages with alternate scripts\n\n# (sr@latin in particular) may need special handling in CalamaresUtils.cpp.\n\n#\n\n# TODO: drop the es_ES translation from Transifex\n\n# TODO: move eo (Esperanto) to _ok once Qt can actually create a\n\n#       locale for it.\n\n#\n\n# NOTE: when updating the list from Transifex, copy these four lines\n\n#       and prefix each variable name with \"p\", so that the automatic\n\n#       checks for new languages and misspelled ones are done (that is,\n\n#       copy these four lines to four backup lines, add \"p\", and then update\n\n#       the original four lines with the current translations).\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "### Required versions\n\n#\n\n# See DEPENDENCIES section below.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "### CMAKE SETUP\n\n#\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# CMake 3.9, 3.10 compatibility\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "### C++ SETUP\n\n#\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Debugging flags\n\n#\n\n# Possible debugging flags are:\n\n#  - DEBUG_TIMEZONES draws latitude and longitude lines on the timezone\n\n#    widget and enables chatty debug logging, for dealing with the timezone\n\n#    location database.\n\n#  - DEBUG_FILESYSTEMS does extra logging and checking when looking at\n\n#    partition configuration. Lists known KPMCore FS types.\n\n#\n\n# The flags listed here are enabled in Debug builds. By default, none\n\n# are **actually** listed, because they're for such specific scenarios.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# DEBUG_TIMEZONES\n\n# DEBUG_FILESYSTEMS\n",
+        "Line" : 162,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Add those flags to the CXX flags in a suitable format.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Clang warnings: doing *everything* is counter-productive, since it warns\n\n# about things which we can't fix (e.g. C++98 incompatibilities, but\n\n# Calamares is C++14).\n",
+        "Line" : 179,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Third-party code where we don't care so much about compiler warnings\n\n# (because it's uncomfortable to patch) get different flags; use\n\n#       mark_thirdparty_code( <file> [<file>...] )\n\n# to switch off warnings for those sources.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Use mark_thirdparty_code() to reduce warnings from the compiler\n\n# on code that we're not going to fix. Call this with a list of files.\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "### DEPENDENCIES\n\n#\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Find it anyway, for dependencies-reporting\n",
+        "Line" : 248,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Find ECM once, and add it to the module search path; Calamares\n\n# modules that need ECM can do\n\n#   find_package(ECM ${ECM_VERSION} REQUIRED NO_MODULE),\n\n# no need to mess with the module path after.\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# ECM implies that we can build the tests, too\n",
+        "Line" : 266,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "### Transifex Translation status\n\n#\n\n# Construct language lists for use. If there are p_tx* variables,\n\n# then run an extra cmake-time check for consistency of the old\n\n# (p_tx*) and new (_tx*) lists.\n\n#\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Gone in new list\n",
+        "Line" : 324,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# New in list\n",
+        "Line" : 333,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# i18n tools\n",
+        "Line" : 359,
+        "CharPositionInLine" : 26
+      },
+      "24" : {
+        "Text" : "### Example Distro\n\n#\n\n# For testing purposes Calamares includes a very, very, limited sample\n\n# distro called \"Generic\". The root filesystem of \"Generic\" lives in\n\n# data/example-root and can be squashed up as part of the build, so\n\n# that a pure-upstream run of ./calamares -d from the build directory\n\n# (with all the default settings and configurations) can actually\n\n# do an complete example run.\n\n#\n\n# Some binaries from the build host (e.g. /bin and /lib) are also\n\n# squashed into the example filesystem.\n\n#\n\n# To build the example distro (for use by the default, example,\n\n# unsquashfs module), build the target 'example-distro', eg.:\n\n#\n\n#   make example-distro\n\n#\n",
+        "Line" : 362,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# based on the build host. If /lib64 exists, assume it is needed.\n\n# Collect directories needed for a minimal binary distro,\n\n# Note that the last path component is added to the root, so\n\n# if you add /usr/sbin here, it will be put into /sbin_1.\n\n# Add such paths to /etc/profile under ${src_fs}.\n",
+        "Line" : 385,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# Doesn't list mksquashfs as an optional dep, though, because it\n\n# hasn't been sent through the find_package() scheme.\n\n#\n\n# \"http://tldp.org/HOWTO/SquashFS-HOWTO/creatingandusing.html\"\n",
+        "Line" : 407,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "### CALAMARES PROPER\n\n#\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# additional info for non-release builds\n",
+        "Line" : 422,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Special target for not-RC (e.g. might-be-release) builds.\n\n# This is used by the release script to get the version.\n",
+        "Line" : 436,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# enforce using constBegin, constEnd for const-iterators\n",
+        "Line" : 445,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# set paths\n",
+        "Line" : 448,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Better default installation paths: GNUInstallDirs defines\n\n# CMAKE_INSTALL_FULL_SYSCONFDIR to be CMAKE_INSTALL_PREFIX/etc by default\n\n# but we really want /etc\n",
+        "Line" : 453,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# make predefined install dirs available everywhere\n",
+        "Line" : 460,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# make uninstall support\n",
+        "Line" : 463,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Early configure these files as we need them later on\n",
+        "Line" : 470,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Add all targets to the build-tree export set\n",
+        "Line" : 481,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Export the package for use from the build-tree\n\n# (this registers the build-tree with a global CMake-registry)\n",
+        "Line" : 487,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Create a CalamaresBuildTreeSettings.cmake file for the use from the build tree\n",
+        "Line" : 491,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Create the CalamaresConfig.cmake and CalamaresConfigVersion files\n",
+        "Line" : 494,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Install the cmake files\n",
+        "Line" : 501,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Install the export set for use with the install-tree\n",
+        "Line" : 517,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# uninstall target\n",
+        "Line" : 557,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "### CMAKE SUMMARY REPORT\n\n#\n",
+        "Line" : 568,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 44
+    },
+    "CMakeModules/BoostPython3.cmake" : {
+      "ObjectId" : "c128b58f107447ca3edac281415df8be37751fda",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# On Ubuntu 14.04, the libboost-python1.54-dev package comes with one library\n\n# for each Python version:\n\n# libboost_python-py27.so\n\n# libboost_python-py33.so\n\n# libboost_python-py34.so\n\n#\n\n# Boost upstream however installs Boost.Python3 libboost_python3.so, which is\n\n# what FindBoost.cmake is looking for. It looks for a library named\n\n# \"libboost_${component}.so\".\n\n#\n\n# On Gentoo instead, the >=dev-libs/boost-1.54 package provides boost library\n\n# with a name like:\n\n# libboost_python-2.7.so\n\n# libboost_python-3.3.so\n\n# libboost_python-3.4.so\n\n# depending on what python's targets you selected during install\n\n#\n\n# find_boost_python3() tries to find the package with different component\n\n# names. By default it tries \"python3\", \"python-py$suffix\" and\n\n# \"python-$dotsuffix\", where suffix is based on the `python_version` argument.\n\n# One can supply a custom component name by setting the\n\n# `CALAMARES_BOOST_PYTHON3_COMPONENT` variable at CMake time.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# turns \"3.4.123abc\" into \"34\"\n",
+        "Line" : 45,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# The following loop changes the searched name for Gentoo based distributions\n\n# turns \"3.4.123abc\" into \"3.4\"\n",
+        "Line" : 50,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# This is superfluous, but allows proper reporting in the features list\n",
+        "Line" : 58,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "CMakeModules/CMakeColors.cmake" : {
+      "ObjectId" : "97739627d65bb65d130b941286871ef74d6907c3",
+      "LastModified" : "2017-08-02T15:32:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMakeModules/CMakeDateStamp.cmake" : {
+      "ObjectId" : "0b6a3896f75724746abfd9d40e8176f4f431461b",
+      "LastModified" : "2014-06-04T14:35:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMakeModules/CMakeVersionSource.cmake" : {
+      "ObjectId" : "826546807282e67f47d283b5e393ee92a7e8fc20",
+      "LastModified" : "2014-06-04T14:35:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Try to identify the current development source version.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMakeModules/CalamaresAddBrandingSubdirectory.cmake" : {
+      "ObjectId" : "78330e2450234e5ff9b9565171bf9000ceee833e",
+      "LastModified" : "2018-09-14T09:33:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n\n#\n\n# Support macros for creating Calamares branding components.\n\n#\n\n# Calamares branding components have two parts:\n\n# - a branding.desc file that tells Calamares how to describe the product\n\n#   (e.g. strings like \"Generic GNU/Linux\") and the name of a QML file\n\n#   (the \"slideshow\") that is displayed during installation.\n\n# - the QML files themselves, plus supporting images etc.\n\n#\n\n# Branding components can be created inside the Calamares source tree\n\n# (there is one example the `default/` branding, which is also connected\n\n# to the default configuration shipped with Calamares), but they can be\n\n# built outside of, and largely independently of, Calamares by using\n\n# these CMake macros.\n\n#\n\n# See the calamares-examples repository for more examples.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Usage calamares_add_branding( <name> [DIRECTORY <dir>] [SUBDIRECTORIES <dir> ...])\n\n#\n\n# Adds a branding component to the build:\n\n# - the component's top-level files are copied into the build-dir;\n\n#   CMakeLists.txt is excluded from the glob.\n\n# - the component's top-level files are installed into the component branding dir\n\n#\n\n# The branding component lives in <dir> if given, otherwise the\n\n# current source directory. The branding component is installed\n\n# with the given <name>, which is usually the name of the\n\n# directory containing the component, and which must match the\n\n# *componentName* in `branding.desc`.\n\n#\n\n# If SUBDIRECTORIES are given, then those are copied (each one level deep)\n\n# to the installation location as well, preserving the subdirectory name.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Usage calamares_add_branding_translations( <name> [DIRECTORY <dir>])\n\n#\n\n# Adds the translations for a branding component to the build:\n\n# - the component's lang/ directory is scanned for .ts files\n\n# - the component's translations are installed into the component branding dir\n\n#\n\n# Translation files must be called calamares-<name>_<lang>.ts . Optionally\n\n# the lang/ dir is found in the given <dir> instead of the current source\n\n# directory.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Usage calamares_add_branding_subdirectory( <dir> [NAME <name>] [SUBDIRECTORIES <dir> ...])\n\n#\n\n# Adds a branding component from a subdirectory:\n\n# - if there is a CMakeLists.txt, use that (that CMakeLists.txt should\n\n#   call suitable calamares_add_branding() and other macros to install\n\n#   the branding component).\n\n# - otherwise assume a \"standard\" setup with top-level files and a lang/\n\n#   subdirectory for translations.\n\n#\n\n# If NAME is given, this is used instead of <dir> as the name of\n\n# the branding component. This is needed if <dir> is more than\n\n# one level deep, or to rename a component as it gets installed.\n\n#\n\n# If SUBDIRECTORIES are given, they are relative to <dir>, and are\n\n# copied (one level deep) to the install location as well.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "CMakeModules/CalamaresAddLibrary.cmake" : {
+      "ObjectId" : "d5d73498970f5aefcd0d75ebba8183fe0d00c8eb",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n\n#\n\n# Support functions for building plugins.\n\n#\n\n# Usage:\n\n#\n\n# calamares_add_library(\n\n#   library-name\n\n#   EXPORT_MACRO macro-name\n\n#   TARGET_TYPE <STATIC|MODULE|...>\n\n#   EXPORT export-name\n\n#   VERSION version\n\n#   SOVERSION version\n\n#   INSTALL_BINDIR dir\n\n#   RESOURCES resource-file\n\n#   SOURCES source-file...\n\n#   UI ui-file...\n\n#   LINK_LIBRARIES lib...\n\n#   LINK_PRIVATE_LIBRARIES lib...\n\n#   COMPILE_DEFINITIONS def...\n\n#   [NO_INSTALL]\n\n#   [NO_VERSION]\n\n# )\n\n#\n\n# The COMPILE_DEFINITIONS are set on the resulting module with a suitable\n\n# flag (i.e. `-D`) so only state the name (optionally, also the value)\n\n# without a `-D` prefixed to it. Pass in a CMake list as needed.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# parse arguments (name needs to be saved before passing ARGN into the macro)\n",
+        "Line" : 49,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# qt stuff\n",
+        "Line" : 59,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# add resources from current dir\n",
+        "Line" : 68,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# add target\n",
+        "Line" : 75,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# default\n",
+        "Line" : 80,
+        "CharPositionInLine" : 11
+      },
+      "6" : {
+        "Text" : "# definitions - can this be moved into set_target_properties below?\n",
+        "Line" : 84,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# add link targets\n",
+        "Line" : 97,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# add soversion\n",
+        "Line" : 112,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# make installation optional, maybe useful for dummy plugins one day\n",
+        "Line" : 131,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 10
+    },
+    "CMakeModules/CalamaresAddModuleSubdirectory.cmake" : {
+      "ObjectId" : "74ff640d9ec67bc12c0b41c765373683fe0e204d",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n\n#\n\n# Function and support code for adding a Calamares module (either a Qt / C++ plugin,\n\n# or a Python module, or whatever) to the build.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Convenience function to indicate that a module has been skipped\n\n# (optionally also why). Call this in the module's CMakeLists.txt\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If this subdirectory has a CMakeLists.txt, we add_subdirectory it...\n",
+        "Line" : 51,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Module has indicated it should be skipped, show that in\n\n# the calling CMakeLists (which is src/modules/CMakeLists.txt normally).\n",
+        "Line" : 55,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# ...otherwise, we look for a module.desc.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Read module.desc, check that the interface type is supported.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# We glob all the files inside the subdirectory, and we make sure they are\n\n# synced with the bindir structure and installed.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# We copy over the lang directory, if any\n",
+        "Line" : 113,
+        "CharPositionInLine" : 12
+      },
+      "8" : {
+        "Text" : "# Module disabled due to missing dependencies / unsupported interface\n",
+        "Line" : 123,
+        "CharPositionInLine" : 12
+      },
+      "9" : {
+        "Text" : "# Check any config files for basic correctness\n",
+        "Line" : 131,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 10
+    },
+    "CMakeModules/CalamaresAddPlugin.cmake" : {
+      "ObjectId" : "1d749d51c350b1c023181807e765b1a97ef9f49c",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n\n#\n\n# Convenience function for creating a C++ (qtplugin) module for Calamares.\n\n# This function provides cmake-time feedback about the plugin, adds\n\n# targets for compilation and boilerplate information, and creates\n\n# a module.desc with standard values if none is provided (which only\n\n# happens for very unusual plugins).\n\n#\n\n# Usage:\n\n#\n\n# calamares_add_plugin(\n\n#   module-name\n\n#   TYPE <view|job>\n\n#   EXPORT_MACRO macro-name\n\n#   SOURCES source-file...\n\n#   UI ui-file...\n\n#   LINK_LIBRARIES lib...\n\n#   LINK_PRIVATE_LIBRARIES lib...\n\n#   COMPILE_DEFINITIONS def...\n\n#   RESOURCES resource-file\n\n#   [NO_INSTALL]\n\n#   [SHARED_LIB]\n\n#   [EMERGENCY]\n\n# )\n\n#\n\n# The COMPILE_DEFINITIONS are set on the resulting module with a suitable\n\n# flag (i.e. `-D`) so only state the name (optionally, also the value)\n\n# without a `-D` prefixed to it.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# parse arguments ( name needs to be saved before passing ARGN into the macro )\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Not INSTALL_CONFIG\n",
+        "Line" : 78,
+        "CharPositionInLine" : 12
+      },
+      "3" : {
+        "Text" : "# create target name once for convenience\n",
+        "Line" : 90,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# determine target type\n",
+        "Line" : 93,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "CMakeModules/CalamaresAddTranslations.cmake" : {
+      "ObjectId" : "4892cc0f9755f1ec094529428f5b2f4f13977b1f",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n\n#\n\n# This file has not yet been documented for use outside of Calamares itself.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Extract the executable name\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Weird, probably now uses Qt5::rcc which is wrong too\n",
+        "Line" : 34,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# Try an empty RCC file with explicit format-version\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Supported: force to the reproducible version\n",
+        "Line" : 46,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# Older Qt versions (5.7, 5.8) don't support setting the\n\n# rcc format-version, so won't be reproducible if they\n\n# default to version 2.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# Internal macro for adding the C++ / Qt translations to the\n\n# build and install tree. Should be called only once, from\n\n# src/calamares/CMakeLists.txt.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# calamares and qt language files\n",
+        "Line" : 67,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "## HACK HACK HACK - around rcc limitations to allow out of source-tree building\n",
+        "Line" : 81,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Copy the QRC file to the output directory\n",
+        "Line" : 87,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Run the resource compiler (rcc_options should already be set)\n",
+        "Line" : 94,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Internal macro for Python translations\n\n#\n\n# Translations of the Python modules that don't have their own\n\n# lang/ subdirectories -- these are collected in top-level\n\n# lang/python/<lang>/LC_MESSAGES/python.mo\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Installs a directory containing language-code-labeled subdirectories with\n\n# gettext data into the appropriate system directory. Allows renaming the\n\n# .mo files during install to avoid namespace clashes.\n\n#\n\n# install_calamares_gettext_translations(\n\n#   NAME <name of module, for human use>\n\n#   SOURCE_DIR path/to/lang\n\n#   FILENAME <name of file.mo>\n\n#   [RENAME <new-name of.mo>]\n\n# )\n\n#\n\n# For all of the (global) translation languages enabled for Calamares,\n\n# try installing $SOURCE_DIR/$lang/LC_MESSAGES/<filename>.mo into the\n\n# system gettext data directory (e.g. share/locale/), possibly renaming\n\n# filename.mo to renamed.mo in the process.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# parse arguments ( name needs to be saved before passing ARGN into the macro )\n",
+        "Line" : 136,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Global\n",
+        "Line" : 156,
+        "CharPositionInLine" : 56
+      },
+      "15" : {
+        "Text" : "# TODO: make translations available in build dir too, for\n\n#       translation when running calamares -d from builddir.\n",
+        "Line" : 167,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 16
+    },
+    "CMakeModules/FindCrypt.cmake" : {
+      "ObjectId" : "d17d701780ba41f2adef2abc31b60913e92d8b4e",
+      "LastModified" : "2017-09-13T20:32:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find libcrypt\n\n# Find the libcrypt includes and the libcrypt libraries\n\n# This module defines\n\n# LIBCRYPT_INCLUDE_DIR, root crypt include dir. Include crypt with crypt.h\n\n# LIBCRYPT_LIBRARY, the path to libcrypt\n\n# LIBCRYPT_FOUND, whether libcrypt was found\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FreeBSD has crypt(3) declared in unistd.h, which lives in\n\n# libc; the libcrypt found here is not used.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "CMakeModules/FindLIBPARTED.cmake" : {
+      "ObjectId" : "97e7d975871433e566dc096ae4e05b4ece7726a1",
+      "LastModified" : "2017-08-02T15:32:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (C) 2008,2010,2011 by Volker Lanz <vl@fidra.de>\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n#\n\n# 1. Redistributions of source code must retain the above copyright\n\n#    notice, this list of conditions and the following disclaimer.\n\n# 2. Redistributions in binary form must reproduce the above copyright\n\n#    notice, this list of conditions and the following disclaimer in the\n\n#    documentation and/or other materials provided with the distribution.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR\n\n# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES\n\n# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n\n# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,\n\n# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT\n\n# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF\n\n# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# KDE adds -ansi to the C make flags, parted headers use GNU extensions, so \n\n# undo that\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# parted < 3.0\n",
+        "Line" : 54,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : "# parted != 3.0\n",
+        "Line" : 55,
+        "CharPositionInLine" : 84
+      },
+      "CommentCount" : 5
+    },
+    "CMakeModules/FindLibPWQuality.cmake" : {
+      "ObjectId" : "84136f5ad526b60806ed4543939a9bb0a5c3f6cd",
+      "LastModified" : "2018-01-24T13:21:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate libpwquality\n\n#   https://github.com/libpwquality/libpwquality\n\n#\n\n# This module defines\n\n#  LibPWQuality_FOUND\n\n#  LibPWQuality_LIBRARIES, where to find the library\n\n#  LibPWQuality_INCLUDE_DIRS, where to find pwquality.h\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMakeModules/FindPythonQt.cmake" : {
+      "ObjectId" : "519e1c93eeafe66c99207aa349ae9069d631c357",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find PythonQt\n\n#\n\n# Sets PYTHONQT_FOUND, PYTHONQT_INCLUDE_DIR, PYTHONQT_LIBRARY, PYTHONQT_LIBRARIES\n\n#\n\n# Also sets PYTHONQT_INCLUDE_DIRS to add whatever directories\n\n#   that are needed for extensions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Python is required\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Cut X.Y[.Z] down to just X.Y\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# XXX Since PythonQt 3.0 is not yet cmakeified, depending\n\n#     on how PythonQt is built, headers will not always be\n\n#     installed in \"include/PythonQt\". That is why \"src\"\n\n#     is added as an option. See [1] for more details.\n\n#     [1] https://github.com/commontk/CTK/pull/538#issuecomment-86106367\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Minimum v3.1 is needed\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# On linux, also find libutil\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# All upper case _FOUND variable is maintained for backwards compatibility.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Currently CMake'ified PythonQt only supports building against a python Release build.\n\n# This applies independently of CTK build type (Release, Debug, ...)\n",
+        "Line" : 155,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 8
+    },
+    "CMakeModules/FindYAMLCPP.cmake" : {
+      "ObjectId" : "1ec9798d594b378435d19b21e0db400148f1cbbe",
+      "LastModified" : "2018-01-24T13:21:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate yaml-cpp\n\n#\n\n# This module defines\n\n#  YAMLCPP_FOUND, if false, do not try to link to yaml-cpp\n\n#  YAMLCPP_LIBRARY, where to find yaml-cpp\n\n#  YAMLCPP_INCLUDE_DIR, where to find yaml.h\n\n#\n\n# By default, the dynamic libraries of yaml-cpp will be found. To find the static ones instead,\n\n# you must set the YAMLCPP_STATIC_LIBRARY variable to TRUE before calling find_package(YamlCpp ...).\n\n#\n\n# If yaml-cpp is not installed in a standard path, you can use the YAMLCPP_DIR CMake variable\n\n# to tell CMake where yaml-cpp is.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# attempt to find static library first if this is set\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# find the yaml-cpp include directory\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Fink\n\n# DarwinPorts\n\n# Blastwave\n",
+        "Line" : 27,
+        "CharPositionInLine" : 32
+      },
+      "4" : {
+        "Text" : "# find the yaml-cpp library\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set YAMLCPP_FOUND to TRUE if all listed variables are TRUE\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "CMakeModules/IncludeKPMCore.cmake" : {
+      "ObjectId" : "4b4b8b3f2908dfb01bb214b0672b78cd668bdfe7",
+      "LastModified" : "2018-01-24T13:21:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Shared CMake core for finding KPMCore\n\n#\n\n# This is wrapped into a CMake include file because there's a bunch of\n\n# pre-requisites that need searching for before looking for KPMCore.\n\n# If you just do find_package( KPMCore ) without finding the things\n\n# it links against first, you get CMake errors.\n\n#\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lang/CMakeLists.txt" : {
+      "ObjectId" : "37ea8356caacf76a159db10fb11d44540461c0dd",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === This file is part of Calamares - <https://github.com/calamares> ===\n\n#\n\n#   Calamares is free software: you can redistribute it and/or modify\n\n#   it under the terms of the GNU General Public License as published by\n\n#   the Free Software Foundation, either version 3 of the License, or\n\n#   (at your option) any later version.\n\n#\n\n#   Calamares is distributed in the hope that it will be useful,\n\n#   but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n\n#   GNU General Public License for more details.\n\n#\n\n#   You should have received a copy of the GNU General Public License\n\n#   along with Calamares. If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n#   SPDX-License-Identifier: GPL-3.0+\n\n#   License-Filename: LICENSE\n\n#\n\n###\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "c29a866d8ca186a00ca214432af859d4b12c1974",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# library\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# all things qml\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# application\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# plugins\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# branding components\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/branding/CMakeLists.txt" : {
+      "ObjectId" : "b03127e3975464ad8add765c17ce0606a46948a0",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/calamares/CMakeLists.txt" : {
+      "ObjectId" : "e1f8e4236e2d382d1ce210c819e3b89bd44b7382",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Translations\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't install, it's just for enable_testing\n",
+        "Line" : 75,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "src/libcalamares/CMakeLists.txt" : {
+      "ObjectId" : "a7dd1c0feecebd06327eb30270e3f73c5f3b50d8",
+      "LastModified" : "2019-04-04T13:58:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make symlink lib/calamares/libcalamares.so to lib/libcalamares.so.VERSION so\n\n# lib/calamares can be used as module path for the Python interpreter.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Install header files\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/libcalamaresui/CMakeLists.txt" : {
+      "ObjectId" : "80220da64805e853497dfaa27dffe27dbd204ef9",
+      "LastModified" : "2019-04-15T13:20:08Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Don't warn about third-party sources\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# *_DIRS because we also use extensions\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "src/modules/CMakeLists.txt" : {
+      "ObjectId" : "0a8d1db70eccc752fdce8bf3668a9632c0a9b49b",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The variable SKIP_MODULES can be set to skip particular modules;\n\n# individual modules can also decide they must be skipped (e.g. OS-specific\n\n# modules, or ones with unmet dependencies). Collect the skipped modules\n\n# in this list.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Handle the USE_<foo> variables by looking for subdirectories\n\n# with a <foo>-<implementation> kind of name.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# This is *also* done in top-level, so list is displayed\n\n# both before and after the feature summary.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/modules/contextualprocess/CMakeLists.txt" : {
+      "ObjectId" : "f75946b583b0de9909a431623593a4686a4071f6",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Builds it a second time\n",
+        "Line" : 14,
+        "CharPositionInLine" : 38
+      },
+      "CommentCount" : 1
+    },
+    "src/modules/dracutlukscfg/CMakeLists.txt" : {
+      "ObjectId" : "5504136c306ca38f07864b13e9d030cdb8eb454e",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/dummycpp/CMakeLists.txt" : {
+      "ObjectId" : "0841eaa2b5c8324db922479c4bb4aeeb3371c809",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/finished/CMakeLists.txt" : {
+      "ObjectId" : "6482fb2cd0a8f2d1aa8efe55d6cb7e19795ff9de",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/fsresizer/CMakeLists.txt" : {
+      "ObjectId" : "36c8c764cbbd37d3d39dbb287af901fadd74fa5f",
+      "LastModified" : "2019-04-15T13:20:08Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Needed for KPMCore\n",
+        "Line" : 2,
+        "CharPositionInLine" : 35
+      },
+      "1" : {
+        "Text" : "# Needed for KPMCore\n",
+        "Line" : 3,
+        "CharPositionInLine" : 49
+      },
+      "2" : {
+        "Text" : "# kpmcore > 3.3.0 with deprecations\n",
+        "Line" : 12,
+        "CharPositionInLine" : 57
+      },
+      "3" : {
+        "Text" : "# kpmcore 4 with new API\n",
+        "Line" : 15,
+        "CharPositionInLine" : 55
+      },
+      "4" : {
+        "Text" : "# The PartitionIterator is a small class, and it's easiest -- but also a\n\n# gross hack -- to just compile it again from the partition module tree.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# From above\n",
+        "Line" : 41,
+        "CharPositionInLine" : 41
+      },
+      "CommentCount" : 6
+    },
+    "src/modules/interactiveterminal/CMakeLists.txt" : {
+      "ObjectId" : "5eff610d522d1a86a2641a47497c82408a1fa1e7",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/keyboard/CMakeLists.txt" : {
+      "ObjectId" : "c0d8575c66b2fddcf6452d9f55ab8a7e4b2d06cf",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/license/CMakeLists.txt" : {
+      "ObjectId" : "54774dede3b61327fbc0c836ab6e9945936eb30b",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/locale/CMakeLists.txt" : {
+      "ObjectId" : "8faf8468ce01cf9c6d8a7dd2161451215ed97cd3",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# When debugging the timezone widget, add this debugging definition\n\n# to have a debugging-friendly timezone widget, debug logging,\n\n# and no intrusive timezone-setting while clicking around.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/modules/netinstall/CMakeLists.txt" : {
+      "ObjectId" : "67f8057346cd9ebc74d55b45ca6405b9842d9cfd",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/partition/CMakeLists.txt" : {
+      "ObjectId" : "9bcace064682759349e2e84626f9d5c041b226ad",
+      "LastModified" : "2019-04-15T13:20:08Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# When debugging the partitioning widget, or experimenting, you may\n\n# want to allow unsafe partitioning choices (e.g. doing things to the\n\n# current disk). Set DEBUG_PARTITION_UNSAFE to allow that (it turns off\n\n# some filtering of devices).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# kpmcore > 3.3.0 with deprecations\n",
+        "Line" : 31,
+        "CharPositionInLine" : 57
+      },
+      "2" : {
+        "Text" : "# kpmcore 4 with new API\n",
+        "Line" : 34,
+        "CharPositionInLine" : 55
+      },
+      "CommentCount" : 3
+    },
+    "src/modules/partition/tests/CMakeLists.txt" : {
+      "ObjectId" : "ac3968df9394c471cb4bcdc979342d810720d8b8",
+      "LastModified" : "2019-04-15T13:20:08Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/plasmalnf/CMakeLists.txt" : {
+      "ObjectId" : "e39b1af9fbfdec56f0a59078ca01cf7cc9cc5415",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Requires a sufficiently recent Plasma framework, but also\n\n# needs a runtime support component (which we don't test for).\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set( option_libs KF5::Config )  # Not needed anyway\n",
+        "Line" : 27,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 2
+    },
+    "src/modules/preservefiles/CMakeLists.txt" : {
+      "ObjectId" : "c1021eedaefd2e379986517604c814e92a212796",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/shellprocess/CMakeLists.txt" : {
+      "ObjectId" : "82ae8b9119f215650808b0eccd77ddbe985271a3",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/summary/CMakeLists.txt" : {
+      "ObjectId" : "64b8d3c36b9691ba125637a37e000046efa06fa4",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/tracking/CMakeLists.txt" : {
+      "ObjectId" : "24e020af47a20333fc2ba466ebbf667fb2e5e524",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/users/CMakeLists.txt" : {
+      "ObjectId" : "207ffbb3a9097434624074c3dd7b1d431a82da20",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Add optional libraries here\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/modules/webview/CMakeLists.txt" : {
+      "ObjectId" : "01212d906c08e46356e4506f42f3c3d9dac11d51",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/welcome/CMakeLists.txt" : {
+      "ObjectId" : "f627db03233a0a7ddf5c1cd73dc9dfc29e80c751",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/qml/CMakeLists.txt" : {
+      "ObjectId" : "8a949d02e2096576233c9d85538e316880142b56",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/qml/calamares/CMakeLists.txt" : {
+      "ObjectId" : "ba2fb38b7779fe07ac98090ea33795b8800d9298",
+      "LastModified" : "2019-03-20T17:21:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Iterate over all the subdirectories which have a qmldir file, copy them over to the build dir,\n\n# and install them into share/calamares/qml/calamares\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We glob all the files inside the subdirectory, and we make sure they are\n\n# synced with the bindir structure and installed.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 45
+  },
+  "ElapsedTime" : 5782
+}

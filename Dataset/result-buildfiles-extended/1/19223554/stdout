@@ -1,0 +1,569 @@
+{
+  "Repository" : "19223554",
+  "Revision" : "HEAD",
+  "ObjectId" : "961b90a5ec96a2db793475b9895e09fd4e23ea8e",
+  "CommitTime" : "2018-05-18T03:24:38Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "9357cb15f98c78fba6a3d5d5290f7e6a8f54695e",
+      "LastModified" : "2016-08-04T00:54:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Top-level cmake file. All settings are inherited by children cmake files.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Recursively includes all children cmake files using add_subdirectory(...)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Work-around for Travis CI\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we're using GCC< use -fno-pretty-templates to generate more readable templated error messages.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "CMakeModules/CodeCoverage.cmake" : {
+      "ObjectId" : "f064b51dfdc8b39b422b23ae8dae06378c106e5d",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2012 - 2015, Lars Bilke\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n# 1. Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#\n\n# 2. Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#\n\n# 3. Neither the name of the copyright holder nor the names of its contributors\n\n#    may be used to endorse or promote products derived from this software without\n\n#    specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n\n# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n#\n\n#\n\n# 2012-01-31, Lars Bilke\n\n# - Enable Code Coverage\n\n#\n\n# 2013-09-17, Joakim Söderberg\n\n# - Added support for Clang.\n\n# - Some additional usage instructions.\n\n#\n\n# USAGE:\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 0. (Mac only) If you use Xcode 5.1 make sure to patch geninfo as described here:\n\n#      http://stackoverflow.com/a/22404544/80480\n\n#\n\n# 1. Copy this file into your cmake modules path.\n\n#\n\n# 2. Add the following line to your CMakeLists.txt:\n\n#      INCLUDE(CodeCoverage)\n\n#\n\n# 3. Set compiler flags to turn off optimization and enable coverage:\n\n#    SET(CMAKE_CXX_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\t SET(CMAKE_C_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\n\n# 3. Use the function SETUP_TARGET_FOR_COVERAGE to create a custom make target\n\n#    which runs your test executable and produces a lcov code coverage report:\n\n#    Example:\n\n#\t SETUP_TARGET_FOR_COVERAGE(\n\n#\t\t\t\tmy_coverage_target  # Name for custom target.\n\n#\t\t\t\ttest_driver         # Name of the test driver executable that runs the tests.\n\n#\t\t\t\t\t\t\t\t\t# NOTE! This should always have a ZERO as exit code\n\n#\t\t\t\t\t\t\t\t\t# otherwise the coverage generation will not complete.\n\n#\t\t\t\tcoverage            # Name of output directory.\n\n#\t\t\t\t)\n\n#\n\n# 4. Build a Debug build:\n\n#\t cmake -DCMAKE_BUILD_TYPE=Debug ..\n\n#\t make\n\n#\t make my_coverage_target\n\n#\n\n#\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NOT GCOV_PATH\n",
+        "Line" : 78,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Clang version 3.0.0 and greater now supports gcov as well.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# NOT CMAKE_COMPILER_IS_GNUCXX\n",
+        "Line" : 87,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 113,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests.\n\n#\t\t\t\t\t\tMUST return ZERO always, even on errors.\n\n#\t\t\t\t\t\tIf not, no coverage report will be created!\n\n# Param _outputname     lcov output is generated as _outputname.info\n\n#                       HTML report is generated in _outputname/index.html\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 128,
+        "CharPositionInLine" : 9
+      },
+      "9" : {
+        "Text" : "# NOT GENHTML_PATH\n",
+        "Line" : 132,
+        "CharPositionInLine" : 9
+      },
+      "10" : {
+        "Text" : "# Setup target\n",
+        "Line" : 139,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Run tests\n",
+        "Line" : 145,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 148,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 158,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE\n",
+        "Line" : 164,
+        "CharPositionInLine" : 14
+      },
+      "16" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests\n\n# Param _outputname     cobertura output is generated as _outputname.xml\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# NOT PYTHON_EXECUTABLE\n",
+        "Line" : 175,
+        "CharPositionInLine" : 9
+      },
+      "18" : {
+        "Text" : "# NOT GCOVR_PATH\n",
+        "Line" : 179,
+        "CharPositionInLine" : 9
+      },
+      "19" : {
+        "Text" : "# Run tests\n",
+        "Line" : 183,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Running gcovr\n",
+        "Line" : 186,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 192,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_COBERTURA\n",
+        "Line" : 198,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 23
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "b64840a83b460055055a1a7c1c4cbb66b577fdb1",
+      "LastModified" : "2017-01-13T19:20:06Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Compile everything under 'dependencies'\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add include directories\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#if ($ENV{FULL_WARNINGS})\n\n#add_definitions(-Wall -Wno-sign-compare -Wno-reorder -Wno-unused-variable -fPIC -std=c++11 -D_GLIBCXX_DEBUG)\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#else()\n\n#    add_definitions(-Wno-sign-compare -Wno-reorder -Wall -Wno-unused-variable  -Wuninitialized -Wno-deprecated-declarations -fPIC -std=c++11)\n\n#endif()\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "#add_definitions(-DREFACTORING)\n\n#add_definitions(-DREFACTORING_DEBUG_OUTPUT)\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Find source files\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Workaround for problem with compiling C with -std=c++98:\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#set_source_files_properties(\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#        ${networksim_src}\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "#        PROPERTIES COMPILE_FLAGS \n\n#        \"-Wformat=0 -pedantic-errors -Wno-long-long -Wno-variadic-macros -Wno-sign-compare -Wno-reorder\"\n\n#)\n",
+        "Line" : 47,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Add compilation target\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#if(CMAKE_BUILD_TYPE STREQUAL \"Debug\")\n\n#    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)\n\n#    if(CMAKE_COMPILER_IS_GNUCXX)\n\n#        include(CodeCoverage)\n\n#        setup_target_for_coverage(hashkat_coverage hashkat coverage)\n\n#    endif()\n\n#endif()\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# installing through cmake . && make && sudo make install\n\n#install (TARGETS hashkat DESTINATION bin)\n\n#execute_process(COMMAND cp hashkat_pre.py /usr/local/bin)\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "src/dependencies/CMakeLists.txt" : {
+      "ObjectId" : "e25c02b8cf3b12ab9e0cb3a7946cf45b0fcc440d",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/dependencies/UnitTest++/CMakeLists.txt" : {
+      "ObjectId" : "6a47fae6df0aa9e03157e4761523041a564a2ca6",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# get the main sources\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# get platform specific sources\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# create the lib\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/dependencies/boost_1_58_0/libs/test/test/CMakeLists.txt" : {
+      "ObjectId" : "98383ee35629eea5b5f7ca9027827c033fdd813c",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# shared needs:\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Basic tests\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Program execution monitor tests\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Unit test framework tests\n\n# NOTE: skipped errors_handling_test until I figure out what BBv2 is doing\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# NOTE: skipped result_report_test until I figure out what BBv2 is doing\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# NOTE: skipped test_tools_test until I figure out what BBv2 is doing\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# NOTE: skipped ifstream_line_iterator_test until I figure out what BBv2 is doing\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/dependencies/lua-linenoise/CMakeLists.txt" : {
+      "ObjectId" : "e5ab9fd22cd8946d0179be47717f55b4689668b6",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/dependencies/lua/CMakeLists.txt" : {
+      "ObjectId" : "8c8b25b758cc69efb4c825b75183a27eecd6e9c5",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/dependencies/luawrap-lib/CMakeLists.txt" : {
+      "ObjectId" : "50efc9ebc93d142a97d7cedc6b1a5d920090b58c",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#set(CMAKE_BUILD_TYPE Release)\r\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#add_definitions(-DNDEBUG)\r\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library target\r\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#Find source files\r\n",
+        "Line" : 19,
+        "CharPositionInLine" : 41
+      },
+      "4" : {
+        "Text" : "#Find source files\r\n",
+        "Line" : 20,
+        "CharPositionInLine" : 53
+      },
+      "5" : {
+        "Text" : "# Test runner target\r\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Enable tests\r\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/dependencies/yaml-cpp/CMakeLists.txt" : {
+      "ObjectId" : "95b677cba7c033051e16d81eec493f1f47402205",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "###\n\n### CMake settings\n\n###\n\n## Due to Mac OSX we need to keep compatibility with CMake 2.6\n\n# see http://www.cmake.org/Wiki/CMake_Policies\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# see http://www.cmake.org/cmake/help/cmake-2-8-docs.html#policy:CMP0012\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# see http://www.cmake.org/cmake/help/cmake-2-8-docs.html#policy:CMP0015\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "###\n\n### Project settings\n\n###\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# enable_testing()\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "###\n\n### Project options\n\n###\n\n## Project stuff\n\n# option(YAML_CPP_BUILD_TOOLS \"Enable testing and parse tools\" ON)\n\n# option(YAML_CPP_BUILD_CONTRIB \"Enable contrib stuff in library\" ON)\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "## Build options\n\n# --> General\n\n# see http://www.cmake.org/cmake/help/cmake2.6docs.html#variable:BUILD_SHARED_LIBS\n\n#     http://www.cmake.org/cmake/help/cmake2.6docs.html#command:add_library\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# --> Apple\n\n# option(APPLE_UNIVERSAL_BIN \"Apple: Build universal binary\" OFF)\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# --> Microsoft Visual C++\n\n# see http://msdn.microsoft.com/en-us/library/aa278396(v=VS.60).aspx\n\n#     http://msdn.microsoft.com/en-us/library/2kzt1wy3(v=VS.71).aspx\n\n# option(MSVC_SHARED_RT \"MSVC: Build with shared runtime libs (/MD)\" ON)\n\n# option(MSVC_STHREADED_RT \"MSVC: Build with single-threaded static runtime libs (/ML until VS .NET 2003)\" OFF)\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "###\n\n### Sources, headers, directories and libs\n\n###\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "###\n\n### General compilation settings\n\n###\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# use or build Windows DLL\n",
+        "Line" : 102,
+        "CharPositionInLine" : 41
+      },
+      "12" : {
+        "Text" : "# GCC specialities\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "### General stuff\n",
+        "Line" : 111,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "# DLLs do not have a \"lib\" prefix\n\n# same for DLL import libs\n",
+        "Line" : 113,
+        "CharPositionInLine" : 38
+      },
+      "15" : {
+        "Text" : "# CMake workaround (2.8.3)\n",
+        "Line" : 115,
+        "CharPositionInLine" : 35
+      },
+      "16" : {
+        "Text" : "### Project stuff\n",
+        "Line" : 118,
+        "CharPositionInLine" : 1
+      },
+      "17" : {
+        "Text" : "#\n",
+        "Line" : 122,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "#\n",
+        "Line" : 127,
+        "CharPositionInLine" : 1
+      },
+      "19" : {
+        "Text" : "#\n",
+        "Line" : 129,
+        "CharPositionInLine" : 1
+      },
+      "20" : {
+        "Text" : "#\n",
+        "Line" : 135,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "#\n",
+        "Line" : 137,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# Microsoft VisualC++ specialities\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "### General stuff\n\n# a) Change MSVC runtime library settings (/MD[d], /MT[d], /ML[d] (single-threaded until VS 2003))\n\n#    plus set lib suffix for later use and project label accordingly\n\n# see http://msdn.microsoft.com/en-us/library/aa278396(v=VS.60).aspx\n\n#     http://msdn.microsoft.com/en-us/library/2kzt1wy3(v=VS.71).aspx\n",
+        "Line" : 150,
+        "CharPositionInLine" : 1
+      },
+      "24" : {
+        "Text" : "# CMake defaults to /MD for MSVC\n",
+        "Line" : 155,
+        "CharPositionInLine" : 25
+      },
+      "25" : {
+        "Text" : "#\n",
+        "Line" : 157,
+        "CharPositionInLine" : 1
+      },
+      "26" : {
+        "Text" : "# User wants to have static runtime libraries (/MT, /ML)\n\n# User wants to have old single-threaded static runtime libraries\n",
+        "Line" : 158,
+        "CharPositionInLine" : 24
+      },
+      "27" : {
+        "Text" : "# correct linker options\n",
+        "Line" : 170,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "#\n",
+        "Line" : 181,
+        "CharPositionInLine" : 1
+      },
+      "29" : {
+        "Text" : "# b) Change prefix for static libraries\n",
+        "Line" : 184,
+        "CharPositionInLine" : 1
+      },
+      "30" : {
+        "Text" : "# to distinguish static libraries from DLL import libs\n",
+        "Line" : 185,
+        "CharPositionInLine" : 40
+      },
+      "31" : {
+        "Text" : "# c) Correct suffixes for static libraries\n",
+        "Line" : 187,
+        "CharPositionInLine" : 1
+      },
+      "32" : {
+        "Text" : "### General stuff\n",
+        "Line" : 189,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "### Project stuff\n\n# /W3 = set warning level; see http://msdn.microsoft.com/en-us/library/thxezb7y.aspx\n\n# /wd4127 = disable warning C4127 \"conditional expression is constant\"; see http://msdn.microsoft.com/en-us/library/6t66728h.aspx\n\n# /wd4355 = disable warning C4355 \"'this' : used in base member initializer list\"; http://msdn.microsoft.com/en-us/library/3c594ae3.aspx\n",
+        "Line" : 193,
+        "CharPositionInLine" : 1
+      },
+      "34" : {
+        "Text" : "###\n\n### General install settings\n\n###\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# .dll are in PATH, like executables\n",
+        "Line" : 205,
+        "CharPositionInLine" : 23
+      },
+      "36" : {
+        "Text" : "###\n\n### Library\n\n###\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# correct library names\n",
+        "Line" : 248,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "###\n\n### Extras\n\n###\n",
+        "Line" : 272,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "src/dependencies/yaml-cpp/yaml-cpp.pc.cmake" : {
+      "ObjectId" : "04d343f65c0bb00949031597e30272cb3b412880",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/CMakeLists.txt" : {
+      "ObjectId" : "833069d5290b80ade9b1d6cfb835efbf21b975e0",
+      "LastModified" : "2017-01-13T19:19:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Add compilation target\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 12
+  },
+  "ElapsedTime" : 6381
+}

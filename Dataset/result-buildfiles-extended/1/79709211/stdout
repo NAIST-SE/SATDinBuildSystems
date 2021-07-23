@@ -1,0 +1,1892 @@
+{
+  "Repository" : "79709211",
+  "Revision" : "HEAD",
+  "ObjectId" : "f19c4c3cf6e9862d52b1eecc5ec708285eefbb5b",
+  "CommitTime" : "2019-04-19T00:36:10Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "ebe52d5d7f2fa6d4104b543c684732182ad60da5",
+      "LastModified" : "2016-09-21T12:20:27Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.  Oracle designates this\n\n# particular file as subject to the \"Classpath\" exception as provided\n\n# by Oracle in the LICENSE file that accompanied this code.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###\n\n### This file is just a very small wrapper needed to run the real make/Init.gmk.\n\n### It also performs some sanity checks on make.\n\n###\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The shell code below will be executed on /usr/bin/make on Solaris, but not in GNU Make.\n\n# /usr/bin/make lacks basically every other flow control mechanism.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The .FEATURES variable is likely to be unique for GNU Make.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Assume we have GNU Make, but check version.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# In Cygwin, the MAKE variable gets prepended with the current directory if the\n\n# make executable is called using a Windows mixed path (c:/cygwin/bin/make.exe).\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Locate this Makefile\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ... and then we can include the real makefile\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "make/devkit/Makefile" : {
+      "ObjectId" : "c85a7c21d29396b5cfbb32986c03f084f09dc7a8",
+      "LastModified" : "2019-03-20T10:37:43Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2013, 2018, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.  Oracle designates this\n\n# particular file as subject to the \"Classpath\" exception as provided\n\n# by Oracle in the LICENSE file that accompanied this code.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "################################################################################\n\n#\n\n# This Makefile, together with Tools.gmk, can be used to compile a set of\n\n# gcc based cross compilation, portable, self contained packages, capable\n\n# of building OpenJDK.\n\n#\n\n# By default this Makefile will build a native toolchain for the current\n\n# platform if called with something like this:\n\n#\n\n# make tars BASE_OS=OL\n\n#\n\n# To build the full set of crosstools for additional platforms, use a command\n\n# line looking like this:\n\n#\n\n# make TARGETS=\"aarch64-linux-gnu\" BASE_OS=Fedora\n\n# or\n\n# make TARGETS=\"arm-linux-gnueabihf ppc64-linux-gnu\" BASE_OS=Fedora BASE_OS_VERSION=17\n\n#\n\n# to build several devkits for a specific OS version at once.\n\n# You can find the final results under ../../build/devkit/result/<host>-to-<target>\n\n#\n\n# You may want the native toolchain to be used when compiling the cross\n\n# compilation toolchains. To achieve this, first build the native toolchain,\n\n# then add the bin directory from this build to the path when invoking this\n\n# makefile again for cross compilation. Ex:\n\n#\n\n# PATH=$PWD/../../build/devkit/result/x86_64-linux-gnu-to-x86_64-linux-gnu/bin:$PATH \\\n#    make TARGETS=\"arm-linux-gnueabihf,ppc64-linux-gnu\" BASE_OS=Fedora\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# This is the makefile which iterates over all host and target platforms.\n\n#\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Figure out what platform this is building on.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# By default just build for the current platform, which is assumed to be Linux\n\n#\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "make/idea/build.xml" : {
+      "ObjectId" : "611ba851447e69c3c1e36ca305d452d781edc660",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " importing.xml ",
+        "Line" : 1,
+        "CharPositionInLine" : 23
+      },
+      "1" : {
+        "Text" : "\n        **** Global JDK Build Targets\n    ",
+        "Line" : 28,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 2
+    },
+    "make/jdk/netbeans/awt2d/build.xml" : {
+      "ObjectId" : "1af15abdbb38572336842e0f98ea12b0ee9bcf46",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/jdk/netbeans/client_sanity/build.xml" : {
+      "ObjectId" : "734fe10b036e2e98a55fe71dd41e9f6ed8df9ad9",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See commented blocks below for ",
+        "Line" : 2,
+        "CharPositionInLine" : 71
+      },
+      "1" : {
+        "Text" : " some examples of how to customize the build. ",
+        "Line" : 3,
+        "CharPositionInLine" : 54
+      },
+      "2" : {
+        "Text" : " (If you delete it and reopen the project it will be recreated.) ",
+        "Line" : 4,
+        "CharPositionInLine" : 73
+      },
+      "3" : {
+        "Text" : " By default, only the Clean and Build commands use this build script. ",
+        "Line" : 5,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : " Commands such as Run, Debug, and Test only use this build script if ",
+        "Line" : 6,
+        "CharPositionInLine" : 77
+      },
+      "5" : {
+        "Text" : " the Compile on Save feature is turned off for the project. ",
+        "Line" : 7,
+        "CharPositionInLine" : 68
+      },
+      "6" : {
+        "Text" : " You can turn off the Compile on Save (or Deploy on Save) setting ",
+        "Line" : 8,
+        "CharPositionInLine" : 74
+      },
+      "7" : {
+        "Text" : " in the project's Project Properties dialog box.",
+        "Line" : 9,
+        "CharPositionInLine" : 56
+      },
+      "8" : {
+        "Text" : "\n\n    There exist several targets which are by default empty and which can be \n    used for execution of your tasks. These targets are usually executed \n    before and after some main targets. They are: \n\n      -pre-init:                 called before initialization of project properties\n      -post-init:                called after initialization of project properties\n      -pre-compile:              called before javac compilation\n      -post-compile:             called after javac compilation\n      -pre-compile-single:       called before javac compilation of single file\n      -post-compile-single:      called after javac compilation of single file\n      -pre-compile-test:         called before javac compilation of JUnit tests\n      -post-compile-test:        called after javac compilation of JUnit tests\n      -pre-compile-test-single:  called before javac compilation of single JUnit test\n      -post-compile-test-single: called after javac compilation of single JUunit test\n      -pre-jar:                  called before JAR building\n      -post-jar:                 called after JAR building\n      -post-clean:               called after cleaning build products\n\n    (Targets beginning with '-' are not intended to be called on their own.)\n\n    Example of inserting an obfuscator after compilation could look like this:\n\n        <target name=\"-post-compile\">\n            <obfuscate>\n                <fileset dir=\"${build.classes.dir}\"/>\n            </obfuscate>\n        </target>\n\n    For list of available properties check the imported \n    nbproject/build-impl.xml file. \n\n\n    Another way to customize the build is by overriding existing main targets.\n    The targets of interest are: \n\n      -init-macrodef-javac:     defines macro for javac compilation\n      -init-macrodef-junit:     defines macro for junit execution\n      -init-macrodef-debug:     defines macro for class debugging\n      -init-macrodef-java:      defines macro for class execution\n      -do-jar:                  JAR building\n      run:                      execution of project \n      -javadoc-build:           Javadoc generation\n      test-report:              JUnit report generation\n\n    An example of overriding the target for project execution could look like this:\n\n        <target name=\"run\" depends=\"SanityTests-impl.jar\">\n            <exec dir=\"bin\" executable=\"launcher.exe\">\n                <arg file=\"${dist.jar}\"/>\n            </exec>\n        </target>\n\n    Notice that the overridden target depends on the jar target and not only on \n    the compile target as the regular run target does. Again, for a list of available \n    properties which you can use, check the target you are overriding in the\n    nbproject/build-impl.xml file. \n\n    ",
+        "Line" : 72,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 9
+    },
+    "make/jdk/netbeans/j2se/build.xml" : {
+      "ObjectId" : "afb1f8c9d2a1b8af819e9446b859bd0c26e48bf8",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/jdk/netbeans/jarzip/build.xml" : {
+      "ObjectId" : "178ecfa6966fae1fc71f66bc94e36bba06141153",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/jdk/netbeans/jconsole/build.xml" : {
+      "ObjectId" : "90b44346ebe9841cfec97a27af368ca0d23d4932",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, 2012, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/jdk/netbeans/jdbc/build.xml" : {
+      "ObjectId" : "233e9b82c3f3b0d7eace7e9e71401903e97f1027",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/jdk/netbeans/jdwpgen/build.xml" : {
+      "ObjectId" : "da67672e2afd96ffcda4d0dcd79f85ca28ccc353",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See commented blocks below for ",
+        "Line" : 2,
+        "CharPositionInLine" : 71
+      },
+      "1" : {
+        "Text" : " some examples of how to customize the build. ",
+        "Line" : 3,
+        "CharPositionInLine" : 54
+      },
+      "2" : {
+        "Text" : " (If you delete it and reopen the project it will be recreated.) ",
+        "Line" : 4,
+        "CharPositionInLine" : 73
+      },
+      "3" : {
+        "Text" : " By default, only the Clean and Build commands use this build script. ",
+        "Line" : 5,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : " Commands such as Run, Debug, and Test only use this build script if ",
+        "Line" : 6,
+        "CharPositionInLine" : 77
+      },
+      "5" : {
+        "Text" : " the Compile on Save feature is turned off for the project. ",
+        "Line" : 7,
+        "CharPositionInLine" : 68
+      },
+      "6" : {
+        "Text" : " You can turn off the Compile on Save (or Deploy on Save) setting ",
+        "Line" : 8,
+        "CharPositionInLine" : 74
+      },
+      "7" : {
+        "Text" : " in the project's Project Properties dialog box.",
+        "Line" : 9,
+        "CharPositionInLine" : 56
+      },
+      "8" : {
+        "Text" : "\n\n    There exist several targets which are by default empty and which can be \n    used for execution of your tasks. These targets are usually executed \n    before and after some main targets. They are: \n\n      -pre-init:                 called before initialization of project properties\n      -post-init:                called after initialization of project properties\n      -pre-compile:              called before javac compilation\n      -post-compile:             called after javac compilation\n      -pre-compile-single:       called before javac compilation of single file\n      -post-compile-single:      called after javac compilation of single file\n      -pre-compile-test:         called before javac compilation of JUnit tests\n      -post-compile-test:        called after javac compilation of JUnit tests\n      -pre-compile-test-single:  called before javac compilation of single JUnit test\n      -post-compile-test-single: called after javac compilation of single JUunit test\n      -pre-jar:                  called before JAR building\n      -post-jar:                 called after JAR building\n      -post-clean:               called after cleaning build products\n\n    (Targets beginning with '-' are not intended to be called on their own.)\n\n    Example of inserting an obfuscator after compilation could look like this:\n\n        <target name=\"-post-compile\">\n            <obfuscate>\n                <fileset dir=\"${build.classes.dir}\"/>\n            </obfuscate>\n        </target>\n\n    For list of available properties check the imported \n    nbproject/build-impl.xml file. \n\n\n    Another way to customize the build is by overriding existing main targets.\n    The targets of interest are: \n\n      -init-macrodef-javac:     defines macro for javac compilation\n      -init-macrodef-junit:     defines macro for junit execution\n      -init-macrodef-debug:     defines macro for class debugging\n      -init-macrodef-java:      defines macro for class execution\n      -do-jar-with-manifest:    JAR building (if you are using a manifest)\n      -do-jar-without-manifest: JAR building (if you are not using a manifest)\n      run:                      execution of project \n      -javadoc-build:           Javadoc generation\n      test-report:              JUnit report generation\n\n    An example of overriding the target for project execution could look like this:\n\n        <target name=\"run\" depends=\"jdwpgen-impl.jar\">\n            <exec dir=\"bin\" executable=\"launcher.exe\">\n                <arg file=\"${dist.jar}\"/>\n            </exec>\n        </target>\n\n    Notice that the overridden target depends on the jar target and not only on \n    the compile target as the regular run target does. Again, for a list of available \n    properties which you can use, check the target you are overriding in the\n    nbproject/build-impl.xml file. \n\n    ",
+        "Line" : 73,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 9
+    },
+    "make/jdk/netbeans/jmx/build.xml" : {
+      "ObjectId" : "34e200f7190a7676e00c7e92d46baf609f20124e",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, 2008, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Set the values for build date and time ",
+        "Line" : 37,
+        "CharPositionInLine" : 56
+      },
+      "2" : {
+        "Text" : " These properties are set here instead of in the build.properties file, ",
+        "Line" : 43,
+        "CharPositionInLine" : 88
+      },
+      "3" : {
+        "Text" : " because they depend on the values of BUILD_DATE and BUILD_DATE_SIMPLE  ",
+        "Line" : 44,
+        "CharPositionInLine" : 88
+      },
+      "4" : {
+        "Text" : " At this time, ./build.properties has not been loaded yet. ",
+        "Line" : 45,
+        "CharPositionInLine" : 75
+      },
+      "5" : {
+        "Text" : " unchecked warnings will be fixed in JMX 2.0 as part of the work\n             being done on JSR 255 new features                              ",
+        "Line" : 51,
+        "CharPositionInLine" : 81
+      },
+      "6" : {
+        "Text" : " Dir to keep generated stub source ",
+        "Line" : 58,
+        "CharPositionInLine" : 44
+      },
+      "7" : {
+        "Text" : " ~~~~~~~~~~~~~~~~~~~~~~~~~ ",
+        "Line" : 63,
+        "CharPositionInLine" : 39
+      },
+      "8" : {
+        "Text" : " Call rmic-jmx subtargets ",
+        "Line" : 64,
+        "CharPositionInLine" : 38
+      },
+      "9" : {
+        "Text" : " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ",
+        "Line" : 71,
+        "CharPositionInLine" : 67
+      },
+      "10" : {
+        "Text" : " Generate RMI JRMP stub class files for remote objects ",
+        "Line" : 72,
+        "CharPositionInLine" : 67
+      },
+      "11" : {
+        "Text" : " Generated java files are kept in a separate directory ",
+        "Line" : 73,
+        "CharPositionInLine" : 67
+      },
+      "12" : {
+        "Text" : " Dir to keep generated stub source ",
+        "Line" : 78,
+        "CharPositionInLine" : 44
+      },
+      "CommentCount" : 13
+    },
+    "make/jdk/netbeans/swing/build.xml" : {
+      "ObjectId" : "44c068c9255125c2f658ee3b5c3d9ac85a5a0c96",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/jdk/netbeans/world/build.xml" : {
+      "ObjectId" : "84e38b7f2a9f0539f9b9c5cd5de4ed20daca71f0",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, 2010, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/langtools/build.xml" : {
+      "ObjectId" : "8ae4efaeeffa8c2f730964f87ae9d0d602e0c32a",
+      "LastModified" : "2019-03-20T10:37:43Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n  ~ Copyright (c) 2007, 2018, Oracle and/or its affiliates. All rights reserved.\n  ~ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n  ~\n  ~ This code is free software; you can redistribute it and/or modify it\n  ~ under the terms of the GNU General Public License version 2 only, as\n  ~ published by the Free Software Foundation.  Oracle designates this\n  ~ particular file as subject to the \"Classpath\" exception as provided\n  ~ by Oracle in the LICENSE file that accompanied this code.\n  ~\n  ~ This code is distributed in the hope that it will be useful, but WITHOUT\n  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n  ~ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n  ~ version 2 for more details (a copy is included in the LICENSE file that\n  ~ accompanied this code).\n  ~\n  ~ You should have received a copy of the GNU General Public License version\n  ~ 2 along with this work; if not, write to the Free Software Foundation,\n  ~ Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n  ~\n  ~ Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n  ~ or visit www.oracle.com if you need additional information or have any\n  ~ questions.\n  ",
+        "Line" : 25,
+        "CharPositionInLine" : 6
+      },
+      "1" : {
+        "Text" : "\n This is a convenience build file supporting development in the langtools\n repository. It can be run either standalone, or from IDEs. This build script\n is for a developer use only, it is not used to build the production version\n of javac or other langtools tools.\n\n External dependencies are specified via properties. These can be given\n on the command line, or by providing a local build.properties file.\n (They can also be edited into make/build.properties, although that is not\n recommended.)  At a minimum, langtools.jdk.home must be set to the installed\n location of the version of JDK used to build this repository. Additional\n properties may be required, depending on the targets that are built.\n For example, to run any of the jtreg tests you must set jtreg.home.\n\n The output of the build is as follows:\n\n build\n   |-bin (scripts to invoke various tools, javac etc.)\n   |-genrsc (generated sources - i.e. properties)\n   |-modules (compiled classes in a modular layout)\n   |-jtreg (test work/results)\n   |-toolclasses (tools used for building - like the property compiler)\n\n This file is organized into sections as follows:\n - global property definitions\n - primary top level targets (cleaning, building)\n - utility definitions\n ",
+        "Line" : 54,
+        "CharPositionInLine" : 5
+      },
+      "2" : {
+        "Text" : "\n    **** Global property definitions.\n    ",
+        "Line" : 59,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : " The following locations can be used to override default property values. ",
+        "Line" : 61,
+        "CharPositionInLine" : 86
+      },
+      "4" : {
+        "Text" : " Use this location for customizations specific to this instance of this workspace ",
+        "Line" : 63,
+        "CharPositionInLine" : 94
+      },
+      "5" : {
+        "Text" : " Use this location for customizations common to all OpenJDK langtools workspaces ",
+        "Line" : 66,
+        "CharPositionInLine" : 93
+      },
+      "6" : {
+        "Text" : " Use this location for customizations common to all OpenJDK workspaces ",
+        "Line" : 69,
+        "CharPositionInLine" : 83
+      },
+      "7" : {
+        "Text" : " Convenient shorthands for standard locations within the workspace. ",
+        "Line" : 72,
+        "CharPositionInLine" : 80
+      },
+      "8" : {
+        "Text" : " java.marker is set to a marker file to check for within a Java install dir.\n         The best file to check for across Solaris/Linux/Windows/MacOS is one of the\n         executables; regrettably, that is OS-specific. ",
+        "Line" : 113,
+        "CharPositionInLine" : 60
+      },
+      "9" : {
+        "Text" : " Standard property values, if not overriden by earlier settings. ",
+        "Line" : 121,
+        "CharPositionInLine" : 77
+      },
+      "10" : {
+        "Text" : " launcher.java is used in the launcher scripts provided to run\n        the tools' jar files.  If it has not already been set, then\n        default it to use ${langtools.jdk.home}, if available, otherwise\n        quietly default to simply use \"java\". ",
+        "Line" : 131,
+        "CharPositionInLine" : 50
+      },
+      "11" : {
+        "Text" : "\n        **** Check targets\n    ",
+        "Line" : 139,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "\n        **** Primary targets\n    ",
+        "Line" : 180,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : " workaround for incremental compilation ",
+        "Line" : 246,
+        "CharPositionInLine" : 56
+      },
+      "14" : {
+        "Text" : "\n    **** IDE support\n    ",
+        "Line" : 267,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "\n        **** Utility definitions\n    ",
+        "Line" : 298,
+        "CharPositionInLine" : 8
+      },
+      "16" : {
+        "Text" : " default ",
+        "Line" : 377,
+        "CharPositionInLine" : 91
+      },
+      "17" : {
+        "Text" : " default ",
+        "Line" : 378,
+        "CharPositionInLine" : 91
+      },
+      "18" : {
+        "Text" : " default ",
+        "Line" : 379,
+        "CharPositionInLine" : 91
+      },
+      "19" : {
+        "Text" : " default ",
+        "Line" : 380,
+        "CharPositionInLine" : 91
+      },
+      "20" : {
+        "Text" : " the next two properties are for convenience, when only\n                     a single instance of jtreg will be invoked. ",
+        "Line" : 396,
+        "CharPositionInLine" : 69
+      },
+      "CommentCount" : 21
+    },
+    "make/langtools/intellij/build.xml" : {
+      "ObjectId" : "f08f9d9e5fa22b665544d7f773310ba9938f8e3f",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " importing.xml ",
+        "Line" : 1,
+        "CharPositionInLine" : 23
+      },
+      "CommentCount" : 1
+    },
+    "make/langtools/netbeans/langtools/build.xml" : {
+      "ObjectId" : "6775f294a54b04336711ec9e67e846ca5abfb576",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2007, 2016, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "\n        Instead of importing the main build file, we could call it when needed.\n        That would reduce the list of Ant targets that get displayed for this\n        file, but it also complicates the interface between the project build\n        file and the main build file. For example, some imported targets\n        would have to be reclared, properties would have to be restructured,\n        and it would be harder to run results (e.g. in properties) from nested\n        targets.\n     ",
+        "Line" : 46,
+        "CharPositionInLine" : 9
+      },
+      "2" : {
+        "Text" : " Build project. (action: build; F11) ",
+        "Line" : 49,
+        "CharPositionInLine" : 49
+      },
+      "3" : {
+        "Text" : " Compile a single file. (action: compile.single; F9) ",
+        "Line" : 51,
+        "CharPositionInLine" : 65
+      },
+      "4" : {
+        "Text" : " Run tool. (action: run; F6)\n        Use langtools.tool.name and langtools.tool.args properties if set; otherwise prompt\n        the user.\n    ",
+        "Line" : 73,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : " Run a selected class. (action: run.single;  shift-F6) ",
+        "Line" : 100,
+        "CharPositionInLine" : 67
+      },
+      "6" : {
+        "Text" : " Test project, and display results if tests failed. (action: test; Alt-F6)\n        If langtools.tool.name is set, then just test that tool; otherwise\n        test all tools.\n    ",
+        "Line" : 111,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : " Debug tool in NetBeans. ",
+        "Line" : 151,
+        "CharPositionInLine" : 37
+      },
+      "8" : {
+        "Text" : " Debug a selected class . ",
+        "Line" : 160,
+        "CharPositionInLine" : 38
+      },
+      "9" : {
+        "Text" : " Debug a jtreg test. ",
+        "Line" : 167,
+        "CharPositionInLine" : 33
+      },
+      "10" : {
+        "Text" : " Update a class being debugged. ",
+        "Line" : 176,
+        "CharPositionInLine" : 44
+      },
+      "11" : {
+        "Text" : " Prompt for values. ",
+        "Line" : 192,
+        "CharPositionInLine" : 32
+      },
+      "12" : {
+        "Text" : " Macro to run a tool or selected class - used by run* and debug* tasks ",
+        "Line" : 211,
+        "CharPositionInLine" : 83
+      },
+      "13" : {
+        "Text" : " Macro to start the debugger and set a property containg the args needed by the run task ",
+        "Line" : 233,
+        "CharPositionInLine" : 101
+      },
+      "CommentCount" : 14
+    },
+    "make/nashorn/build.xml" : {
+      "ObjectId" : "cdd1c0e26f5451f860faf68ae8f595494d4f9b99",
+      "LastModified" : "2019-03-20T10:37:43Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2010, 2018, Oracle and/or its affiliates. All rights reserved.\n DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n This code is free software; you can redistribute it and/or modify it\n under the terms of the GNU General Public License version 2 only, as\n published by the Free Software Foundation.\n\n This code is distributed in the hope that it will be useful, but WITHOUT\n ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n version 2 for more details (a copy is included in the LICENSE file that\n accompanied this code).\n\n You should have received a copy of the GNU General Public License version\n 2 along with this work; if not, write to the Free Software Foundation,\n Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n or visit www.oracle.com if you need additional information or have any\n questions.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " set default values to run.test.jvmargs.external property ",
+        "Line" : 31,
+        "CharPositionInLine" : 70
+      },
+      "2" : {
+        "Text" : " loading locally defined resources and properties. NB they owerwrite default ones defined later ",
+        "Line" : 35,
+        "CharPositionInLine" : 108
+      },
+      "3" : {
+        "Text" : " check if TestNG and dependencies are available, and download them if they aren't ",
+        "Line" : 54,
+        "CharPositionInLine" : 94
+      },
+      "4" : {
+        "Text" : " check if asmtools-6.0.jar is available, and download it if it isn't ",
+        "Line" : 65,
+        "CharPositionInLine" : 81
+      },
+      "5" : {
+        "Text" : "\n    <available property=\"asmtools.already.present\" file=\"${file.reference.asmtools.jar}\"/>\n    <antcall target=\"get-asmtools\"/>\n    <available property=\"asmtools.available\" file=\"${file.reference.asmtools.jar}\"/>\n    ",
+        "Line" : 70,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : " check if Jemmy ang TestNG are avaiable ",
+        "Line" : 72,
+        "CharPositionInLine" : 52
+      },
+      "7" : {
+        "Text" : " enable/disable make code coverage ",
+        "Line" : 83,
+        "CharPositionInLine" : 47
+      },
+      "8" : {
+        "Text" : " exclude tests in exclude lists ",
+        "Line" : 88,
+        "CharPositionInLine" : 44
+      },
+      "9" : {
+        "Text" : "set windows cygwin/cmd specific properties",
+        "Line" : 103,
+        "CharPositionInLine" : 54
+      },
+      "10" : {
+        "Text" : " check minimum ant version required to be 1.9.5 ",
+        "Line" : 118,
+        "CharPositionInLine" : 58
+      },
+      "11" : {
+        "Text" : " look for a Class that is available only in jdk1.8 or above ",
+        "Line" : 132,
+        "CharPositionInLine" : 72
+      },
+      "12" : {
+        "Text" : " core/exposed API class is better than an implementation class ",
+        "Line" : 133,
+        "CharPositionInLine" : 75
+      },
+      "13" : {
+        "Text" : " need jdk1.8 or above ",
+        "Line" : 136,
+        "CharPositionInLine" : 34
+      },
+      "14" : {
+        "Text" : " extends jvm args ",
+        "Line" : 142,
+        "CharPositionInLine" : 30
+      },
+      "15" : {
+        "Text" : " patch-module does not like module-info.class files! ",
+        "Line" : 185,
+        "CharPositionInLine" : 65
+      },
+      "16" : {
+        "Text" : " patch-module does not like module-info.class files! ",
+        "Line" : 200,
+        "CharPositionInLine" : 65
+      },
+      "17" : {
+        "Text" : " patch-module does not like module-info.class files! ",
+        "Line" : 215,
+        "CharPositionInLine" : 65
+      },
+      "18" : {
+        "Text" : " generate javadoc for Nashorn classes ",
+        "Line" : 267,
+        "CharPositionInLine" : 48
+      },
+      "19" : {
+        "Text" : " generate javadoc only for nashorn extension api classes ",
+        "Line" : 285,
+        "CharPositionInLine" : 67
+      },
+      "20" : {
+        "Text" : " generate javadoc only for Dynalink API classes ",
+        "Line" : 303,
+        "CharPositionInLine" : 58
+      },
+      "21" : {
+        "Text" : " generate all docs ",
+        "Line" : 323,
+        "CharPositionInLine" : 29
+      },
+      "22" : {
+        "Text" : " create .zip and .tar.gz for nashorn binaries and scripts. ",
+        "Line" : 326,
+        "CharPositionInLine" : 69
+      },
+      "23" : {
+        "Text" : " testng task ",
+        "Line" : 335,
+        "CharPositionInLine" : 25
+      },
+      "24" : {
+        "Text" : " tests that check nashorn internals and internal API ",
+        "Line" : 368,
+        "CharPositionInLine" : 65
+      },
+      "25" : {
+        "Text" : " tests that check nashorn script engine (jsr-223) API and dynalink API ",
+        "Line" : 377,
+        "CharPositionInLine" : 83
+      },
+      "26" : {
+        "Text" : "hack for Windows - to make URLs with normal path separators ",
+        "Line" : 510,
+        "CharPositionInLine" : 190
+      },
+      "27" : {
+        "Text" : "hack for Unix - to avoid leading // in URLs ",
+        "Line" : 511,
+        "CharPositionInLine" : 174
+      },
+      "28" : {
+        "Text" : " only to be invoked as dependency of \"test\" target ",
+        "Line" : 530,
+        "CharPositionInLine" : 61
+      },
+      "29" : {
+        "Text" : " only to be invoked as dependency of \"test\" target ",
+        "Line" : 550,
+        "CharPositionInLine" : 61
+      },
+      "30" : {
+        "Text" : " only to be invoked as dependency of \"test\" target ",
+        "Line" : 557,
+        "CharPositionInLine" : 61
+      },
+      "31" : {
+        "Text" : " only to be invoked as dependency of \"test\" target ",
+        "Line" : 581,
+        "CharPositionInLine" : 61
+      },
+      "32" : {
+        "Text" : " use just build.test.classes.dir to avoid referring to TestNG ",
+        "Line" : 703,
+        "CharPositionInLine" : 74
+      },
+      "33" : {
+        "Text" : " avoid too many typeinfo cache files. Each script is run only once anyway ",
+        "Line" : 706,
+        "CharPositionInLine" : 88
+      },
+      "34" : {
+        "Text" : " use just build.test.classes.dir to avoid referring to TestNG ",
+        "Line" : 721,
+        "CharPositionInLine" : 76
+      },
+      "35" : {
+        "Text" : " targets to get external script tests ",
+        "Line" : 761,
+        "CharPositionInLine" : 48
+      },
+      "36" : {
+        "Text" : " test262 test suite ",
+        "Line" : 763,
+        "CharPositionInLine" : 30
+      },
+      "37" : {
+        "Text" : " clone test262 git repo ",
+        "Line" : 765,
+        "CharPositionInLine" : 36
+      },
+      "38" : {
+        "Text" : " update test262 git repo ",
+        "Line" : 775,
+        "CharPositionInLine" : 37
+      },
+      "39" : {
+        "Text" : " octane benchmark ",
+        "Line" : 781,
+        "CharPositionInLine" : 28
+      },
+      "40" : {
+        "Text" : " checkout octane benchmarks ",
+        "Line" : 783,
+        "CharPositionInLine" : 40
+      },
+      "41" : {
+        "Text" : " update octane benchmarks ",
+        "Line" : 791,
+        "CharPositionInLine" : 38
+      },
+      "42" : {
+        "Text" : " sunspider benchmark ",
+        "Line" : 797,
+        "CharPositionInLine" : 31
+      },
+      "43" : {
+        "Text" : " checkout sunspider ",
+        "Line" : 799,
+        "CharPositionInLine" : 32
+      },
+      "44" : {
+        "Text" : " update sunspider ",
+        "Line" : 809,
+        "CharPositionInLine" : 30
+      },
+      "45" : {
+        "Text" : " get all external test scripts ",
+        "Line" : 817,
+        "CharPositionInLine" : 41
+      },
+      "46" : {
+        "Text" : " make external test dir ",
+        "Line" : 819,
+        "CharPositionInLine" : 36
+      },
+      "47" : {
+        "Text" : " jquery ",
+        "Line" : 822,
+        "CharPositionInLine" : 20
+      },
+      "48" : {
+        "Text" : " prototype ",
+        "Line" : 827,
+        "CharPositionInLine" : 23
+      },
+      "49" : {
+        "Text" : " underscorejs ",
+        "Line" : 831,
+        "CharPositionInLine" : 26
+      },
+      "50" : {
+        "Text" : " yui ",
+        "Line" : 836,
+        "CharPositionInLine" : 17
+      },
+      "51" : {
+        "Text" : " showdown ",
+        "Line" : 841,
+        "CharPositionInLine" : 22
+      },
+      "52" : {
+        "Text" : " update external test suites that are pulled from source control systems ",
+        "Line" : 848,
+        "CharPositionInLine" : 83
+      },
+      "53" : {
+        "Text" : " run all perf tests ",
+        "Line" : 851,
+        "CharPositionInLine" : 30
+      },
+      "54" : {
+        "Text" : " download and install testng.jar ",
+        "Line" : 854,
+        "CharPositionInLine" : 43
+      },
+      "55" : {
+        "Text" : " download and install asmtools.jar ",
+        "Line" : 864,
+        "CharPositionInLine" : 45
+      },
+      "56" : {
+        "Text" : " they are tar.gz'ing a .zip file! ",
+        "Line" : 868,
+        "CharPositionInLine" : 46
+      },
+      "57" : {
+        "Text" : " run all tests ",
+        "Line" : 878,
+        "CharPositionInLine" : 25
+      },
+      "CommentCount" : 58
+    },
+    "make/nashorn/buildtools/nasgen/build.xml" : {
+      "ObjectId" : "db1dea1eabefec973506e0c0fd943deb3b6f5676",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.\n DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n \n This code is free software; you can redistribute it and/or modify it\n under the terms of the GNU General Public License version 2 only, as\n published by the Free Software Foundation.\n \n This code is distributed in the hope that it will be useful, but WITHOUT\n ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n version 2 for more details (a copy is included in the LICENSE file that\n accompanied this code).\n \n You should have received a copy of the GNU General Public License version\n 2 along with this work; if not, write to the Free Software Foundation,\n Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n \n Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n or visit www.oracle.com if you need additional information or have any\n questions.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "make/nashorn/buildtools/nashorntask/build.xml" : {
+      "ObjectId" : "cb2c8ce27d2f89c2369a3ed70fb84bc60c0fc5f2",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.\n DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n \n This code is free software; you can redistribute it and/or modify it\n under the terms of the GNU General Public License version 2 only, as\n published by the Free Software Foundation.\n \n This code is distributed in the hope that it will be useful, but WITHOUT\n ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n version 2 for more details (a copy is included in the LICENSE file that\n accompanied this code).\n \n You should have received a copy of the GNU General Public License version\n 2 along with this work; if not, write to the Free Software Foundation,\n Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n \n Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n or visit www.oracle.com if you need additional information or have any\n questions.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/java2d/J2DBench/Makefile" : {
+      "ObjectId" : "6082d3330f591fb42f21aa8500ea8ef4d4984375",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2002, 2007, Oracle and/or its affiliates. All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n#\n\n#   - Redistributions of source code must retain the above copyright\n\n#     notice, this list of conditions and the following disclaimer.\n\n#\n\n#   - Redistributions in binary form must reproduce the above copyright\n\n#     notice, this list of conditions and the following disclaimer in the\n\n#     documentation and/or other materials provided with the distribution.\n\n#\n\n#   - Neither the name of Oracle nor the names of its\n\n#     contributors may be used to endorse or promote products derived\n\n#     from this software without specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n\n# IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n\n# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n\n# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n\n# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n\n# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n\n# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n\n# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n\n# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n\n# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/java2d/J2DBench/build.xml" : {
+      "ObjectId" : "3ae3bc186aa8fef08b4417cfccb31c94c871b651",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2005, 2013, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " set global properties for this build ",
+        "Line" : 36,
+        "CharPositionInLine" : 48
+      },
+      "2" : {
+        "Text" : " Create the time stamp ",
+        "Line" : 43,
+        "CharPositionInLine" : 35
+      },
+      "3" : {
+        "Text" : " Create the build directory structure used by compile ",
+        "Line" : 45,
+        "CharPositionInLine" : 66
+      },
+      "4" : {
+        "Text" : " Compile the java code from ${src} into ${build} ",
+        "Line" : 51,
+        "CharPositionInLine" : 61
+      },
+      "5" : {
+        "Text" : " Copy the resource files from ${resources} into ${build}/ ",
+        "Line" : 73,
+        "CharPositionInLine" : 70
+      },
+      "6" : {
+        "Text" : " Create the distribution directory ",
+        "Line" : 91,
+        "CharPositionInLine" : 47
+      },
+      "7" : {
+        "Text" : " Put everything in ${build} into the J2DBench.jar file ",
+        "Line" : 94,
+        "CharPositionInLine" : 67
+      },
+      "8" : {
+        "Text" : " Delete the ${build} and ${dist} directory trees ",
+        "Line" : 113,
+        "CharPositionInLine" : 61
+      },
+      "CommentCount" : 9
+    },
+    "src/demo/share/nbproject/jfc/FileChooserDemo/build.xml" : {
+      "ObjectId" : "eafb1b5f101e7f2848dffd3723844f1c7c47fa21",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/jfc/Font2DTest/build.xml" : {
+      "ObjectId" : "c46c1d6d3b27f5cae637326b54b2f2a67fb6faea",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " To view in regular web browser instead:\n        <nbbrowse file=\"${applet.html}\"/>\n        ",
+        "Line" : 77,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 2
+    },
+    "src/demo/share/nbproject/jfc/Metalworks/build.xml" : {
+      "ObjectId" : "b10393ede6f68baf95149827bdf7b63daeeb526c",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/jfc/Notepad/build.xml" : {
+      "ObjectId" : "5fab0c2a7ffb79e8cbe871177ad00ae60a6b953f",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/jfc/SampleTree/build.xml" : {
+      "ObjectId" : "195b5ae9bf8c7e90dfe78647a79e02b636b97464",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/jfc/SwingApplet/build.xml" : {
+      "ObjectId" : "b0ac87e6e26113cfbb53a4fa63031958060c8559",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " To view in regular web browser instead:\n        <nbbrowse file=\"${applet.html}\"/>\n        ",
+        "Line" : 77,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 2
+    },
+    "src/demo/share/nbproject/jfc/TableExample/build.xml" : {
+      "ObjectId" : "c548c042f69c43ace965ccb726d928736159217a",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/jfc/TransparentRuler/build.xml" : {
+      "ObjectId" : "8db759a30c0c6d03dabe1803935611155cfe82bc",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2011, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/management/FullThreadDump/build.xml" : {
+      "ObjectId" : "bf014e07e8f7993952a29a7d93e71fb46bcfbfe8",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/management/JTop/build.xml" : {
+      "ObjectId" : "17232fdb694252fea8af2ec7a45186cccb4d7067",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/management/MemoryMonitor/build.xml" : {
+      "ObjectId" : "9e75cab82bceed8c158027ae1243fd04922f6456",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/management/VerboseGC/build.xml" : {
+      "ObjectId" : "fe5478c662494d034db29629dd491d58d058646f",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/demo/share/nbproject/scripting/jconsole-plugin/build.xml" : {
+      "ObjectId" : "297300dec0a0c7ad07ee77e346b943018d369656",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/jdk.hotspot.agent/test/libproc/Makefile" : {
+      "ObjectId" : "81fadaeb55272acfc392d0291f0e44c8c963cae5",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2003, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#  \n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/utils/IdealGraphVisualizer/BatikSVGProxy/build.xml" : {
+      "ObjectId" : "2c8642cfb1a26297ab89c1cc0f49e0cda6c43e7c",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Bytecodes/build.xml" : {
+      "ObjectId" : "1466d8606bc1b759c76d904736a1d055cf07ea7f",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/ControlFlow/build.xml" : {
+      "ObjectId" : "b90d3b8b143f16fc54a66c07f5aa05ea15e21c9f",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Coordinator/build.xml" : {
+      "ObjectId" : "a70f00802672400f6580d17fbc722ecede930ef3",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Data/build.xml" : {
+      "ObjectId" : "dd626066c85e933b7ed6eaa8ec8d25a919dcada8",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Difference/build.xml" : {
+      "ObjectId" : "bc11fd91f85ea92c550811b95213d3f4c986c395",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Filter/build.xml" : {
+      "ObjectId" : "2182f70466c3381ea7aaf6cbabcd4e4117d38107",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/FilterWindow/build.xml" : {
+      "ObjectId" : "e604ea7bcba681eef998b163601fa5eafe7e9a0c",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Graal/build.xml" : {
+      "ObjectId" : "8011dca6c8f0190641012fff05ed626f405b8bb2",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Graph/build.xml" : {
+      "ObjectId" : "7843b57f1d5942f4a32715820b667926fbe436e5",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/HierarchicalLayout/build.xml" : {
+      "ObjectId" : "8376e08d8a8fd6dbf766ef86cdcbddd98821cdfb",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Layout/build.xml" : {
+      "ObjectId" : "002f9bcc3e83e78c8cfc4614b7ed88cfeb99c823",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/NetworkConnection/build.xml" : {
+      "ObjectId" : "4565a3d64029ce2809e23101038198451e6d01c2",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/SelectionCoordinator/build.xml" : {
+      "ObjectId" : "ddb36768ed5bbf04c257d0773db9b20de432e183",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/ServerCompiler/build.xml" : {
+      "ObjectId" : "31a102f060e7b7ac635fa87e6c514958fa3f9030",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Settings/build.xml" : {
+      "ObjectId" : "7ba84f5cc6d4cea5f24729e7c134791f7323286a",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/Util/build.xml" : {
+      "ObjectId" : "1af1e360034dddf9bd9ff1920b938ed35b7abc12",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/View/build.xml" : {
+      "ObjectId" : "c0c4cd49d7a09fc8ef82d225166c3777a0b7511c",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 3
+    },
+    "src/utils/IdealGraphVisualizer/build.xml" : {
+      "ObjectId" : "5e870710a757344d36472f2398343a649fbd52e9",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See harness/README in the NetBeans platform ",
+        "Line" : 2,
+        "CharPositionInLine" : 84
+      },
+      "1" : {
+        "Text" : " for some information on what you could do (e.g. targets to override). ",
+        "Line" : 3,
+        "CharPositionInLine" : 79
+      },
+      "2" : {
+        "Text" : " If you delete this file and reopen the project it will be recreated. ",
+        "Line" : 4,
+        "CharPositionInLine" : 78
+      },
+      "3" : {
+        "Text" : " Drop memory presets (-Xms, -Xmx) from default_options of packaged builds and let the executing VM choose reasonable defaults ",
+        "Line" : 10,
+        "CharPositionInLine" : 142
+      },
+      "4" : {
+        "Text" : " Local (environment-specific) extensions/modifications to the build ",
+        "Line" : 14,
+        "CharPositionInLine" : 80
+      },
+      "CommentCount" : 5
+    },
+    "src/utils/LogCompilation/Makefile" : {
+      "ObjectId" : "5f9ca08384279af52f16db6d0b6ed3033b32845b",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#  \n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#END PKGLIST\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gnumake 3.78.1 does not accept the *s, \n\n# so use the shell to expand them\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Tagging it on because there's no reason not to run it\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/utils/LogCompilation/pom.xml" : {
+      "ObjectId" : "ac2b4400a1d3823e5dfecfaa4dc5307376d3ac5c",
+      "LastModified" : "2019-03-20T10:37:43Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n Copyright (c) 2017, 2018, Oracle and/or its affiliates. All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer in the\n     documentation and/or other materials provided with the distribution.\n\n   - Neither the name of Oracle nor the names of its\n     contributors may be used to endorse or promote products derived\n     from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS\n IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "src/utils/hsdis/Makefile" : {
+      "ObjectId" : "f73c813252bda991848546f8df05817adab2c355",
+      "LastModified" : "2019-03-22T09:09:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2008, 2019, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# The Universal Permissive License (UPL), Version 1.0\n\n#\n\n# Subject to the condition set forth below, permission is hereby granted to\n\n# any person obtaining a copy of this software, associated documentation\n\n# and/or data (collectively the \"Software\"), free of charge and under any\n\n# and all copyright rights in the Software, and any and all patent rights\n\n# owned or freely licensable by each licensor hereunder covering either (i)\n\n# the unmodified Software as contributed to or provided by such licensor,\n\n# or (ii) the Larger Works (as defined below), to deal in both\n\n#\n\n# (a) the Software, and\n\n#\n\n# (b) any piece of software and/or hardware listed in the lrgrwrks.txt file\n\n# if one is included with the Software (each a \"Larger Work\" to which the\n\n# Software is contributed by such licensors),\n\n#\n\n# without restriction, including without limitation the rights to copy,\n\n# create derivative works of, display, perform, and distribute the Software\n\n# and make, use, sell, offer for sale, import, export, have made, and have\n\n# sold the Software and the Larger Work(s), and to sublicense the foregoing\n\n# rights on either these or other terms.\n\n#\n\n# This license is subject to the following condition:\n\n#\n\n# The above copyright notice and either this complete permission notice or\n\n# at a minimum a reference to the UPL must be included in all copies or\n\n# substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n\n# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n\n# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n\n# NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n\n# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n\n# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n\n# USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Single gnu makefile for solaris, linux and windows (windows requires cygwin and mingw)\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Default arch; it is changed below as needed.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## OS = SunOS ##\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## OS = Linux ##\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#linux\n",
+        "Line" : 92,
+        "CharPositionInLine" : 7
+      },
+      "6" : {
+        "Text" : "## OS = AIX ##\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "## OS = Darwin ##\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# LP64\n",
+        "Line" : 145,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "# CFLAGS        += -DZ_PREFIX\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "## OS = Windows ##\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Darwin\n\n# AIX\n",
+        "Line" : 167,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# Linux\n\n# SunOS\n",
+        "Line" : 169,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# LIBARCH64/$(ARCH)\n\n# LP64\n",
+        "Line" : 179,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# Pop all the way out of the workspace to look for binutils.\n\n# ...You probably want to override this setting.\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "src/utils/reorder/Makefile" : {
+      "ObjectId" : "ec1cb3a9cd8a3aeff3832ab0da9d3130407249ab",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.  Oracle designates this\n\n# particular file as subject to the \"Classpath\" exception as provided\n\n# by Oracle in the LICENSE file that accompanied this code.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile is intended to produce new reordering files for the\n\n# reordering of jar files and shared libraries.  This is not part of the\n\n# standard build.  The objects produced by this Makefile must be copied\n\n# into their standard locations and checked in.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Run java from the JRE image because using rt.jar requires a\n\n# larger list of classes, and these should appear in the list.\n\n#   FIXUP: adding rt.jar into bootclasspath?\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This target 'test_classes' also used by hotspot reordering.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This target 'tool_classes' also used by hotspot reordering.\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Run each of a set of tests, extract the classes required and\n\n# append the new classes to the ClassList.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Run SwingSet2, extract the classes required and\n\n# append the new classes to the ClassList.\n",
+        "Line" : 139,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# This library 'libmcount.so' also used by hotspot reordering.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# This library 'libmcount.so' also used by hotspot reordering.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Reorder libraries.\n\n# + Delete all of the library's object files, and recompile them for profiling.\n\n# + Run the test sequence using libmcount to produce the mapfile.\n\n# + Delete all of the library's object files, and recompile them normally.\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# On Solaris-i586 we need to remove the symbol _mcount from the command\n",
+        "Line" : 204,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Run each of a set of tests, extract the classes required and\n\n# append the new classes to the ClassList.\n",
+        "Line" : 216,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Run SwingSet2, extract the classes required and\n\n# append the new classes to the ClassList.\n",
+        "Line" : 238,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 13,
+      "Errorlog" : "line 129:73 token recognition error at: '\\1'\nline 157:67 token recognition error at: '\\1'\n"
+    },
+    "test/failure_handler/Makefile" : {
+      "ObjectId" : "d8c71964bdce9ea4c765c10ce71086e0465274e5",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2015, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# This is a temporary standalone makefile\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Use JTREG_TEST_OPTS for test VM options\n\n# Use JTREG_TESTS for jtreg tests parameter\n\n#\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/hotspot/jtreg/testlibrary/ctw/Makefile" : {
+      "ObjectId" : "395db33fa861257c578b1ff68738605a1d75f4d5",
+      "LastModified" : "2019-03-22T09:09:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2013, 2016, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/hotspot/jtreg/testlibrary/jittester/Makefile" : {
+      "ObjectId" : "54087edaab896b4e84936d29e849b6837c71a0c9",
+      "LastModified" : "2019-03-22T09:09:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2015, 2018, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/jdk/java/net/URLClassLoader/sealing/Makefile" : {
+      "ObjectId" : "fc8ec81e1bc59d777ca035cd4a3e659a88592232",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This makefile is only used to update b.jar and directory a,\n\n# which are checked in to SCCS.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/jdk/java/rmi/reliability/benchmark/bench/Makefile" : {
+      "ObjectId" : "f0600d4df3065cc54b0a3ec9e59b1f9cf11dd900",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 1999, 2000, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n#\n\n#\n\n# Benchmarking harness makefile\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/jdk/java/rmi/reliability/benchmark/bench/rmi/Makefile" : {
+      "ObjectId" : "9d59547f83d22a7f5985ec51d447b014eaa6d008",
+      "LastModified" : "2018-09-05T17:17:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2000, 2002, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n#\n\n#\n\n# RMI benchmarks makefile\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/jdk/javax/crypto/SecretKeyFactory/evilprov/Makefile" : {
+      "ObjectId" : "918c31f0947899bc2e5359bc7f1936bc3f0bb105",
+      "LastModified" : "2019-03-22T09:09:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Java paths\n\n#JAVA_BASE=PATH_TO_JAVA_IMG_DIR\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Compile-time flags and paths\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/jdk/sun/management/jmxremote/bootstrap/Makefile" : {
+      "ObjectId" : "9e1fc922db67abef2d7975a3760f2ee0a9f08827",
+      "LastModified" : "2019-03-22T09:09:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2006, 2007, Oracle and/or its affiliates. All rights reserved.\n\n# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.\n\n#\n\n# This code is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU General Public License version 2 only, as\n\n# published by the Free Software Foundation.\n\n#\n\n# This code is distributed in the hope that it will be useful, but WITHOUT\n\n# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\n# version 2 for more details (a copy is included in the LICENSE file that\n\n# accompanied this code).\n\n#\n\n# You should have received a copy of the GNU General Public License version\n\n# 2 along with this work; if not, write to the Free Software Foundation,\n\n# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.\n\n#\n\n# Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA\n\n# or visit www.oracle.com if you need additional information or have any\n\n# questions.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# This Makefile is used to generate versions of the launcher program for\n\n# use by the CustomLauncherTest.  The binaries are checked into SCCS\n\n# so this Makefile is not used as part of test run.  It is provided to\n\n# make rebuilding the launcher binaries a relatively painless activity.\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Edit the following to reflect the current build environment.\n\n#\n\n# Architecture being built (initially one of: solaris-sparc, solaris-i586,\n\n# linux-i586.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Path to C compiler\n\n#\n\n# As of 6/1/06:\n\n#\tSolaris\tCC=/java/devtools/$(ARCH)/SUNWspro/SS11/bin/cc\n\n#\tLinux\tCC=/usr/bin/gcc\n\n#\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Include directory in JRE or JDK install\n\n#\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# PLATFORM dependent flags\n\n#\n\n# On pre-Solaris 10, -lthread is required.\n\n#\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Targets\n\n#\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "test/jdk/tools/pack200/pack200-verifier/make/build.xml" : {
+      "ObjectId" : "70c97477951ab043f7455c3de291cd3217976365",
+      "LastModified" : "2019-03-22T09:09:16Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Requires ant 1.6.1+ and JDK 1.7+",
+        "Line" : 2,
+        "CharPositionInLine" : 43
+      },
+      "1" : {
+        "Text" : " set global properties for this build ",
+        "Line" : 4,
+        "CharPositionInLine" : 48
+      },
+      "2" : {
+        "Text" : " Create the time stamp ",
+        "Line" : 13,
+        "CharPositionInLine" : 35
+      },
+      "3" : {
+        "Text" : " Create the build directory structure used by compile ",
+        "Line" : 15,
+        "CharPositionInLine" : 66
+      },
+      "4" : {
+        "Text" : " Compile the java code from ${src} into ${build} ",
+        "Line" : 23,
+        "CharPositionInLine" : 61
+      },
+      "5" : {
+        "Text" : " Put everything in jar file ",
+        "Line" : 43,
+        "CharPositionInLine" : 38
+      },
+      "6" : {
+        "Text" : " Delete the ${build} and ${dist} directory trees ",
+        "Line" : 59,
+        "CharPositionInLine" : 61
+      },
+      "CommentCount" : 7
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 15,
+    "ANT" : 51,
+    "MAVEN" : 1
+  },
+  "ElapsedTime" : 39665
+}

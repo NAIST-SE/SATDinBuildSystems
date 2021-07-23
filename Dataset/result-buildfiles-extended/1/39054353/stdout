@@ -1,0 +1,70 @@
+{
+  "Repository" : "39054353",
+  "Revision" : "HEAD",
+  "ObjectId" : "70ba4ca52b229e97e1924f490ba8cccfeb3a76f9",
+  "CommitTime" : "2019-04-18T20:31:16Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "c7a0c1827867b4ff86229138476c730d3b3b5927",
+      "LastModified" : "2019-04-08T10:40:35Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# do not export LastRawPackets used internally\n",
+        "Line" : 243,
+        "CharPositionInLine" : 1
+      },
+      "1" : {
+        "Text" : "# add flowState to flow generated struct\n",
+        "Line" : 245,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "# to fix generated layers import\n",
+        "Line" : 247,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3,
+      "Errorlog" : "line 79:16 token recognition error at: '\"grep -e 'func Test${TEST_PATTERN}' tests/*.go | perl -pe 's|.*func (.*?)\\(.*|\\1'\nline 86:15 token recognition error at: '\"\\nBOOTSTRAP:=contrib/packaging/rpm/generate-skydive-bootstrap.sh\\nBOOTSTRAP_ARGS?=\\nBUILD_TAGS?=$(TAGS)\\nWITH_LXD?=true\\nWITH_OPENCONTRAIL?=true\\nWITH_LIBVIRT?=true\\nWITH_EBPF_DOCKER_BUILDER?=false\\nWITH_VPP?=false\\n\\nexport PATH:=$(BUILD_TOOLS):$(PATH)\\n\\nSTATIC_DIR?=\\nSTATIC_LIBS?=\\n\\nOS_RHEL := $(shell test -f /etc/redhat-release && echo -n Y)\\nifeq ($(OS_RHEL),Y)\\n\\tSTATIC_DIR := /usr/lib64\\n\\tSTATIC_LIBS := \\\\n\\t\\tlibz.a \\\\n\\t\\tliblzma.a \\\\n\\t\\tlibm.a\\nendif\\n\\nOS_DEB := $(shell test -f /etc/debian_version && echo -n Y)\\nifeq ($(OS_DEB),Y)\\n\\tSTATIC_DIR := $(shell dpkg-architecture -c 'sh' -c 'echo /usr/lib/$$DEB_HOST_MULTIARCH')\\n\\tSTATIC_LIBS := \\\\n\\t\\tlibz.a \\\\n\\t\\tliblzma.a \\\\n\\t\\tlibc.a \\\\n\\t\\tlibdl.a \\\\n\\t\\tlibpthread.a \\\\n\\t\\tlibc++.a \\\\n\\t\\tlibm.a\\nendif\\n\\nifeq ($(WITH_DPDK), true)\\n  BUILD_TAGS+=dpdk\\nendif\\n\\nifeq ($(WITH_EBPF), true)\\n  BUILD_TAGS+=ebpf\\n  EXTRABINDATA+=probe/ebpf/*.o\\nendif\\n\\nifeq ($(WITH_PROF), true)\\n  BUILD_TAGS+=prof\\nendif\\n\\nifeq ($(WITH_SCALE), true)\\n  BUILD_TAGS+=scale\\nendif\\n\\nifeq ($(WITH_NEUTRON), true)\\n  BUILD_TAGS+=neutron\\nendif\\n\\nifeq ($(WITH_CDD), true)\\n  BUILD_TAGS+=cdd\\nendif\\n\\nifeq ($(WITH_MUTEX_DEBUG), true)\\n  BUILD_TAGS+=mutexdebug\\nendif\\n\\nifeq ($(WITH_K8S), true)\\n  BUILD_TAGS+=k8s\\n  ANALYZER_TEST_PROBES+=k8s\\nendif\\n\\nifeq ($(WITH_ISTIO), true)\\n  BUILD_TAGS+=k8s istio\\n  ANALYZER_TEST_PROBES+=istio\\nendif\\n\\nifeq ($(WITH_OVN), true)\\n  ANALYZER_TEST_PROBES+=ovn\\nendif\\n\\nifeq ($(WITH_HELM), true)\\n  BUILD_TAGS+=helm\\nendif\\n\\nifeq ($(WITH_OPENCONTRAIL), true)\\n  BUILD_TAGS+=opencontrail\\n  AGENT_TEST_EXTRA_PROBES+=opencontrail\\nifeq ($(OS_RHEL),Y)\\n  STATIC_LIBS+=libxml2.a\\nendif\\nifeq ($(OS_DEB),Y)\\n  STATIC_LIBS+=libicuuc.a \\\\n               libicudata.a \\\\n               libxml2.a\\nendif\\nendif\\n\\nifeq ($(WITH_LXD), true)\\n  BUILD_TAGS+=lxd\\nendif\\n\\nifeq ($(WITH_LIBVIRT), true)\\n  BUILD_TAGS+=libvirt\\nendif\\n\\nifeq ($(WITH_VPP), true)\\n  BUILD_TAGS+=vpp\\n  AGENT_TEST_EXTRA_PROBES+=vpp\\nendif\\n\\ncomma:= ,\\nempty:=\\nspace:= $(empty) $(empty)\\nEXTRA_ARGS+=-analyzer.topology.probes=$(subst $(space),$(comma),$(ANALYZER_TEST_PROBES)) -agent.topology.probes=$(subst $(space),$(comma),$(AGENT_TEST_EXTRA_PROBES))\\nSTATIC_LIBS_ABS := $(addprefix $(STATIC_DIR)/,$(STATIC_LIBS))\\nSTATIC_BUILD_TAGS := $(filter-out libvirt,$(BUILD_TAGS))\\n\\n.PHONY: all install\\nall install: skydive\\n\\n.PHONY: version\\nversion:\\n\\t@echo -n ${VERSION}\\n\\nskydive.yml: etc/skydive.yml.default\\n\\t[ -e $@ ] || cp $< $@\\n\\n.PHONY: debug\\ndebug: GOFLAGS+=-gcflags='-N -l'\\ndebug: GO_BINDATA_FLAGS+=-debug\\ndebug: skydive skydive.yml\\n\\ndefine skydive_debug\\nsudo $$(which dlv) exec $$(which skydive) -- $1 -c skydive.yml\\nendef\\n\\n.PHONY: debug.agent\\ndebug.agent:\\n\\t$(call skydive_debug,agent)\\n\\n.PHONY: debug.analyzer\\ndebug.analyzer:\\n\\t$(call skydive_debug,analyzer)\\n\\n%.pb.go: %.proto\\n\\t$(call PROTOC_GEN,$<)\\n\\nflow/flow.pb.go: flow/flow.proto filters/filters.proto\\n\\t$(call PROTOC_GEN,flow/flow.proto)\\n\\n\\t# always export flow.ParentUUID as we need to store this information to know\\n\\t# if it's a Outer or Inner packet.\\n\\tsed -e 's/ParentUUID\\(.*\\),omitempty\\(.*\\)/ParentUUID\\1'\nline 238:56 token recognition error at: '\\2'\nline 239:47 token recognition error at: '\\1'\nline 239:49 token recognition error at: '\\2'\nline 240:47 token recognition error at: '\\1'\nline 240:49 token recognition error at: '\\2'\nline 241:41 token recognition error at: '\\1'\nline 241:43 token recognition error at: '\\2'\nline 257:51 token recognition error at: '\\1'\nline 257:77 token recognition error at: '\"\\2'\nline 547:59 token recognition error at: '\\1'\n"
+    },
+    "contrib/jsonof/Makefile" : {
+      "ObjectId" : "10cb3126acf65507605496399d59dae5a58c3414",
+      "LastModified" : "2019-04-18T13:49:50Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/objectstore/Makefile" : {
+      "ObjectId" : "ef8a848276a2d5aa2910474cda3975838414d60b",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/snort/Makefile" : {
+      "ObjectId" : "7fb1b0122e5072a3043f2632ddf2c69291bba3b4",
+      "LastModified" : "2019-04-18T11:40:44Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "dpdk/Makefile" : {
+      "ObjectId" : "e5b494bdd49d20cbd11d47406f73afc89a9dcae4",
+      "LastModified" : "2019-04-18T11:40:44Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "js/Makefile" : {
+      "ObjectId" : "97f4a558de6e616f867d99d96cf2a43b92e43a45",
+      "LastModified" : "2019-04-18T11:40:44Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "probe/ebpf/Makefile" : {
+      "ObjectId" : "28cf00d1f1b491396b065b6d4ddc45e59d5e21f0",
+      "LastModified" : "2019-04-18T11:40:44Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 7
+  },
+  "ElapsedTime" : 1364
+}

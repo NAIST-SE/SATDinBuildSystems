@@ -1,0 +1,1843 @@
+{
+  "Repository" : "7691974",
+  "Revision" : "HEAD",
+  "ObjectId" : "305664020ac577de9a2eb57df61e1fa7e13f715e",
+  "CommitTime" : "2018-12-04T19:06:01Z",
+  "Files" : {
+    "CMake/FindSDL2.cmake" : {
+      "ObjectId" : "026dc34e71234ba6de30da1bbff4504dcf47c2b5",
+      "LastModified" : "2016-03-02T00:54:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This module defines\n\n# SDL2_LIBRARY, the name of the library to link against\n\n# SDL2_FOUND, if false, do not try to link to SDL2\n\n# SDL2_INCLUDE_DIR, where to find SDL.h\n\n#\n\n# This module responds to the the flag:\n\n# SDL2_BUILDING_LIBRARY\n\n# If this is defined, then no SDL2main will be linked in because\n\n# only applications need main().\n\n# Otherwise, it is assumed you are building an application and this\n\n# module will attempt to locate and set the the proper link flags\n\n# as part of the returned SDL2_LIBRARY variable.\n\n#\n\n# Don't forget to include SDLmain.h and SDLmain.m your project for the\n\n# OS X framework based version. (Other versions link to -lSDL2main which\n\n# this module will try to find on your behalf.) Also for OS X, this\n\n# module will automatically add the -framework Cocoa on your behalf.\n\n#\n\n#\n\n# Additional Note: If you see an empty SDL2_LIBRARY_TEMP in your configuration\n\n# and no SDL2_LIBRARY, it means CMake did not find your SDL2 library\n\n# (SDL2.dll, libsdl2.so, SDL2.framework, etc).\n\n# Set SDL2_LIBRARY_TEMP to point to your SDL2 library, and configure again.\n\n# Similarly, if you see an empty SDL2MAIN_LIBRARY, you should set this value\n\n# as appropriate. These values are used to generate the final SDL2_LIBRARY\n\n# variable, but when these values are unset, SDL2_LIBRARY does not get created.\n\n#\n\n#\n\n# $SDL2DIR is an environment variable that would\n\n# correspond to the ./configure --prefix=$SDL2DIR\n\n# used in building SDL2.\n\n# l.e.galup  9-20-02\n\n#\n\n# Modified by Eric Wing.\n\n# Added code to assist with automated building by using environmental variables\n\n# and providing a more controlled/consistent search behavior.\n\n# Added new modifications to recognize OS X frameworks and\n\n# additional Unix paths (FreeBSD, etc).\n\n# Also corrected the header search path to follow \"proper\" SDL guidelines.\n\n# Added a search for SDL2main which is needed by some platforms.\n\n# Added a search for threads which is needed by some platforms.\n\n# Added needed compile switches for MinGW.\n\n#\n\n# On OSX, this will prefer the Framework version (if found) over others.\n\n# People will have to manually change the cache values of\n\n# SDL2_LIBRARY to override this selection or set the CMake environment\n\n# CMAKE_INCLUDE_PATH to modify the search paths.\n\n#\n\n# Note that the header path has changed from SDL2/SDL.h to just SDL.h\n\n# This needed to change because \"proper\" SDL convention\n\n# is #include \"SDL.h\", not <SDL2/SDL.h>. This is done for portability\n\n# reasons because not all systems place things in SDL2/ (see FreeBSD).\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2003-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Fink\n",
+        "Line" : 75,
+        "CharPositionInLine" : 5
+      },
+      "3" : {
+        "Text" : "# DarwinPorts\n",
+        "Line" : 76,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : "# Blastwave\n",
+        "Line" : 77,
+        "CharPositionInLine" : 10
+      },
+      "5" : {
+        "Text" : "# Non-OS X framework versions expect you to also dynamically link to\n\n# SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms\n\n# seem to provide SDL2main for compatibility even though they don't\n\n# necessarily need it.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# SDL2 may require threads on your system.\n\n# The Apple build may not need an explicit flag because one of the\n\n# frameworks may already provide it.\n\n# But for non-OSX systems, I will use the CMake Threads package.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# MinGW needs an additional library, mwindows\n\n# It's total link flags should look like -lmingw32 -lSDL2main -lSDL2 -lmwindows\n\n# (Actually on second look, I think it only needs one of the m* libraries.)\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# For SDL2main\n",
+        "Line" : 129,
+        "CharPositionInLine" : 1
+      },
+      "9" : {
+        "Text" : "# For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.\n\n# CMake doesn't display the -framework Cocoa string in the UI even\n\n# though it actually is there if I modify a pre-used variable.\n\n# I think it has something to do with the CACHE STRING.\n\n# So I use a temporary variable until the end so I can set the\n\n# \"real\" variable in one-shot.\n",
+        "Line" : 136,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# For threads, as mentioned Apple doesn't need this.\n\n# In fact, there seems to be a problem if I used the Threads package\n\n# and try using this line, so I'm just skipping it entirely for OS X.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# For MinGW library\n",
+        "Line" : 153,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "# Set the final string here so the GUI reflects the final state.\n",
+        "Line" : 158,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "# Set the temp variable to INTERNAL so it is not seen in the CMake GUI\n",
+        "Line" : 160,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 14
+    },
+    "CMake/export.cmake" : {
+      "ObjectId" : "fecd1bd2240b9e1f263711afb9d3b8c666308819",
+      "LastModified" : "2018-02-23T19:41:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Main CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# final config and export\n\n#######################################################################\n\n# Set the fluid executable path\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# no export\n",
+        "Line" : 32,
+        "CharPositionInLine" : 20
+      },
+      "3" : {
+        "Text" : "# export\n",
+        "Line" : 39,
+        "CharPositionInLine" : 20
+      },
+      "4" : {
+        "Text" : "# generate FLTK-Targets.cmake for build directory use\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# generate FLTKConfig.cmake for build directory use\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# generate UseFLTK.cmake for build directory use\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# generate fltk-config for build directory use\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# prepare some variables for config.h\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# generate config.h\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Set PREFIX_INCLUDE to the proper value.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 11
+    },
+    "CMake/install.cmake" : {
+      "ObjectId" : "cb4f8fe71e596bdaa5e63ef640808e92a8b93ffe",
+      "LastModified" : "2018-02-23T19:41:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Main CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# installation\n\n#######################################################################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# generate uninstall target\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# generate FLTKConfig.cmake for installed directory use\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# generate fltk-config\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "CMake/macros.cmake" : {
+      "ObjectId" : "afb855687c187441a9464c3ba9637bcaba6d2464",
+      "LastModified" : "2018-02-18T11:25:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Macros used by the CMake build system for the Fast Light Tool Kit (FLTK).\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# macros used for debugging purposes\n\n#######################################################################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This macro displays the name and value of a CMake variable.\n\n# The variable name is expanded with spaces to be (at least)\n\n# <min_len> (currently 24) characters wide for better readability.\n\n# VARNAME must be a string literal, e.g. WIN32 or \"WIN32\".\n\n#\n\n# Syntax:\n\n#   fl_debug_var(VARNAME)\n\n#\n\n# Example:\n\n#   fl_debug_var(WIN32)\n\n#   fl_debug_var(\"UNIX\")\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# add one space until min_len is reached\n\n# ** string(APPEND var \" \") # requires CMake 3.4.x (otherwise loop...)\n",
+        "Line" : 42,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "#######################################################################\n\n# macros used by the build system\n\n#######################################################################\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# for MSVC static/shared coexistence\n",
+        "Line" : 82,
+        "CharPositionInLine" : 21
+      },
+      "6" : {
+        "Text" : "#######################################################################\n\n# USAGE: FLTK_RUN_FLUID TARGET_NAME \"FLUID_SOURCE [.. FLUID_SOURCE]\"\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# source files\n",
+        "Line" : 136,
+        "CharPositionInLine" : 17
+      },
+      "9" : {
+        "Text" : "# fluid source files\n",
+        "Line" : 137,
+        "CharPositionInLine" : 18
+      },
+      "10" : {
+        "Text" : "# target name\n\n# output (executable) name\n",
+        "Line" : 139,
+        "CharPositionInLine" : 25
+      },
+      "11" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "CMake/options.cmake" : {
+      "ObjectId" : "622c2eb443081edb81cebd54f2a4cc0c9b6e4384",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Main CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# *Temporary* option to modify header file searches\n\n#######################################################################\n\n# Note: The old, deprecated behavior (ON) was to use find_file() for\n\n# header searches, the new behavior (ON) is to use check_include_files()\n\n# which seems to be more reliable but more difficult to set up and\n\n# slower because it uses a compilation test. Default is \"new\" (OFF).\n\n# This option should be removed as soon as the new search strategy\n\n# is considered stable.\n\n# Currently used only in resources.cmake.\n\n#######################################################################\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################################################\n\n# options\n\n#######################################################################\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################################################\n\n#######################################################################\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################################################\n\n##  Add a TEMPORARY OPTION to enable high-DPI support under Windows.\n\n##  May be removed once high-DPI support under Windows is complete.\n\n#######################################################################\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# find X11 libraries and headers\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Set GLLIBS (used in fltk-config).\n\n# We should probably deduct this from OPENGL_LIBRARIES but it turned\n\n# out to be difficult since FindOpenGL seems to return different\n\n# syntax depending on the platform (and maybe also CMake version).\n\n# Hence we use the following code...\n",
+        "Line" : 215,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# check if function glXGetProcAddressARB exists\n",
+        "Line" : 229,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#######################################################################\n\n# Create an option whether we want to check for pthreads.\n\n# We must not do it on Windows unless we run under Cygwin, since we\n\n# always use native threads on Windows (even if libpthread is available).\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Note: HAVE_PTHREAD_H has already been determined in resources.cmake\n\n# before this file is included (or set to 0 for WIN32).\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# set(HAVE_PTHREAD_H 0) # (see resources.cmake)\n",
+        "Line" : 261,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# initialize more variables\n",
+        "Line" : 267,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# set to 1 to show debug info\n",
+        "Line" : 302,
+        "CharPositionInLine" : 22
+      },
+      "24" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 340,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 364,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 392,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 406,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 434,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# test option compatibility: Pango requires Xft\n",
+        "Line" : 440,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 455,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "#this covers Debian, Ubuntu, FreeBSD, NetBSD, Darwin\n",
+        "Line" : 457,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# message(STATUS \"USE_PANGO=\" ${USE_PANGO})\n\n# remove last 3 components of HAVE_PANGO_H and put in PANGO_H_PREFIX\n",
+        "Line" : 476,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# glib.h is usually in ${PANGO_H_PREFIX}/glib-2.0/ ...\n",
+        "Line" : 483,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# ... but not under NetBSD\n",
+        "Line" : 485,
+        "CharPositionInLine" : 24
+      },
+      "37" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 507,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 525,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 537,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 542,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 549,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "#######################################################################\n\n# prior to CMake 3.0 this feature was buggy\n",
+        "Line" : 551,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "#######################################################################\n\n# Debugging ...\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# empty line\n",
+        "Line" : 563,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 46
+    },
+    "CMake/resources.cmake" : {
+      "ObjectId" : "3676d3bc0db079aea95872afe92d727316412eed",
+      "LastModified" : "2018-02-23T19:41:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Main CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# check for headers, libraries and functions\n\n#######################################################################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The following code is work in progress (as of Feb 2018) - AlbrechtS\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The cache option USE_FIND_FILE can be set to ON to switch back to the old\n\n# behavior that tries to find headers by find_file() which appears to be\n\n# error prone at least under Windows when MSYS2 and MinGW are both\n\n# installed on one system.\n\n# If USE_FIND_FILE is OFF (new behavior), then headers are searched for by\n\n# check_include_files() which tries to compile a small file to test if\n\n# the header file can be used. In some cases this needs more than one\n\n# header in a list because another header must be included before the\n\n# header being searched for.\n\n# Example: X11/Xlib.h must be included before X11/Xregion.h so Xregion.h\n\n# can be compiled successfully.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# If CMAKE_REQUIRED_QUIET is 1 (default) the search is mostly quiet, if\n\n# it is 0 (or not defined) check_include_files() is more verbose and\n\n# the result of the search is logged with fl_debug_var().\n\n# This is useful for debugging.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The following macro is used to switch between old and new behavior.\n\n# Once this is stable (USE_FIND_FILE = 0) the unused part may be removed.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Find header files...\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# we don't use pthreads on Windows (except for Cygwin, see options.cmake)\n",
+        "Line" : 84,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Special case for Microsoft Visual Studio generator (MSVC):\n\n#\n\n# The header files <GL/glu.h> and <locale.h> are located in the SDK's\n\n# for Visual Studio. If CMake is invoked from a desktop icon or the Windows\n\n# menu it doesn't have the correct paths to find these header files.\n\n# The CMake folks recommend not to search for these files at all, because\n\n# they must always be there, but we do anyway.\n\n# If we don't find them we issue a warning and suggest to rerun CMake from\n\n# a \"Developer Command Prompt for Visual Studio xxxx\", but we fix the issue\n\n# by setting the *local* instance (not the cache variable) of the corresponding\n\n# CMake variable to '1' since we \"know\" the header file is available.\n\n#\n\n# If the user builds the solution, everything should run smoothly despite\n\n# the fact that the header files were not found.\n\n#\n\n# If the configuration is changed somehow (e.g. by editing CMakeLists.txt)\n\n# CMake will be rerun from within Visual Studio, find the header file, and\n\n# set the cache variable for the header file to its correct path. The latter is\n\n# only informational so you can see that (and where) the headers were found.\n\n#\n\n# Note: these cache variables can only be seen in \"advanced\" mode.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Simulate the behavior of autoconf macro AC_HEADER_DIRENT, see:\n\n# https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Particular-Headers.html\n\n# \"Check for the following header files. For the first one that is found\n\n#  and defines 'DIR', define the listed C preprocessor macro ...\"\n\n#\n\n# Note: we don't check if it really defines 'DIR', but we stop processing\n\n# once we found the first suitable header file.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#----------------------------------------------------------------------\n\n# The following code is used to find the include path for freetype\n\n# headers to be able to #include <ft2build.h> in Xft.h.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# where to find freetype headers\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#######################################################################\n\n# libraries\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#######################################################################\n\n# functions\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# save CMAKE_REQUIRED_LIBRARIES (is this really necessary ?)\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# not really true but we convert strcasecmp calls to _stricmp calls in flstring.h\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# restore CMAKE_REQUIRED_LIBRARIES (is this really necessary ?)\n",
+        "Line" : 254,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#######################################################################\n\n# packages\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Doxygen: necessary for HTML and PDF docs\n",
+        "Line" : 265,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# LaTex: necessary for PDF docs (note: FindLATEX doesn't return LATEX_FOUND)\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Note: we only check existence of `latex' (LATEX_COMPILER), hence\n\n# building the pdf docs may still fail because of other missing tools.\n",
+        "Line" : 270,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# message(\"Doxygen  found : ${DOXYGEN_FOUND}\")\n\n# message(\"LaTex    found : ${LATEX_FOUND}\")\n\n# message(\"LaTex Compiler : ${LATEX_COMPILER}\")\n",
+        "Line" : 281,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Cleanup: unset local variables\n",
+        "Line" : 285,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "CMake/setup.cmake" : {
+      "ObjectId" : "23f20695bc99489d64301124d334ea21decd43ae",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# basic setup\n\n#######################################################################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The FLTK version\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Search for modules in the FLTK source dir first\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Remember root of FLTK source directory in case we're in a subdirectory.\n\n# Used for instance to find the source directory for doxygen docs\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Setup install locations\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Use GNUInstallDirs if available.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Else set reasonable defaults.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "#######################################################################\n\n# platform dependent information\n\n#######################################################################\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# set where config files go\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# we do no longer define WIN32 or _WIN32 (since FLTK 1.4.0)\n\n# ... but if we did, we'd define _WIN32 (since FLTK 1.4.0)\n\n# add_definitions(-D_WIN32)\n",
+        "Line" : 113,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "#######################################################################\n\n# size of ints\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "CMake/variables.cmake" : {
+      "ObjectId" : "4edf8b749341b89611fe5e8ead5517865a32f2f1",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# This file sets variables for common use in export.cmake and install.cmake\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################################################\n\n# add several libraries\n\n# FIXME: libraries may need reordering.\n\n# FIXME: check fontconfig conditions (only if Xft is used or ...)\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME: do nothing?\n",
+        "Line" : 50,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# add \"-ldl\" or whatever is necessary according to CMake (CMAKE_DL_LIBS)\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################################################\n\n# Set variables for fltk-config (generated from fltk-config.in)\n\n#######################################################################\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Variables in fltk-config.in (@VAR@) are used in configure(.ac)\n\n# and in CMake so their names and usage must be synchronized.\n\n# CMake generates two instances of fltk-config, one that can be used\n\n# directly in the build tree (see export.cmake) and one that is copied\n\n# to the installation directory (see install.cmake). Common variables\n\n# should be set here, whereas variables with different values should\n\n# be set in install.cmake or export.cmake, respectively.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# empty line\n",
+        "Line" : 151,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 9
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "39a9863c5eb990a444f220c4a67b3e7d10732e17",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Main CMakeLists.txt to build the FLTK project using CMake (www.cmake.org)\n\n# Written by Michael Surette\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent annoying warning under Cygwin; this must be before project().\n\n# Remove when CMake >= 2.8.4 is required\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################################################\n\n# define some macros\n\n#######################################################################\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################################################\n\n# basic setup\n\n#######################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################################################\n\n# check for headers, libraries and functions\n\n#######################################################################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################################################\n\n# options\n\n#######################################################################\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################################################\n\n# print (debug) several build variables and options\n\n#######################################################################\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# set to 1 to show debug info\n",
+        "Line" : 51,
+        "CharPositionInLine" : 20
+      },
+      "8" : {
+        "Text" : "#######################################################################\n\n# variables shared by export and install\n\n# export.cmake creates configuration files for direct use in a built but uninstalled FLTK\n\n# install.cmake creates these files for an installed FLTK\n\n# these two would only differ in paths, so common variables are set here\n\n#######################################################################\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#######################################################################\n\n# final config and export\n\n#######################################################################\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#######################################################################\n\n# build examples - these have to be built after fluid is built/imported\n\n#######################################################################\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#######################################################################\n\n# installation\n\n#######################################################################\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "DartConfig.cmake" : {
+      "ObjectId" : "90e1ff6639242944ce002f819794d43b6c752a19",
+      "LastModified" : "2016-03-02T00:54:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Dashboard is opened for submissions for a 24 hour period starting at\n\n# the specified NIGHLY_START_TIME. Time is specified in 24 hour format.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Dart server to submit results (used by client)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Project Home Page\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Dart server configuration \n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Continuous email delivery variables\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "Makefile" : {
+      "ObjectId" : "720c269af1c4361f428840dd82e73588f0bc033b",
+      "LastModified" : "2016-09-30T21:09:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Top-level makefile for the Fast Light Tool Kit (FLTK).\n\n#\n\n# Copyright 1998-2010 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#      http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#      http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Run the clang.llvm.org static code analysis tool on the C sources.\n\n# (at least checker-231 is required for scan-build to work this way)\n\n#\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cairo/CMakeLists.txt" : {
+      "ObjectId" : "2cfa912fd18d652c995670e55a48336d0173d5e7",
+      "LastModified" : "2016-03-02T00:54:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# source files for cairo\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cairo/Makefile" : {
+      "ObjectId" : "84836b38849cfe049d87345edc6f59b837dc2f8b",
+      "LastModified" : "2017-03-13T23:31:38Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# CAIRO library makefile for the Fast Light Toolkit (FLTK).\n\n#\n\n# Copyright 1997-2009 by Easy Software Products.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Note:\tsee ../configure.in and/or ../makeinclude for definition of\n\n#\tFL_VERSION (x.y.z), FL_ABI_VERSION (x.y.0), and FL_DSO_VERSION (x.y)\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Object files...\n\n#\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Make all of the targets...\n\n#\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Clean all of the targets and object files...\n\n#\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Install everything...\n\n#\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Uninstall everything...\n\n#\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "documentation/CMakeLists.txt" : {
+      "ObjectId" : "720af95d310ee33ea72013dffaf614260940deb8",
+      "LastModified" : "2018-02-23T19:41:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# CMakeLists.txt to build docs for the FLTK project using CMake (www.cmake.org)\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#--------------------------\n\n# build html documentation\n\n#--------------------------\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# generate Doxygen file \"Doxyfile\"\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# generate html docs\n",
+        "Line" : 42,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# ALL\n",
+        "Line" : 45,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "#--------------------------\n\n# build pdf documentation\n\n#--------------------------\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# generate Doxygen file \"Doxybook\"\n",
+        "Line" : 62,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# generate LaTeX header fltk-book.tex\n",
+        "Line" : 75,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# generate fltk.pdf\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# add target 'pdf'\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# ALL\n",
+        "Line" : 103,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "#----------------------------------\n\n# add target 'docs' for all docs\n\n#----------------------------------\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# ALL\n",
+        "Line" : 116,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "#----------------------------------\n\n# install html + pdf documentation\n\n#----------------------------------\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "documentation/Makefile" : {
+      "ObjectId" : "73c39dc561b874b8d3774ae6387fe03b79f483e5",
+      "LastModified" : "2018-02-23T19:41:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Makefile for the Fast Light Tool Kit (FLTK) documentation.\n\n#\n\n# Copyright 1998-2015 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#      http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Get configuration stuff...\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure that all docs are (re-)created independent of missing deps\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are the HTML \"source\" files...\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Use `make docs' to create all docs for distribution files.\n\n# You need installed versions of Doxygen and LaTeX for this.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Synonyms for docs:\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# The documentation is generated using doxygen. There are two control files\n\n# for doxygen: Doxyfile for html documentation and Doxybook for pdf docs.\n\n# Both files are generated from the common source file Doxyfile.in.\n\n# Note that Doxyfile.in is shared with CMake to configure these files.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# The HTML files are generated using doxygen, and this needs\n\n# an installed doxygen version and may take some time, so this target\n\n# is not made by default.\n\n# Use `make html' or `make docs' to create the html docs.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# The PDF documentation (fltk.pdf) is generated using doxygen and LaTeX, and\n\n# this needs installed Doxygen and LaTeX programs and may take some time, so\n\n# this target is not made by default.\n\n# Use `make pdf' or `make docs' to create the PDF docs.\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "examples/Makefile" : {
+      "ObjectId" : "08c51159032d3f3a1eb106264223622379324f93",
+      "LastModified" : "2018-08-29T19:54:10Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Executables\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# default target -- build everything\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# clean everything\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "fluid/CMakeLists.txt" : {
+      "ObjectId" : "8f25ade91b79b7bfdd49a8779e2eea525e1b6faf",
+      "LastModified" : "2018-08-29T19:54:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# CMakeLists.txt to build fluid for the FLTK project using CMake (www.cmake.org)\n\n#\n\n# Copyright 1998-2016 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ExternalCodeEditor: platform specific files\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install fluid\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# create bundle\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# install\n",
+        "Line" : 69,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# install desktop files\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Install mime-type file. x-fluid.desktop method is deprecated.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Install desktop icons.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 8
+    },
+    "fluid/Makefile" : {
+      "ObjectId" : "1100c9a3b4209cfe81de9a94cebdf9318217878a",
+      "LastModified" : "2018-02-23T19:41:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# FLUID makefile for the Fast Light Tool Kit (FLTK).\n\n#\n\n# Copyright 1998-2017 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#      http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#      http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ExternalCodeEditor: platform specific files\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "################################################################\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Automatically generated dependencies...\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Note: The rebuild target can only be used if you have the original .fl\n\n#       files.  This is normally only used by the FLTK maintainers...\n\n#\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "ide/AndroidStudio3/app/src/main/cpp/CMakeLists.txt" : {
+      "ObjectId" : "c9f4fab4879e62347cdea9a232c28bb02245f6d0",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (C)  The Android Open Source Project\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#      http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME: add as a second argument the binary build dir\n\n# so that the first argument can link directly to FLTK\n\n# instead of the fltk symlink, which is bad for SVN\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# now build app's shared lib\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Export ANativeActivity_onCreate(), \n\n# Refer to: https://github.com/android-ndk/ndk/issues/381.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# add lib dependencies\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "jpeg/CMakeLists.txt" : {
+      "ObjectId" : "a5c27a21e212a4432f7a90639e0e56b848fed613",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# memmgr back ends: compile only one of these into a working library\n\n# (For now, let's use the mode that requires the image fit into memory.\n\n# This is the recommended mode for Win32 anyway.)\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# library object files common to compression and decompression\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# compression library object files\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# decompression library object files\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# install the jpeg headers\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "jpeg/Makefile" : {
+      "ObjectId" : "d3fff5b039ff971f2262a865f038f5dc0b31c0de",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# *************************************************************************\n\n#  FLTK - DO NOT CHANGE when upgrading the JPEG library, unless required. *\n\n# *************************************************************************\n\n#\n\n# \"$Id$\"\n\n#\n\n# JPEG library makefile for the Fast Light Toolkit (FLTK).\n\n#\n\n# Copyright 1997-2011 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Object files...\n\n#\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Make all targets...\n\n#\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Clean all targets and object files...\n\n#\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Install everything...\n\n#\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Uninstall everything...\n\n#\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# libfltk_jpeg.a\n\n#\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# Make dependencies...\n\n#\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "png/CMakeLists.txt" : {
+      "ObjectId" : "ba709e4c96dc680ff578669f008b0ba530905bc4",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# source files for png\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install the png headers\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "png/Makefile" : {
+      "ObjectId" : "fd435ec50db200f8fc8ec3e3545fbdb11bd5c261",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# PNG library makefile for the Fast Light Toolkit (FLTK).\n\n#\n\n# Copyright 1997-2011 by Easy Software Products.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Object files...\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Make all of the targets...\n\n#\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Clean all of the targets and object files...\n\n#\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Install everything...\n\n#\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Uninstall everything...\n\n#\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# libfltk_png.a\n\n#\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# Make dependencies...\n\n#\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "08eb9194fcd892dfc7c6422d7243938f404a1577",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# CMakeLists.txt to build the FLTK library using CMake (www.cmake.org)\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# find all header files in source directory <FL/...>\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add generated header files in build directory\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME: not (yet?) defined\n",
+        "Line" : 178,
+        "CharPositionInLine" : 23
+      },
+      "4" : {
+        "Text" : "# X11 (including APPLE with X11)\n",
+        "Line" : 194,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# SDL2 \n",
+        "Line" : 236,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Apple Quartz\n",
+        "Line" : 265,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Android\n",
+        "Line" : 297,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Windows (GDI)\n",
+        "Line" : 325,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# the following file doesn't contribute any code:\n\n# drivers/OpenGL/Fl_OpenGL_Graphics_Driver.cxx\n",
+        "Line" : 392,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# xutf8/utf8Input.c  # not used\n",
+        "Line" : 445,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 469,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# prepare source files for shared and static FLTK libraries\n",
+        "Line" : 471,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# prepare optional libs for shared and static FLTK libraries\n",
+        "Line" : 486,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 549,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 554,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 577,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#######################################################################\n\n# Build shared libraries (optional)\n\n#######################################################################\n",
+        "Line" : 584,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Note to devs: As of 08 Aug 2016 we can build shared libs (dlls)\n\n# under Windows with Visual Studio (MSVC) but we can't link for instance\n\n# fltk_images_SHARED with fltk_SHARED - we have to use fltk, i.e. the\n\n# \"static\" object library instead. I don't know how to fix this, but\n\n# at least we can build shared libraries (dlls) with Visual Studio.\n\n# AlbrechtS\n",
+        "Line" : 588,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "###################################################################\n",
+        "Line" : 600,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "###################################################################\n",
+        "Line" : 609,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "###################################################################\n",
+        "Line" : 636,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 649,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 25
+    },
+    "src/Makefile" : {
+      "ObjectId" : "96a769f21afddc4b43d3d83ad6110501464df444",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Library Makefile for the Fast Light Tool Kit (FLTK).\n\n#\n\n# Copyright 1998-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#      http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#      http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Note:\tsee ../configure.in and/or ../makeinclude for definition of\n\n#\tFL_VERSION (x.y.z), FL_ABI_VERSION (x.y.0), and FL_DSO_VERSION (x.y)\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\tthe following file currently doesn't contribute code to GLCPPFILES\n\n#\tdrivers/OpenGL/Fl_OpenGL_Graphics_Driver.cxx\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These C++ files are used under condition: BUILD_X11\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This C file is used under condition: BUILD_X11\n",
+        "Line" : 264,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# These C files are used under condition: BUILD_X11 AND NOT BUILD_XFT\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# These C++ files are used under condition: BUILD_X11 AND NOT BUILD_XFT\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# These C++ files are used under condition: BUILD_X11 AND BUILD_XFT\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# These C++ files are used under condition: BUILD_GDI\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# These C files are used under condition: BUILD_GDI\n",
+        "Line" : 303,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "################################################################\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# makeinclude has set this variable:\n\n# BUILD = {WIN|X11|XFT|OSX}\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#-----------------------------------------------------------------\n\n# - the import libraries libfltk*.dll.a and the .dll files\n\n#   are created from the libfltk*.a files. They are built\n\n#   into the src dir.\n\n# - The _images, _gl, _forms and dlls must be linked\n\n#   against the import libraries in the src dir.\n\n#-----------------------------------------------------------------\n",
+        "Line" : 494,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#-----------------------------------------------------------------\n\n# cygwin GDI shared libraries\n\n#-----------------------------------------------------------------\n",
+        "Line" : 502,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#-----------------------------------------------------------------\n\n# cygwin X11 shared libraries\n\n#-----------------------------------------------------------------\n",
+        "Line" : 530,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#-----------------------------------------------------\n\n# See STR #1585 for --exclude-libs\n\n#-----------------------------------------------------\n",
+        "Line" : 575,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Automatically generated dependencies... generated on a Linux/Unix host !\n",
+        "Line" : 611,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# These dependencies aren't part of the makedepend file since\n\n# they are part of the Windows and MacOS code base...\n\n# Please add only non-Linux/Unix files or such that are optional\n\n# (like \"*xft*\") here:\n",
+        "Line" : 614,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "################################################################\n",
+        "Line" : 671,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 924,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 20
+    },
+    "src/xutf8/utils/Makefile" : {
+      "ObjectId" : "3bed422c767f014a858f78d946f45dcd91dd82ec",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "0ffe3f881c1425215248188864dad307d3cf57fd",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# CMakeLists.txt used to build test and demo apps by the CMake build system\n\n#\n\n# Copyright 2004-2018 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n\n#######################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n\n# audio libs for test apps\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# OpenGL demos...\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Cairo demo\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We need some support files for the demo programs:\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Note: this is incomplete as of 11 Feb 2015\n\n# Todo: currently all files are copied, but some of them need configuration:\n\n# - demo.menu: fluid can't be started (wrong path)\n\n# - demo.menu: help_dialog (help_dialog.html) can't find its images (not copied)\n\n# - maybe more ...\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# prepare for a \"better\" test file installation path\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# *FIXME* *DEBUG*\n\n# message (\"test/CMakeLists.txt: EXECUTABLE_OUTPUT_PATH = '${EXECUTABLE_OUTPUT_PATH}'\")\n\n# message (\"test/CMakeLists.txt: TESTFILE_PATH          = '${TESTFILE_PATH}'\")\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# use a target filename to make sure the target directory gets created\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# use target directory only to avoid redundancy\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "test/Makefile" : {
+      "ObjectId" : "803094340b11e9872b3c452008b84e327637fcb4",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# Test/example program makefile for the Fast Light Tool Kit (FLTK).\n\n#\n\n# Copyright 1998-2017 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#      http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#      http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically generated dependencies...\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FLUID file rules\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# All demos depend on the FLTK library...\n",
+        "Line" : 281,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# General demos...\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# This ensures that we have this dependency even if threads are not\n\n# enabled in the current tree...\n",
+        "Line" : 482,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# All OpenGL demos depend on the FLTK and FLTK_GL libraries...\n",
+        "Line" : 498,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# OpenGL demos...\n",
+        "Line" : 501,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 548,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "zlib/CMakeLists.txt" : {
+      "ObjectId" : "c74df92406c9f5aab0aeb5ffb1d63ab8d5d7b10f",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# source files for zlib\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install the zlib headers\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################################################\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "zlib/Makefile" : {
+      "ObjectId" : "213f66ba363a9d2981f80835ab03ee654a92f8fd",
+      "LastModified" : "2018-06-23T17:04:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# \"$Id$\"\n\n#\n\n# GNU ZIP library makefile for the Fast Light Toolkit (FLTK).\n\n#\n\n# Copyright 1998-2011 by Bill Spitzak and others.\n\n#\n\n# This library is free software. Distribution and use rights are outlined in\n\n# the file \"COPYING\" which should have been included with this file.  If this\n\n# file is missing or damaged, see the license at:\n\n#\n\n#     http://www.fltk.org/COPYING.php\n\n#\n\n# Please report all bugs and problems on the following page:\n\n#\n\n#     http://www.fltk.org/str.php\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Object files...\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Make all targets...\n\n#\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Clean all targets and object files...\n\n#\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Install everything...\n\n#\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Uninstall everything...\n\n#\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# libfltk_z.a\n\n#\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# Make dependencies...\n\n#\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# End of \"$Id$\".\n\n#\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 19,
+    "MAKEFILE" : 11
+  },
+  "ElapsedTime" : 5192
+}

@@ -1,0 +1,2449 @@
+{
+  "Repository" : "23115492",
+  "Revision" : "HEAD",
+  "ObjectId" : "7f89f0eb68aa5067c41b9c78da4a74dc9f8cef2e",
+  "CommitTime" : "2019-04-16T19:55:49Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "458c38421fc39aadd1886f6fb38d7278aa427946",
+      "LastModified" : "2019-02-18T22:17:31Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#CMake build, Pedro Vicente\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#mininum library dependencies: netCDF, HDF5, HDF5_HL, ZLIB (SZIP)\n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-DNETCDF_INCLUDE:PATH=<some_path>\n\n#-DNETCDF_LIBRARY:FILE=<some_file>\n\n#-DHDF5_LIBRARY:FILE=<some_file>\n\n#-DHDF5_HL_LIBRARY:FILE=<some_file>\n\n#-DZLIB_LIBRARY:FILE=<some_file>\n\n#-DSZIP_LIBRARY:FILE=<some_file>\n\n#-DCURL_LIBRARY:FILE=<some_file>\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#optional library dependencies (Antlr, UDUNITS, EXPAT, GSL)\n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-DANTLR_INCLUDE:PATH=<some_path>\n\n#-DANTLR_LIBRARY:FILE=<some_file>\n\n#-DUDUNITS2_INCLUDE:PATH=<some_path>\n\n#-DUDUNITS2_LIBRARY:FILE=<some_file>\n\n#-DEXPAT_LIBRARY:FILE=<some_file>\n\n#-DGSL_INCLUDE:PATH=<some_path>\n\n#-DGSL_LIBRARY:FILE=<some_file>\n\n#-DGSL_CBLAS_LIBRARY:FILE=<some_file>\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#//////////////////////////\n\n# colorized output\n\n# red, fatal error, cannot build (missing netCDF, HDF5, CURL libraries)\n\n# magenta, \"negative\" warning (missing optional libraries, GSL, ANTLR, UDUNITS)\n\n# green, \"positive\" warning (opposite of magenta, optional libraries found)\n\n# blue, general information to take notice (SZIP/ZLIB were detected as needed, special NCO functions are defined)\n\n#//////////////////////////\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#general C/C++ build flags\n\n#on single-configuration generators (Unix Makefiles, NMake Makefiles) use Debug as default\n\n#on multi-configuration generators (Visual Studio, Xcode) define only 2 types: Debug;Release\n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#//////////////////////////\n\n#detect minimum dependencies using\n\n#find_path()\n\n#find_library()\n\n#Notes:\n\n#1) list a static name first to avoid link errors in systems with multiple versions of the same libraries in PATH, used for libz.a\n\n#2) use option NO_SYSTEM_ENVIRONMENT_PATH\n\n#//////////////////////////\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#netCDF\n\n#detect a user defined system environment variable NETCDF_ROOT\n\n#this sets the include path to NETCDF_INCLUDE directly\n\n#and a PATHS hint for NETCDF_LIBRARY (because the library name can be any legal combination of \"netcdf\" )\n\n#For this case find_library(NETCDF_LIBRARY) MUST be called 2 times\n\n#First time it looks in NETCDF_LIBRARY_PATH if set, avoiding all other PATHS with NO_DEFAULT_PATH\n\n#If not found, business as usual\n\n#//////////////////////////\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# NETCDF_ROOT, if found in environment, will be searched after specific command line locations for NETCDF_INCLUDE\n\n# and NETCDF_LIBRARY\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#//////////////////////////\n\n#a user defined -DNETCDF_INCLUDE was specified; check if it really exists :-)\n\n#//////////////////////////\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#//////////////////////////\n\n#a user defined -DNETCDF_LIBRARY was specified; check if it really exists :-)\n\n#//////////////////////////\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#netCDF\n\n#Check for several functions in the netCDF library; define C macro accordingly\n\n#CMAKE_REQUIRED_LIBRARIES needs NETCDF_LIBRARY\n\n#check for header file netcdf_mem.h existence\n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#netCDF 4.6.0 \n\n#nc_def_var_filter , has_inq_var_filter, define NC_LIB_VERSION=460 if both found \n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#if nc_def_var_filter() is available, nc_inq_path(), nc_inq_format() and has_nc_open_mem() are too\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#HDF5\n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#//////////////////////////\n\n#HDF5 can be optionally linked with the SZIP library (Science Data Lossless Compression Program) and ZLIB\n\n#Symbol to detect in ZLIB can be only H5Z_DEFLATE, a structure only defined in H5Zdeflate.c if the filter is enabled\n\n#For SZIP the structure can be only H5Z_SZIP, defined in H5Zszip.c if the filter is enabled\n\n#check_library_exists() tries to link a temporary program with these symbols\n\n#On MSVC for this detection to work, the HDF5 library MUST HAVE as additional dependencies the ZLIB and SZIP libraries,\n\n#which is not a requirement for the library to build successfully\n\n#//////////////////////////\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#//////////////////////////\n\n#detect optional dependencies\n\n#//////////////////////////\n",
+        "Line" : 291,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#//////////////////////////\n\n# UDUNITS2 (and EXPAT)\n\n# Add non standard UDUNITS2 header paths (Mac ports, Linux Fedora)\n\n#//////////////////////////\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#//////////////////////////\n\n# UDUnits depends on expat\n\n#//////////////////////////\n",
+        "Line" : 318,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#//////////////////////////\n\n#compile as C++/static CRT on Visual Studio and as C99 on UNIX\n\n#//////////////////////////\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#//////////////////////////\n\n#compile as C++ Code (/TP)\n\n#//////////////////////////\n",
+        "Line" : 349,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "#//////////////////////////\n\n#visual studio defines math symbols in math.h, avoid duplicate definition\n\n#//////////////////////////\n",
+        "Line" : 358,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "#//////////////////////////\n\n#compile as C99\n\n#//////////////////////////\n",
+        "Line" : 366,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "#//////////////////////////\n\n# other gcc flags\n\n#//////////////////////////\n",
+        "Line" : 378,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "#//////////////////////////\n\n#link with libraries\n\n#LIB_DEP contains a cascade definition of all the libraries needed to link\n\n#//////////////////////////\n",
+        "Line" : 393,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#//////////////////////////\n\n#add definitions based on libraries found\n\n#//////////////////////////\n",
+        "Line" : 410,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "#//////////////////////////\n\n# system specific libraries needed to link (assume existing)\n\n#//////////////////////////\n",
+        "Line" : 427,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "#//////////////////////////\n\n#nco lib sources \n\n#//////////////////////////\n",
+        "Line" : 443,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Type of library (SHARED, STATIC) is configured using BUILD_SHARED_LIBS\n",
+        "Line" : 496,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "#//////////////////////////\n\n#ncwa, flex, bison on UNIX\n\n#flex -Pnco_yy ncap_lex.l\n\n#mv lex.nco_yy.c ncap_lex.c\n\n#bison -d --name-prefix=nco_yy --output=ncap_yacc.c -d ncap_yacc.y\n\n#//////////////////////////\n",
+        "Line" : 507,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "#//////////////////////////\n\n#ANTLR\n\n#cmake can detect relative paths, e.g, antlr/AST.hpp\n\n#detect a user defined system environment variable ANTLR_ROOT\n\n#this sets the include path to ANTLR_INCLUDE directly\n\n#and a PATHS hint for ANTLR_LIBRARY \n\n#For this case find_library(ANTLR_LIBRARY) MUST be called 2 times\n\n#First time it looks in ANTLR_LIBRARY_PATH if set, avoiding all other PATHS with NO_DEFAULT_PATH\n\n#//////////////////////////\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "#//////////////////////////\n\n#GSL\n\n#GSL CBLAS needed for Linux Fedora; assuming here all gsl-dev packages have it\n\n#//////////////////////////\n",
+        "Line" : 602,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "#//////////////////////////\n\n#GSL_ROOT\n\n#detect a user defined system environment variable GSL_ROOT\n\n#this sets the include path to GSL_INCLUDE directly\n\n#and a PATHS hint for GSL_LIBRARY and GSL_CBLAS_LIBRARY\n\n#For this case find_library(GSL_LIBRARY/GSL_CBLAS_LIBRARY) MUST be called 2 times\n\n#First time it looks in GSL_LIBRARY_PATH if set, avoiding all other PATHS with NO_DEFAULT_PATH\n\n#//////////////////////////\n",
+        "Line" : 609,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#//////////////////////////\n\n#find gsl-config\n\n#//////////////////////////  \n",
+        "Line" : 627,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "#//////////////////////////\n\n# ncap2\n\n#//////////////////////////\n",
+        "Line" : 693,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "#//////////////////////////\n\n# macros used in ncap2 to use advanced math: erf, erfc, gamma\n\n# LINUX LINUXAMD64 MACOSX\n\n#//////////////////////////\n",
+        "Line" : 702,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "#//////////////////////////\n\n# detect system specific functions used by NCO\n\n#//////////////////////////\n",
+        "Line" : 716,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "#//////////////////////////\n\n#math functions, including float versions\n\n#NCO_CHECK_FUNCS([atan2])\n\n#NCO_CHECK_FUNCS([acosf asinf atanf atan2f cosf expf fabsf fmodf log10f logf powf sinf sqrtf tanf])\n\n#NCO_CHECK_FUNCS([erff erfcf gammaf])\n\n#NCO_CHECK_FUNCS([acoshf asinhf atanhf coshf sinhf tanhf])\n\n#NCO_CHECK_FUNCS([ceilf floorf])\n\n#NCO_CHECK_FUNCS([nearbyint rint round trunc])\n\n#NCO_CHECK_FUNCS([nearbyintf rintf roundf truncf])\n\n#//////////////////////////\n",
+        "Line" : 726,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#//////////////////////////\n\n# regex\n\n#//////////////////////////\n",
+        "Line" : 804,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#//////////////////////////\n\n#additional informational definitions used by ncks -r\n\n#//////////////////////////\n",
+        "Line" : 823,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "#//////////////////////////\n\n#USER, HOSTNAME, NCO_BUILDENGINE\n\n#HOSTNAME is a variable that is set by some shells like bash only, \n\n#but cmake for speed and consistency runs commands using the most basic unix shell (ie. sh), \n\n#which does not set that variable by default.\n\n#//////////////////////////\n",
+        "Line" : 836,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "#//////////////////////////\n\n# OpenMP\n\n#//////////////////////////\n",
+        "Line" : 864,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "#/////////////////////////////////////////////////////////////////////////////////////\n\n#install target\n\n#install prefix: detect test suite expected location; if present use it instead\n\n#/////////////////////////////////////////////////////////////////////////////////////\n",
+        "Line" : 879,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "#//////////////////////////\n\n#make ncap2 build last \n\n#//////////////////////////\n",
+        "Line" : 896,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "#//////////////////////////\n\n# ncea->ncra\n\n# nces->ncra\n\n# ncrcat->ncra\n\n# ncdiff->ncbo\n\n# ncunpack->ncpdq\n\n# the following cmake -E commands are available only on UNIX:\n\n# create_symlink <old> <new> \n\n# create a symbolic link <new> naming <old>. \n\n#//////////////////////////\n",
+        "Line" : 911,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "#//////////////////////////\n\n# uninstall target\n\n#//////////////////////////\n",
+        "Line" : 936,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "#//////////////////////////\n\n# 'data' target , 'make data', generate .nc files from .cdl\n\n# find ncgen (any ncgen will do)\n\n#//////////////////////////\n",
+        "Line" : 943,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "#//////////////////////////\n\n#make data build last \n\n#//////////////////////////\n",
+        "Line" : 972,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "#//////////////////////////\n\n# check target , 'make check'\n\n# it depends on the NCO executables AND on the 'data' target\n\n# in NCO 'make check' depends on 'make install', so tests can only be done\n\n# if we can install to a writable directory, test -w /path; echo $? returns 0 if writable\n\n# the default install prefix (e.g /usr) requires 'sudo' previleges \n\n# and the target would FAIL for this case, on the 'make install' part\n\n# if CMAKE_INSTALL_PREFIX does not exist, it is created\n\n#//////////////////////////\n",
+        "Line" : 979,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "#//////////////////////////\n\n# install prefix\n\n#//////////////////////////\n",
+        "Line" : 1008,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "#//////////////////////////\n\n# generate 'path.sh' on build path, run with 'source path.sh'\n\n# sets $PATH to locate the binaries we just built\n\n#//////////////////////////\n",
+        "Line" : 1017,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "#//////////////////////////\n\n# compiler/linker warnings\n\n#//////////////////////////\n",
+        "Line" : 1030,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#//////////////////////////\n\n# disable .pdb not found warnings\n\n#//////////////////////////\n",
+        "Line" : 1046,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "#//////////////////////////\n\n# use of strcasecmp and strncasecmp\n\n# UDUNITS2 defines strcasecmp\n\n#//////////////////////////\n",
+        "Line" : 1064,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 55
+    },
+    "Makefile.am" : {
+      "ObjectId" : "2b6441fcdc6477432a99143f135fa968ace3e233",
+      "LastModified" : "2017-06-07T22:22:23Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 20151001: Sub-folder is by default, and not when configure --disable-docs is invoked\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Separately add desired files from nco/bld/ to distribution\n\n# Autoconf does not know about the bld directory \n\n# In particular, nco/bld/Makefile was created manually, not by autoconf\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "bld/Makefile" : {
+      "ObjectId" : "3cc70528e5a94a7961099363b2f7465a4f19963c",
+      "LastModified" : "2019-02-18T22:17:31Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Purpose: GNU Makefile for NCO module nco\n\n# Requires GNU Make---AT&T Make chokes on GNU syntax\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Copyright (C) 1994--present Charlie Zender\n\n# License: GNU General Public License (GPL) Version 3\n\n# See http://www.gnu.org/copyleft/gpl.html for full license text\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Quickie test copies:\n\n# scp ~/nco/bld/Makefile dust.ess.uci.edu:nco/bld\n\n# scp ~/nco/bld/Makefile gplogin2.ps.uci.edu:nco/bld\n\n# scp ~/nco/bld/Makefile skyglow.ess.uci.edu:nco/bld\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Machine build parameters\n\n#                         Source     Method   Packages Compiler\n\n# aerosol.ess.uci.edu: NCO          Configure All else GCC\n\n# AppVeyor CI        : NCO          CMake     All else MSVC\n\n# cheyenne.ucar.edu  : NCO          Makefile  All else Intel\n\n# cooley.alcf.anl.g  : NCO          Configure All else GCC\n\n# edison.nersc.gov   : NCO          Configure All else Intel\n\n# firn.ess.uci.edu   : NCO          Configure All else GCC\n\n# frazil.ess.uci.edu : NCO          Configure All else clang\n\n# glace.ess.uci.edu  : NCO          CMake     All else GCC\n\n# grele.ess.uci.edu  : NCO + netCDF Makefile  All else GCC\n\n# katabatic.ess.uci.e: NCO          CMake     All else clang\n\n# rhea.ccs.ornl.gov  : NCO          Makefile  All else GCC\n\n# skyglow.ess.uci.edu: NCO + netCDF Configure All else GCC\n\n# Travis CI          : NCO          Configure All else gcc,clang,g++\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Usage (testing):\n\n# make tst                           # Vanilla regression test\n\n# make FL_FMT=netcdf4 tst            # netCDF4 regression test\n\n# make MPI_PRC=3 tst                 # MPI regression test\n\n# make MPI_PRC=3 bm                  # MPI benchmarks\n\n# make THR_NBR=2 tst                 # OpenMP regression test\n\n# make THR_NBR=2 bm                  # OpenMP benchmarks\n\n# make MPI=Y                         # MPI features (HDF5 and PnetCDF I/O)\n\n# make NETCDF4=Y                     # netCDF4 features\n\n# make PNETCDF=Y                     # PnetCDF features\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Usage (Compilation):\n\n# cd ~/nco/qt;qmake;make;cd -        # Qt\n\n# cd ~/nco/bld;make;cd -             # Default build\n\n# cd ~/nco/bld;make USR_TKN='-DHAVE_NC_RENAME_GRP';cd - # New API\n\n# cd ~/nco/bld;make UDUNITS_INC='/usr/include/udunits2';cd - # Fedora build\n\n# cd ~/nco/bld;make cln bin_cln;cd - # Clean all dependencies for fresh build\n\n# cd ~/nco/bld;make dir all; cd -    # Create target directories then build\n\n# cd ~/nco/bld;make dbg;cd -         # Print make diagnostics\n\n# cd ~/nco/bld;make DPKG=Y;cd -      # Debian hardening\n\n# cd ~/nco/bld;make ESMF=Y;cd -      # ESMF regridding\n\n# cd ~/nco/bld;make GSL=Y;cd -\t     # GSL support\n\n# cd ~/nco/bld;make I18N=Y;cd -      # Internationalization\n\n# cd ~/nco/bld;make lib_cln;cd -     # Clean libraries\n\n# cd ~/nco/bld;make MPI=Y;cd -       # MPI support\n\n# cd ~/nco/bld;make MPI_FAKE=Y;cd -  # Spoof MPI support\n\n# cd ~/nco/bld;make OMP=Y;cd -       # OpenMP support\n\n# cd ~/nco/bld;make OPTS=D;cd -      # \"Debugging\": Enough symbols for debugging (default)\n\n# cd ~/nco/bld;make OPTS=O;cd -      # \"Optimize\": For production (includes symbols)\n\n# cd ~/nco/bld;make OPTS=R;cd -      # \"Regular\": No optimization or debugging\n\n# cd ~/nco/bld;make OPTS=X;cd -      # \"eXtreme\": All debugging switches available\n\n# cd ~/nco/bld;make sys;cd -         # Install in /usr/local (must sudo)\n\n# cd ~/nco/bld;make SZ=Y;cd -\t     # Szip support\n\n# cd ~/nco/bld;make UDUNITS=Y;cd -   # UDUnits support\n\n# cd ~/nco/bld;make --jobs=4;cd -    # Parallel make\n\n# Normal (Linux) developer systems:\n\n# cd ~/nco/bld;make cln all ncap2;cd - # New default for most machines\n\n# cd ~/nco/bld;make OMP=Y CUDA=Y OPTS=D NETCDF4=Y UDUNITS=Y allinone;cd - # givre\n\n# cd ~/nco/bld;make OMP=Y OPTS=D NETCDF4=Y UDUNITS=Y allinone;cd - # givre, neige\n\n# cd ~/nco/bld;make OMP=Y OPTS=D NETCDF4=N UDUNITS=Y allinone;cd - # glace, virga\n\n# mpi-selector --set openmpi_gcc-1.3.3 # Then use /sopt/netcdf/netcdf3-gcc-serial serial libraries\n\n# mpi-selector --set mpich_pgi_1.2.7p1 # After compiling\n\n# cd ~/nco/bld;ANTLR_ROOT=/sopt/gfortran_g++ NETCDF_ROOT=/sopt/gfortran_g++ SZ_LIB=/sopt/lib UDUNITS_INC=/sopt/include UDUNITS_LIB=/sopt/lib make OMP=Y OPTS=D NETCDF4=Y SZ=Y UDUNITS=N allinone;cd - # greenplanet gcc\n\n# cd ~/nco/bld;ANTLR=/home/pvicente/install/antlr-2.7.7/bin/antlr ANTLR_ROOT=/home/pvicente/install/antlr-2.7.7 NETCDF_ROOT=/home/pvicente/install/netcdf-4.3.0 UDUNITS_INC=/home/pvicente/install/udunits-2.1.24/include UDUNITS_LIB=/home/pvicente/install/udunits-2.1.24/lib make OPTS=D allinone;cd - # greenplanet gcc pedro\n\n# cd ~/nco/bld;ANTLR=/sopt/ifort_icpc/bin/antlr ANTLR_ROOT=/sopt/ifort_icpc SZ_LIB=/sopt/lib UDUNITS_INC=/sopt/include UDUNITS_LIB=/sopt/lib make OMP=Y OPTS=D NETCDF4=Y SZ=Y UDUNITS=N allinone;cd - # greenplanet intel\n\n# cd ~/nco/bld;ANTLR=/sopt/pgf90_pgcc/bin/antlr ANTLR_ROOT=/sopt/pgf90_pgcc SZ_LIB=/sopt/lib UDUNITS_INC=/sopt/include UDUNITS_LIB=/sopt/lib make OMP=Y OPTS=D NETCDF4=N SZ=Y UDUNITS=N allinone;cd - # greenplanet pgi\n\n# cd ~/nco/bld;make OMP=Y OPTS=D NETCDF4=N UDUNITS=Y allinone;cd - # pbs\n\n# cd ~/nco/bld;make OMP=Y OPTS=D UDUNITS=Y UBUNTU_440=Y allinone # grele\n\n# cd ~/nco/bld;make NETCDF4=N all ncap2;cd - # tephra\n\n# cd ~/nco/bld;make OMP=Y OPTS=D NETCDF4=N UDUNITS=N allinone;cd - # silt, clay\n\n# cd ~/nco/bld;NETCDF_INC='/usr/include/netcdf-3' NETCDF_LIB='/usr/lib64' make GSL=N OMP=N OPTS=D NETCDF4=N UDUNITS=N allinone;cd - # snow\n\n# cd ~/nco/bld;make OMP=N OPTS=D NETCDF4=N UDUNITS=N USR_TKN='-DNEED_NC_INQ_FORMAT' allinone;cd - # snow w/OPeNDAP\n\n# cd ~/nco/bld;make OPTS=D USR_TKN='-DNEED_NC_INQ_FORMAT' allinone;cd -\n\n# 64-bit ABI on UCI MPC:\n\n# cd ~/nco/bld;env ANTLR='/software/antlr/bin/antlr' ANTLR_ROOT='/software/antlr' UDUNITS_INC='/software/udunits/include' UDUNITS_LIB='/software/udunits/lib' make --jobs=1 ABI=64 allinone;cd -\n\n# 64-bit ABI on UCI IPCC:\n\n# cd ~/nco/bld;env ANTLR='/usr/local/pgi/bin/antlr' ANTLR_ROOT='/usr/local/pgi' make --jobs=1 ABI=64 allinone;cd -\n\n# 64-bit ABI netCDF3 on NCAR AIX systems (bluefire):\n\n# cd ~/nco/bld;ANTLR='/contrib/antlr-2.7.7/bin/antlr' ANTLR_ROOT='/contrib/antlr-2.7.7' GSL_INC='/contrib/gsl-1.12/include' GSL_LIB='/contrib/gsl-1.12/lib' NETCDF_LIB='/usr/local/lib64/r4i4' UDUNITS_INC='/contrib/udunits-1.12.9/include' UDUNITS_LIB='/contrib/udunits-1.12.9/lib' make --jobs=1 OPTS=D NETCDF4=N UDUNITS=N allinone ABI=64;cd -\n\n# 64-bit ABI netCDF4 on NCAR AIX systems (bluefire):\n\n# cd ~/nco/bld;ANTLR='/contrib/antlr-2.7.7/bin/antlr' ANTLR_ROOT='/contrib/antlr-2.7.7' CURL_LIB='/contrib/curl/7.21.2/lib' GSL_INC='/contrib/gsl-1.12/include' GSL_LIB='/contrib/gsl-1.12/lib' HDF5_ROOT='/contrib/hdf5-1.8.7_seq' LDFLAGS='-lnetcdf -lhdf5_hl -lhdf5 -lz' NETCDF_ROOT='/contrib/netcdf/4.1.3_seq' SZ_LIB='/contrib/szip/lib' UDUNITS_LIB='/contrib/zlib/lib' make --jobs=1 OPTS=D SZ=Y allinone ABI=64;cd -\n\n# 64-bit ABI netCDF4 on NCAR AIX systems (bluefire):\n\n# cd ~/bin/AIX;/usr/local/bin/tar cvzf ~/nco-4.4.6.aix53.tar.gz nc*;scp ~/nco-4.4.6.aix53.tar.gz zender,nco@web.sf.net:/home/project-web/nco/htdocs/src\n\n# netCDF4 on NCAR Linux cluster systems (mirage):\n\n# cd ~/nco/bld;make OPTS=D allinone;cd -\n\n# netCDF4 on ORNL Linux cluster systems (titan, rhea.ccs.ornl.gov):\n\n# module avail\n\n# . ~/.bashrc\n\n# module add intel gsl\n\n# export LD_LIBRARY_PATH='/sw/redhat6/netcdf/4.1.3/rhel6.4_intel13.1.3/lib:/sw/redhat6/szip/2.1/rhel6.6_gnu4.8.2/lib':${LD_LIBRARY_PATH}\n\n# export NETCDF_ROOT='/sw/redhat6/netcdf/4.1.3/rhel6.4_intel13.1.3' \n\n# export PATH='/sw/redhat6/netcdf/4.1.3/rhel6.4_intel13.1.3/bin':${PATH}\n\n# cd ~/nco/bld;make ANTLR_ROOT=${HOME} NETCDF_ROOT='/sw/redhat6/netcdf/4.1.3/rhel6.4_intel13.1.3' SZ=Y SZ_LIB='/sw/redhat6/szip/2.1/rhel6.6_gnu4.8.2/lib' UDUNITS_INC='/sw/redhat6/udunits/2.1.24/rhel6.4_intel13.1.3/include' UDUNITS_LIB='/sw/redhat6/udunits/2.1.24/rhel6.4_intel13.1.3/lib' OPTS=D allinone;cd -\n\n# ncap2:\n\n# netCDF4 on NCAR Linux cluster systems (yellowstone):\n\n# /ncar/opt/hpss/hsi # Starts HPSS session\n\n# export PATH=${PATH}\\:/ncar/opt/hpss\n\n# GNU (works):\n\n# module swap intel gnu;module add gsl;module add netcdf/4.3.0;\n\n# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\\:/glade/apps/opt/udunits/2.1.24/gnu/default/lib\n\n# cd ~/nco/bld;make NETCDF_ROOT='/glade/apps/opt/netcdf/4.3.0/gnu/default' UDUNITS_INC='/glade/apps/opt/udunits/2.1.24/gnu/default/include' UDUNITS_LIB='/glade/apps/opt/udunits/2.1.24/gnu/default/lib' OPTS=D allinone;cd -\n\n# Intel (works as of 20140129):\n\n# module add intel;module add gsl;module add netcdf/4.3.0;\n\n# https://www2.cisl.ucar.edu/sites/default/files/Yellowstone_Started_Nov30-2.pdf\n\n# module add pnetcdf/1.4.1\n\n# export PATH=${PATH}:/glade/apps/opt/netcdf/4.3.0/intel/12.1.5/bin # needed for ncgen\n\n# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/glade/apps/opt/netcdf/4.3.0/intel/12.1.5/lib # needed to run NCO\n\n# cd ~/nco/bld;make NETCDF_ROOT='/glade/apps/opt/netcdf/4.3.0/intel/default' UDUNITS_INC='/glade/apps/opt/udunits/2.1.24/intel/12.1.4/include' UDUNITS_LIB='/glade/apps/opt/udunits/2.1.24/intel/12.1.4/lib' OPTS=D allinone;cd -\n\n# Cygwin on Windows Vista systems:\n\n# cd ~/nco/bld;ANTLR='antlr' make --jobs=1 GSL=Y OPTS=D NETCDF4=Y UDUNITS=Y allinone;cd -\n\n# cd ~/bin/WIN32;tar cvzf ~/nco-4.5.2.win32.cygwin.tar.gz nc* ; scp ~/nco-4.5.2.win32.cygwin.tar.gz zender,nco@web.sf.net:/home/project-web/nco/htdocs/src\n\n# Data files to dust\n\n# cd ~/nco/data;scp cmip5.nc obs.nc mdl_1.nc mdl_2.nc in_grp*.nc in.nc in_4c.nc dust.ess.uci.edu:/var/www/html/nco\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Top-level tokens defining directory structure\n\n# These tokens may be over-ridden by environment variables or when invoking make, e.g., make OMP=Y\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Primary tokens which determine build options\n\n# Specify non-default when invoking make, e.g. make OMP=Y\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# 32- vs. 64-bit ABI: 32=32-bit mode, 64=64-bit mode (default) if available\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# endif ABI\n",
+        "Line" : 158,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# CCACHE\n",
+        "Line" : 161,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# Use newer netCDF4.1 chunking API\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# endif CNK\n",
+        "Line" : 165,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# CUDA\n",
+        "Line" : 168,
+        "CharPositionInLine" : 6
+      },
+      "15" : {
+        "Text" : "# DAP\n",
+        "Line" : 171,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# Debugging token N=No (default) Y=Yes\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# endif DBG\n",
+        "Line" : 175,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Debian hardening tokens\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# endif DPKG\n",
+        "Line" : 179,
+        "CharPositionInLine" : 6
+      },
+      "20" : {
+        "Text" : "# Pass this netCDF4 argument to nco_bm.pl\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# endif FL_FMT\n",
+        "Line" : 183,
+        "CharPositionInLine" : 5
+      },
+      "22" : {
+        "Text" : "# endif FL_FMT\n",
+        "Line" : 185,
+        "CharPositionInLine" : 6
+      },
+      "23" : {
+        "Text" : "# endif GCC_RCH_ARG\n",
+        "Line" : 188,
+        "CharPositionInLine" : 6
+      },
+      "24" : {
+        "Text" : "# Use GSL functionality\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# endif GSL\n",
+        "Line" : 192,
+        "CharPositionInLine" : 6
+      },
+      "26" : {
+        "Text" : "# endif ICC_RCH_ARG\n",
+        "Line" : 195,
+        "CharPositionInLine" : 6
+      },
+      "27" : {
+        "Text" : "# NB: Recursive expansion required\n",
+        "Line" : 203,
+        "CharPositionInLine" : 20
+      },
+      "28" : {
+        "Text" : "# NB: Recursive expansion required\n",
+        "Line" : 204,
+        "CharPositionInLine" : 24
+      },
+      "29" : {
+        "Text" : "# endif MK_DPN\n",
+        "Line" : 205,
+        "CharPositionInLine" : 6
+      },
+      "30" : {
+        "Text" : "# MPI\n",
+        "Line" : 206,
+        "CharPositionInLine" : 11
+      },
+      "31" : {
+        "Text" : "# endif MPI\n",
+        "Line" : 208,
+        "CharPositionInLine" : 6
+      },
+      "32" : {
+        "Text" : "# MPI\n",
+        "Line" : 209,
+        "CharPositionInLine" : 16
+      },
+      "33" : {
+        "Text" : "# endif MPI_FAKE\n",
+        "Line" : 211,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# NCO_BUILDENGINE\n",
+        "Line" : 214,
+        "CharPositionInLine" : 6
+      },
+      "35" : {
+        "Text" : "# Used for RPM building\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# netCDF4 support\n",
+        "Line" : 219,
+        "CharPositionInLine" : 15
+      },
+      "37" : {
+        "Text" : "# endif NETCDF4\n",
+        "Line" : 221,
+        "CharPositionInLine" : 6
+      },
+      "38" : {
+        "Text" : "# NCAR module path\n",
+        "Line" : 230,
+        "CharPositionInLine" : 27
+      },
+      "39" : {
+        "Text" : "# endelse INC_NCAR\n",
+        "Line" : 231,
+        "CharPositionInLine" : 5
+      },
+      "40" : {
+        "Text" : "# Directory containing netcdf.h\n",
+        "Line" : 232,
+        "CharPositionInLine" : 38
+      },
+      "41" : {
+        "Text" : "# endif INC_NCAR\n\n# endif NETCDF_INC\n",
+        "Line" : 233,
+        "CharPositionInLine" : 6
+      },
+      "42" : {
+        "Text" : "# NCAR module path\n",
+        "Line" : 237,
+        "CharPositionInLine" : 27
+      },
+      "43" : {
+        "Text" : "# endelse LIB_NCAR\n",
+        "Line" : 238,
+        "CharPositionInLine" : 5
+      },
+      "44" : {
+        "Text" : "# Directory containing libnetcdf.a\n",
+        "Line" : 239,
+        "CharPositionInLine" : 34
+      },
+      "45" : {
+        "Text" : "# endif LIB_NCAR\n\n# endif NETCDF_LIB\n",
+        "Line" : 240,
+        "CharPositionInLine" : 6
+      },
+      "46" : {
+        "Text" : "# OpenMP\n",
+        "Line" : 242,
+        "CharPositionInLine" : 14
+      },
+      "47" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 244,
+        "CharPositionInLine" : 6
+      },
+      "48" : {
+        "Text" : "# endif PGI_RCH_ARG\n",
+        "Line" : 250,
+        "CharPositionInLine" : 6
+      },
+      "49" : {
+        "Text" : "# pnetCDF support\n",
+        "Line" : 251,
+        "CharPositionInLine" : 15
+      },
+      "50" : {
+        "Text" : "# endif PNETCDF\n",
+        "Line" : 253,
+        "CharPositionInLine" : 6
+      },
+      "51" : {
+        "Text" : "# endif PSC_RCH_ARG\n",
+        "Line" : 256,
+        "CharPositionInLine" : 6
+      },
+      "52" : {
+        "Text" : "# endif RPM\n",
+        "Line" : 259,
+        "CharPositionInLine" : 6
+      },
+      "53" : {
+        "Text" : "# Created statically linked executable\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Link to Szip library\n",
+        "Line" : 265,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Use UDUnits functionality\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# endif USR_TKN\n",
+        "Line" : 277,
+        "CharPositionInLine" : 6
+      },
+      "57" : {
+        "Text" : "# VRS_SNG := $(shell date +%Y%m%d)\n\n# 20150622\n\n# VRS_SNG := $(shell git describe --abbrev=7 --dirty --always --tags)\n",
+        "Line" : 279,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# endif VRS_SNG\n",
+        "Line" : 283,
+        "CharPositionInLine" : 6
+      },
+      "59" : {
+        "Text" : "# znetcdf support\n",
+        "Line" : 284,
+        "CharPositionInLine" : 15
+      },
+      "60" : {
+        "Text" : "# endif ZNETCDF\n",
+        "Line" : 286,
+        "CharPositionInLine" : 6
+      },
+      "61" : {
+        "Text" : "# Derived-tokens based on primary tokens\n\n# These tokens should not be altered by hand\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# NB: CPP_TKN is recursively expanded variable, define only when components are ready\n",
+        "Line" : 290,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Flags for Flex (Lex)\n",
+        "Line" : 292,
+        "CharPositionInLine" : 14
+      },
+      "64" : {
+        "Text" : "# Flags for Bison (Yacc)\n",
+        "Line" : 295,
+        "CharPositionInLine" : 14
+      },
+      "65" : {
+        "Text" : "# Internationalize NCO with i18n features\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# Message Passing Interface (MPI)\n",
+        "Line" : 306,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# MPI_FAKE instructs make to compile mpnc*.c operators without defining ENABLE_MPI\n\n# Resulting executables use UP or SMP code not MPI code\n\n# This tests compile, link, execution of MPI mpnc*.c code without using any MPI calls\n",
+        "Line" : 308,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# !MPI_FAKE\n",
+        "Line" : 312,
+        "CharPositionInLine" : 6
+      },
+      "69" : {
+        "Text" : "# MPI_PRC tells test scripts how many MPI processes to spawn\n\n# Pass this MPI argument to nco_bm.pl\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# MPI_PRC implies MPI\n",
+        "Line" : 317,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# !MPI_PRC\n",
+        "Line" : 319,
+        "CharPositionInLine" : 5
+      },
+      "72" : {
+        "Text" : "# !MPI_PRC\n",
+        "Line" : 321,
+        "CharPositionInLine" : 6
+      },
+      "73" : {
+        "Text" : "# PnetCDF implies MPI\n",
+        "Line" : 323,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# !PNETCDF\n",
+        "Line" : 326,
+        "CharPositionInLine" : 6
+      },
+      "75" : {
+        "Text" : "# Decide among the plethora of compilers. Use names like LINUX_CC for historical reasons.\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# C++ compiler for Linux\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "#LINUX_CXX := clang\n\n#LINUX_CXX := como\n\n#LINUX_CXX := icpc\n\n#LINUX_CXX := insure\n\n#LINUX_CXX := pathCC\n\n#LINUX_CXX := pgCC\n",
+        "Line" : 340,
+        "CharPositionInLine" : 1
+      },
+      "78" : {
+        "Text" : "# endif LINUX_CXX\n",
+        "Line" : 346,
+        "CharPositionInLine" : 6
+      },
+      "79" : {
+        "Text" : "# C compiler for Linux\n",
+        "Line" : 348,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "#LINUX_CC := clang\n\n#LINUX_CC := como --c99\n\n#LINUX_CC := icc -std=c99 -D_DEFAULT_SOURCE\n\n#LINUX_CC := insure\n\n#LINUX_CC := nvcc\n\n#LINUX_CC := pathcc -std=c99\n\n#LINUX_CC := pgcc -c9x\n",
+        "Line" : 350,
+        "CharPositionInLine" : 1
+      },
+      "81" : {
+        "Text" : "# endif LINUX_CC\n",
+        "Line" : 357,
+        "CharPositionInLine" : 6
+      },
+      "82" : {
+        "Text" : "# Fortran compiler for Linux\n",
+        "Line" : 359,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "#LINUX_FC := g95\n",
+        "Line" : 360,
+        "CharPositionInLine" : 1
+      },
+      "84" : {
+        "Text" : "#LINUX_FC := ifort\n\n#LINUX_FC := lf95\n\n#LINUX_FC := pathf95\n\n#LINUX_FC := pgf90\n",
+        "Line" : 362,
+        "CharPositionInLine" : 1
+      },
+      "85" : {
+        "Text" : "# endif LINUX_CC\n\n# endif LINUX_OR_MACOSX\n",
+        "Line" : 366,
+        "CharPositionInLine" : 6
+      },
+      "86" : {
+        "Text" : "# OpenMP\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# Pass this OpenMP argument to nco_bm.pl\n",
+        "Line" : 372,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# endif THR_NBR\n",
+        "Line" : 374,
+        "CharPositionInLine" : 5
+      },
+      "89" : {
+        "Text" : "# endif THR_NBR\n\n# endif OMP\n",
+        "Line" : 376,
+        "CharPositionInLine" : 6
+      },
+      "90" : {
+        "Text" : "# rpm command, and thus RPM variables only guaranteed in RedHat Linux\n\n# Use recursive expansion so rpm command is not executed on non-RPM systems\n",
+        "Line" : 380,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# Name of installed package\n",
+        "Line" : 382,
+        "CharPositionInLine" : 47
+      },
+      "92" : {
+        "Text" : "# MDL_RPM_PRV_NM = $(shell rpm -qp foo) # Name of package provided by specified RPM\n",
+        "Line" : 383,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# endif RPM\n",
+        "Line" : 384,
+        "CharPositionInLine" : 6
+      },
+      "94" : {
+        "Text" : "# Build ESMF-enabled NCO \n\n# Place ESMF block after DAP blocks for both to work together\n",
+        "Line" : 393,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "# endif MACOSX\n",
+        "Line" : 403,
+        "CharPositionInLine" : 6
+      },
+      "96" : {
+        "Text" : "# endif ESMF_ROOT\n\n# endif ESMF_INC\n",
+        "Line" : 406,
+        "CharPositionInLine" : 6
+      },
+      "97" : {
+        "Text" : "# 20150319: For some reason, ESMC.h #includes ESMC_VM.h which #includes mpi.h\n",
+        "Line" : 408,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "# Use stub header for uniprocessor MPI emulation provided by ESMF\n",
+        "Line" : 410,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "# endif MACOSX\n",
+        "Line" : 415,
+        "CharPositionInLine" : 5
+      },
+      "100" : {
+        "Text" : "# Use real MPI\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "# endif MACOSX\n",
+        "Line" : 421,
+        "CharPositionInLine" : 6
+      },
+      "102" : {
+        "Text" : "# endif ESMF_ROOT\n\n# endif ESMF_LIB\n\n# end if ESMF\n",
+        "Line" : 429,
+        "CharPositionInLine" : 6
+      },
+      "103" : {
+        "Text" : "# 20150515: -lsz needed (at least by icc) on rhea\n",
+        "Line" : 434,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "# end if SZ_LIB\n\n# end if SZ\n",
+        "Line" : 439,
+        "CharPositionInLine" : 6
+      },
+      "105" : {
+        "Text" : "# 20130607: -lexpat needed on .deb systems, not on RPM systems\n",
+        "Line" : 443,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# endif UDUNITS_INC\n",
+        "Line" : 448,
+        "CharPositionInLine" : 6
+      },
+      "107" : {
+        "Text" : "# end if UDUNITS_LIB\n\n# end if UDUNITS\n",
+        "Line" : 453,
+        "CharPositionInLine" : 6
+      },
+      "108" : {
+        "Text" : "# At this point we change NETCDF_INC from a directory to a flag\n",
+        "Line" : 456,
+        "CharPositionInLine" : 0
+      },
+      "109" : {
+        "Text" : "# Enable MPI functionality\n",
+        "Line" : 462,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "# endif MPI\n",
+        "Line" : 467,
+        "CharPositionInLine" : 6
+      },
+      "111" : {
+        "Text" : "# NB: Do NOT add comment lines, e.g., # This is a comma, to character definitions\n",
+        "Line" : 476,
+        "CharPositionInLine" : 0
+      },
+      "112" : {
+        "Text" : "# '/' and '+' appear in filenames ('/' is directory separator)\n\n# Operating on these with Perl is problematic since they are special Rx characters\n\n# We replace `/' and '+' by non-special Rx's, call perl, then demangle\n\n# Unique character(s) to substitute for '/' and '+' before passing to perl Rx\n",
+        "Line" : 481,
+        "CharPositionInLine" : 0
+      },
+      "113" : {
+        "Text" : "# Unique character(s) to replace by ${slash_rx} before passing to perl regex\n",
+        "Line" : 487,
+        "CharPositionInLine" : 0
+      },
+      "114" : {
+        "Text" : "# Directories to search for source files\n",
+        "Line" : 493,
+        "CharPositionInLine" : 0
+      },
+      "115" : {
+        "Text" : "# Find all C, C++, CUDA files in given directory\n",
+        "Line" : 495,
+        "CharPositionInLine" : 0
+      },
+      "116" : {
+        "Text" : "# Assemble source files from all directories\n",
+        "Line" : 497,
+        "CharPositionInLine" : 0
+      },
+      "117" : {
+        "Text" : "# Source file names with directories removed\n",
+        "Line" : 499,
+        "CharPositionInLine" : 0
+      },
+      "118" : {
+        "Text" : "# Dependency list for executable\n",
+        "Line" : 501,
+        "CharPositionInLine" : 0
+      },
+      "119" : {
+        "Text" : "# Dependency (make) file for each object file\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "120" : {
+        "Text" : "# VPATH helps make find dependencies (which are not pathname qualified) in *.d file\n",
+        "Line" : 505,
+        "CharPositionInLine" : 0
+      },
+      "121" : {
+        "Text" : "# Prepend -I to use for compiler argument\n",
+        "Line" : 507,
+        "CharPositionInLine" : 0
+      },
+      "122" : {
+        "Text" : "# Variables having to do with binary executables created by module\n",
+        "Line" : 510,
+        "CharPositionInLine" : 0
+      },
+      "123" : {
+        "Text" : "# NCO binary targets\n",
+        "Line" : 511,
+        "CharPositionInLine" : 78
+      },
+      "124" : {
+        "Text" : "# Symbolic links\n",
+        "Line" : 512,
+        "CharPositionInLine" : 43
+      },
+      "125" : {
+        "Text" : "# Scripts\n",
+        "Line" : 513,
+        "CharPositionInLine" : 31
+      },
+      "126" : {
+        "Text" : "# MDL_MPI_TRG := mpncbo mpncecat mpncflint mpncpdq mpncra mpncwa # MPI binary targets\n",
+        "Line" : 515,
+        "CharPositionInLine" : 0
+      },
+      "127" : {
+        "Text" : "# MPI binary targets\n",
+        "Line" : 516,
+        "CharPositionInLine" : 16
+      },
+      "128" : {
+        "Text" : "# MPI binary targets\n",
+        "Line" : 517,
+        "CharPositionInLine" : 56
+      },
+      "129" : {
+        "Text" : "# MDL_MPI_SYM_LNK := mpncdiff mpncea mpnces mpncrcat # MPI Symbolic links\n",
+        "Line" : 518,
+        "CharPositionInLine" : 0
+      },
+      "130" : {
+        "Text" : "# MPI Symbolic links\n",
+        "Line" : 519,
+        "CharPositionInLine" : 20
+      },
+      "131" : {
+        "Text" : "# All MPI files in MY_BIN_DIR\n",
+        "Line" : 520,
+        "CharPositionInLine" : 50
+      },
+      "132" : {
+        "Text" : "# mpi_cln removes these files\n",
+        "Line" : 521,
+        "CharPositionInLine" : 59
+      },
+      "133" : {
+        "Text" : "# mpi_cln removes these files\n",
+        "Line" : 522,
+        "CharPositionInLine" : 75
+      },
+      "134" : {
+        "Text" : "# NCO binary targets\n",
+        "Line" : 523,
+        "CharPositionInLine" : 31
+      },
+      "135" : {
+        "Text" : "# Symbolic links\n",
+        "Line" : 524,
+        "CharPositionInLine" : 39
+      },
+      "136" : {
+        "Text" : "# endif MPI\n",
+        "Line" : 525,
+        "CharPositionInLine" : 6
+      },
+      "137" : {
+        "Text" : "# All NCO files in MY_BIN_DIR\n",
+        "Line" : 526,
+        "CharPositionInLine" : 64
+      },
+      "138" : {
+        "Text" : "# distclean removes these files\n",
+        "Line" : 527,
+        "CharPositionInLine" : 54
+      },
+      "139" : {
+        "Text" : "# Variables having to do with header files created by module\n\n# List header targets alphabetically by \"category\":\n",
+        "Line" : 530,
+        "CharPositionInLine" : 0
+      },
+      "140" : {
+        "Text" : "# Raw (no functions)\n",
+        "Line" : 532,
+        "CharPositionInLine" : 15
+      },
+      "141" : {
+        "Text" : "# libnco\n",
+        "Line" : 533,
+        "CharPositionInLine" : 24
+      },
+      "142" : {
+        "Text" : "# Symbolic links\n",
+        "Line" : 534,
+        "CharPositionInLine" : 19
+      },
+      "143" : {
+        "Text" : "# All header files in ${MY_INC_DIR}\n",
+        "Line" : 535,
+        "CharPositionInLine" : 48
+      },
+      "144" : {
+        "Text" : "# dst_cln removes these files\n",
+        "Line" : 536,
+        "CharPositionInLine" : 53
+      },
+      "145" : {
+        "Text" : "# Variables having to do with NCO data\n",
+        "Line" : 538,
+        "CharPositionInLine" : 0
+      },
+      "146" : {
+        "Text" : "# Symbolic links to in.nc\n",
+        "Line" : 539,
+        "CharPositionInLine" : 48
+      },
+      "147" : {
+        "Text" : "# `make data' creates these files\n",
+        "Line" : 540,
+        "CharPositionInLine" : 47
+      },
+      "148" : {
+        "Text" : "# `make distclean' removes these files\n",
+        "Line" : 541,
+        "CharPositionInLine" : 54
+      },
+      "149" : {
+        "Text" : "# Variables having to do with NCO documentation\n",
+        "Line" : 543,
+        "CharPositionInLine" : 0
+      },
+      "150" : {
+        "Text" : "# `make tags' includes these files\n",
+        "Line" : 544,
+        "CharPositionInLine" : 396
+      },
+      "151" : {
+        "Text" : "# `make doc' creates these files\n",
+        "Line" : 545,
+        "CharPositionInLine" : 72
+      },
+      "152" : {
+        "Text" : "# `make distclean' removes these files\n",
+        "Line" : 546,
+        "CharPositionInLine" : 54
+      },
+      "153" : {
+        "Text" : "# distclean removes these files\n",
+        "Line" : 550,
+        "CharPositionInLine" : 50
+      },
+      "154" : {
+        "Text" : "# Variables having to do with NCO build\n",
+        "Line" : 552,
+        "CharPositionInLine" : 0
+      },
+      "155" : {
+        "Text" : "# `make tags' includes these files\n",
+        "Line" : 553,
+        "CharPositionInLine" : 103
+      },
+      "156" : {
+        "Text" : "# `make tags' includes these files\n",
+        "Line" : 554,
+        "CharPositionInLine" : 116
+      },
+      "157" : {
+        "Text" : "# `make tags' includes these files\n",
+        "Line" : 555,
+        "CharPositionInLine" : 224
+      },
+      "158" : {
+        "Text" : "# Files, if any, to exclude from tags\n\n#TAGS_FILTER_FILES := .//libnco_tst.c .//libnco_c++_tst.cc ../src/nco/lex.${NCO_YY_PFX}.c\n",
+        "Line" : 556,
+        "CharPositionInLine" : 0
+      },
+      "159" : {
+        "Text" : "# TAGS_FILTER_FILES := .//libnco_tst.c .//libnco_c++_tst.cc\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "160" : {
+        "Text" : "# Variables having to do with ncap\n",
+        "Line" : 561,
+        "CharPositionInLine" : 0
+      },
+      "161" : {
+        "Text" : "# `make tags' includes these files\n",
+        "Line" : 562,
+        "CharPositionInLine" : 66
+      },
+      "162" : {
+        "Text" : "# `make ncap' creates these files\n",
+        "Line" : 563,
+        "CharPositionInLine" : 27
+      },
+      "163" : {
+        "Text" : "# `make distclean' removes these files\n",
+        "Line" : 564,
+        "CharPositionInLine" : 56
+      },
+      "164" : {
+        "Text" : "# Variables having to do with C++ source and documentation\n\n# fxm: auto-generate source code components of C++ lists\n",
+        "Line" : 566,
+        "CharPositionInLine" : 0
+      },
+      "165" : {
+        "Text" : "# `make tags' includes these files\n",
+        "Line" : 568,
+        "CharPositionInLine" : 670
+      },
+      "166" : {
+        "Text" : "# Redefine default C and C++ pattern rules\n",
+        "Line" : 572,
+        "CharPositionInLine" : 0
+      },
+      "167" : {
+        "Text" : "# Default Fortran pattern rules: CRAY and RS6K must override these rules\n",
+        "Line" : 580,
+        "CharPositionInLine" : 0
+      },
+      "168" : {
+        "Text" : "# Rules for installing header files\n\n#${MY_INC_DIR}/%.h : %.h\n\n#\tcp -f -p $(notdir $@) $@\n",
+        "Line" : 586,
+        "CharPositionInLine" : 0
+      },
+      "169" : {
+        "Text" : "# Rules for installing i18n files\n\n# -k_ : Treat underscore as keyword (so \"_\" is equivalent to \"gettext\")\n\n# --default-domain : Name of program or library\n\n# --join-existing : Join messages with existing file\n",
+        "Line" : 592,
+        "CharPositionInLine" : 0
+      },
+      "170" : {
+        "Text" : "#\tLinux version accepts more arguments than Solaris version\n\n#\tmsgfmt --output-file=$@ --statistics $<\n",
+        "Line" : 599,
+        "CharPositionInLine" : 0
+      },
+      "171" : {
+        "Text" : "# Automatically generate a dependency file for each source file\n\n# $* is the stem, e.g., f\n\n# $@ is the filename of the target, e.g., f.d\n\n# Linux gcc may return an extra `.F' on Fortran names, e.g., `hello.F.o: hello.F'\n\n# (.F)? gets rid of this extra `.F'\n",
+        "Line" : 603,
+        "CharPositionInLine" : 0
+      },
+      "172" : {
+        "Text" : "# Following command makes, e.g., f.d begin \"f.o f.d : f.F ...\"\n\n# Since f.o is not preceded by ${MY_OBJ_DIR}, objects are not recompiled when sources are touched.\n\n#\t${MK_DPN} ${CPPFLAGS} $< | perl -p -e 's/$*\\.F\\.o/$*.o $@/g;' > $@\n\n# Following command makes, e.g., f.d begin \"/home/zender/obj/LINUX/f.o f.d : f.F ...\"\n\n# This works fairly well, but is a hack\n\n# First pattern substitutes MY_OBJ_DIR_RX, which has placeholders for slashes\n\n# Second pattern substitutes slashes for the placeholders\n",
+        "Line" : 609,
+        "CharPositionInLine" : 0
+      },
+      "173" : {
+        "Text" : "# Following command makes, e.g., f.d begin \"${MY_OBJ_DIR}/f.o f.d : f.F ...\"\n\n# This would be the ideal command but I can't get the dollar sign to show up\n\n#\t${MK_DPN} ${CPPFLAGS} $< | perl -p -e 's/$*\\.F\\.o/\\${dollar}MY_OBJ_DIR\\/$*.o $@/g;' > $@\n",
+        "Line" : 617,
+        "CharPositionInLine" : 0
+      },
+      "174" : {
+        "Text" : "#\t${MK_DPN} ${CPPFLAGS} $< | perl -p -e 's/$*\\.o/$*.o $@/g;' > $@\n",
+        "Line" : 622,
+        "CharPositionInLine" : 0
+      },
+      "175" : {
+        "Text" : "# NB: Use ${CXX} rather than ${CPP} on C++ files for now because, e.g., SUNMP cpp does not pre-process .cc files quite correctly\n\n# Extra hack to allow C++ filenames to contain '+' character\n\n# $(subst ${plus},${plus_rx},${*}) is filename stub with an Rx in place of '+'\n",
+        "Line" : 629,
+        "CharPositionInLine" : 0
+      },
+      "176" : {
+        "Text" : "# First LDFLAGS is for typical C programs with netCDF, math, and networking\n\n# Second LDFLAGS, when present, enables C/Fortran linking\n",
+        "Line" : 634,
+        "CharPositionInLine" : 0
+      },
+      "177" : {
+        "Text" : "# Manually define autotools tokens normally defined with HAVE_CONFIG_H in config.h \n\n# Initialize OS-specific tokens to empty\n",
+        "Line" : 637,
+        "CharPositionInLine" : 0
+      },
+      "178" : {
+        "Text" : "# Assume netCDF >= 3.6.1\n",
+        "Line" : 640,
+        "CharPositionInLine" : 0
+      },
+      "179" : {
+        "Text" : "# Assume netCDF >= 4.3.1\n",
+        "Line" : 642,
+        "CharPositionInLine" : 0
+      },
+      "180" : {
+        "Text" : "# Assume netCDF >= 4.3.2\n",
+        "Line" : 644,
+        "CharPositionInLine" : 0
+      },
+      "181" : {
+        "Text" : "# Assume netCDF >= 4.4.0, but Ubuntu 4.4.0 (e.g., on grele) fumbled netcdf_mem.h header\n",
+        "Line" : 646,
+        "CharPositionInLine" : 0
+      },
+      "182" : {
+        "Text" : "# !grele\n",
+        "Line" : 649,
+        "CharPositionInLine" : 6
+      },
+      "183" : {
+        "Text" : "# gcc 4.7.3 finally includes strcasestr() in string.h iff _GNU_SOURCE token is defined\n\n# NB: C++ (or at least g++ 4.7.3) always includes strcasestr()---work around this with tokens in nco_sng_utl.[ch]\n",
+        "Line" : 650,
+        "CharPositionInLine" : 0
+      },
+      "184" : {
+        "Text" : "# CRAY\n",
+        "Line" : 654,
+        "CharPositionInLine" : 6
+      },
+      "185" : {
+        "Text" : "# !LINUX\n",
+        "Line" : 657,
+        "CharPositionInLine" : 6
+      },
+      "186" : {
+        "Text" : "# !(AIX || SGI)\n",
+        "Line" : 660,
+        "CharPositionInLine" : 6
+      },
+      "187" : {
+        "Text" : "# !CNK\n",
+        "Line" : 663,
+        "CharPositionInLine" : 6
+      },
+      "188" : {
+        "Text" : "# !DAP\n",
+        "Line" : 666,
+        "CharPositionInLine" : 6
+      },
+      "189" : {
+        "Text" : "# !ESMF\n",
+        "Line" : 669,
+        "CharPositionInLine" : 6
+      },
+      "190" : {
+        "Text" : "# !GSL\n",
+        "Line" : 672,
+        "CharPositionInLine" : 6
+      },
+      "191" : {
+        "Text" : "# MPI_FAKE\n\n# !MPI\n",
+        "Line" : 676,
+        "CharPositionInLine" : 6
+      },
+      "192" : {
+        "Text" : "# !UDUNITS\n",
+        "Line" : 680,
+        "CharPositionInLine" : 6
+      },
+      "193" : {
+        "Text" : "# endif NETCDF4\n",
+        "Line" : 683,
+        "CharPositionInLine" : 6
+      },
+      "194" : {
+        "Text" : "# !PNETCDF\n",
+        "Line" : 686,
+        "CharPositionInLine" : 6
+      },
+      "195" : {
+        "Text" : "# endif PNETCDF\n\n# Assume strcasecmp() and strdup() routines are present (Comeau, Pathscale are exceptions)\n",
+        "Line" : 687,
+        "CharPositionInLine" : 0
+      },
+      "196" : {
+        "Text" : "# fxm: Define HAVE_LIBINTL, HAVE_LOCALE_H, HAVE_GETTEXT, HAVE_OMP_H\n",
+        "Line" : 690,
+        "CharPositionInLine" : 0
+      },
+      "197" : {
+        "Text" : "# Works on AIX and AIX46K\n",
+        "Line" : 692,
+        "CharPositionInLine" : 0
+      },
+      "198" : {
+        "Text" : "# 20030804: Always use re-entrant (_r) compilers---Jim Edwards NCAR/IBM \n",
+        "Line" : 694,
+        "CharPositionInLine" : 0
+      },
+      "199" : {
+        "Text" : "#CC := gcc -std=c99 -pedantic -D_DEFAULT_SOURCE\n",
+        "Line" : 696,
+        "CharPositionInLine" : 0
+      },
+      "200" : {
+        "Text" : "# CXX := g++\n",
+        "Line" : 698,
+        "CharPositionInLine" : 0
+      },
+      "201" : {
+        "Text" : "# /usr/include headers must occur before Visual Age headers to prevent xlC pragma warnings\n\n# Visual Age compiler headers must occur before g++ headers\n",
+        "Line" : 702,
+        "CharPositionInLine" : 0
+      },
+      "202" : {
+        "Text" : "# xlC compilers\n",
+        "Line" : 705,
+        "CharPositionInLine" : 6
+      },
+      "203" : {
+        "Text" : "# Add /usr/local/include for libintl.h explicitly until netCDF is moved there\n",
+        "Line" : 706,
+        "CharPositionInLine" : 0
+      },
+      "204" : {
+        "Text" : "# 20020422: -lC links to AIX C++ library which contains float intrinsics cosf()...\n\n# -bh:5 suppresses annoying messages from xlC linker WARNING: Duplicate symbol: ...\n",
+        "Line" : 709,
+        "CharPositionInLine" : 0
+      },
+      "205" : {
+        "Text" : "# AIX VA Compiler Collection\n",
+        "Line" : 715,
+        "CharPositionInLine" : 0
+      },
+      "206" : {
+        "Text" : "# Visual Age compiler defaults specified in /etc/vac.cfg\n\n# Additional switch to fix compiler warnings on csz.c\n\n# -qarch=auto : Automatically detect architecture of compiling machine and assume execution on same machine\n\n# -qlonglong allow long long integers (and strtoll(), strtoull()) (default on in C not C++). Redundant with -qlanglvl=extc99\n\n# -qmaxmem=num Limit memory used by space intensive optimizations to <num> kilobytes\n\n# -qspill=size Size in B of register allocation spill area, mie needs > 1040 B\n\n# -qsrcmsg prints transgressing source line with finger\n\n# -qsuppress=1501-245 : Suppress RLIM_INFINITY memory message due to ulimits\n\n# -qtune=auto : Optimize executable for architecture detected during compilation\n",
+        "Line" : 717,
+        "CharPositionInLine" : 0
+      },
+      "207" : {
+        "Text" : "# -bh:5 suppresses annoying messages from xlC linker WARNING: Duplicate symbol: ...\n",
+        "Line" : 728,
+        "CharPositionInLine" : 0
+      },
+      "208" : {
+        "Text" : "#LDFLAGS += -lxlf90 # Required for linking Fortran objects\n",
+        "Line" : 730,
+        "CharPositionInLine" : 0
+      },
+      "209" : {
+        "Text" : "# -qsmp=noauto : Turn on SMP/OMP code generation but do no automatic parallelization\n\n# -qsmp=omp : Use industry standard OMP without IBM extensions\n",
+        "Line" : 733,
+        "CharPositionInLine" : 0
+      },
+      "210" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 739,
+        "CharPositionInLine" : 6
+      },
+      "211" : {
+        "Text" : "# -O : -O3 is safe, -O5 is dangerous\n\n# -qstrict: Ensure that -O3 optimizations do not alter program semantics\n\n# -Q : Inline all appropriate subprograms\n",
+        "Line" : 741,
+        "CharPositionInLine" : 0
+      },
+      "212" : {
+        "Text" : "# -qflttrap generates instructions for floating point exceptions\n\n# -qidirfirst uses headers found in -I directories first\n\n# -qmakedep creates .d file\n\n# -qwarn64 check for possible long-to-integer or pointer-to-integer truncation\n\n# -qhalt=e stop compiler if error severity equals or exceeds i, w, e, s, u\n",
+        "Line" : 752,
+        "CharPositionInLine" : 0
+      },
+      "213" : {
+        "Text" : "# endif ABI\n",
+        "Line" : 767,
+        "CharPositionInLine" : 6
+      },
+      "214" : {
+        "Text" : "# Additional flags for AIX:\n\n# -M Generate information to be included in a \"make\" description file; output goes to .u file\n\n# -c Do not send object files to the linkage editor\n\n# -P Preprocess but do not compile; output goes to .i file\n\n# Using -P causes additional warning messages about lm \n\n# Not using -P causes *.o files to be created twice\n",
+        "Line" : 768,
+        "CharPositionInLine" : 0
+      },
+      "215" : {
+        "Text" : "# endif AIX VA Compiler Collection\n",
+        "Line" : 780,
+        "CharPositionInLine" : 6
+      },
+      "216" : {
+        "Text" : "# GNU Compiler Collection\n",
+        "Line" : 781,
+        "CharPositionInLine" : 0
+      },
+      "217" : {
+        "Text" : "# endif ABI\n",
+        "Line" : 800,
+        "CharPositionInLine" : 6
+      },
+      "218" : {
+        "Text" : "# endif GNU Compiler Collection\n",
+        "Line" : 802,
+        "CharPositionInLine" : 6
+      },
+      "219" : {
+        "Text" : "# -q64: Select 64-bit compiler mode (required for accessing large files)\n\n# -qwarn64: Warn on possible long-to-integer or pointer-to-integer truncation\n",
+        "Line" : 803,
+        "CharPositionInLine" : 0
+      },
+      "220" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 811,
+        "CharPositionInLine" : 6
+      },
+      "221" : {
+        "Text" : "# endif AIX\n",
+        "Line" : 813,
+        "CharPositionInLine" : 0
+      },
+      "222" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 818,
+        "CharPositionInLine" : 6
+      },
+      "223" : {
+        "Text" : "# endif ALPHA\n",
+        "Line" : 851,
+        "CharPositionInLine" : 0
+      },
+      "224" : {
+        "Text" : "# -F enables macro substitution\n\n# -dp enables DOUBLEPRECISION/double\n",
+        "Line" : 859,
+        "CharPositionInLine" : 0
+      },
+      "225" : {
+        "Text" : "# 19971021 Added -P to suppress #line # directives on Fortran files\n",
+        "Line" : 879,
+        "CharPositionInLine" : 0
+      },
+      "226" : {
+        "Text" : "# endif CRAY\n",
+        "Line" : 889,
+        "CharPositionInLine" : 0
+      },
+      "227" : {
+        "Text" : "# endif HPPA\n",
+        "Line" : 914,
+        "CharPositionInLine" : 0
+      },
+      "228" : {
+        "Text" : "# Works on LINUX, LINUXALPHA, LINUXAMD64, LINUXARM, and FREEBSD and MACOSX\n",
+        "Line" : 916,
+        "CharPositionInLine" : 0
+      },
+      "229" : {
+        "Text" : "# 20161001 Linux ar with Ubuntu Xenial began using deterministic mode. -U undoes that.\n\n# 20161001 GNU ar -s is equivalent to ranlib\n\n# ar -D: Operate in deterministic mode (breaks NCO build on Ubuntu)\n\n# ar -r: replace existing or insert new file(s) into the archive\n\n# ar -s: equivalent to ranlib\n\n# ar -U: Do not operate in deterministic mode.  This is the inverse of the D modifier, above: added files and the archive index will get their actual UID, GID, timestamp, and file mode values.\n\n# ar -U: Unavailable option in RHEL 6 (2010) used on Rhea and Titan\n\n# ar -v: be verbose\n",
+        "Line" : 918,
+        "CharPositionInLine" : 0
+      },
+      "230" : {
+        "Text" : "# !rhea,titan,yellowstone\n",
+        "Line" : 933,
+        "CharPositionInLine" : 6
+      },
+      "231" : {
+        "Text" : "# !aerosol,firn\n",
+        "Line" : 936,
+        "CharPositionInLine" : 6
+      },
+      "232" : {
+        "Text" : "# NB: nameser.h needs -Di386, but gcc sends -Di586 (on pentiums)\n",
+        "Line" : 940,
+        "CharPositionInLine" : 0
+      },
+      "233" : {
+        "Text" : "# endif MACOSX\n",
+        "Line" : 948,
+        "CharPositionInLine" : 6
+      },
+      "234" : {
+        "Text" : "# Comeau C Compiler\n",
+        "Line" : 952,
+        "CharPositionInLine" : 0
+      },
+      "235" : {
+        "Text" : "# endif Comeau C Compiler\n",
+        "Line" : 971,
+        "CharPositionInLine" : 6
+      },
+      "236" : {
+        "Text" : "# GNU Compiler Collection or LLVM\n\n# 20140204: gcc and clang should receive identical options\n",
+        "Line" : 972,
+        "CharPositionInLine" : 0
+      },
+      "237" : {
+        "Text" : "# Compilation flags for numerical routines recommended by GSL 1.3 manual, p. 397\n\n# Greenplanet has old compiler that lacks -Werror=format-security\n\n# CFLAGS += -W -Wmissing-prototypes -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -fno-common -g\n",
+        "Line" : 983,
+        "CharPositionInLine" : 0
+      },
+      "238" : {
+        "Text" : "# Compilation flags recommended by GSL and others that I like and use:\n\n# -D_BSD_SOURCE: Support 4.3 BSD Unix extensions to ANSI C (prevents nameser.h warnings)\n\n# -D_POSIX_SOURCE: Support POSIX.1 standard additions to ANSI C (prevents fileno warnings)\n\n# -pedantic: Disallow non-ISO constructs (including type long long) (sometimes useful)\n\n# -W: Extra warnings, including missing return values, comparison of signed with unsigned\n\n# -Wall: Warn about common programming problems\n\n# -Wcast-align: Warn if casting pointer to type of different size\n\n# -Wcast-qual: Warn if const qualifier removed from pointer\n\n# -Werror: Consider warnings as errors\n\n# -Werror=format-security: Consider this specific warning as errors (requires gcc > 4.1.2)\n\n# -Wmaybe-uninitialized: Warn on uninitialized variables. GCC has many false negatives, clang is better? Available on GCC 4.8.2+. Not available on GCC 4.6.3-.\n\n# -Wmissing-prototypes: Warn if missing prototypes\n\n# -Wpointer-arith: Warn if pointer arithmetic on types without size, e.g., void\n\n# -Wshadow: Warn if local variable has same name as other local variable\n\n# -Wsometimes-uninitialized: LLVM/clang uses this but GCC does not\n\n# -Wswitch: Warn if switch statement has enumerated index and case label outside enumeration range\n\n# -Wuninitialized: Warn on uninitialized variables. GCC has many false negatives, clang is better? \n\n# -Wunused: Warn on unused functions, labels, parameters, values, and variables\n\n# -Wwrite-strings: Apply const-qualifier to string constants, die if overwritten\n\n# -fno-common: Prevent global variables from being simultaneously defined in different files\n\n# -g: Put debugging symbols in executable\n\n# -pg: Enable profiling, generate gmon.out output files (also needed by linker)\n\n# -O3: clang -O4 DNE, highest clang optimization is -O3 \n\n# -O4: Turn on optimization so uninitialized variables are flagged. Downside: optimizes-out many debugging symbols\n\n# Compilation flags recommended by GSL that I do not like and do not use:\n\n# -ansi: Support only strict ANSI C. Equivalent to -std=c89, conflicts with -std=c99\n\n# --no-alias? -fstrict-aliasing\n\n# -Waggregate-return: Warn if functions return aggregates like structures or unions\n\n# -Wconversion: Warn if converting signed to unsigned. Intended for obsolete, non-prototyped code. Triggers fabsf(), sqrtf(), warnings.\n\n# -Wnested-externs: Warn if extern is encountered within function. C only?\n\n# -Wstrict-prototypes: Warn if inconsistent prototypes. C only?\n\n# -Wtraditional: Warn if constructs differ between traditional and ANSI C. C only?\n\n# -Dinline=: inline is not an ANSI keyword, must undefine inline to work with -ansi\n\n# -fshort-enums: Make enums as short as possible, ususally non-int. Do not ever invoke this! This breaks ABI and causes subtle problems\n",
+        "Line" : 987,
+        "CharPositionInLine" : 0
+      },
+      "239" : {
+        "Text" : "# 20140526 clang does not recognize/utilize -fopenmp\n",
+        "Line" : 1023,
+        "CharPositionInLine" : 0
+      },
+      "240" : {
+        "Text" : "# endif clang\n\n# endif OMP\n",
+        "Line" : 1027,
+        "CharPositionInLine" : 6
+      },
+      "241" : {
+        "Text" : "# endif clang\n",
+        "Line" : 1032,
+        "CharPositionInLine" : 5
+      },
+      "242" : {
+        "Text" : "# endif clang\n",
+        "Line" : 1034,
+        "CharPositionInLine" : 6
+      },
+      "243" : {
+        "Text" : "# 20090715: https://wiki.ubuntu.com/CompilerFlags\n\n# -D_FORTIFY_SOURCE=2 : Compile-time libc checks, run-time buffer/memory checks\n\n#                     : NB: _FORTIFY_SOURCE macro requires -O switch\n\n# -fstack-protector : Enable run-time stack overflow verification\n\n# -Wformat-security : Warn about misuse of format strings\n\n# -Wl,-z,relro : Read-only relocation table area in final ELF\n",
+        "Line" : 1043,
+        "CharPositionInLine" : 0
+      },
+      "244" : {
+        "Text" : "# 20150106 clang does not recognize/utilize -z\n",
+        "Line" : 1052,
+        "CharPositionInLine" : 0
+      },
+      "245" : {
+        "Text" : "# endif clang\n",
+        "Line" : 1054,
+        "CharPositionInLine" : 6
+      },
+      "246" : {
+        "Text" : "# 20090715: -Werror triggers known nc_put_var?_string() and nco_def_var_chunking() errors\n\n# CFLAGS += -g -pg -fno-inline -Werror\n\n# CFLAGS += -g -O -pg -fno-inline\n",
+        "Line" : 1055,
+        "CharPositionInLine" : 0
+      },
+      "247" : {
+        "Text" : "# LDFLAGS += /usr/local/lib/ccmalloc-gcc.o -L/usr/local/lib -lccmalloc -ldl\n",
+        "Line" : 1060,
+        "CharPositionInLine" : 0
+      },
+      "248" : {
+        "Text" : "# endif ABI\n\n# endif LINUXAMD64\n",
+        "Line" : 1067,
+        "CharPositionInLine" : 6
+      },
+      "249" : {
+        "Text" : "# endif GNU Compiler Collection or LLVM\n",
+        "Line" : 1070,
+        "CharPositionInLine" : 6
+      },
+      "250" : {
+        "Text" : "# Intel (Kai) C Compiler\n",
+        "Line" : 1071,
+        "CharPositionInLine" : 0
+      },
+      "251" : {
+        "Text" : "# -fast: enable -xP -O3 -ipo -static\n\n# -ipo[n]: enable multi-file IP optimizations (between files)\n\n# -no-gcc: do not define  __GNUC__, __GNUC_MINOR__, and __GNUC_PATCHLEVEL__ macros\n\n# -static: prevents linking with shared libraries\n\n# -std=c99: Enable C99 support for C programs\n\n# -xB: specialize code to run exclusively on Intel Pentium M and compatible Intel processors\n\n# -xK: specialize code to run exclusively on Intel Pentium III and compatible Intel processors\n\n# -xN: specialize code to run exclusively on Intel Pentium 4 and compatible Intel processors\n\n# -xP: specialize code to run exclusively on Intel Pentium 4 processors with SSE3 extensions\n\n# -Wall: enable all warnings\n\n# -Werror:force warnings to be reported as errors\n\n# -w0: display errors (same as -w)\n\n# -w1: display warnings and errors (DEFAULT)\n\n# -w2: display remarks, warnings, and errors\n\n# -wd<L1>[,<L2>,...] disable diagnostics L1 through LN\n\n# warning #274: declaration is not visible outside of function\n\n# remark #981: operands are evaluated in unspecified order\n\n# remark #810: conversion from \"double\" to \"float\" may lose significant bits\n\n# remark #1572: floating-point equality and inequality comparisons are unreliable\n",
+        "Line" : 1073,
+        "CharPositionInLine" : 0
+      },
+      "252" : {
+        "Text" : "# Rhea icc 13.1.3 (gcc version 4.4.7 compatibility) requires -D_BSD_SOURCE on files that #include nameser.h, recent transition of gcc 4.9 to -D_DEFAULT_SOURCE does not cut the mustard\n",
+        "Line" : 1093,
+        "CharPositionInLine" : 0
+      },
+      "253" : {
+        "Text" : "# endif Intel (Kai) C Compiler\n",
+        "Line" : 1110,
+        "CharPositionInLine" : 6
+      },
+      "254" : {
+        "Text" : "# Intel (Kai) Fortran Compiler\n",
+        "Line" : 1111,
+        "CharPositionInLine" : 0
+      },
+      "255" : {
+        "Text" : "# -e95 issues warnings for non-standard fortran\n\n# -fpp2 necessary, but not sufficient, for  OpenMP\n",
+        "Line" : 1113,
+        "CharPositionInLine" : 0
+      },
+      "256" : {
+        "Text" : "# -lVaxlib needed for iargc_, getarg_\n",
+        "Line" : 1116,
+        "CharPositionInLine" : 0
+      },
+      "257" : {
+        "Text" : "# endif Intel (Kai) Fortran Compiler\n",
+        "Line" : 1136,
+        "CharPositionInLine" : 6
+      },
+      "258" : {
+        "Text" : "# cd ~;nvcc -o libcuda_add.a -deviceemu -lib simpleTemplates.cu\n\n# cd ~;g++ -I/usr/local/cuda/include -c -o test.o test.c\n\n# cd ~;g++ -o ~/test test.o libcuda_add.a\n\n# NVidia C Compiler\n",
+        "Line" : 1137,
+        "CharPositionInLine" : 0
+      },
+      "259" : {
+        "Text" : "# -deviceemu: Emulate CUDA CPU\n\n# -lib: build static libraries\n",
+        "Line" : 1143,
+        "CharPositionInLine" : 0
+      },
+      "260" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1150,
+        "CharPositionInLine" : 6
+      },
+      "261" : {
+        "Text" : "# endif ABI\n\n# endif LINUXAMD64\n",
+        "Line" : 1169,
+        "CharPositionInLine" : 6
+      },
+      "262" : {
+        "Text" : "# endif NVidia C Compiler\n",
+        "Line" : 1172,
+        "CharPositionInLine" : 6
+      },
+      "263" : {
+        "Text" : "# Pathscale (QLogic) C Compiler\n",
+        "Line" : 1173,
+        "CharPositionInLine" : 0
+      },
+      "264" : {
+        "Text" : "# pathcc -show-defaults\n\n# shows that pathcc automatically sets many hardware-specific options\n\n# man -k pathscale for full listing\n\n# -O2 = -O: Default optimization\n\n# -Ofast = -O3:\n",
+        "Line" : 1175,
+        "CharPositionInLine" : 0
+      },
+      "265" : {
+        "Text" : "# end Pathscale (QLogic) C++ Compiler\n",
+        "Line" : 1197,
+        "CharPositionInLine" : 6
+      },
+      "266" : {
+        "Text" : "# Portland Group C++ Compiler\n",
+        "Line" : 1198,
+        "CharPositionInLine" : 0
+      },
+      "267" : {
+        "Text" : "# Enable Large File Support (LFS) by default\n",
+        "Line" : 1200,
+        "CharPositionInLine" : 0
+      },
+      "268" : {
+        "Text" : "# Pass kludgy PGI identifier to flag for broken C99 designated initializers etc.\n",
+        "Line" : 1202,
+        "CharPositionInLine" : 0
+      },
+      "269" : {
+        "Text" : "# endif Portland Group C++ Compiler\n",
+        "Line" : 1220,
+        "CharPositionInLine" : 6
+      },
+      "270" : {
+        "Text" : "# Portland Group Fortran Compiler\n",
+        "Line" : 1221,
+        "CharPositionInLine" : 0
+      },
+      "271" : {
+        "Text" : "# endif Portland Group Fortran Compiler\n",
+        "Line" : 1240,
+        "CharPositionInLine" : 6
+      },
+      "272" : {
+        "Text" : "# G77 Fortran compiler\n",
+        "Line" : 1241,
+        "CharPositionInLine" : 0
+      },
+      "273" : {
+        "Text" : "# endif G77 Fortran compiler\n",
+        "Line" : 1256,
+        "CharPositionInLine" : 6
+      },
+      "274" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1262,
+        "CharPositionInLine" : 6
+      },
+      "275" : {
+        "Text" : "# LD behavior assumes C source code\n",
+        "Line" : 1267,
+        "CharPositionInLine" : 0
+      },
+      "276" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1269,
+        "CharPositionInLine" : 6
+      },
+      "277" : {
+        "Text" : "# endif LINUX, LINUXALPHA, LINUXAMD64, LINUXARM, FREEBSD, MACOSX\n",
+        "Line" : 1271,
+        "CharPositionInLine" : 0
+      },
+      "278" : {
+        "Text" : "# NB: Deprecated as of 201403. Now MACOSX is subsumed in LINUX\n",
+        "Line" : 1273,
+        "CharPositionInLine" : 0
+      },
+      "279" : {
+        "Text" : "# NB: -D_POSIX_SOURCE breaks MACOSX build in nco_fl_utl.c, nco_mmr.c\n\n#CC := cc -std=c99 -pedantic -D_BSD_SOURCE\n",
+        "Line" : 1276,
+        "CharPositionInLine" : 0
+      },
+      "280" : {
+        "Text" : "# -fno-common: Allows shared libraries to build\n",
+        "Line" : 1280,
+        "CharPositionInLine" : 0
+      },
+      "281" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1307,
+        "CharPositionInLine" : 6
+      },
+      "282" : {
+        "Text" : "# endif MACOSXOLD\n",
+        "Line" : 1309,
+        "CharPositionInLine" : 0
+      },
+      "283" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1314,
+        "CharPositionInLine" : 6
+      },
+      "284" : {
+        "Text" : "#CC := c++ -Xa\n",
+        "Line" : 1316,
+        "CharPositionInLine" : 0
+      },
+      "285" : {
+        "Text" : "#CPP := /usr/lib/cpp\n",
+        "Line" : 1319,
+        "CharPositionInLine" : 0
+      },
+      "286" : {
+        "Text" : "# CFLAGS += -Cvopt -math vector -xint\n",
+        "Line" : 1329,
+        "CharPositionInLine" : 0
+      },
+      "287" : {
+        "Text" : "# CFLAGS += -Cdebug -init stack=nan\n",
+        "Line" : 1338,
+        "CharPositionInLine" : 0
+      },
+      "288" : {
+        "Text" : "# NECSX try this\n",
+        "Line" : 1341,
+        "CharPositionInLine" : 48
+      },
+      "289" : {
+        "Text" : "# endif NECSX\n",
+        "Line" : 1345,
+        "CharPositionInLine" : 0
+      },
+      "290" : {
+        "Text" : "# endif RS6K\n",
+        "Line" : 1376,
+        "CharPositionInLine" : 0
+      },
+      "291" : {
+        "Text" : "# SGI6, SGI64, SGIMP64\n",
+        "Line" : 1378,
+        "CharPositionInLine" : 0
+      },
+      "292" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1382,
+        "CharPositionInLine" : 6
+      },
+      "293" : {
+        "Text" : "# 20000302: -w suppresses warnings which will swamp linker\n\n#CXX := g++ -w\n\n#CC := gcc -std=c99 -pedantic -D_DEFAULT_SOURCE\n",
+        "Line" : 1385,
+        "CharPositionInLine" : 0
+      },
+      "294" : {
+        "Text" : "# SGIs like dataproc keep omp.h in special location determined by module MIPSpro\n",
+        "Line" : 1390,
+        "CharPositionInLine" : 0
+      },
+      "295" : {
+        "Text" : "# SGI64, SGIMP64\n",
+        "Line" : 1402,
+        "CharPositionInLine" : 5
+      },
+      "296" : {
+        "Text" : "# ABI=32\n",
+        "Line" : 1407,
+        "CharPositionInLine" : 5
+      },
+      "297" : {
+        "Text" : "# endif ABI\n\n# endif SGI64, SGIMP64\n",
+        "Line" : 1411,
+        "CharPositionInLine" : 6
+      },
+      "298" : {
+        "Text" : "# endif CC=gcc\n",
+        "Line" : 1430,
+        "CharPositionInLine" : 0
+      },
+      "299" : {
+        "Text" : "# endif CC=cc\n\n# Fortran flags\n",
+        "Line" : 1447,
+        "CharPositionInLine" : 0
+      },
+      "300" : {
+        "Text" : "# end fortran flags\n",
+        "Line" : 1462,
+        "CharPositionInLine" : 0
+      },
+      "301" : {
+        "Text" : "# endif SGI6, SGI64, SGIMP64\n",
+        "Line" : 1464,
+        "CharPositionInLine" : 0
+      },
+      "302" : {
+        "Text" : "#CXX := g++\n\n#CC := gcc -std=c99 -pedantic -D_DEFAULT_SOURCE\n\n#CFLAGS := -Wall\n\n#CPP := cpp\n",
+        "Line" : 1471,
+        "CharPositionInLine" : 0
+      },
+      "303" : {
+        "Text" : "#FFLAGS := -xs -stackvar -e -Qoption f90comp -r8const\n",
+        "Line" : 1477,
+        "CharPositionInLine" : 0
+      },
+      "304" : {
+        "Text" : "# NB: 19980601 -C (range-checking) is not supported by Sun f90\n",
+        "Line" : 1495,
+        "CharPositionInLine" : 0
+      },
+      "305" : {
+        "Text" : "# endif SunOS=SUN4SOL2,SUNMP\n",
+        "Line" : 1502,
+        "CharPositionInLine" : 0
+      },
+      "306" : {
+        "Text" : "# NB: nameser.h needs -Di386, but gcc sends -Di586 (on pentiums)\n\n#CPP_TKN_OS += -Di386 -DNEED_STRCASECMP -DNEED_STRDUP -I/usr/include\n",
+        "Line" : 1507,
+        "CharPositionInLine" : 0
+      },
+      "307" : {
+        "Text" : "# endif WIN32\n",
+        "Line" : 1528,
+        "CharPositionInLine" : 0
+      },
+      "308" : {
+        "Text" : "# Resolve nvcc CUDA run-time library functions\n",
+        "Line" : 1530,
+        "CharPositionInLine" : 0
+      },
+      "309" : {
+        "Text" : "# endif CUDA\n",
+        "Line" : 1535,
+        "CharPositionInLine" : 6
+      },
+      "310" : {
+        "Text" : "# Internationalize NCO with i18n features\n",
+        "Line" : 1537,
+        "CharPositionInLine" : 0
+      },
+      "311" : {
+        "Text" : "# endif I18N\n",
+        "Line" : 1544,
+        "CharPositionInLine" : 0
+      },
+      "312" : {
+        "Text" : "# Default to MPICC, MPICXX to CC, CXX and cross your fingers\n",
+        "Line" : 1546,
+        "CharPositionInLine" : 0
+      },
+      "313" : {
+        "Text" : "# Manipulate CC, CPP, CXX as appropriate for MPI-enabled operators\n",
+        "Line" : 1549,
+        "CharPositionInLine" : 0
+      },
+      "314" : {
+        "Text" : "# NB: AIX is not debugged yet\n",
+        "Line" : 1552,
+        "CharPositionInLine" : 0
+      },
+      "315" : {
+        "Text" : "# endif AIX VA Compiler Collection\n",
+        "Line" : 1555,
+        "CharPositionInLine" : 6
+      },
+      "316" : {
+        "Text" : "# endif GNU Compiler Collection\n",
+        "Line" : 1559,
+        "CharPositionInLine" : 6
+      },
+      "317" : {
+        "Text" : "# endif Intel (Kai) C++ Compiler\n",
+        "Line" : 1563,
+        "CharPositionInLine" : 6
+      },
+      "318" : {
+        "Text" : "# endif Pathscale (QLogic) Compilers\n",
+        "Line" : 1567,
+        "CharPositionInLine" : 6
+      },
+      "319" : {
+        "Text" : "# endif MPI\n",
+        "Line" : 1569,
+        "CharPositionInLine" : 6
+      },
+      "320" : {
+        "Text" : "# Use MPI modifications, if any, to build all objects\n",
+        "Line" : 1570,
+        "CharPositionInLine" : 0
+      },
+      "321" : {
+        "Text" : "# Disable OpenMP on platforms which automatically support it\n",
+        "Line" : 1574,
+        "CharPositionInLine" : 0
+      },
+      "322" : {
+        "Text" : "# endif SGI\n",
+        "Line" : 1579,
+        "CharPositionInLine" : 6
+      },
+      "323" : {
+        "Text" : "# endif OMP\n",
+        "Line" : 1581,
+        "CharPositionInLine" : 6
+      },
+      "324" : {
+        "Text" : "# Prefix CC and CXX with ccache\n",
+        "Line" : 1585,
+        "CharPositionInLine" : 0
+      },
+      "325" : {
+        "Text" : "# !CCACHE\n\n# !LINUX\n",
+        "Line" : 1588,
+        "CharPositionInLine" : 6
+      },
+      "326" : {
+        "Text" : "# Created statically linked executable\n",
+        "Line" : 1592,
+        "CharPositionInLine" : 0
+      },
+      "327" : {
+        "Text" : "# endif STC\n",
+        "Line" : 1594,
+        "CharPositionInLine" : 6
+      },
+      "328" : {
+        "Text" : "# Define CPPCXXFLAGS after making all possible modifications to CPPFLAGS\n\n# Add nco_c++ to directory search path\n",
+        "Line" : 1596,
+        "CharPositionInLine" : 0
+      },
+      "329" : {
+        "Text" : "# Define any remaining variables\n",
+        "Line" : 1600,
+        "CharPositionInLine" : 0
+      },
+      "330" : {
+        "Text" : "# Default targets\n",
+        "Line" : 1603,
+        "CharPositionInLine" : 0
+      },
+      "331" : {
+        "Text" : "# .PHONY tells make to remake the following non-file targets \n",
+        "Line" : 1606,
+        "CharPositionInLine" : 0
+      },
+      "332" : {
+        "Text" : "# Delete default suffixes---this should increase speed\n",
+        "Line" : 1608,
+        "CharPositionInLine" : 0
+      },
+      "333" : {
+        "Text" : "# Define suffixes that matter\n",
+        "Line" : 1610,
+        "CharPositionInLine" : 0
+      },
+      "334" : {
+        "Text" : "# Delete targets that were not successfully made\n",
+        "Line" : 1612,
+        "CharPositionInLine" : 0
+      },
+      "335" : {
+        "Text" : "# Target directories which may not exist\n",
+        "Line" : 1614,
+        "CharPositionInLine" : 0
+      },
+      "336" : {
+        "Text" : "# Compaq ALPHA complains about -install\n\n#\t-install -d ${MY_BIN_DIR}\n",
+        "Line" : 1617,
+        "CharPositionInLine" : 0
+      },
+      "337" : {
+        "Text" : "#\t-install -d ${MY_BIN_DIR}\n",
+        "Line" : 1621,
+        "CharPositionInLine" : 0
+      },
+      "338" : {
+        "Text" : "#\t-install -d ${MY_BIN_DIR}\n",
+        "Line" : 1624,
+        "CharPositionInLine" : 0
+      },
+      "339" : {
+        "Text" : "# The whole shebang\n",
+        "Line" : 1626,
+        "CharPositionInLine" : 0
+      },
+      "340" : {
+        "Text" : "# Targets in bin\n",
+        "Line" : 1632,
+        "CharPositionInLine" : 0
+      },
+      "341" : {
+        "Text" : "# 20050710: icc 8.1 with -axW flag dies compiling ncecat\n\n# 20050915: Same problem occurs with MPI_FAKE version of mpncecat\n",
+        "Line" : 1643,
+        "CharPositionInLine" : 0
+      },
+      "342" : {
+        "Text" : "# !MPI_FAKE\n\n# endif Intel (Kai) C Compiler\n",
+        "Line" : 1649,
+        "CharPositionInLine" : 6
+      },
+      "343" : {
+        "Text" : "#\tcd ${MY_BIN_DIR}; rm -f mpncunpack; ln -s -f mpncpdq mpncunpack\n\n#\tcd ${MY_BIN_DIR}; rm -f mpncpack; ln -s -f mpncpdq mpncpack\n",
+        "Line" : 1663,
+        "CharPositionInLine" : 0
+      },
+      "344" : {
+        "Text" : "#\t20050916 fxm: not sure why simpler substitution method does not work\n\n#\t- for fl in ${MDL_MPI_TRG}; do /bin/cp -f ${MY_BIN_DIR}/$$fl ${MY_BIN_DIR}/$(subst mp,,$$fl); done\n",
+        "Line" : 1737,
+        "CharPositionInLine" : 0
+      },
+      "345" : {
+        "Text" : "# Targets in bld\n",
+        "Line" : 1741,
+        "CharPositionInLine" : 0
+      },
+      "346" : {
+        "Text" : "# Building rpm requires root priveleges, e.g., sudo make NCO_VRS=4.5.2 rpm\n",
+        "Line" : 1755,
+        "CharPositionInLine" : 28
+      },
+      "347" : {
+        "Text" : "# \tBuilding NCO RPM requires following packages\n\n#       rpm -q bison flex netcdf-devel libtool automake autoconf udunits udunits-devel curl-devel libxml2 libxml2-devel librx-devel \n\n#       sudo yum install bison flex netcdf-devel libtool automake autoconf udunits udunits-devel curl-devel libxml2 libxml2-devel librx-devel\n",
+        "Line" : 1756,
+        "CharPositionInLine" : 0
+      },
+      "348" : {
+        "Text" : "# Crypographically sign RPM packages with GPG: http://fedoranews.org/tchung/gpg\n\n# gpg --export -a 'Charlie Zender' > ~/GPG-zender # Export public key from key ring to text file\n\n# sudo rpm --import ~/GPG-zender # Import public key to RPM database\n\n# rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\\n' # Verify list of GPG public keys in RPM database\n\n# Verify ~/.rpmmacros file specifies _signature and gpg_name\n\n# sudo rpm --addsign /usr/src/redhat/SRPMS/nco-${NCO_VRS}-?.src.rpm /usr/src/redhat/RPMS/i386/nco-${NCO_VRS}-?.i386.rpm # Sign RPM packages\n\n# rpm --checksig /usr/src/redhat/SRPMS/nco-${NCO_VRS}-?.src.rpm /usr/src/redhat/RPMS/i386/nco-${NCO_VRS}-?.i386.rpm # Check signatures\n",
+        "Line" : 1768,
+        "CharPositionInLine" : 0
+      },
+      "349" : {
+        "Text" : "# Building rpm requires root priveleges, e.g., sudo make NCO_VRS=3.1.8 rpmnet\n",
+        "Line" : 1775,
+        "CharPositionInLine" : 31
+      },
+      "350" : {
+        "Text" : "# Targets in bm\n",
+        "Line" : 1786,
+        "CharPositionInLine" : 0
+      },
+      "351" : {
+        "Text" : "# Targets in dat\n\n# ncgen rules to build netCDF4 files must be error-tolerant to build on netCDF3-only installations\n",
+        "Line" : 1802,
+        "CharPositionInLine" : 0
+      },
+      "352" : {
+        "Text" : "# ncgen default chunksize for time = 4 MB produces ~200 MB in_4c.nc file. Avoid that!\n\n#\t-ncgen -k hdf5-nc3 -b -o $@ $<\n",
+        "Line" : 1816,
+        "CharPositionInLine" : 0
+      },
+      "353" : {
+        "Text" : "# Targets in doc\n\n# Each make directive line spawns a separate shell so must use `cd dir;cmd' format\n",
+        "Line" : 1887,
+        "CharPositionInLine" : 0
+      },
+      "354" : {
+        "Text" : "#\tcd ${MY_DOC_DIR}; makeinfo --html --no-split --output=$@ $<\n",
+        "Line" : 1896,
+        "CharPositionInLine" : 0
+      },
+      "355" : {
+        "Text" : "#\tcd ${MY_DOC_DIR}; ps2pdf -dMaxSubsetPct=100 -dCompatibilityLevel=1.2 -dSubsetFonts=true -dEmbedAllFonts=true nco.ps $@\n",
+        "Line" : 1901,
+        "CharPositionInLine" : 0
+      },
+      "356" : {
+        "Text" : "# Neither of these xml formats seems to be viewable\n",
+        "Line" : 1904,
+        "CharPositionInLine" : 0
+      },
+      "357" : {
+        "Text" : "#\tcd ${MY_DOC_DIR}; makeinfo --docbook --no-split --output=$@ $<\n",
+        "Line" : 1907,
+        "CharPositionInLine" : 0
+      },
+      "358" : {
+        "Text" : "# Targets in dpn\n",
+        "Line" : 1911,
+        "CharPositionInLine" : 0
+      },
+      "359" : {
+        "Text" : "# Targets in inc\n",
+        "Line" : 1916,
+        "CharPositionInLine" : 0
+      },
+      "360" : {
+        "Text" : "# Targets in lib\n",
+        "Line" : 1923,
+        "CharPositionInLine" : 0
+      },
+      "361" : {
+        "Text" : "# endif LINUX\n",
+        "Line" : 1928,
+        "CharPositionInLine" : 6
+      },
+      "362" : {
+        "Text" : "# If not using glibc, build Sittler's getopt() and getopt_long() functions\n",
+        "Line" : 1929,
+        "CharPositionInLine" : 0
+      },
+      "363" : {
+        "Text" : "# endif not glibc\n",
+        "Line" : 1932,
+        "CharPositionInLine" : 6
+      },
+      "364" : {
+        "Text" : "# Targets in man\n",
+        "Line" : 1979,
+        "CharPositionInLine" : 0
+      },
+      "365" : {
+        "Text" : "# Targets in obj\n",
+        "Line" : 1984,
+        "CharPositionInLine" : 0
+      },
+      "366" : {
+        "Text" : "# Targets in root\n",
+        "Line" : 1990,
+        "CharPositionInLine" : 0
+      },
+      "367" : {
+        "Text" : "# Targets in src\n",
+        "Line" : 1996,
+        "CharPositionInLine" : 0
+      },
+      "368" : {
+        "Text" : "# Targets in /usr/local\n",
+        "Line" : 2000,
+        "CharPositionInLine" : 0
+      },
+      "369" : {
+        "Text" : "# Housekeeping\n",
+        "Line" : 2006,
+        "CharPositionInLine" : 0
+      },
+      "370" : {
+        "Text" : "#\tetags ${MY_SRC_DIR}/*.h $(filter-out ${TAGS_FILTER_FILES},${SRC_LST}) ${MDL_DOC_SRC} ${MDL_MAN} ${MDL_BLD_SRC} ${MDL_CXX_SRC} ${MDL_NCAP_SRC}\n",
+        "Line" : 2122,
+        "CharPositionInLine" : 0
+      },
+      "371" : {
+        "Text" : "# Reset internal YACC and LEX patterns\n",
+        "Line" : 2124,
+        "CharPositionInLine" : 0
+      },
+      "372" : {
+        "Text" : "# It is safest to do both YACC and LEX after either file changes\n\n# Otherwise only changing one and then switching, e.g., from bison to yacc, can cause problems\n\n# NB: Bison has problem when bison.simple declares yyparse() as int yyparse (void);\n\n# Solution is to comment out that definition in bison.simple\n",
+        "Line" : 2128,
+        "CharPositionInLine" : 0
+      },
+      "373" : {
+        "Text" : "#${MY_SRC_DIR}/%_yacc.c ${MY_SRC_DIR}/%_yacc.h : ${MY_SRC_DIR}/%_yacc.y\n\n#\t${YACC} ${YFLAGS} --file-prefix=$(notdir $($(basename $<))) -d $<\n\n#%_yacc.c %_yacc.h : %_yacc.y\n\n#\t${YACC} ${YFLAGS} --file-prefix=$(notdir $($(basename $<))) -d $<\n",
+        "Line" : 2135,
+        "CharPositionInLine" : 0
+      },
+      "374" : {
+        "Text" : "# Target-specific variable values syntax TARGET ... : VARIABLE-ASSIGNMENT\n\n# Rules begin in leftmost column else interpreted as commands\n",
+        "Line" : 2151,
+        "CharPositionInLine" : 0
+      },
+      "375" : {
+        "Text" : "# endif GCC\n\n# endif LINUX\n",
+        "Line" : 2157,
+        "CharPositionInLine" : 6
+      },
+      "376" : {
+        "Text" : "# ncap, and only ncap, requires AIX system C++ library\n",
+        "Line" : 2160,
+        "CharPositionInLine" : 0
+      },
+      "377" : {
+        "Text" : "# Target-specific variable values syntax TARGET ... : VARIABLE-ASSIGNMENT\n\n# Rules begin in leftmost column else interpreted as commands\n",
+        "Line" : 2163,
+        "CharPositionInLine" : 0
+      },
+      "378" : {
+        "Text" : "# endif AIX VA Compiler Collection\n\n# endif AIX\n",
+        "Line" : 2166,
+        "CharPositionInLine" : 6
+      },
+      "379" : {
+        "Text" : "# For some reason, ncap_lex.c is not remade when I expect it to be, so I explicitly remove the object file every time\n",
+        "Line" : 2168,
+        "CharPositionInLine" : 0
+      },
+      "380" : {
+        "Text" : "#\t/bin/rm -f ${MDL_NCAP} ${MY_OBJ_DIR}/$@_lex.o\n",
+        "Line" : 2174,
+        "CharPositionInLine" : 0
+      },
+      "381" : {
+        "Text" : "# Create dependency files only if they will not be immediately deleted\n",
+        "Line" : 2176,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 382
+    },
+    "data/Makefile.am" : {
+      "ObjectId" : "cbc830ece05d900b3bc0a8e6ace483c9d2088af0",
+      "LastModified" : "2018-04-01T18:58:06Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# netCDF build rules\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ncgen default chunksize for time = 4 MB produces ~200 MB in_4c.nc file. Avoid that!\n\n#\t-@PATH_TO_NCGEN@ -k hdf5-nc3 -o $@ $< \n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Autoconf/automake instructions for scripts:\n\n# https://www.gnu.org/software/automake/manual/html_node/Scripts.html\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Automake manual section 14:\n\n# If configure built it, 'distclean' should delete it\n\n# If make built it, 'clean' should delete it\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Build procedure produces these files:\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "doc/Makefile.am" : {
+      "ObjectId" : "09f7fe703c5e572355f2f4d630dd7fb559462295",
+      "LastModified" : "2015-09-23T23:39:34Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# fxm: 20150923 Allow for building documentation (man pages) without TeXInfo\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# csz 20061120 override default MAKEINFOHTML defaults:\n\n# --ifinfo: Treat HTML branches same as info branches\n\n# --output=html: Output to html directory\n\n# Unfortunately, autoconf overrides --output\n\n# AM_MAKEINFOHTMLFLAGS = --ifinfo\n\n# Create single HTML file instead of file-per-node\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## Automake manual section 14:\n\n## If configure built it, 'distclean' should delete it\n\n## If make built it, 'clean' should delete it\n\n#CLEANFILES = nco nco.dvi nco.info* nco.pdf nco.ps nco.txt nco.xml\n\n#\n\n## Additions for NCO; automake may support these later on\n\n## .PHONY tells make to remake the following non-file targets \n\n#.PHONY: html_docs pdf_docs txt_docs xml_docs\n\n#html_docs = nco.html\n\n#.texi.html:\n\n#\t$(MAKEINFO) --html --ifinfo --no-split --output=$@ $<\n\n##\t$(MAKEINFO) --html --no-split $<\n\n#pdf_docs = nco.pdf\n\n#.texi.pdf:\n\n#\t$(TEXI2DVI) --pdf $<\n\n##ps_docs = nco.ps\n\n##.texi.ps:\n\n##\tdvips -o $@ $<\n\n#txt_docs = nco.txt\n\n#.texi.txt:\n\n#\t$(MAKEINFO) --no-headers --output=$@ $<\n\n#xml_docs = nco.xml\n\n#.texi.xml:\n\n#\t$(MAKEINFO) --xml --ifinfo --no-split --output=$@ $<\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "man/Makefile.am" : {
+      "ObjectId" : "f69a386ff8b613588cb2b5f7e164866859c0a4fb",
+      "LastModified" : "2018-04-01T18:58:06Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/Makefile.am" : {
+      "ObjectId" : "a1229925bbad69abb25fc2ae85bfe6b9e2949673",
+      "LastModified" : "2015-09-23T23:39:34Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/nco++/Makefile.am" : {
+      "ObjectId" : "04144a02c7fbadde17d745e48518d1cbb2d93f0a",
+      "LastModified" : "2019-04-14T21:52:46Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Purpose: Template builds for nco++ directory\n\n# Process this file with automake to produce Makefile.in\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ncap2 is only executable in this directory\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ncolib_SOURCES includes all ../nco C-sources except for operator main() files\n\n# These are all built before nco++\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Invoke 'runantlr' on ncoGrammer.g to generate required hpp files\n\n#Invoke.cc : ncoGrammer.g\n\n#Invoke.o : ncoGrammer.g\n\n#\t${ANTLR} ncoGrammer.g\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# 20160125: fxm postprocess tokens when symbol table changes\n\n# cd ~/nco/src/nco++;antlr ncoGrammer.g;./nco_antlr_pst_prc.pl < ncoParserTokenTypes.hpp > ncoEnumTokenTypes.hpp\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# fxm: Split off all sources except front-end into nco++ library\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# 20190414 ncap2 on MacOS relink when libnco.a changes\n\n#ncap2_LDADD = -lnco\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# 20150108 Be sure that netCDF in /usr/local takes precedence over GSL libraries in /usr\n\n# AKA be sure GSL in /usr does not cause ncap2 linker to search /usr before /usr/local\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#ncap2_LDADD = -lnco -lantlr\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# fxm: 20080515 Takeshi Enomoto reports that MACOSX needs\n\n# ncap2_LDADD = ../nco/.libs/libnco.dylib -lantlr\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# fxm: 20140730 Ed Anderson reports that PGI- and GCC-compiled ncap2 need\n\n# -Xcompiler -shared added to ncap2_LINK which, apparently, would be done with\n\n# ncap2_LDFLAGS = -Xcompiler -shared\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#ncap2_LDFLAGS = -L../nco ${GSL_LIB_ARG}\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#AM_CPPFLAGS = -I./ -I../nco ${GSL_INC_ARG}\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#ncap2_LDFLAGS = -L../nco\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# 20060824: *.hpp and *.cpp files are now part of source tree\n\n# DISTCLEANFILES=ncoLexer.hpp ncoParser.hpp ncoParserTokenTypes.hpp ncoParserTokenTypes.txt ncoTree.hpp\n\n# CLEANFILES=ncap2 ncoLexer.hpp ncoParser.hpp ncoParserTokenTypes.hpp ncoParserTokenTypes.txt ncoTree.hpp\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Configure automagically includes following libraries as requested:\n\n# Keep list here as reminder:\n\n# ncap2:\n\n# -lnco++ -lnco -lnco_c++ -lantlr\n\n# OPeNDAP:\n\n# -lnc-dap -ldap -lxml2 -lcurl (Linux)\n\n# -lnc-dap -ldap -lxml2 -lcurl -lcrypto -liconv -lssl -lz (AIX)\n\n# netCDF4:\n\n# -lnetcdf -lhdf5 -lhdf5_hl\n\n# UDUnits:\n\n# -ludunits\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "src/nco/Makefile.am" : {
+      "ObjectId" : "b3bef93f96d43d99de9d7eddc903a44a28aaf0ba",
+      "LastModified" : "2019-04-14T21:52:46Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This creates version-stamped shared-library, e.g., libnco-2.9.4.so\n\n# NB: VERSION here refers to argument to AC_INIT() in configure.ac\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Fedora Core nco.spec in nco-3.1.2 wants to install headers\n\n# Fedora Core nco.spec in nco-3.9.7 still wants to install headers\n\n# Maybe smart/required for -devel packages?\n\n# To my knowledge, though, only NCO programs use libnco\n\n# For this reason Debian packages should not (yet) install NCO headers\n\n# Remove following line until learn how to prevent Debian from installing headers\n\n#include_HEADERS = $(HEADER_SRC)\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/nco_c++/Makefile.am" : {
+      "ObjectId" : "84f4ffd8b6e9d9adc6c0be3f7393f165747ec89d",
+      "LastModified" : "2017-06-07T22:22:23Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# $Header$ -*-makefile-*-\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NB: VERSION here refers to ... what? argument to AC_INIT() in configure.ac? No, that's package_version\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test programs produce these files:\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 1,
+    "MAKEFILE" : 1,
+    "AUTOMAKE" : 8
+  },
+  "ElapsedTime" : 2632
+}

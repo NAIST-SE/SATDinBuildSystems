@@ -1,0 +1,733 @@
+{
+  "Repository" : "31340100",
+  "Revision" : "HEAD",
+  "ObjectId" : "6b72436abd59225d70cc1eaef090775eb4589cf7",
+  "CommitTime" : "2019-04-09T19:54:42Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "4f585e4319f7ed1065928a7d2718075c9a1c6f80",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Examples/Text/LightRNN/Makefile" : {
+      "ObjectId" : "0fb8d18c0f4cd860d74d9c9f98d4a36a18dcaf9c",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "Makefile" : {
+      "ObjectId" : "cb651d080ec56bfb787c7b2cb7636d38ed8659c7",
+      "LastModified" : "2019-03-20T18:36:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for a Linux/GCC build of CNTK\n\n#\n\n# The Linux and Windows versions are not different branches, but rather build off the same\n\n# source files, using different makefiles. This current makefile has the purpose of enabling\n\n# work to make all sources compile with GCC, and also to check for GCC-compat regressions due to\n\n# modifications which are currently done under Windows.\n\n#\n\n# To use this Makefile, create a directory to build in and make a Config.make in the directory\n\n# that provides\n\n#   BUILDTYPE= One of release or debug\n\n#     defaults to release\n\n#   BUILD_VERSION= CNTK version number to be used while building\n\n#   BUILD_PUBLIC= One of yes or no\n\n#   MKL_PATH= path to MKLML installation\n\n#     only needed if MATHLIB=mkl\n\n#   GDK_INCLUDE_PATH= path to CUDA GDK include path, so $(GDK_INCLUDE_PATH)/nvml.h exists\n\n#     defaults to /usr/include/nvidia/gdk\n\n#   GDK_NVML_LIB_PATH= path to CUDA GDK (stub) library path, so $(GDK_NVML_LIB_PATH)/libnvidia-ml.so exists\n\n#     defaults to /usr/src/gdk/nvml/lib\n\n#   MATHLIB= mkl\n\n#     defaults to mkl\n\n#   CUDA_PATH= Path to CUDA\n\n#     If not specified, GPU will not be enabled\n\n#   CUB_PATH= path to NVIDIA CUB installation, so $(CUB_PATH)/cub/cub.cuh exists\n\n#     defaults to /usr/local/cub-1.8.0\n\n#   CUDNN_PATH= path to NVIDIA cuDNN installation so $(CUDNN_PATH)/cuda/include/cudnn.h exists\n\n#     CuDNN version needs to be 5.0 or higher.\n\n#   KALDI_PATH= Path to Kaldi\n\n#     If not specified, Kaldi plugins will not be built\n\n#   OPENCV_PATH= path to OpenCV 3.1.0 installation, so $(OPENCV_PATH) exists\n\n#     defaults to /usr/local/opencv-3.1.0\n\n#   PROTOBUF_PATH= path to Protocol Buffers 3.1.0 installation, so $(PROTOBUF_PATH) exists\n\n#     defaults to /usr/local/protobuf-3.1.0\n\n#   LIBZIP_PATH= path to libzip installation, so $(LIBZIP_PATH) exists\n\n#     defaults to /usr/local/\n\n#   BOOST_PATH= path to Boost installation, so $(BOOST_PATH)/include/boost/test/unit_test.hpp\n\n#     defaults to /usr/local/boost-1.60.0\n\n#   PYTHON_SUPPORT=true iff CNTK v2 Python module should be build\n\n#   PYTHON_WITH_DEPS=1 Adds third party libraries in the python package (e.g. CUDA). Must be equal to 1 or unset\n\n#   PYTHON_WITH_DEBUG=1 Do not strip libraries for the python package. Must be equal to 1 or unset\n\n#   SWIG_PATH= path to SWIG (>= 3.0.10)\n\n#   PYTHON_VERSIONS= list of Python versions to build for\n\n#     A Python version is identified by \"27\", \"35\", or \"36\".\n\n#   PYTHON27_PATH= path to Python 2.7 interpreter\n\n#   PYTHON34_PATH= path to Python 3.4 interpreter\n\n#   PYTHON35_PATH= path to Python 3.5 interpreter\n\n#   PYTHON36_PATH= path to Python 3.6 interpreter\n\n#   MPI_PATH= path to MPI installation, so $(MPI_PATH) exists\n\n#     defaults to /usr/local/mpi\n\n# These can be overridden on the command line, e.g. make BUILDTYPE=debug\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: Build static libraries for common dependencies that are shared by multiple\n\n# targets, e.g. eval and CNTK.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#### Configure based on options above\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The mpic++ wrapper only adds MPI specific flags to the g++ command line.\n\n# The actual compiler/linker flags added can be viewed by running 'mpic++ --showme:compile' and 'mpic++ --showme:link'\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Settings for ARM64 architectures that use a crosscompiler on a host machine.\n\n#CXX = aarch64-linux-gnu-g++\n\n#SSE_FLAGS =\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# COMMON_FLAGS include settings that are passed both to NVCC and C++ compilers.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Make sure all is the first (i.e. default) target, but we can't actually define it\n\n# this early in the file, so let buildall do the work.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set up basic nvcc options and add CUDA targets from above\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Set up CUDA includes and libraries\n",
+        "Line" : 160,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Set up cuDNN if needed\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Set up NCCL if needed\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# disable MKL-DNN until we pick up the fix for AMD cache size https://github.com/intel/mkl-dnn/commit/ccfbf83ab489b42f7452b6701498b07c28cdb502\n\n#LIBS_LIST += m iomp5 pthread mklml_intel mkldnn\n",
+        "Line" : 188,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#COMMON_FLAGS += -DUSE_MKL -DUSE_MKLDNN\n",
+        "Line" : 193,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "########## Copy includes and defines from $(KALDI_PATH)/src/kaldi.mk ##########\n",
+        "Line" : 210,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Set up nvcc target architectures (will generate code to support them all, i.e. fat-binary, in release mode)\n\n# In debug mode we only include cubin/PTX for 30 and rely on PTX / JIT to generate the required native cubin format\n\n# see also http://docs.nvidia.com/cuda/pascal-compatibility-guide/index.html#building-applications-with-pascal-support\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Should we relocate *.gcno and *.gcda files using -fprofile-dir option?\n\n# Use GCOV_PREFIX and GCOV_PREFIX_STRIP if relocating:\n\n# For example, if the object file /user/build/foo.o was built with -fprofile-arcs, the final executable will try to create the data file\n\n# /user/build/foo.gcda when running on the target system. This will fail if the corresponding directory does not exist and it is unable\n\n# to create it. This can be overcome by, for example, setting the environment as 'GCOV_PREFIX=/target/run' and 'GCOV_PREFIX_STRIP=1'.\n\n# Such a setting will name the data file /target/run/build/foo.gcda\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Make sure we statically link with protobuf and avoid leaking symbols\n\n# (as users of this library may use their own version of protobuf library)\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Create the library link options for the linker.\n\n# LIBS_LIST must not be changed beyond this point.\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "########################################\n\n# Components VERSION info\n\n########################################\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# CNTK version which should be used where CNTK version is required. Ex: print version or tag CNTK binaries.\n",
+        "Line" : 298,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Cntk Version banner is printed wherever CNTK_VERSION should be printed. ex: python -c 'import cntk;cntk.__version__'.\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Cntk binaries (generated by build) are appended with CNTK_COMPONENT_VERSION. Ex: libCntk.Core-$(CNTK_COMPONENT_VERSION).dll\n",
+        "Line" : 307,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "########################################\n\n# Build info\n\n########################################\n",
+        "Line" : 320,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "########################################\n\n# Performance profiler library\n\n########################################\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "########################################\n\n# Math library\n\n########################################\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Define all sources that need to be built\n",
+        "Line" : 365,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Any executable using Common or ReaderLib needs to link these libraries.\n",
+        "Line" : 462,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "########################################\n\n# CNTKLibrary\n\n########################################\n",
+        "Line" : 467,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "########################################\n\n# C++ extensibility examples library\n\n########################################\n",
+        "Line" : 635,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "##############################################\n\n# Binary convolution library\n\n##############################################\n",
+        "Line" : 656,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "##############################################\n\n# Native implementation of the Proposal Layer\n\n##############################################\n",
+        "Line" : 678,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "########################################\n\n# LibEval\n\n########################################\n",
+        "Line" : 699,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# only set lib name when asgd is true\n",
+        "Line" : 740,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "########################################\n\n# Eval Sample clients\n\n########################################\n",
+        "Line" : 751,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "########################################\n\n# Eval V2 Sample client\n\n########################################\n",
+        "Line" : 786,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "########################################\n\n# Eval V2 Sample test\n\n########################################\n",
+        "Line" : 813,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "########################################\n\n# HTKMLFReader plugin\n\n########################################\n",
+        "Line" : 834,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "########################################\n\n# CompositeDataReader plugin\n\n########################################\n",
+        "Line" : 854,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "########################################\n\n# HTKDeserializers plugin\n\n########################################\n",
+        "Line" : 873,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "########################################\n\n# LMSequenceReader plugin\n\n########################################\n",
+        "Line" : 903,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "########################################\n\n# LUSequenceReader plugin\n\n########################################\n",
+        "Line" : 923,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "########################################\n\n# UCIFastReader plugin\n\n########################################\n",
+        "Line" : 944,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "########################################\n\n# LibSVMBinaryReader plugin\n\n########################################\n",
+        "Line" : 963,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "########################################\n\n# SparsePCReader plugin\n\n########################################\n",
+        "Line" : 981,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "########################################\n\n# CNTKBinaryReader plugin\n\n########################################\n",
+        "Line" : 999,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "########################################\n\n# CNTKTextFormatReader plugin\n\n########################################\n",
+        "Line" : 1021,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "########################################\n\n# Kaldi plugins\n\n########################################\n",
+        "Line" : 1043,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "########################################\n\n# ImageReader plugin\n\n########################################\n",
+        "Line" : 1069,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Both directories are needed for building libzip\n",
+        "Line" : 1082,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "########################################\n\n# DelayLoadedExtensions plugin\n\n########################################\n",
+        "Line" : 1117,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "########################################\n\n# 1bit SGD setup\n\n########################################\n",
+        "Line" : 1144,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# temporarily adding to 1bit, need to work with others to fix it\n",
+        "Line" : 1150,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "########################################\n\n# ASGD(multiverso) setup\n\n########################################\n",
+        "Line" : 1152,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#8-data-parallel-training-with-parameter-server to learn more.)\n",
+        "Line" : 1160,
+        "CharPositionInLine" : 162
+      },
+      "54" : {
+        "Text" : "# MULTIVERSO_LIB has been set above\n",
+        "Line" : 1168,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# TODO need to align Multiverso OpenMP with the one we use (libiomp). For now, disabled.\n",
+        "Line" : 1178,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "########################################\n\n# cntk\n\n########################################\n",
+        "Line" : 1220,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# deployable resources: standard library of BS\n",
+        "Line" : 1260,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "########################################\n\n# V2Library EndToEndTests\n\n########################################\n",
+        "Line" : 1268,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "########################################\n\n# Unit Tests\n\n########################################\n",
+        "Line" : 1304,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# only build unit tests when Boost is available\n",
+        "Line" : 1308,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "#TODO: create project specific makefile or rules to avoid adding project specific path to the global path\n",
+        "Line" : 1334,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "########################################\n\n# CNTKLibrary tests\n\n########################################\n",
+        "Line" : 1462,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Libraries needed for the run-time (i.e., excluding test binaries)\n\n# TODO MPI doesn't appear explicitly here, hidden by mpic++ usage (but currently, it should be user installed)\n",
+        "Line" : 1505,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# TODO dependencies\n\n# TODO intermediate build results should go below $OBJDIR\n",
+        "Line" : 1527,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 65,
+      "Errorlog" : "line 116:78 token recognition error at: '\\1'\nline 116:103 token recognition error at: '\\1'\nline 1544:66 token recognition error at: '\"^\\s'\nline 1749:94 token recognition error at: '\"\\n\\n$(OBJDIR)/%.pb.o : %.pb.cc $(BUILD_CONFIGURATION)\\n\\t@echo $(SEPARATOR)\\n\\t@echo creating $@ for $(ARCH) with build type $(BUILDTYPE)\\n\\t@mkdir -p $(dir $@)\\n\\t$(CXX) -c $< -o $@ $(COMMON_FLAGS) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDEPATH:%=-I%) -MD -MP -MF ${@:.o=.d}\\n\\n$(OBJDIR)/%.o : %.cpp $(BUILD_CONFIGURATION)\\n\\t@echo $(SEPARATOR)\\n\\t@echo creating $@ for $(ARCH) with build type $(BUILDTYPE)\\n\\t@mkdir -p $(dir $@)\\n\\t$(CXX) -c $< -o $@ $(COMMON_FLAGS) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDEPATH:%=-I%) -MD -MP -MF ${@:.o=.d}\\n\\n$(OBJDIR)/%.o : %.cc $(BUILD_CONFIGURATION)\\n\\t@echo $(SEPARATOR)\\n\\t@echo creating $@ for $(ARCH) with build type $(BUILDTYPE)\\n\\t@mkdir -p $(dir $@)\\n\\t$(CXX) -c $< -o $@ $(COMMON_FLAGS) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDEPATH:%=-I%) -MD -MP -MF ${@:.o=.d}\\n\\n.PHONY: clean buildall all unittests\\n\\nclean:\\n\\t@echo $(SEPARATOR)\\n\\t@rm -rf $(OBJDIR)\\n\\t@rm -rf $(ALL)\\n\\t@rm -rf $(BUILDINFO)\\n\\t@echo finished cleaning up the project\\n\\nbuildall : $(ALL)\\n\\t@echo $(SEPARATOR)\\n\\t@echo finished building for $(ARCH) with build type $(BUILDTYPE)\\n\u0000'\n"
+    },
+    "Tools/cmake/cntk_common.cmake" : {
+      "ObjectId" : "fcc872bd98cb256fc0b6e086fba05d603e6fb536",
+      "LastModified" : "2018-09-18T02:33:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# UnsupportedComponentError\n\n#   Issues a fatal error when attempting to generate projects for use in unverified environments.\n\n#\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ----------------------------------------------------------------------\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# There doesn't seem to be a NOT operator, thus the wonky syntax\n",
+        "Line" : 24,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# Visual Studio 2017 version 15.3\n",
+        "Line" : 30,
+        "CharPositionInLine" : 44
+      },
+      "4" : {
+        "Text" : "# There doesn't seem to be a NOT operator, thus the wonky syntax\n",
+        "Line" : 34,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# Windows 10 SDK for April 2018 Update, version 1803\n",
+        "Line" : 40,
+        "CharPositionInLine" : 44
+      },
+      "6" : {
+        "Text" : "# There doesn't seem to be a NOT operator, thus the wonky syntax\n",
+        "Line" : 44,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 7
+    },
+    "Tools/cmake/common.cmake" : {
+      "ObjectId" : "fc86a18f08695dd45cb26f502aeebc9e7c6e2607",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# EnsureProperties\n\n#   Validates that all properties have been defined.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# EnsureTools\n\n#   Validates that all tools are available. This is a macro to ensure that the property '<tool_name>_binary' is available within\n\n#   the namespace of calling scripts.\n\n#\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Tools/cmake/cpp_common.cmake" : {
+      "ObjectId" : "8dba734727ab136140352bd85ebb5588bdbd3553",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file contains definitions for C++ settings that impact the Application Binary Interface (ABI) that are\n\n# generally applicable across a variety of different projects. Project-specific customizations should be defined\n\n# in a separate file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If CMAKE_BUILD_TYPE is defined, we are looking at a single configuration and can extract information directly from this value.\n\n# If it is not defined, then we need to use a dynamic generator.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This code isn't quite right. What we actually want to do is say that CMAKE_BUILD_TYPE must be defined\n\n# for any generator that doesn't support the use of CONFIG as a generator expression. I haven't found a way\n\n# to detect that in the cmake logic.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# |\n\n# | Microsoft Visual Studio\n\n# |    \n\n# ----------------------------------------------------------------------\n",
+        "Line" : 40,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# | Preprocessor Definitions\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Use UNICODE character set\n\n# Use UNICODE character set\n",
+        "Line" : 49,
+        "CharPositionInLine" : 96
+      },
+      "6" : {
+        "Text" : "# Debug-specific flags\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Debug mode\n\n# Debug mode\n",
+        "Line" : 55,
+        "CharPositionInLine" : 96
+      },
+      "8" : {
+        "Text" : "# Note that add_definitions isn't able to handle generator expressions, so we\n\n# have to do the generation manually.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# | Compiler Flags\n",
+        "Line" : 63,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Option\n\n# ------------------------------------\n\n# Increase number of sections in object file\n\n# Enable Floating Point Exceptions: No\n\n# Floating Point Model: Fast\n\n# Run Time Type Information (RTTI)\n\n# Build with multiple processes\n\n# OpenMP 2.0 Support\n\n# Enable Additional Security Checks\n\n# Warning level 4\n\n# Warning as errors\n",
+        "Line" : 65,
+        "CharPositionInLine" : 96
+      },
+      "11" : {
+        "Text" : "# Option                                Debug                   Release                 Release_NoOpt\n\n# ------------------------------------  ----------------------  ----------------------  ----------------------\n\n# Enable Function-Level Linking         <Default>               Yes                     Yes\n\n# Enable Intrinsic Functions            <Default>               Yes                     Yes\n\n# Favor Size or Speed                   <Default>               fast                    <Default>\n\n# Enable Parallel Code Generation       <Default>               Yes                     Yes\n\n# Program Database                      Edit & Continue         Standard                Standard\n",
+        "Line" : 78,
+        "CharPositionInLine" : 96
+      },
+      "12" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# | Linker Flags\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Option\n\n# ------------------------------------\n\n# Enable profiling\n",
+        "Line" : 89,
+        "CharPositionInLine" : 96
+      },
+      "14" : {
+        "Text" : "# Release-specific linker flags\n",
+        "Line" : 98,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Generate Debug Information\n\n# Enable COMDAT Folding\n\n# References\n",
+        "Line" : 100,
+        "CharPositionInLine" : 96
+      },
+      "16" : {
+        "Text" : "# Note that there isn't a cmake method called add_linker_options that is able to handle \n\n# generator expressions, so we have to do the generation manually.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 8
+      },
+      "17" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# |\n\n# | GCC(-like)\n\n# |    \n\n# ----------------------------------------------------------------------\n",
+        "Line" : 111,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# | Preprocessor Definitions\n",
+        "Line" : 117,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Debug-specific flags\n",
+        "Line" : 126,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# Debug mode\n",
+        "Line" : 128,
+        "CharPositionInLine" : 96
+      },
+      "21" : {
+        "Text" : "# Note that add_definitions isn't able to handle generator expressions, so we\n\n# have to do the generation manually.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 8
+      },
+      "22" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# | Compiler Flags\n",
+        "Line" : 135,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# Option\n\n# ------------------------------------\n\n# Check the return value of new in C++.\n\n# Enable OpenMP\n\n# Downgrade conformance errors to warnings.\n\n# Generate position-independent code if possible (large mode).\n\n# Support MMX, SSE, SSE2, SSE3, SSSE3 and SSE4.1 built-in functions and code generation.\n\n# Conform to the ISO 2011 C standard.\n\n# Enable most warning messages.\n\n# Print extra (possibly unwanted) warnings. \n",
+        "Line" : 137,
+        "CharPositionInLine" : 96
+      },
+      "24" : {
+        "Text" : "# TODO: -Werror                                                                                 # Treat all warnings as errors.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# Insert arc-based program profiling code.\n\n# Create data files needed by \"gcov\".\n",
+        "Line" : 152,
+        "CharPositionInLine" : 96
+      },
+      "26" : {
+        "Text" : "# Support MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, AVX and AVX2 built-in functions and code generation.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 96
+      },
+      "27" : {
+        "Text" : "# Option                                Debug                   Release                 Release_NoOpt\n\n# ------------------------------------  ----------------------  ----------------------  ----------------------\n\n# Set optimization level                <Default>               4                       <Default>\n",
+        "Line" : 162,
+        "CharPositionInLine" : 96
+      },
+      "28" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# | Linker Flags\n",
+        "Line" : 166,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "# Option\n\n# ------------------------------------\n",
+        "Line" : 168,
+        "CharPositionInLine" : 96
+      },
+      "30" : {
+        "Text" : "# -rdynamic                                                                             # ???? -dynamicbase?\n",
+        "Line" : 170,
+        "CharPositionInLine" : 8
+      },
+      "31" : {
+        "Text" : "# Note that add_definitions isn't able to handle generator expressions, so we\n\n# have to do the generation manually.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 8
+      },
+      "32" : {
+        "Text" : "# ????\n\n# Link with gcov libraries\n",
+        "Line" : 180,
+        "CharPositionInLine" : 96
+      },
+      "33" : {
+        "Text" : "# Note that add_definitions isn't able to handle generator expressions, so we\n\n# have to do the generation manually.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 12
+      },
+      "34" : {
+        "Text" : "# Define the Release_NoOpt configuration in terms of Release. Differentiation between the configurations \n\n# are handled in add_compile_options above.\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 35
+    },
+    "Tools/cmake/csharp_common.cmake" : {
+      "ObjectId" : "518e106fa56c9be74fcb856ce258abf4860df318",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file contains definitions for C# settings that impact code generation that are \n\n# generically applicable across a variety of different projects. Project-specific customizations \n\n# should be defined in a separate file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Ensure that dotnet is available on Linux. Windows builds rely on MSBuild instead.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If CMAKE_BUILD_TYPE is defined, we are looking at a single configuration and can extract information directly from this value.\n\n# If it is not defined, then we need to use a dynamic generator.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This code isn't quite right. What we actually want to do is say that CMAKE_BUILD_TYPE must be defined\n\n# for any generator that doesn't support the use of CONFIG as a generator expression. I haven't found a way\n\n# to detect that in the cmake logic.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "Tools/cmake/debug.cmake" : {
+      "ObjectId" : "16ac404d18c793555169cda94597ccbc8b61f60f",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Functionality to aid in the debugging of cmake and the cmake generation process.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Tools/cmake/options.cmake" : {
+      "ObjectId" : "90eb29fefa125a32784935791ff05f3c6a443546",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Options that control cmake generation\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "bindings/csharp/CNTKLibraryManagedDll/CMakeLists.txt" : {
+      "ObjectId" : "9bd9fba384a2fc00d85dca9bb80032e1b0808640",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ${source_filenames} (defined below) changes based on configuration. Unfortunately, some cmake generators don't support\n\n# input based on generator expressions. In the name of supporting the least common denominator, restrict cmake generation\n\n# to a single configuration. This is standard practice for makefiles but a bit unusual for Visual Studio.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "bindings/csharp/Swig/CMakeLists.txt" : {
+      "ObjectId" : "3bd0dab621e16467cc7696d297e2b9ac48aa5bfc",
+      "LastModified" : "2018-09-18T02:33:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# |  SWIG\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create the swig command line; it needs to be constructed manually as cmake won't convert path separators for the command if it\n\n# is provided as a single value.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# There has got to be a better way to do this. When ${swig_output_dir} is converted to a native path, the\n\n# embedded generator expression is de-generator-expression-ized and won't expand when used in the custom \n\n# command below. So, remove the generator expression from the var, convert to the native path, and then\n\n# reapply the generator expression. This only works because we know that the last path component is the \n\n# generator expression.\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Invoke the command line\n",
+        "Line" : 160,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The most correct output is ${swig_generated_files}. However, some cmake generators don't support output based on generator \n\n# expressions. In the name of supporting the least common denominator, specify the outputs that aren't based on generator expressions.\n\n#\n\n#   ${swig_generated_files}\n",
+        "Line" : 174,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# |  CS Bindings\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# TODO: Eventually, we should bind the this library rather than hard-coding the value\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "bindings/java/Swig/pom.xml" : {
+      "ObjectId" : "877239b85fc88be51888c7ff43e08688bd0430d5",
+      "LastModified" : "2018-09-18T02:33:30Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "bindings/python/doc/Makefile" : {
+      "ObjectId" : "e9e4c022b9d22e6a6d66b6222b4d81f11d393dca",
+      "LastModified" : "2018-06-06T15:38:54Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# User-friendly check for sphinx-build\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 9,
+    "MAKEFILE" : 3,
+    "MAVEN" : 1
+  },
+  "ElapsedTime" : 13872
+}

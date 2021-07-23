@@ -1,0 +1,691 @@
+{
+  "Repository" : "2483425",
+  "Revision" : "HEAD",
+  "ObjectId" : "89f2824a9ce246f1282e072d5b481db13d88e09a",
+  "CommitTime" : "2019-04-17T14:09:33Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "662e38ceebbd919ac569f9147b6ef47fbe34bee0",
+      "LastModified" : "2019-02-08T11:10:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# consider updating DEPENDENCIES.md when you touch this line\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# https://software.intel.com/en-us/forums/intel-threading-building-blocks/topic/749200\n",
+        "Line" : 26,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# Enable address and undefined behavior sanitization if requested\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# add_compile_options() wants list, CMAKE_EXE_LINKER_FLAGS a string. There are probably cleverer ways than\n\n# duplicating the flags, but this is probably the simplest solution.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Enable thread sanitization if requested\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# add_compile_options() wants list, CMAKE_EXE_LINKER_FLAGS a string. There are probably cleverer ways than\n\n# duplicating the flags, but this is probably the simplest solution.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Set default build type if none was passed on the command line\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# CMake settings\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# To allow CMake to locate our Find*.cmake files\n",
+        "Line" : 70,
+        "CharPositionInLine" : 78
+      },
+      "9" : {
+        "Text" : "# Put binaries into root of build tree\n",
+        "Line" : 71,
+        "CharPositionInLine" : 56
+      },
+      "10" : {
+        "Text" : "# Put libraries into their own dir\n",
+        "Line" : 72,
+        "CharPositionInLine" : 60
+      },
+      "11" : {
+        "Text" : "# C(++) Flags\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# enables loop vectorization hints, but does not include the OpenMP runtime\n",
+        "Line" : 75,
+        "CharPositionInLine" : 32
+      },
+      "13" : {
+        "Text" : "# build the binary optimized for the current system, ignoring older systems\n",
+        "Line" : 79,
+        "CharPositionInLine" : 36
+      },
+      "14" : {
+        "Text" : "# Require NCurses over Curses\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Dependencies\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# FindLLVM does not provide a LLVM_LIBRARY or LLVM_LIBRARIES output variable, so we have to build it ourselves\n",
+        "Line" : 102,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# If we are building Hyrise for the CI server, we want to make sure that all optional features are available and can be tested\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Link Time Optimization (LTO)\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Include sub-CMakeLists.txt\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Some third-party libs don't support LTO (if enabled above):\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Useful for printing all c++ files in a directory:\n\n# find . -type f -name \"*.cpp\" -o -name \"*.hpp\" | cut -c 3- | sort\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 22
+    },
+    "cmake/EmbedLLVM.cmake" : {
+      "ObjectId" : "fdf0ebc9b25a48d7cf85c16bf12790e14e8a6ea6",
+      "LastModified" : "2018-12-18T10:36:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This function helps with embedding the LLVM bitcode representation (LLVM-IR) of some source files into a\n\n# compiled binary to make them available to the just-in-time compilation engine.\n\n#\n\n# Usage: embed_llvm(OUTPUT_FILE SYMBOL_NAME ${INPUT_FILES})\n\n# The LLVM bitcode can then be embedded into some binary, by adding ${OUTPUT_FILE} to its sources\n\n#\n\n#\n\n# How it works:\n\n# 1. The file \"embed_llvm/${SYMBOL_NAME}.cpp\" is generated. It #include(s) all input files - one per line.\n\n#    This is necessary to compile all source files as a single unit while ensuring that both absolute and relative\n\n#    includes are resolved properly.\n\n# 2. The \"embed_llvm/${SYMBOL_NAME}.cpp\" is compiled to a binary LLVM-IR representation (hence the -emit-llvm flag).\n\n#    Only Clang supports this feature, so this function should only be called if CMAKE_CXX_COMPILER is set to Clang 6.0\n\n#    or newer. The compilation result is stored in \"embed_llvm/${SYMBOL_NAME}.bc\".\n\n# 3. To embed this file as a resource into a binary, an auxilary assembly file is generated. The file defines the\n\n#    global symbols \"opossum::${SYMBOL_NAME}\" and \"opossum::${SYMBOL_NAME}_size\" (due to differences in name mangling\n\n#    between macOS and Linux, each symbol must be exported twice).\n\n# 4. The path to the assembly file is returned to the parent scope via the OUTPUT_FILE variable. Any binary linking this\n\n#    file can access the embedded bitcode in the following way:\n\n#\n\n#    extern char opossum::${SYMBOL_NAME};\n\n#    extern size_t opossum::${SYMBOL_NAME}_size;\n\n#\n\n#    std::string bitcode_string(&opossum::${SYMBOL_NAME}, opossum::${SYMBOL_NAME}_size);\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Parsing all remaining arguments as input files\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Setting up paths for the files that are being generated\n",
+        "Line" : 33,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Step 1: Including all input files\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Step 2: Compiling input files to LLVM-IR\n",
+        "Line" : 45,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Step 3: Generating the auxilary assembly file\n\n# First determine the length of the provided symbol name to construct the mangled version of the symbol\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We use `configure_file` to copy the .s template file to the build directory and configure it with variables\n\n# specific to the build (MANGLED_SYMBOL, LLVM_BUNDLE_FILE, ...)\n\n# Using configure_file() means that this configuration will only happen when cmake runs; there is NO dependency\n\n# checking at build time, so if you change \".../specialization/llvm/jit_llvm_bundle.s\", this will have no effect\n\n# on the build unless cmake is run again. For now, using `add_custom_command` to properly solve this seems\n\n# unnecessary, but is possible if this becomes a problem.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 7
+    },
+    "cmake/FindFS.cmake" : {
+      "ObjectId" : "701deb6b135bc9366a58d0ecb9db62e9b7c2cda6",
+      "LastModified" : "2018-11-29T12:47:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the C++ stdlib filesytem library.\n\n# Output variables:\n\n#  FILESYSTEM_LIBRARY  : Library path of filesystem library\n\n#  FILESYSTEM_FOUND    : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindNuma.cmake" : {
+      "ObjectId" : "6cd7d35f56ce528ec998950a252a68f78a4c2550",
+      "LastModified" : "2017-06-09T12:52:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the numa policy library.\n\n# Output variables:\n\n#  NUMA_INCLUDE_DIR : e.g., /usr/include/.\n\n#  NUMA_LIBRARY     : Library path of numa library\n\n#  NUMA_FOUND       : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindPQ.cmake" : {
+      "ObjectId" : "a4ebde456dc14f5fc008c51f5b67069cb2e6ae96",
+      "LastModified" : "2018-04-26T06:04:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find PostgreSQL C library and header file\n\n# Sets\n\n#   PQ_FOUND       : TRUE if found\n\n#   PQ_INCLUDE_DIR : to directory containing postgres' pq\n\n#   PQ_LIBRARY     : library path of postgres' pq\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindReadline.cmake" : {
+      "ObjectId" : "940f4af11de474e0cadfe7ee79d50f36a08c9656",
+      "LastModified" : "2017-09-19T15:14:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the readline library. This is necessary on macOS to find the homebrew version\n\n# Output variables:\n\n#  READLINE_INCLUDE_DIR : e.g., /usr/include/.\n\n#  READLINE_LIBRARY     : Library path of readline library\n\n#  READLINE_FOUND       : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindSqlite3.cmake" : {
+      "ObjectId" : "2c99009c5a4495836189dabc4ed0c22003258ec3",
+      "LastModified" : "2018-01-23T17:14:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the sqlite3 library.\n\n# Output variables:\n\n#  SQLITE3_INCLUDE_DIR : e.g., /usr/include/.\n\n#  SQLITE3_LIBRARY     : Library path of sqlite3 library\n\n#  SQLITE3_FOUND       : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindTbb.cmake" : {
+      "ObjectId" : "ea10ca5ea3b0121d3d8a757e3f00d19877d703a9",
+      "LastModified" : "2017-09-19T15:14:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the Intel Thread Building Blocks library.\n\n# Output variables:\n\n#  TBB_INCLUDE_DIR : e.g., /usr/include/.\n\n#  TBB_LIBRARY     : Library path of Intel Threading Building Blocks library\n\n#  TBB_FOUND       : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/TargetLinkLibrariesSystem.cmake" : {
+      "ObjectId" : "fea48e385094b5d30a94622ff2db97e9b1e25ba6",
+      "LastModified" : "2018-11-29T12:47:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Similar to target_link_libraries, but uses -isystem instead of -I\n\n# https://stackoverflow.com/questions/51816807/in-cmake-how-do-i-make-target-link-libraries-suppress-warnings-from-3rd-party\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/git_watcher.cmake" : {
+      "ObjectId" : "a1000f15b291eaddbfee441a0fe717b5c23fec52",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This is taken from: https://github.com/andrew-hardin/cmake-git-version-tracking with slight modifications.\n\n#\n\n# All glory and blame should go to Andrew Hardin\n\n#\n\n# git_watcher.cmake\n\n#\n\n# This file defines the functions and targets needed to keep a\n\n# watch on the state of the git repo. If the state changes, a\n\n# header is reconfigured.\n\n#\n\n# Customization tip:\n\n#   - You should only need to edit the paths to the pre and\n\n#     post configure file. The rest should be plug-and-play.\n\n#     See below for where those variables are defined.\n\n#\n\n# Script design:\n\n#   - This script was designed similar to a Python application\n\n#     with a Main() function. I wanted to keep it compact to\n\n#     simplify \"copy + paste\" usage.\n\n#\n\n#   - This script is made to operate in two scopes:\n\n#       1. Configure time scope (when build files are created).\n\n#       2. Build time scope (called via CMake -P)\n\n#     If you see something odd (e.g. the NOT DEFINED clauses),\n\n#     consider that it can run in one of two scopes.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This variable describes where we record the state of the git repo.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Function: GitStateChangedAction\n\n# Description: this action is executed when the state of the git\n\n#              repo changes (e.g. a commit is made).\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Read the git state file\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Configure the file.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "###################################################\n\n# There be dragons below here...                  #\n\n###################################################\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Function: GetGitState\n\n# Description: gets the current state of the git repo.\n\n# Args:\n\n#   _working_dir (in)  string; the directory from which git commands will be ran.\n\n#   _hashvar     (out) string; the SHA1 hash for HEAD.\n\n#   _dirty       (out) boolean; whether or not there are uncommitted changes.\n\n#   _success     (out) boolean; whether or not both\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Initialize our returns.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Find git.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Get the hash for HEAD.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# The git command failed.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# Record the SHA1 hash for HEAD.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Get whether or not the working tree is dirty.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# The git command failed.\n",
+        "Line" : 109,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# If there were uncommitted changes, mark it as dirty.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# We got this far, so git must have cooperated.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# Function: GetGitStateSimple\n\n# Description: gets the current state of the git repo and represent it with a string.\n\n# Args:\n\n#   _working_dir (in)  string; the directory from which git commands will be ran.\n\n#   _state       (out) string; describes the current state of the repo.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Get the current state of the repo where the current list resides.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# We're going to construct a variable that represents the state of the repo.\n",
+        "Line" : 136,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Function: MonitorGit\n\n# Description: this function sets up custom commands that make the build system\n\n#              check the state of git before every build. If the state has\n\n#              changed, then a file is configured.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Function: CheckGit\n\n# Description: check if the git repo has changed. If so, update the state file.\n\n# Args:\n\n#   _working_dir    (in)  string; the directory from which git commands will be ran.\n\n#   _state_changed (out)    bool; whether or no the state of the repo has changed.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Get the state of the repo where the current list resides.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# Check if the state has changed compared to the backup or needs to be\n\n# regenerated after make clean.\n",
+        "Line" : 176,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# The state has changed.\n\n# We need to update the state file.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Function: Main\n\n# Description: primary entry-point to the script. Functions are selected based\n\n#              on the GIT_FUNCTION variable.\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Check if the repo has changed.\n\n# If so, run the change action.\n",
+        "Line" : 200,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# Start monitoring git.\n\n# This should only ever be run once when the module is imported.\n\n# Behind the scenes, all this does is setup a custom target.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 8
+      },
+      "27" : {
+        "Text" : "# And off we go...\n",
+        "Line" : 217,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 28
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "c7a3feaba010922062c355252ff10c5078a7fd29",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Provide ENABLE_JIT_SUPPORT option and automatically disable JIT if compiler is not Clang 6.*\n\n# ENABLE_JIT_SUPPORT is OFF on MacOS by default as JIT compilation currently fails on MacOS because the specialized code\n\n# contains asm code on MacOS which the JIT compiler cannot handle\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Provide ENABLE_NUMA_SUPPORT option and automatically disable NUMA if libNUMA was not found\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable coverage if requested - this is only operating on Hyrise's source (src/) so we don't check coverage of\n\n# third_party stuff\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Global flags and include directories\n\n# When generating a dtrace header file, symbols containing dollar-signs are created This file needs to be compiled as well.\n\n# Hence, the `-Wno-dollar-in-identifier-extension` flag is required.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Include these libraries as system libraries to silence some warnings caused by -Weverything\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# No clang-tidy for the following subfolders\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/benchmark/CMakeLists.txt" : {
+      "ObjectId" : "72dc65b945c2a7cc454e3e5d073ce3b412012f7a",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# General purpose benchmark runner\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Configure hyriseBenchmarkTPCH\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Configure hyriseBenchmarkJoinOrder\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/benchmarklib/CMakeLists.txt" : {
+      "ObjectId" : "9d7fdf97f8c1bc8e4f3eee17ea39c076b6d4231f",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Configure the regular opossum library used for tests/server/playground...\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/CMakeLists.txt" : {
+      "ObjectId" : "f47343de3b9cda666e9f23a72bac06ced8af672f",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Configure server\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Configure playground\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Configure tpchTableGenerator\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Configure client\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configure Console\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/lib/CMakeLists.txt" : {
+      "ObjectId" : "8f5667d64f87f7d5a5da42b68552cd52c5e33cdd",
+      "LastModified" : "2019-04-16T15:22:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Setup the version.hpp file.\n\n# Include this here because we need the GENERATED property on version.hpp and in CMake that property has directory\n\n# scope\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Sources and libraries shared among the different builds of the lib\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Files listed here will be embedded into the binary as LLVM-IR\n",
+        "Line" : 611,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# Prevent clang from complaining about unused defines when compiling the assembly file\n",
+        "Line" : 666,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Generate header file in order to define probes needed for dtrace\n",
+        "Line" : 675,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Configure the regular hyrise library used for tests/server/playground...\n",
+        "Line" : 685,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# -force_load/--whole-archive are necessary to include all symbols so that dynamically loaded plugins can use them\n",
+        "Line" : 688,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# For convenience, to be able to launch, e.g., hyriseTest, directly from the build directory,\n\n# add a link to the resources/ directory at the root of the build directory)\n",
+        "Line" : 695,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# -rdynamic tells the linker to export the library's symbols so that plugins can use them.\n",
+        "Line" : 701,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# -fPIC generates position independent code which is necessary because plugins might access hyrise functions.\n",
+        "Line" : 705,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Dependency hyrise --> git_watcher needs to be added manually, apparently. Otherwise version.hpp, for reasons unknown\n\n# isn't updated when HEAD changes\n",
+        "Line" : 708,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# LLVM does not build with -Wshadow-all,-Werror. Overwrite the LLVM include so it is treated as a system library.\n\n# This silences some compiler warnings (uses -isystem instead of -I).\n\n# target_include_directories(hyrise SYSTEM PUBLIC ${LLVM_INCLUDE_DIR})\n",
+        "Line" : 713,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 12
+    },
+    "src/plugins/CMakeLists.txt" : {
+      "ObjectId" : "26febe1d8923797aef92f2ba96d7b932ebaab48b",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Prevent the linker under macOS from complaining about undefined methods\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# We define TEST_PLUGIN_DIR to always load plugins from the correct directory for testing purposes\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/test/CMakeLists.txt" : {
+      "ObjectId" : "a2af1b8ca6f8b7c1cf5df64cc422c45b26b3bf22",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Some of the JIT test cases require pre-compiled LLVM bitcode.\n\n# To ensure this bitcode is always up-to-date and works across operating systems, the bitcode is automatically\n\n# compiled along with the hyriseTest binary (see cmake/EmbedLLVM.cmake for details of this process).\n\n# The C++ input files for the bitcode generation are located in\n\n# src/test/operators/jit_operator/specialization/modules/.\n\n# Each line below starting with \"embed_llvm(\" embeds on of these test files and exposes it as a different symbol\n\n# name. Each test case can the access the required bitcode using this symbol.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# Prevent clang from complaining about unused defines when compiling the assembly file\n",
+        "Line" : 239,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Both hyriseTest and hyriseSystemTest link against these\n",
+        "Line" : 285,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This warning does not play well with SCOPED_TRACE\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We define TEST_PLUGIN_DIR to always load plugins from the correct directory for testing purposes\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Build special sanitizer version of googletest\n",
+        "Line" : 300,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Configure hyriseTest\n",
+        "Line" : 305,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Configure hyriseSystemTest\n",
+        "Line" : 310,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "third_party/CMakeLists.txt" : {
+      "ObjectId" : "4bab4389e3168216abf0bcb2fa15779011bbd332",
+      "LastModified" : "2019-04-12T17:02:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Disable some warnings for the third-party subfolder\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build google benchmark\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build sql-parser\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add Libraries with their own build setup\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Add PGASUS\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "## Build lz4\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "## Build zstd\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# TODO(lawben): There is currently a PR open for CMake support in libpqxx.\n\n# Once that is merged, this should be updated to add_subdirectory(libpqxx)\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Executing autoconf and the configure script with suppressed output, only printing it in case of non-zero return\n",
+        "Line" : 227,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# install should never be called, this is a safe guard that fails if it is\n",
+        "Line" : 232,
+        "CharPositionInLine" : 27
+      },
+      "10" : {
+        "Text" : "# ...-build is generated by STEP_TARGETS\n",
+        "Line" : 237,
+        "CharPositionInLine" : 53
+      },
+      "CommentCount" : 11
+    },
+    "third_party/tpch-dbgen/CMakeLists.txt" : {
+      "ObjectId" : "7f1795dd3d338db54393d9d7dca5b869f30aaf11",
+      "LastModified" : "2019-04-17T14:09:33Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-DRNG_TEST\n",
+        "Line" : 36,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 19
+  },
+  "ElapsedTime" : 2863
+}

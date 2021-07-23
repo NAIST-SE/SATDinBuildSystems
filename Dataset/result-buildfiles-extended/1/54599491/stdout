@@ -1,0 +1,2251 @@
+{
+  "Repository" : "54599491",
+  "Revision" : "HEAD",
+  "ObjectId" : "227c8e46e5a801e9f94e7e42a5bf0b693a5f9919",
+  "CommitTime" : "2019-04-03T00:19:39Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "0b18030805aa2a77d78990baa872fdc463794727",
+      "LastModified" : "2019-01-01T16:47:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Resources:\n\n#   - https://rix0r.nl/blog/2015/08/13/cmake-guide/\n\n#   - http://www.slideshare.net/DanielPfeifer1/cmake-48475415\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include Boost as an imported target\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include Folly as an imported target\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Include CityHash as an imported target\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Werror -Wno-deprecated-declarations -Wno-unsupported-friend\")\n\n# Note(simon):\n\n#   https://github.com/ucbrise/clipper/pull/595\n\n#   pedantic is turned off for now until we figure out a way to turn off dlib warnings\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# be nice to vim users\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Require C++11\n\n# http://bit.ly/2eNjvLs (StackOverflow post)\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# disallow non-standard extensions\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# add shared C++ definitions\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# set up dummy unittests target\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "### Google Test\n\n# Reference: https://crascit.com/2015/07/25/cmake-gtest/\n\n# enable_testing()\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Prevent GoogleTest from overriding our compiler/linker options\n\n# when building with Visual Studio\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "clipper_admin/docs/Makefile" : {
+      "ObjectId" : "ae4613a9e2678fe2d68da50a1c7f55ba5de3ed45",
+      "LastModified" : "2017-08-31T12:05:05Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Minimal makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Put it first so that \"make\" without argument is like \"make help\".\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Catch-all target: route all unknown targets to Sphinx using the new\n\n# \"make mode\" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/DownloadProject.cmake" : {
+      "ObjectId" : "20999693161cd388fc37f00fca90b24fd7a42419",
+      "LastModified" : "2017-08-31T12:05:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# MODULE:   DownloadProject\n\n#\n\n# PROVIDES:\n\n#   download_project( PROJ projectName\n\n#                    [PREFIX prefixDir]\n\n#                    [DOWNLOAD_DIR downloadDir]\n\n#                    [SOURCE_DIR srcDir]\n\n#                    [BINARY_DIR binDir]\n\n#                    [QUIET]\n\n#                    ...\n\n#   )\n\n#\n\n#       Provides the ability to download and unpack a tarball, zip file, git repository,\n\n#       etc. at configure time (i.e. when the cmake command is run). How the downloaded\n\n#       and unpacked contents are used is up to the caller, but the motivating case is\n\n#       to download source code which can then be included directly in the build with\n\n#       add_subdirectory() after the call to download_project(). Source and build\n\n#       directories are set up with this in mind.\n\n#\n\n#       The PROJ argument is required. The projectName value will be used to construct\n\n#       the following variables upon exit (obviously replace projectName with its actual\n\n#       value):\n\n#\n\n#           projectName_SOURCE_DIR\n\n#           projectName_BINARY_DIR\n\n#\n\n#       The SOURCE_DIR and BINARY_DIR arguments are optional and would not typically\n\n#       need to be provided. They can be specified if you want the downloaded source\n\n#       and build directories to be located in a specific place. The contents of\n\n#       projectName_SOURCE_DIR and projectName_BINARY_DIR will be populated with the\n\n#       locations used whether you provide SOURCE_DIR/BINARY_DIR or not.\n\n#\n\n#       The DOWNLOAD_DIR argument does not normally need to be set. It controls the\n\n#       location of the temporary CMake build used to perform the download.\n\n#\n\n#       The PREFIX argument can be provided to change the base location of the default\n\n#       values of DOWNLOAD_DIR, SOURCE_DIR and BINARY_DIR. If all of those three arguments\n\n#       are provided, then PREFIX will have no effect. The default value for PREFIX is\n\n#       CMAKE_BINARY_DIR.\n\n#\n\n#       The QUIET option can be given if you do not want to show the output associated\n\n#       with downloading the specified project.\n\n#\n\n#       In addition to the above, any other options are passed through unmodified to\n\n#       ExternalProject_Add() to perform the actual download, patch and update steps.\n\n#       The following ExternalProject_Add() options are explicitly prohibited (they\n\n#       are reserved for use by the download_project() command):\n\n#\n\n#           CONFIGURE_COMMAND\n\n#           BUILD_COMMAND\n\n#           INSTALL_COMMAND\n\n#           TEST_COMMAND\n\n#\n\n#       Only those ExternalProject_Add() arguments which relate to downloading, patching\n\n#       and updating of the project sources are intended to be used. Also note that at\n\n#       least one set of download-related arguments are required.\n\n#\n\n#       If using CMake 3.2 or later, the UPDATE_DISCONNECTED option can be used to\n\n#       prevent a check at the remote end for changes every time CMake is run\n\n#       after the first successful download. See the documentation of the ExternalProject\n\n#       module for more information. It is likely you will want to use this option if it\n\n#       is available to you.\n\n#\n\n# EXAMPLE USAGE:\n\n#\n\n#   include(download_project.cmake)\n\n#   download_project(PROJ                googletest\n\n#                    GIT_REPOSITORY      https://github.com/google/googletest.git\n\n#                    GIT_TAG             master\n\n#                    UPDATE_DISCONNECTED 1\n\n#                    QUIET\n\n#   )\n\n#\n\n#   add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})\n\n#\n\n#========================================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent the following from being passed through\n",
+        "Line" : 92,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# Hide output if requested\n",
+        "Line" : 102,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Set up where we will put our temporary CMakeLists.txt file and also\n\n# the base point below which the default source and binary dirs will be\n",
+        "Line" : 110,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Ensure the caller can know where to find the source and build directories\n",
+        "Line" : 119,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Create and build a separate CMake project to carry out the download.\n\n# If we've already previously done these steps, they will not cause\n\n# anything to be updated, so extra rebuilds of the project won't occur.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "cmake/FindBoost.cmake" : {
+      "ObjectId" : "695416a2279020cb5ddb06d313163e611226976e",
+      "LastModified" : "2018-05-15T21:20:33Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# FindBoost\n\n# ---------\n\n#\n\n# Find Boost include dirs and libraries\n\n#\n\n# Use this module by invoking find_package with the form::\n\n#\n\n#   find_package(Boost\n\n#     [version] [EXACT]      # Minimum or EXACT version e.g. 1.67.0\n\n#     [REQUIRED]             # Fail with error if Boost is not found\n\n#     [COMPONENTS <libs>...] # Boost libraries by their canonical name\n\n#                            # e.g. \"date_time\" for \"libboost_date_time\"\n\n#     [OPTIONAL_COMPONENTS <libs>...]\n\n#                            # Optional Boost libraries by their canonical name)\n\n#     )                      # e.g. \"date_time\" for \"libboost_date_time\"\n\n#\n\n# This module finds headers and requested component libraries OR a CMake\n\n# package configuration file provided by a \"Boost CMake\" build.  For the\n\n# latter case skip to the \"Boost CMake\" section below.  For the former\n\n# case results are reported in variables::\n\n#\n\n#   Boost_FOUND            - True if headers and requested libraries were found\n\n#   Boost_INCLUDE_DIRS     - Boost include directories\n\n#   Boost_LIBRARY_DIRS     - Link directories for Boost libraries\n\n#   Boost_LIBRARIES        - Boost component libraries to be linked\n\n#   Boost_<C>_FOUND        - True if component <C> was found (<C> is upper-case)\n\n#   Boost_<C>_LIBRARY      - Libraries to link for component <C> (may include\n\n#                            target_link_libraries debug/optimized keywords)\n\n#   Boost_VERSION          - BOOST_VERSION value from boost/version.hpp\n\n#   Boost_LIB_VERSION      - Version string appended to library filenames\n\n#   Boost_MAJOR_VERSION    - Boost major version number (X in X.y.z)\n\n#   Boost_MINOR_VERSION    - Boost minor version number (Y in x.Y.z)\n\n#   Boost_SUBMINOR_VERSION - Boost subminor version number (Z in x.y.Z)\n\n#   Boost_LIB_DIAGNOSTIC_DEFINITIONS (Windows)\n\n#                          - Pass to add_definitions() to have diagnostic\n\n#                            information about Boost's automatic linking\n\n#                            displayed during compilation\n\n#\n\n# Note that Boost Python components require a Python version suffix\n\n# (Boost 1.67 and later), e.g. ``python36`` or ``python27`` for the\n\n# versions built against Python 3.6 and 2.7, respectively.  This also\n\n# applies to additional components using Python including\n\n# ``mpi_python`` and ``numpy``.  Earlier Boost releases may use\n\n# distribution-specific suffixes such as ``2``, ``3`` or ``2.7``.\n\n# These may also be used as suffixes, but note that they are not\n\n# portable.\n\n#\n\n# This module reads hints about search locations from variables::\n\n#\n\n#   BOOST_ROOT             - Preferred installation prefix\n\n#    (or BOOSTROOT)\n\n#   BOOST_INCLUDEDIR       - Preferred include directory e.g. <prefix>/include\n\n#   BOOST_LIBRARYDIR       - Preferred library directory e.g. <prefix>/lib\n\n#   Boost_NO_SYSTEM_PATHS  - Set to ON to disable searching in locations not\n\n#                            specified by these hint variables. Default is OFF.\n\n#   Boost_ADDITIONAL_VERSIONS\n\n#                          - List of Boost versions not known to this module\n\n#                            (Boost install locations may contain the version)\n\n#\n\n# and saves search results persistently in CMake cache entries::\n\n#\n\n#   Boost_INCLUDE_DIR         - Directory containing Boost headers\n\n#   Boost_LIBRARY_DIR_RELEASE - Directory containing release Boost libraries\n\n#   Boost_LIBRARY_DIR_DEBUG   - Directory containing debug Boost libraries\n\n#   Boost_<C>_LIBRARY_DEBUG   - Component <C> library debug variant\n\n#   Boost_<C>_LIBRARY_RELEASE - Component <C> library release variant\n\n#\n\n# The following :prop_tgt:`IMPORTED` targets are also defined::\n\n#\n\n#   Boost::boost                  - Target for header-only dependencies\n\n#                                   (Boost include directory)\n\n#   Boost::<C>                    - Target for specific component dependency\n\n#                                   (shared or static library); <C> is lower-\n\n#                                   case\n\n#   Boost::diagnostic_definitions - interface target to enable diagnostic\n\n#                                   information about Boost's automatic linking\n\n#                                   during compilation (adds BOOST_LIB_DIAGNOSTIC)\n\n#   Boost::disable_autolinking    - interface target to disable automatic\n\n#                                   linking with MSVC (adds BOOST_ALL_NO_LIB)\n\n#   Boost::dynamic_linking        - interface target to enable dynamic linking\n\n#                                   linking with MSVC (adds BOOST_ALL_DYN_LINK)\n\n#\n\n# Implicit dependencies such as Boost::filesystem requiring\n\n# Boost::system will be automatically detected and satisfied, even\n\n# if system is not specified when using find_package and if\n\n# Boost::system is not added to target_link_libraries.  If using\n\n# Boost::thread, then Threads::Threads will also be added automatically.\n\n#\n\n# It is important to note that the imported targets behave differently\n\n# than variables created by this module: multiple calls to\n\n# find_package(Boost) in the same directory or sub-directories with\n\n# different options (e.g. static or shared) will not override the\n\n# values of the targets created by the first call.\n\n#\n\n# Users may set these hints or results as cache entries.  Projects\n\n# should not read these entries directly but instead use the above\n\n# result variables.  Note that some hint names start in upper-case\n\n# \"BOOST\".  One may specify these as environment variables if they are\n\n# not specified as CMake variables or cache entries.\n\n#\n\n# This module first searches for the Boost header files using the above\n\n# hint variables (excluding BOOST_LIBRARYDIR) and saves the result in\n\n# Boost_INCLUDE_DIR.  Then it searches for requested component libraries\n\n# using the above hints (excluding BOOST_INCLUDEDIR and\n\n# Boost_ADDITIONAL_VERSIONS), \"lib\" directories near Boost_INCLUDE_DIR,\n\n# and the library name configuration settings below.  It saves the\n\n# library directories in Boost_LIBRARY_DIR_DEBUG and\n\n# Boost_LIBRARY_DIR_RELEASE and individual library\n\n# locations in Boost_<C>_LIBRARY_DEBUG and Boost_<C>_LIBRARY_RELEASE.\n\n# When one changes settings used by previous searches in the same build\n\n# tree (excluding environment variables) this module discards previous\n\n# search results affected by the changes and searches again.\n\n#\n\n# Boost libraries come in many variants encoded in their file name.\n\n# Users or projects may tell this module which variant to find by\n\n# setting variables::\n\n#\n\n#   Boost_USE_DEBUG_LIBS     - Set to ON or OFF to specify whether to search\n\n#                              and use the debug libraries.  Default is ON.\n\n#   Boost_USE_RELEASE_LIBS   - Set to ON or OFF to specify whether to search\n\n#                              and use the release libraries.  Default is ON.\n\n#   Boost_USE_MULTITHREADED  - Set to OFF to use the non-multithreaded\n\n#                              libraries ('mt' tag).  Default is ON.\n\n#   Boost_USE_STATIC_LIBS    - Set to ON to force the use of the static\n\n#                              libraries.  Default is OFF.\n\n#   Boost_USE_STATIC_RUNTIME - Set to ON or OFF to specify whether to use\n\n#                              libraries linked statically to the C++ runtime\n\n#                              ('s' tag).  Default is platform dependent.\n\n#   Boost_USE_DEBUG_RUNTIME  - Set to ON or OFF to specify whether to use\n\n#                              libraries linked to the MS debug C++ runtime\n\n#                              ('g' tag).  Default is ON.\n\n#   Boost_USE_DEBUG_PYTHON   - Set to ON to use libraries compiled with a\n\n#                              debug Python build ('y' tag). Default is OFF.\n\n#   Boost_USE_STLPORT        - Set to ON to use libraries compiled with\n\n#                              STLPort ('p' tag).  Default is OFF.\n\n#   Boost_USE_STLPORT_DEPRECATED_NATIVE_IOSTREAMS\n\n#                            - Set to ON to use libraries compiled with\n\n#                              STLPort deprecated \"native iostreams\"\n\n#                              ('n' tag).  Default is OFF.\n\n#   Boost_COMPILER           - Set to the compiler-specific library suffix\n\n#                              (e.g. \"-gcc43\").  Default is auto-computed\n\n#                              for the C++ compiler in use.  A list may be\n\n#                              used if multiple compatible suffixes should\n\n#                              be tested for, in decreasing order of\n\n#                              preference.\n\n#   Boost_THREADAPI          - Suffix for \"thread\" component library name,\n\n#                              such as \"pthread\" or \"win32\".  Names with\n\n#                              and without this suffix will both be tried.\n\n#   Boost_NAMESPACE          - Alternate namespace used to build boost with\n\n#                              e.g. if set to \"myboost\", will search for\n\n#                              myboost_thread instead of boost_thread.\n\n#\n\n# Other variables one may set to control this module are::\n\n#\n\n#   Boost_DEBUG              - Set to ON to enable debug output from FindBoost.\n\n#                              Please enable this before filing any bug report.\n\n#   Boost_DETAILED_FAILURE_MSG\n\n#                            - Set to ON to add detailed information to the\n\n#                              failure message even when the REQUIRED option\n\n#                              is not given to the find_package call.\n\n#   Boost_REALPATH           - Set to ON to resolve symlinks for discovered\n\n#                              libraries to assist with packaging.  For example,\n\n#                              the \"system\" component library may be resolved to\n\n#                              \"/usr/lib/libboost_system.so.1.67.0\" instead of\n\n#                              \"/usr/lib/libboost_system.so\".  This does not\n\n#                              affect linking and should not be enabled unless\n\n#                              the user needs this information.\n\n#   Boost_LIBRARY_DIR        - Default value for Boost_LIBRARY_DIR_RELEASE and\n\n#                              Boost_LIBRARY_DIR_DEBUG.\n\n#\n\n# On Visual Studio and Borland compilers Boost headers request automatic\n\n# linking to corresponding libraries.  This requires matching libraries\n\n# to be linked explicitly or available in the link library search path.\n\n# In this case setting Boost_USE_STATIC_LIBS to OFF may not achieve\n\n# dynamic linking.  Boost automatic linking typically requests static\n\n# libraries with a few exceptions (such as Boost.Python).  Use::\n\n#\n\n#   add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})\n\n#\n\n# to ask Boost to report information about automatic linking requests.\n\n#\n\n# Example to find Boost headers only::\n\n#\n\n#   find_package(Boost 1.36.0)\n\n#   if(Boost_FOUND)\n\n#     include_directories(${Boost_INCLUDE_DIRS})\n\n#     add_executable(foo foo.cc)\n\n#   endif()\n\n#\n\n# Example to find Boost libraries and use imported targets::\n\n#\n\n#   find_package(Boost 1.56 REQUIRED COMPONENTS\n\n#                date_time filesystem iostreams)\n\n#   add_executable(foo foo.cc)\n\n#   target_link_libraries(foo Boost::date_time Boost::filesystem\n\n#                             Boost::iostreams)\n\n#\n\n# Example to find Boost Python 3.6 libraries and use imported targets::\n\n#\n\n#   find_package(Boost 1.67 REQUIRED COMPONENTS\n\n#                python36 numpy36)\n\n#   add_executable(foo foo.cc)\n\n#   target_link_libraries(foo Boost::python36 Boost::numpy36)\n\n#\n\n# Example to find Boost headers and some *static* (release only) libraries::\n\n#\n\n#   set(Boost_USE_STATIC_LIBS        ON)  # only find static libs\n\n#   set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and\n\n#   set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs\n\n#   set(Boost_USE_MULTITHREADED      ON)\n\n#   set(Boost_USE_STATIC_RUNTIME    OFF)\n\n#   find_package(Boost 1.66.0 COMPONENTS date_time filesystem system ...)\n\n#   if(Boost_FOUND)\n\n#     include_directories(${Boost_INCLUDE_DIRS})\n\n#     add_executable(foo foo.cc)\n\n#     target_link_libraries(foo ${Boost_LIBRARIES})\n\n#   endif()\n\n#\n\n# Boost CMake\n\n# ^^^^^^^^^^^\n\n#\n\n# If Boost was built using the boost-cmake project it provides a package\n\n# configuration file for use with find_package's Config mode.  This\n\n# module looks for the package configuration file called\n\n# BoostConfig.cmake or boost-config.cmake and stores the result in cache\n\n# entry \"Boost_DIR\".  If found, the package configuration file is loaded\n\n# and this module returns with no further action.  See documentation of\n\n# the Boost CMake package configuration for details on what it provides.\n\n#\n\n# Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Save project's policies\n",
+        "Line" : 236,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# if IN_LIST\n",
+        "Line" : 238,
+        "CharPositionInLine" : 30
+      },
+      "4" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n# Before we go searching, check whether boost-cmake is available, unless the\n\n# user specifically asked NOT to search for boost-cmake.\n\n#\n\n# If Boost_DIR is set, this behaves as any find_package call would. If not,\n\n# it looks at BOOST_ROOT and BOOSTROOT to find Boost.\n\n#\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# If Boost_DIR is not set, look for BOOSTROOT and BOOST_ROOT as alternatives,\n\n# since these are more conventional for Boost.\n",
+        "Line" : 248,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Do the same find_package call but look specifically for the CMake version.\n\n# Note that args are passed in the Boost_FIND_xxxxx variables, so there is no\n\n# need to delegate them to this find_package call.\n",
+        "Line" : 258,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# If we found boost-cmake, then we're done.  Print out what we found.\n\n# Otherwise let the rest of the module try to find it.\n",
+        "Line" : 264,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Restore project's policies\n",
+        "Line" : 271,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#  FindBoost functions & macros\n\n#\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "############################################\n\n#\n\n# Check the existence of the libraries.\n\n#\n\n############################################\n\n# This macro was taken directly from the FindQt4.cmake file that is included\n\n# with the CMake distribution. This is NOT my work. All work was done by the\n\n# original authors of the FindQt4.cmake file. Only minor modifications were\n\n# made to remove references to Qt and make this file more generally applicable\n\n# And ELSE/ENDIF pairs were removed for readability.\n\n#########################################################################\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# if the generator is multi-config or if CMAKE_BUILD_TYPE is set for\n\n# single-config generators, set optimized and debug libraries\n",
+        "Line" : 297,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# For single-config generators where CMAKE_BUILD_TYPE has no value,\n\n# just use the release libraries\n",
+        "Line" : 303,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# FIXME: This probably should be set for both cases\n",
+        "Line" : 307,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# if only the release version was found, set the debug variable also to the release version\n",
+        "Line" : 311,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# if only the debug version was found, set the release variable also to the debug version\n",
+        "Line" : 318,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# If the debug & release library ends up being the same, omit the keywords\n",
+        "Line" : 325,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Make variables changeable to the advanced user\n",
+        "Line" : 340,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Detect changes in used variables.\n\n# Compares the current variable value with the last one.\n\n# In short form:\n\n# v != v_LAST                      -> CHANGED = 1\n\n# v is defined, v_LAST not         -> CHANGED = 1\n\n# v is not defined, but v_LAST is  -> CHANGED = 1\n\n# otherwise                        -> CHANGED = 0\n\n# CHANGED is returned in variable named ${changed_var}\n",
+        "Line" : 347,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# Find the given library (var).\n\n# Use 'build_type' to support different lib paths for RELEASE or DEBUG builds\n\n#\n",
+        "Line" : 377,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# If this is the first library found then save Boost_LIBRARY_DIR_[RELEASE,DEBUG].\n",
+        "Line" : 386,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Try component-specific hints but do not save Boost_LIBRARY_DIR_[RELEASE,DEBUG].\n",
+        "Line" : 392,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# If Boost_LIBRARY_DIR_[RELEASE,DEBUG] is known then search only there.\n",
+        "Line" : 396,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "#-------------------------------------------------------------------------------\n",
+        "Line" : 407,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#\n\n# Runs compiler with \"-dumpversion\" and parses major/minor\n\n# version with a regex.\n\n#\n",
+        "Line" : 409,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#\n\n# Take a list of libraries with \"thread\" in it\n\n# and prepend duplicates with \"thread_${Boost_THREADAPI}\"\n\n# at the front of the list\n\n#\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#\n\n# If a library is found, replace its cache entry with its REALPATH\n\n#\n",
+        "Line" : 431,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Guesses Boost's compiler prefix used in built library names\n\n# Returns the guess by setting the variable pointed to by _ret\n",
+        "Line" : 449,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Good luck!\n",
+        "Line" : 467,
+        "CharPositionInLine" : 59
+      },
+      "29" : {
+        "Text" : "# yes, this is correct\n",
+        "Line" : 468,
+        "CharPositionInLine" : 34
+      },
+      "30" : {
+        "Text" : "# VS 6.0 Good luck!\n",
+        "Line" : 469,
+        "CharPositionInLine" : 11
+      },
+      "31" : {
+        "Text" : "# yes, this is correct\n",
+        "Line" : 470,
+        "CharPositionInLine" : 34
+      },
+      "32" : {
+        "Text" : "# no GCC version encoding prior to 1.34\n",
+        "Line" : 480,
+        "CharPositionInLine" : 36
+      },
+      "33" : {
+        "Text" : "# no GCC version encoding prior to 1.34\n",
+        "Line" : 488,
+        "CharPositionInLine" : 36
+      },
+      "34" : {
+        "Text" : "# Determine which version of GCC we have.\n",
+        "Line" : 491,
+        "CharPositionInLine" : 8
+      },
+      "35" : {
+        "Text" : "# In Boost 1.36.0 and newer, the mangled compiler name used\n\n# on Mac OS X/Darwin is \"xgcc\".\n",
+        "Line" : 495,
+        "CharPositionInLine" : 14
+      },
+      "36" : {
+        "Text" : "# In Boost <= 1.35.0, there is no mangled compiler name for\n\n# the Mac OS X/Darwin version of GCC.\n",
+        "Line" : 499,
+        "CharPositionInLine" : 14
+      },
+      "37" : {
+        "Text" : "# We don't know the Boost version, so assume it's\n\n# pre-1.36.0.\n",
+        "Line" : 504,
+        "CharPositionInLine" : 12
+      },
+      "38" : {
+        "Text" : "# TODO at least Boost_DEBUG here?\n",
+        "Line" : 514,
+        "CharPositionInLine" : 4
+      },
+      "39" : {
+        "Text" : "#\n\n# Get component dependencies.  Requires the dependencies to have been\n\n# defined for the Boost release version.\n\n#\n\n# component - the component to check\n\n# _ret - list of library dependencies\n\n#\n",
+        "Line" : 520,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Note: to add a new Boost release, run\n\n#\n\n#   % cmake -DBOOST_DIR=/path/to/boost/source -P Utilities/Scripts/BoostScanDeps.cmake\n\n#\n\n# The output may be added in a new block below.  If it's the same as\n\n# the previous release, simply update the version range of the block\n\n# for the previous release.  Also check if any new components have\n\n# been added, and add any new components to\n\n# _Boost_COMPONENT_HEADERS.\n\n#\n\n# This information was originally generated by running\n\n# BoostScanDeps.cmake against every boost release to date supported\n\n# by FindBoost:\n\n#\n\n#   % for version in /path/to/boost/sources/*\n\n#     do\n\n#       cmake -DBOOST_DIR=$version -P Utilities/Scripts/BoostScanDeps.cmake\n\n#     done\n\n#\n\n# The output was then updated by search and replace with these regexes:\n\n#\n\n# - Strip message(STATUS) prefix dashes\n\n#   s;^-- ;;\n\n# - Indent\n\n#   s;^set(;    set(;;\n\n# - Add conditionals\n\n#   s;Scanning /path/to/boost/sources/boost_\\(.*\\)_\\(.*\\)_\\(.*);  elseif(NOT Boost_VERSION VERSION_LESS \\10\\20\\3 AND Boost_VERSION VERSION_LESS xxxx);\n\n#\n\n# This results in the logic seen below, but will require the xxxx\n\n# replacing with the following Boost release version (or the next\n\n# minor version to be released, e.g. 1.59 was the latest at the time\n\n# of writing, making 1.60 the next, so 106000 is the needed version\n\n# number).  Identical consecutive releases were then merged together\n\n# by updating the end range of the first block and removing the\n\n# following redundant blocks.\n\n#\n\n# Running the script against all historical releases should be\n\n# required only if the BoostScanDeps.cmake script logic is changed.\n\n# The addition of a new release should only require it to be run\n\n# against the new release.\n",
+        "Line" : 528,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "# Handle Python version suffixes\n",
+        "Line" : 569,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# message(STATUS \"Dependencies for Boost::${component}: ${_boost_DEPS_STRING}\")\n",
+        "Line" : 841,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "#\n\n# Get component headers.  This is the primary header (or headers) for\n\n# a given component, and is used to check that the headers are present\n\n# as well as the library itself as an extra sanity check of the build\n\n# environment.\n\n#\n\n# component - the component to check\n\n# _hdrs\n\n#\n",
+        "Line" : 844,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Handle Python version suffixes\n",
+        "Line" : 854,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# Note: new boost components will require adding here.  The header\n\n# must be present in all versions of Boost providing a library.\n",
+        "Line" : 860,
+        "CharPositionInLine" : 2
+      },
+      "46" : {
+        "Text" : "# message(STATUS \"Headers for Boost::${component}: ${_boost_HDRS_STRING}\")\n",
+        "Line" : 914,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "#\n\n# Determine if any missing dependencies require adding to the component list.\n\n#\n\n# Sets _Boost_${COMPONENT}_DEPENDENCIES for each required component,\n\n# plus _Boost_IMPORTED_TARGETS (TRUE if imported targets should be\n\n# defined; FALSE if dependency information is unavailable).\n\n#\n\n# componentvar - the component list variable name\n\n# extravar - the indirect dependency list variable name\n\n#\n\n#\n",
+        "Line" : 917,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# _boost_unprocessed_components - list of components requiring processing\n\n# _boost_processed_components - components already processed (or currently being processed)\n\n# _boost_new_components - new components discovered for future processing\n\n#\n",
+        "Line" : 929,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "#\n\n# Some boost libraries may require particular set of compler features.\n\n# The very first one was `boost::fiber` introduced in Boost 1.62.\n\n# One can check required compiler features of it in\n\n# `${Boost_ROOT}/libs/fiber/build/Jamfile.v2`.\n\n#\n",
+        "Line" : 960,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Boost >= 1.62 and < 1.67\n",
+        "Line" : 967,
+        "CharPositionInLine" : 2
+      },
+      "51" : {
+        "Text" : "#\n\n# Update library search directory hint variable with paths used by prebuilt boost binaries.\n\n#\n\n# Prebuilt windows binaries (https://sourceforge.net/projects/boost/files/boost-binaries/)\n\n# have library directories named using MSVC compiler version and architecture.\n\n# This function would append corresponding directories if MSVC is a current compiler,\n\n# so having `BOOST_ROOT` would be enough to specify to find everything.\n\n#\n",
+        "Line" : 987,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "#\n\n# End functions/macros\n\n#\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1013,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n# main.\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1018,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# If the user sets Boost_LIBRARY_DIR, use it as the default for both\n\n# configurations.\n",
+        "Line" : 1023,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Check the version of Boost against the requested version.\n",
+        "Line" : 1045,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# The version may appear in a directory with or without the patch\n\n# level, even when the patch level is non-zero.\n",
+        "Line" : 1051,
+        "CharPositionInLine" : 2
+      },
+      "57" : {
+        "Text" : "# The user has not requested an exact version.  Among known\n\n# versions, find those that are acceptable to the user request.\n\n#\n\n# Note: When adding a new Boost release, also update the dependency\n\n# information in _Boost_COMPONENT_DEPENDENCIES and\n\n# _Boost_COMPONENT_HEADERS.  See the instructions at the top of\n\n# _Boost_COMPONENT_DEPENDENCIES.\n",
+        "Line" : 1057,
+        "CharPositionInLine" : 2
+      },
+      "58" : {
+        "Text" : "# Select acceptable versions.\n",
+        "Line" : 1078,
+        "CharPositionInLine" : 4
+      },
+      "59" : {
+        "Text" : "# This version is high enough.\n",
+        "Line" : 1081,
+        "CharPositionInLine" : 8
+      },
+      "60" : {
+        "Text" : "# This version is a short-form for the requested version with\n\n# the patch level dropped.\n",
+        "Line" : 1084,
+        "CharPositionInLine" : 8
+      },
+      "61" : {
+        "Text" : "# Any version is acceptable.\n",
+        "Line" : 1090,
+        "CharPositionInLine" : 4
+      },
+      "62" : {
+        "Text" : "# The reason that we failed to find Boost. This will be set to a\n\n# user-friendly message when we fail to find some necessary piece of\n\n# Boost.\n",
+        "Line" : 1095,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Output some of their choices\n",
+        "Line" : 1101,
+        "CharPositionInLine" : 2
+      },
+      "64" : {
+        "Text" : "# Supply Boost_LIB_DIAGNOSTIC_DEFINITIONS as a convenience target. It\n\n# will only contain any interface definitions on WIN32, but is created\n\n# on all platforms to keep end user code free from platform dependent\n\n# code.  Also provide convenience targets to disable autolinking and\n\n# enable dynamic linking.\n",
+        "Line" : 1116,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# In windows, automatic linking is performed, so you do not have\n\n# to specify the libraries.  If you are linking to a dynamic\n\n# runtime, then you can choose to link to either a static or a\n\n# dynamic Boost library, the default is to do a static link.  You\n\n# can alter this for a specific library \"whatever\" by defining\n\n# BOOST_WHATEVER_DYN_LINK to force Boost library \"whatever\" to be\n\n# linked dynamically.  Alternatively you can force all Boost\n\n# libraries to dynamic link by defining BOOST_ALL_DYN_LINK.\n",
+        "Line" : 1127,
+        "CharPositionInLine" : 2
+      },
+      "66" : {
+        "Text" : "# This feature can be disabled for Boost library \"whatever\" by\n\n# defining BOOST_WHATEVER_NO_LIB, or for all of Boost by defining\n\n# BOOST_ALL_NO_LIB.\n",
+        "Line" : 1136,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# If you want to observe which libraries are being linked against\n\n# then defining BOOST_LIB_DIAGNOSTIC will cause the auto-linking\n\n# code to emit a #pragma message each time a library is selected\n\n# for linking.\n",
+        "Line" : 1140,
+        "CharPositionInLine" : 2
+      },
+      "68" : {
+        "Text" : "# Collect environment variable inputs as hints.  Do not consider changes.\n",
+        "Line" : 1157,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# Collect inputs and cached results.  Detect changes since the last run.\n",
+        "Line" : 1170,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Search for Boost include DIR\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1192,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# Clear Boost_INCLUDE_DIR if it did not change but other input affecting the\n\n# location did.  We will find a new one based on the new inputs.\n",
+        "Line" : 1198,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# Try to find Boost by stepping backwards through the Boost versions\n\n# we know about.\n\n# Build a list of path suffixes for each version.\n",
+        "Line" : 1234,
+        "CharPositionInLine" : 2
+      },
+      "73" : {
+        "Text" : "# Add in a path suffix, based on the required version, ideally\n\n# we could read this from version.hpp, but for that to work we'd\n\n# need to know the include dir already\n",
+        "Line" : 1239,
+        "CharPositionInLine" : 4
+      },
+      "74" : {
+        "Text" : "# Transform 1.35 => 1_35 and 1.36.0 => 1_36_0\n",
+        "Line" : 1244,
+        "CharPositionInLine" : 4
+      },
+      "75" : {
+        "Text" : "# Look for a standard boost header file.\n",
+        "Line" : 1271,
+        "CharPositionInLine" : 2
+      },
+      "76" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Extract version information from version.hpp\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1279,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "# Set Boost_FOUND based only on header location and version.\n\n# It will be updated below for component libraries.\n",
+        "Line" : 1283,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# Extract Boost_VERSION and Boost_LIB_VERSION from version.hpp\n",
+        "Line" : 1291,
+        "CharPositionInLine" : 2
+      },
+      "79" : {
+        "Text" : "# Set Boost_FOUND based on requested version.\n",
+        "Line" : 1317,
+        "CharPositionInLine" : 4
+      },
+      "80" : {
+        "Text" : "# State that we found a version of Boost that is too new or too old.\n",
+        "Line" : 1330,
+        "CharPositionInLine" : 6
+      },
+      "81" : {
+        "Text" : "# Caller will accept any Boost version.\n",
+        "Line" : 1343,
+        "CharPositionInLine" : 4
+      },
+      "82" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Prefix initialization\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1352,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Suffix initialization and compiler suffix detection.\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1366,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "# Setting some more suffixes for the library\n",
+        "Line" : 1383,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "# Attempt to guess the compiler suffix\n\n# NOTE: this is not perfect yet, if you experience any issues\n\n# please report them and use the Boost_COMPILER variable\n\n# to work around the problems.\n",
+        "Line" : 1391,
+        "CharPositionInLine" : 2
+      },
+      "86" : {
+        "Text" : "#======================\n\n# Systematically build up the Boost ABI tag for the 'tagged' and 'versioned' layouts\n\n# http://boost.org/doc/libs/1_66_0/more/getting_started/windows.html#library-naming\n\n# http://boost.org/doc/libs/1_66_0/boost/config/auto_link.hpp\n\n# http://boost.org/doc/libs/1_66_0/tools/build/src/tools/common.jam\n\n# http://boost.org/doc/libs/1_66_0/boostcpp.jam\n",
+        "Line" : 1411,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# Key       Use this library when:\n\n#  s        linking statically to the C++ standard library and\n\n#           compiler runtime support libraries.\n",
+        "Line" : 1419,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "#  g        using debug versions of the standard and runtime\n\n#           support libraries\n",
+        "Line" : 1426,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "#  y        using special debug build of python\n",
+        "Line" : 1435,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "#  d        using a debug version of your code\n",
+        "Line" : 1439,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "#  p        using the STLport standard library rather than the\n\n#           default one supplied with your compiler\n",
+        "Line" : 1441,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "#  n        using the STLport deprecated \"native iostreams\" feature\n\n#           removed from the documentation in 1.43.0 but still present in\n\n#           boost/config/auto_link.hpp\n",
+        "Line" : 1447,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "#  -x86     Architecture and address model tag\n\n#           First character is the architecture, then word-size, either 32 or 64\n\n#           Only used in 'versioned' layout, added in Boost 1.66.0\n",
+        "Line" : 1455,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "# {CMAKE_CXX_COMPILER_ARCHITECTURE_ID} is not currently set for all compilers\n",
+        "Line" : 1459,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "# This needs to be kept in-sync with the section of CMakePlatformId.h.in\n\n# inside 'defined(_WIN32) && defined(_MSC_VER)'\n",
+        "Line" : 1462,
+        "CharPositionInLine" : 2
+      },
+      "96" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Begin finding boost libraries\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1489,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "# Clear Boost_LIBRARY_DIR_${c} if it did not change but other input affecting the\n\n# location did.  We will find a new one based on the new inputs.\n",
+        "Line" : 1498,
+        "CharPositionInLine" : 2
+      },
+      "98" : {
+        "Text" : "# If Boost_LIBRARY_DIR_[RELEASE,DEBUG] is set, prefer its value.\n",
+        "Line" : 1504,
+        "CharPositionInLine" : 2
+      },
+      "99" : {
+        "Text" : "# Support preference of static libs by adjusting CMAKE_FIND_LIBRARY_SUFFIXES\n",
+        "Line" : 1553,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "# We want to use the tag inline below without risking double dashes\n",
+        "Line" : 1563,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "# The previous behavior of FindBoost when Boost_USE_STATIC_LIBS was enabled\n\n# on WIN32 was to:\n\n#  1. Search for static libs compiled against a SHARED C++ standard runtime library (use if found)\n\n#  2. Search for static libs compiled against a STATIC C++ standard runtime library (use if found)\n\n# We maintain this behavior since changing it could break people's builds.\n\n# To disable the ambiguous behavior, the user need only\n\n# set Boost_USE_STATIC_RUNTIME either ON or OFF.\n",
+        "Line" : 1575,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "# On versions < 1.35, remove the System library from the considered list\n\n# since it wasn't added until 1.35.\n",
+        "Line" : 1589,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# Additional components may be required via component dependencies.\n\n# Add any missing components to the list.\n",
+        "Line" : 1597,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "# If thread is required, get the thread libs as a dependency\n",
+        "Line" : 1601,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "# If the user changed any of our control inputs flush previous results.\n",
+        "Line" : 1612,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# Compute component-specific hints.\n",
+        "Line" : 1631,
+        "CharPositionInLine" : 2
+      },
+      "107" : {
+        "Text" : "# Handle Python version suffixes\n",
+        "Line" : 1644,
+        "CharPositionInLine" : 2
+      },
+      "108" : {
+        "Text" : "# Boost >= 1.67\n",
+        "Line" : 1658,
+        "CharPositionInLine" : 4
+      },
+      "109" : {
+        "Text" : "# Debian/Ubuntu (Some versions omit the 2 and/or 3 from the suffix)\n",
+        "Line" : 1660,
+        "CharPositionInLine" : 4
+      },
+      "110" : {
+        "Text" : "# Gentoo\n",
+        "Line" : 1663,
+        "CharPositionInLine" : 4
+      },
+      "111" : {
+        "Text" : "# RPMs\n",
+        "Line" : 1665,
+        "CharPositionInLine" : 4
+      },
+      "112" : {
+        "Text" : "# Boost < 1.67\n",
+        "Line" : 1669,
+        "CharPositionInLine" : 4
+      },
+      "113" : {
+        "Text" : "# Consolidate and report component-specific hints.\n",
+        "Line" : 1673,
+        "CharPositionInLine" : 2
+      },
+      "114" : {
+        "Text" : "#\n\n# Find headers\n\n#\n",
+        "Line" : 1691,
+        "CharPositionInLine" : 2
+      },
+      "115" : {
+        "Text" : "# Look for a standard boost header file.\n",
+        "Line" : 1695,
+        "CharPositionInLine" : 2
+      },
+      "116" : {
+        "Text" : "#\n\n# Find RELEASE libraries\n\n#\n",
+        "Line" : 1707,
+        "CharPositionInLine" : 2
+      },
+      "117" : {
+        "Text" : "# if Boost_LIBRARY_DIR_RELEASE is not defined,\n\n# but Boost_LIBRARY_DIR_DEBUG is, look there first for RELEASE libs\n",
+        "Line" : 1741,
+        "CharPositionInLine" : 2
+      },
+      "118" : {
+        "Text" : "# Avoid passing backslashes to _Boost_FIND_LIBRARY due to macro re-parsing.\n",
+        "Line" : 1747,
+        "CharPositionInLine" : 2
+      },
+      "119" : {
+        "Text" : "#\n\n# Find DEBUG libraries\n\n#\n",
+        "Line" : 1759,
+        "CharPositionInLine" : 2
+      },
+      "120" : {
+        "Text" : "# if Boost_LIBRARY_DIR_DEBUG is not defined,\n\n# but Boost_LIBRARY_DIR_RELEASE is, look there first for DEBUG libs\n",
+        "Line" : 1794,
+        "CharPositionInLine" : 2
+      },
+      "121" : {
+        "Text" : "# Avoid passing backslashes to _Boost_FIND_LIBRARY due to macro re-parsing.\n",
+        "Line" : 1800,
+        "CharPositionInLine" : 2
+      },
+      "122" : {
+        "Text" : "# Check if component requires some compiler features\n",
+        "Line" : 1819,
+        "CharPositionInLine" : 2
+      },
+      "123" : {
+        "Text" : "# Restore the original find library ordering\n",
+        "Line" : 1824,
+        "CharPositionInLine" : 0
+      },
+      "124" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  End finding boost libraries\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1829,
+        "CharPositionInLine" : 0
+      },
+      "125" : {
+        "Text" : "# The above setting of Boost_FOUND was based only on the header files.\n\n# Update it for the requested component libraries.\n",
+        "Line" : 1845,
+        "CharPositionInLine" : 0
+      },
+      "126" : {
+        "Text" : "# The headers were found.  Check for requested component libs.\n",
+        "Line" : 1848,
+        "CharPositionInLine" : 2
+      },
+      "127" : {
+        "Text" : "# Optional indirect dependencies are not counted as missing.\n",
+        "Line" : 1859,
+        "CharPositionInLine" : 4
+      },
+      "128" : {
+        "Text" : "# We were unable to find some libraries, so generate a sensible\n\n# error message that lists the libraries we were unable to find.\n",
+        "Line" : 1869,
+        "CharPositionInLine" : 4
+      },
+      "129" : {
+        "Text" : "# Compatibility Code for backwards compatibility with CMake\n\n# 2.4's FindBoost module.\n",
+        "Line" : 1896,
+        "CharPositionInLine" : 4
+      },
+      "130" : {
+        "Text" : "# Look for the boost library path.\n\n# Note that the user may not have installed any libraries\n\n# so it is quite possible the Boost_LIBRARY_DIRS may not exist.\n",
+        "Line" : 1899,
+        "CharPositionInLine" : 4
+      },
+      "131" : {
+        "Text" : "# Strip off the trailing \"/include\" in the path.\n",
+        "Line" : 1909,
+        "CharPositionInLine" : 6
+      },
+      "132" : {
+        "Text" : "# Boost headers were not found so no components were found.\n",
+        "Line" : 1927,
+        "CharPositionInLine" : 2
+      },
+      "133" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Add imported targets\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1934,
+        "CharPositionInLine" : 0
+      },
+      "134" : {
+        "Text" : "# For header-only libraries\n",
+        "Line" : 1939,
+        "CharPositionInLine" : 2
+      },
+      "135" : {
+        "Text" : "# Even if Boost_USE_STATIC_LIBS is OFF, we might have static\n\n# libraries as a result.\n",
+        "Line" : 1955,
+        "CharPositionInLine" : 10
+      },
+      "136" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Notification to end user about what was found\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 2002,
+        "CharPositionInLine" : 0
+      },
+      "137" : {
+        "Text" : "# we opt not to automatically output Boost_ERROR_REASON here as\n\n# it could be quite lengthy and somewhat imposing in its requests\n\n# Since Boost is not always a required dependency we'll leave this\n\n# up to the end-user.\n",
+        "Line" : 2028,
+        "CharPositionInLine" : 6
+      },
+      "138" : {
+        "Text" : "# Configure display of cache entries in GUI.\n",
+        "Line" : 2041,
+        "CharPositionInLine" : 0
+      },
+      "139" : {
+        "Text" : "# Record last used values of input variables so we can\n\n# detect on the next run if the user changed them.\n",
+        "Line" : 2056,
+        "CharPositionInLine" : 0
+      },
+      "140" : {
+        "Text" : "# Maintain a persistent list of components requested anywhere since\n\n# the last flush.\n",
+        "Line" : 2069,
+        "CharPositionInLine" : 0
+      },
+      "141" : {
+        "Text" : "# Restore project's policies\n",
+        "Line" : 2078,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 142
+    },
+    "cmake/FindFolly.cmake" : {
+      "ObjectId" : "dbe07ab9f69b56a61c1837e9530b91dbe336ab70",
+      "LastModified" : "2017-08-31T12:05:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#  Copyright (c) 2014, Facebook, Inc.\n\n#  All rights reserved.\n\n#\n\n#  This source code is licensed under the BSD-style license found in the\n\n#  LICENSE file in the root directory of this source tree. An additional grant\n\n#  of patent rights can be found in the PATENTS file in the same directory.\n\n#\n\n# - Try to find folly\n\n# This will define\n\n# FOLLY_FOUND\n\n# FOLLY_INCLUDE_DIR\n\n# FOLLY_LIBRARIES\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindZeroMQ.cmake" : {
+      "ObjectId" : "d2993c9354a12908a85eccc231bf28f06fcef139",
+      "LastModified" : "2017-08-31T12:05:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# THIS FILE WAS PULLED FROM https://github.com/Kitware/Remus/blob/master/CMake/FindZeroMQ.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##=============================================================================\n\n##\n\n##  Copyright (c) Kitware, Inc.\n\n##  All rights reserved.\n\n##  See LICENSE.txt for details.\n\n##\n\n##  This software is distributed WITHOUT ANY WARRANTY; without even\n\n##  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR\n\n##  PURPOSE.  See the above copyright notice for more information.\n\n##\n\n##=============================================================================\n\n# - Try to find ZeroMQ headers and libraries\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(ZeroMQ)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  ZeroMQ_ROOT_DIR  Set this variable to the root installation of\n\n#                            ZeroMQ if the module has problems finding\n\n#                            the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  ZeroMQ_FOUND              System has ZeroMQ libs/headers\n\n#  ZeroMQ_LIBRARIES          The ZeroMQ libraries\n\n#  ZeroMQ_INCLUDE_DIR        The location of ZeroMQ headers\n\n#  ZeroMQ_VERSION            The version of ZeroMQ\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#add in all the names it can have on windows\n",
+        "Line" : 39,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#now try to find the release and debug version\n",
+        "Line" : 68,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#We are using the 2.8.10 signature of find_package_handle_standard_args,\n\n#as that is the version that ParaView 5.1 && VTK 6/7 ship, and inject\n\n#into the CMake module path. This allows our FindModule to work with\n\n#projects that include VTK/ParaView before searching for Remus\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Findcityhash.cmake" : {
+      "ObjectId" : "570afa46881e1df3500981b34faedc4a4503ea48",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find cityhash headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(cityhash)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  CITYHASH_ROOT_DIR Set this variable to the root installation of\n\n#                    cityhash if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  CITYHASH_FOUND             System has cityhash libs/headers\n\n#  CITYHASH_LIBRARIES         The cityhash library/libraries\n\n#  CITYHASH_INCLUDE_DIR       The location of cityhash headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/sanitizers-cmake/FindASan.cmake" : {
+      "ObjectId" : "fcebb43757e47b0233d0cc6d4f5946efcca32ae2",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n#\n\n# Copyright (c)\n\n#   2013 Matthew Arsenault\n\n#   2015-2016 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Clang 3.2+ use this version. The no-omit-frame-pointer option is optional.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Older deprecated flag for ASan\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "cmake/sanitizers-cmake/FindMSan.cmake" : {
+      "ObjectId" : "3b0a4addcb9b6f8c95268443285f0217140c491a",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n#\n\n# Copyright (c)\n\n#   2013 Matthew Arsenault\n\n#   2015-2016 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/sanitizers-cmake/FindSanitizers.cmake" : {
+      "ObjectId" : "627ee243d050c469300a7a37c260d0144d7b444a",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n#\n\n# Copyright (c)\n\n#   2013 Matthew Arsenault\n\n#   2015-2016 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If any of the used compiler is a GNU compiler, add a second option to static\n\n# link against the sanitizers.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/sanitizers-cmake/FindTSan.cmake" : {
+      "ObjectId" : "0e80f29b6484bf20109e8eeb8eaae7d93b320736",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n#\n\n# Copyright (c)\n\n#   2013 Matthew Arsenault\n\n#   2015-2016 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ThreadSanitizer is not compatible with MemorySanitizer.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/sanitizers-cmake/FindUBSan.cmake" : {
+      "ObjectId" : "69486742a4449564c794e40e18c6277894768ff0",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n#\n\n# Copyright (c)\n\n#   2013 Matthew Arsenault\n\n#   2015-2016 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/sanitizers-cmake/sanitize-helpers.cmake" : {
+      "ObjectId" : "88da66ea76cf157579ef26d1145dfc7eda61e200",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n#\n\n# Copyright (c)\n\n#   2013 Matthew Arsenault\n\n#   2015-2016 RWTH Aachen University, Federal Republic of Germany\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Helper function to get the language of a source file.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Helper function to get compilers used by a target.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Check if all sources for target use the same compiler. If a target uses\n\n# e.g. C and Fortran mixed and uses different compilers (e.g. clang and\n\n# gfortran) this can trigger huge problems, because different compilers may\n\n# use different implementations for sanitizers.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# If expression was found, FILE is a generator-expression for an object\n\n# library. Object libraries will be ignored.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# Helper function to check compiler flags for language compiler.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CheckFortranCompilerFlag was introduced in CMake 3.x. To be compatible\n\n# with older Cmake versions, we will check if this module is present\n\n# before we use it. Otherwise we will define Fortran coverage support as\n\n# not available.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Helper function to test compiler flags.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Sanitizer flags are not dependend on language, but the used compiler.\n\n# So instead of searching flags foreach language, search flags foreach\n\n# compiler used.\n",
+        "Line" : 102,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# If compiler is a GNU compiler, search for static flag, if\n\n# SANITIZE_LINK_STATIC is enabled.\n",
+        "Line" : 118,
+        "CharPositionInLine" : 20
+      },
+      "10" : {
+        "Text" : "# Helper to assign sanitizer flags for TARGET.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Get list of compilers used by target and check, if target can be checked\n\n# by sanitizer.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Set compile- and link-flags for target.\n",
+        "Line" : 166,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 13
+    },
+    "containers/jvm/clipper-container/pom.xml" : {
+      "ObjectId" : "e74fa000895df3dbcaba7d0ff5da44eba19a79e0",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " <dependency> ",
+        "Line" : 13,
+        "CharPositionInLine" : 26
+      },
+      "1" : {
+        "Text" : "   <groupId>org.apache.spark</groupId> ",
+        "Line" : 14,
+        "CharPositionInLine" : 51
+      },
+      "2" : {
+        "Text" : "   <artifactId>spark&#45;core_${scala.binary.version}</artifactId> ",
+        "Line" : 15,
+        "CharPositionInLine" : 79
+      },
+      "3" : {
+        "Text" : "   <scope>provided</scope> ",
+        "Line" : 16,
+        "CharPositionInLine" : 39
+      },
+      "4" : {
+        "Text" : " </dependency> ",
+        "Line" : 17,
+        "CharPositionInLine" : 27
+      },
+      "5" : {
+        "Text" : " <dependency> ",
+        "Line" : 18,
+        "CharPositionInLine" : 26
+      },
+      "6" : {
+        "Text" : "   <groupId>org.apache.spark</groupId> ",
+        "Line" : 19,
+        "CharPositionInLine" : 51
+      },
+      "7" : {
+        "Text" : "   <artifactId>spark&#45;mllib_${scala.binary.version}</artifactId> ",
+        "Line" : 20,
+        "CharPositionInLine" : 80
+      },
+      "8" : {
+        "Text" : "   <scope>provided</scope> ",
+        "Line" : 21,
+        "CharPositionInLine" : 39
+      },
+      "9" : {
+        "Text" : " </dependency> ",
+        "Line" : 22,
+        "CharPositionInLine" : 27
+      },
+      "10" : {
+        "Text" : " <dependency> ",
+        "Line" : 23,
+        "CharPositionInLine" : 26
+      },
+      "11" : {
+        "Text" : "     <groupId>org.json4s</groupId> ",
+        "Line" : 24,
+        "CharPositionInLine" : 47
+      },
+      "12" : {
+        "Text" : "     <artifactId>json4s&#45;jackson_${scala.compat.version}</artifactId> ",
+        "Line" : 25,
+        "CharPositionInLine" : 85
+      },
+      "13" : {
+        "Text" : " </dependency> ",
+        "Line" : 26,
+        "CharPositionInLine" : 27
+      },
+      "14" : {
+        "Text" : " <relocations> ",
+        "Line" : 46,
+        "CharPositionInLine" : 33
+      },
+      "15" : {
+        "Text" : "   <relocation> ",
+        "Line" : 47,
+        "CharPositionInLine" : 34
+      },
+      "16" : {
+        "Text" : "     <pattern>org.eclipse.jetty</pattern> ",
+        "Line" : 48,
+        "CharPositionInLine" : 60
+      },
+      "17" : {
+        "Text" : "     <shadedPattern>edu.berkeley.veloxms.jetty</shadedPattern> ",
+        "Line" : 49,
+        "CharPositionInLine" : 81
+      },
+      "18" : {
+        "Text" : "   </relocation> ",
+        "Line" : 50,
+        "CharPositionInLine" : 35
+      },
+      "19" : {
+        "Text" : " </relocations> ",
+        "Line" : 51,
+        "CharPositionInLine" : 34
+      },
+      "20" : {
+        "Text" : " <minimizeJar>true</minimizeJar> ",
+        "Line" : 53,
+        "CharPositionInLine" : 51
+      },
+      "21" : {
+        "Text" : " <promoteTransitiveDependencies>true</promoteTransitiveDependencies> ",
+        "Line" : 54,
+        "CharPositionInLine" : 87
+      },
+      "22" : {
+        "Text" : " <execution> ",
+        "Line" : 66,
+        "CharPositionInLine" : 31
+      },
+      "23" : {
+        "Text" : "   <phase>package</phase> ",
+        "Line" : 67,
+        "CharPositionInLine" : 44
+      },
+      "24" : {
+        "Text" : "   <goals> ",
+        "Line" : 68,
+        "CharPositionInLine" : 29
+      },
+      "25" : {
+        "Text" : "     <goal>shade</goal> ",
+        "Line" : 69,
+        "CharPositionInLine" : 42
+      },
+      "26" : {
+        "Text" : "   </goals> ",
+        "Line" : 70,
+        "CharPositionInLine" : 30
+      },
+      "27" : {
+        "Text" : "   <configuration> ",
+        "Line" : 71,
+        "CharPositionInLine" : 37
+      },
+      "28" : {
+        "Text" : "     <transformers> ",
+        "Line" : 72,
+        "CharPositionInLine" : 38
+      },
+      "29" : {
+        "Text" : "       <transformer implementation=\"org.apache.maven.plugins.shade.resource.ServicesResourceTransformer\"/> ",
+        "Line" : 73,
+        "CharPositionInLine" : 125
+      },
+      "30" : {
+        "Text" : "       <transformer implementation=\"org.apache.maven.plugins.shade.resource.ManifestResourceTransformer\"> ",
+        "Line" : 74,
+        "CharPositionInLine" : 124
+      },
+      "31" : {
+        "Text" : "       </transformer> ",
+        "Line" : 75,
+        "CharPositionInLine" : 40
+      },
+      "32" : {
+        "Text" : "       <transformer implementation=\"org.apache.maven.plugins.shade.resource.AppendingTransformer\"> ",
+        "Line" : 76,
+        "CharPositionInLine" : 117
+      },
+      "33" : {
+        "Text" : "         <resource>reference.conf</resource> ",
+        "Line" : 77,
+        "CharPositionInLine" : 63
+      },
+      "34" : {
+        "Text" : "       </transformer> ",
+        "Line" : 78,
+        "CharPositionInLine" : 40
+      },
+      "35" : {
+        "Text" : "     </transformers> ",
+        "Line" : 79,
+        "CharPositionInLine" : 39
+      },
+      "36" : {
+        "Text" : "   </configuration> ",
+        "Line" : 80,
+        "CharPositionInLine" : 38
+      },
+      "37" : {
+        "Text" : " </execution> ",
+        "Line" : 81,
+        "CharPositionInLine" : 32
+      },
+      "CommentCount" : 38
+    },
+    "containers/jvm/clipper-examples/pom.xml" : {
+      "ObjectId" : "03f0a80795bd79832dff56f6414140bbf9c8f91e",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "<properties>",
+        "Line" : 13,
+        "CharPositionInLine" : 22
+      },
+      "1" : {
+        "Text" : "<spark.driver.memory>2g</spark.driver.memory>",
+        "Line" : 14,
+        "CharPositionInLine" : 55
+      },
+      "2" : {
+        "Text" : "</properties>",
+        "Line" : 15,
+        "CharPositionInLine" : 23
+      },
+      "3" : {
+        "Text" : " <dependency> ",
+        "Line" : 32,
+        "CharPositionInLine" : 26
+      },
+      "4" : {
+        "Text" : "   <groupId>org.apache.xbean</groupId> ",
+        "Line" : 33,
+        "CharPositionInLine" : 51
+      },
+      "5" : {
+        "Text" : "   <artifactId>xbean&#45;asm5&#45;shaded</artifactId> ",
+        "Line" : 34,
+        "CharPositionInLine" : 66
+      },
+      "6" : {
+        "Text" : " </dependency> ",
+        "Line" : 35,
+        "CharPositionInLine" : 27
+      },
+      "7" : {
+        "Text" : " <dependency> ",
+        "Line" : 40,
+        "CharPositionInLine" : 26
+      },
+      "8" : {
+        "Text" : "     <groupId>org.ow2.asm</groupId> ",
+        "Line" : 41,
+        "CharPositionInLine" : 48
+      },
+      "9" : {
+        "Text" : "     <artifactId>asm</artifactId> ",
+        "Line" : 42,
+        "CharPositionInLine" : 46
+      },
+      "10" : {
+        "Text" : " </dependency> ",
+        "Line" : 43,
+        "CharPositionInLine" : 27
+      },
+      "11" : {
+        "Text" : " <dependency> ",
+        "Line" : 44,
+        "CharPositionInLine" : 26
+      },
+      "12" : {
+        "Text" : "   <groupId>org.apache.bcel</groupId> ",
+        "Line" : 45,
+        "CharPositionInLine" : 50
+      },
+      "13" : {
+        "Text" : "   <artifactId>bcel</artifactId> ",
+        "Line" : 46,
+        "CharPositionInLine" : 45
+      },
+      "14" : {
+        "Text" : " </dependency> ",
+        "Line" : 47,
+        "CharPositionInLine" : 27
+      },
+      "15" : {
+        "Text" : " <relocations> ",
+        "Line" : 79,
+        "CharPositionInLine" : 33
+      },
+      "16" : {
+        "Text" : "   <relocation> ",
+        "Line" : 80,
+        "CharPositionInLine" : 34
+      },
+      "17" : {
+        "Text" : "     <pattern>org.eclipse.jetty</pattern> ",
+        "Line" : 81,
+        "CharPositionInLine" : 60
+      },
+      "18" : {
+        "Text" : "     <shadedPattern>edu.berkeley.veloxms.jetty</shadedPattern> ",
+        "Line" : 82,
+        "CharPositionInLine" : 81
+      },
+      "19" : {
+        "Text" : "   </relocation> ",
+        "Line" : 83,
+        "CharPositionInLine" : 35
+      },
+      "20" : {
+        "Text" : " </relocations> ",
+        "Line" : 84,
+        "CharPositionInLine" : 34
+      },
+      "21" : {
+        "Text" : " <minimizeJar>true</minimizeJar> ",
+        "Line" : 86,
+        "CharPositionInLine" : 51
+      },
+      "22" : {
+        "Text" : " <promoteTransitiveDependencies>true</promoteTransitiveDependencies> ",
+        "Line" : 87,
+        "CharPositionInLine" : 87
+      },
+      "CommentCount" : 23
+    },
+    "containers/jvm/clipper-rpc/pom.xml" : {
+      "ObjectId" : "d226db20b3316324227df237d3cfd90a5d90a0fb",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " <dependency> ",
+        "Line" : 25,
+        "CharPositionInLine" : 26
+      },
+      "1" : {
+        "Text" : "   <groupId>org.apache.spark</groupId> ",
+        "Line" : 26,
+        "CharPositionInLine" : 51
+      },
+      "2" : {
+        "Text" : "   <artifactId>spark&#45;core_${scala.binary.version}</artifactId> ",
+        "Line" : 27,
+        "CharPositionInLine" : 79
+      },
+      "3" : {
+        "Text" : "   <scope>provided</scope> ",
+        "Line" : 28,
+        "CharPositionInLine" : 39
+      },
+      "4" : {
+        "Text" : " </dependency> ",
+        "Line" : 29,
+        "CharPositionInLine" : 27
+      },
+      "5" : {
+        "Text" : " <dependency> ",
+        "Line" : 30,
+        "CharPositionInLine" : 26
+      },
+      "6" : {
+        "Text" : "   <groupId>org.apache.spark</groupId> ",
+        "Line" : 31,
+        "CharPositionInLine" : 51
+      },
+      "7" : {
+        "Text" : "   <artifactId>spark&#45;mllib_${scala.binary.version}</artifactId> ",
+        "Line" : 32,
+        "CharPositionInLine" : 80
+      },
+      "8" : {
+        "Text" : "   <scope>provided</scope> ",
+        "Line" : 33,
+        "CharPositionInLine" : 39
+      },
+      "9" : {
+        "Text" : " </dependency> ",
+        "Line" : 34,
+        "CharPositionInLine" : 27
+      },
+      "10" : {
+        "Text" : " <dependency> ",
+        "Line" : 35,
+        "CharPositionInLine" : 26
+      },
+      "11" : {
+        "Text" : "     <groupId>org.json4s</groupId> ",
+        "Line" : 36,
+        "CharPositionInLine" : 47
+      },
+      "12" : {
+        "Text" : "     <artifactId>json4s&#45;jackson_${scala.compat.version}</artifactId> ",
+        "Line" : 37,
+        "CharPositionInLine" : 85
+      },
+      "13" : {
+        "Text" : " </dependency> ",
+        "Line" : 38,
+        "CharPositionInLine" : 27
+      },
+      "14" : {
+        "Text" : "<outputDirectory>target/scala-${scala.binary.version}/classes</outputDirectory>",
+        "Line" : 42,
+        "CharPositionInLine" : 91
+      },
+      "15" : {
+        "Text" : "<testOutputDirectory>target/scala-${scala.binary.version}/test-classes</testOutputDirectory>",
+        "Line" : 43,
+        "CharPositionInLine" : 104
+      },
+      "CommentCount" : 16
+    },
+    "containers/jvm/clipper-spark/pom.xml" : {
+      "ObjectId" : "689613cce1a6df3758b8d0a3eca56167862d3e42",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " <minimizeJar>true</minimizeJar> ",
+        "Line" : 64,
+        "CharPositionInLine" : 51
+      },
+      "1" : {
+        "Text" : " <promoteTransitiveDependencies>true</promoteTransitiveDependencies> ",
+        "Line" : 65,
+        "CharPositionInLine" : 87
+      },
+      "CommentCount" : 2
+    },
+    "containers/jvm/pom.xml" : {
+      "ObjectId" : "4d46de988c3cedd5f7999c20a13d35dce790126c",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Contains the Clipper model container interface for Java. An implementation\n         of this interface must be provided to the RPC system to be served. ",
+        "Line" : 23,
+        "CharPositionInLine" : 80
+      },
+      "1" : {
+        "Text" : "    TODO: rename this module      ",
+        "Line" : 24,
+        "CharPositionInLine" : 46
+      },
+      "2" : {
+        "Text" : " Some example container implementations and some example model train + deploy workflows. ",
+        "Line" : 26,
+        "CharPositionInLine" : 101
+      },
+      "3" : {
+        "Text" : " The Clipper Java RPC client. Should be included in any projects that want to write\n         their own Docker container implementation. ",
+        "Line" : 29,
+        "CharPositionInLine" : 56
+      },
+      "4" : {
+        "Text" : " Spark specific functionality to be included in Spark programs. This includes\n         Spark-specific Clipper model containers and some utilities to deploy Spark\n         models to Clipper directly from a Spark program without needing to create or\n         start Docker containers manually. ",
+        "Line" : 34,
+        "CharPositionInLine" : 47
+      },
+      "5" : {
+        "Text" : " The Docker container implementation to serve Spark models ",
+        "Line" : 36,
+        "CharPositionInLine" : 71
+      },
+      "6" : {
+        "Text" : " This should be at top, it makes maven try the central repo first and then others and hence faster dep resolution ",
+        "Line" : 55,
+        "CharPositionInLine" : 128
+      },
+      "7" : {
+        "Text" : " This artifact is a shaded version of ASM 5.0.4. The POM that was used to produce this\n           is at https://github.com/apache/geronimo-xbean/tree/xbean-4.4/xbean-asm5-shaded\n           For context on why we shade ASM, see SPARK-782 and SPARK-6152. ",
+        "Line" : 122,
+        "CharPositionInLine" : 78
+      },
+      "8" : {
+        "Text" : " https://mvnrepository.com/artifact/commons-io/commons-io ",
+        "Line" : 128,
+        "CharPositionInLine" : 72
+      },
+      "9" : {
+        "Text" : " Test ",
+        "Line" : 155,
+        "CharPositionInLine" : 20
+      },
+      "10" : {
+        "Text" : "<dependency>",
+        "Line" : 162,
+        "CharPositionInLine" : 26
+      },
+      "11" : {
+        "Text" : "<groupId>org.specs2</groupId>",
+        "Line" : 163,
+        "CharPositionInLine" : 45
+      },
+      "12" : {
+        "Text" : "<artifactId>specs2-core_${scala.compat.version}</artifactId>",
+        "Line" : 164,
+        "CharPositionInLine" : 76
+      },
+      "13" : {
+        "Text" : "<version>2.4.16</version>",
+        "Line" : 165,
+        "CharPositionInLine" : 41
+      },
+      "14" : {
+        "Text" : "<scope>test</scope>",
+        "Line" : 166,
+        "CharPositionInLine" : 35
+      },
+      "15" : {
+        "Text" : "</dependency>",
+        "Line" : 167,
+        "CharPositionInLine" : 27
+      },
+      "16" : {
+        "Text" : "<build>",
+        "Line" : 182,
+        "CharPositionInLine" : 18
+      },
+      "17" : {
+        "Text" : "&lt;!&ndash;<sourceDirectory>src/main/scala</sourceDirectory>&ndash;&gt;",
+        "Line" : 183,
+        "CharPositionInLine" : 85
+      },
+      "18" : {
+        "Text" : "&lt;!&ndash;<testSourceDirectory>src/test/scala</testSourceDirectory>&ndash;&gt;",
+        "Line" : 184,
+        "CharPositionInLine" : 93
+      },
+      "19" : {
+        "Text" : "<plugins>",
+        "Line" : 185,
+        "CharPositionInLine" : 22
+      },
+      "20" : {
+        "Text" : "<plugin>",
+        "Line" : 186,
+        "CharPositionInLine" : 23
+      },
+      "21" : {
+        "Text" : "&lt;!&ndash; see http://davidb.github.com/scala&#45;maven&#45;plugin &ndash;&gt;",
+        "Line" : 187,
+        "CharPositionInLine" : 97
+      },
+      "22" : {
+        "Text" : "<groupId>net.alchim31.maven</groupId>",
+        "Line" : 188,
+        "CharPositionInLine" : 54
+      },
+      "23" : {
+        "Text" : "<artifactId>scala&#45;maven&#45;plugin</artifactId>",
+        "Line" : 189,
+        "CharPositionInLine" : 68
+      },
+      "24" : {
+        "Text" : "<version>3.2.0</version>",
+        "Line" : 190,
+        "CharPositionInLine" : 41
+      },
+      "25" : {
+        "Text" : "<executions>",
+        "Line" : 191,
+        "CharPositionInLine" : 29
+      },
+      "26" : {
+        "Text" : "<execution>",
+        "Line" : 192,
+        "CharPositionInLine" : 30
+      },
+      "27" : {
+        "Text" : "<goals>",
+        "Line" : 193,
+        "CharPositionInLine" : 28
+      },
+      "28" : {
+        "Text" : "<goal>compile</goal>",
+        "Line" : 194,
+        "CharPositionInLine" : 43
+      },
+      "29" : {
+        "Text" : "<goal>testCompile</goal>",
+        "Line" : 195,
+        "CharPositionInLine" : 47
+      },
+      "30" : {
+        "Text" : "</goals>",
+        "Line" : 196,
+        "CharPositionInLine" : 29
+      },
+      "31" : {
+        "Text" : "<configuration>",
+        "Line" : 197,
+        "CharPositionInLine" : 36
+      },
+      "32" : {
+        "Text" : "<args>",
+        "Line" : 198,
+        "CharPositionInLine" : 29
+      },
+      "33" : {
+        "Text" : "&lt;!&ndash; <arg>&#38;#45;make:transitive</arg> &ndash;&gt;",
+        "Line" : 199,
+        "CharPositionInLine" : 85
+      },
+      "34" : {
+        "Text" : "<arg>&#45;dependencyfile</arg>",
+        "Line" : 200,
+        "CharPositionInLine" : 55
+      },
+      "35" : {
+        "Text" : "<arg>${project.build.directory}/.scala_dependencies</arg>",
+        "Line" : 201,
+        "CharPositionInLine" : 82
+      },
+      "36" : {
+        "Text" : "</args>",
+        "Line" : 202,
+        "CharPositionInLine" : 30
+      },
+      "37" : {
+        "Text" : "</configuration>",
+        "Line" : 203,
+        "CharPositionInLine" : 37
+      },
+      "38" : {
+        "Text" : "</execution>",
+        "Line" : 204,
+        "CharPositionInLine" : 31
+      },
+      "39" : {
+        "Text" : "</executions>",
+        "Line" : 205,
+        "CharPositionInLine" : 30
+      },
+      "40" : {
+        "Text" : "</plugin>",
+        "Line" : 206,
+        "CharPositionInLine" : 24
+      },
+      "41" : {
+        "Text" : "<plugin>",
+        "Line" : 207,
+        "CharPositionInLine" : 23
+      },
+      "42" : {
+        "Text" : "<groupId>org.apache.maven.plugins</groupId>",
+        "Line" : 208,
+        "CharPositionInLine" : 60
+      },
+      "43" : {
+        "Text" : "<artifactId>maven&#45;surefire&#45;plugin</artifactId>",
+        "Line" : 209,
+        "CharPositionInLine" : 71
+      },
+      "44" : {
+        "Text" : "<version>2.18.1</version>",
+        "Line" : 210,
+        "CharPositionInLine" : 42
+      },
+      "45" : {
+        "Text" : "<configuration>",
+        "Line" : 211,
+        "CharPositionInLine" : 32
+      },
+      "46" : {
+        "Text" : "<useFile>false</useFile>",
+        "Line" : 212,
+        "CharPositionInLine" : 43
+      },
+      "47" : {
+        "Text" : "<disableXmlReport>true</disableXmlReport>",
+        "Line" : 213,
+        "CharPositionInLine" : 60
+      },
+      "48" : {
+        "Text" : "&lt;!&ndash; If you have classpath issue like NoDefClassError,... &ndash;&gt;",
+        "Line" : 214,
+        "CharPositionInLine" : 96
+      },
+      "49" : {
+        "Text" : "&lt;!&ndash; useManifestOnlyJar>false</useManifestOnlyJar &ndash;&gt;",
+        "Line" : 215,
+        "CharPositionInLine" : 88
+      },
+      "50" : {
+        "Text" : "<includes>",
+        "Line" : 216,
+        "CharPositionInLine" : 29
+      },
+      "51" : {
+        "Text" : "<include>**/*Test.*</include>",
+        "Line" : 217,
+        "CharPositionInLine" : 50
+      },
+      "52" : {
+        "Text" : "<include>**/*Suite.*</include>",
+        "Line" : 218,
+        "CharPositionInLine" : 51
+      },
+      "53" : {
+        "Text" : "</includes>",
+        "Line" : 219,
+        "CharPositionInLine" : 30
+      },
+      "54" : {
+        "Text" : "</configuration>",
+        "Line" : 220,
+        "CharPositionInLine" : 33
+      },
+      "55" : {
+        "Text" : "</plugin>",
+        "Line" : 221,
+        "CharPositionInLine" : 24
+      },
+      "56" : {
+        "Text" : "</plugins>",
+        "Line" : 222,
+        "CharPositionInLine" : 23
+      },
+      "57" : {
+        "Text" : "</build>",
+        "Line" : 223,
+        "CharPositionInLine" : 19
+      },
+      "58" : {
+        "Text" : " The following plugin is required to use quasiquotes in Scala 2.10 and is used\n                 by Spark SQL for code generation. ",
+        "Line" : 293,
+        "CharPositionInLine" : 55
+      },
+      "59" : {
+        "Text" : " <compilerPlugins> ",
+        "Line" : 294,
+        "CharPositionInLine" : 39
+      },
+      "60" : {
+        "Text" : "   <compilerPlugin> ",
+        "Line" : 295,
+        "CharPositionInLine" : 42
+      },
+      "61" : {
+        "Text" : "       <groupId>org.scalamacros</groupId> ",
+        "Line" : 296,
+        "CharPositionInLine" : 66
+      },
+      "62" : {
+        "Text" : "       <artifactId>paradise_${scala.version}</artifactId> ",
+        "Line" : 297,
+        "CharPositionInLine" : 82
+      },
+      "63" : {
+        "Text" : "       <version>${scala.macros.version}</version> ",
+        "Line" : 298,
+        "CharPositionInLine" : 74
+      },
+      "64" : {
+        "Text" : "   </compilerPlugin> ",
+        "Line" : 299,
+        "CharPositionInLine" : 45
+      },
+      "65" : {
+        "Text" : " </compilerPlugins> ",
+        "Line" : 300,
+        "CharPositionInLine" : 42
+      },
+      "66" : {
+        "Text" : " Uses scalatest instead ",
+        "Line" : 323,
+        "CharPositionInLine" : 44
+      },
+      "67" : {
+        "Text" : " <plugin> ",
+        "Line" : 437,
+        "CharPositionInLine" : 25
+      },
+      "68" : {
+        "Text" : "   <groupId>org.scalastyle</groupId> ",
+        "Line" : 438,
+        "CharPositionInLine" : 52
+      },
+      "69" : {
+        "Text" : "   <artifactId>scalastyle&#45;maven&#45;plugin</artifactId> ",
+        "Line" : 439,
+        "CharPositionInLine" : 75
+      },
+      "70" : {
+        "Text" : "   <version>0.8.0</version> ",
+        "Line" : 440,
+        "CharPositionInLine" : 43
+      },
+      "71" : {
+        "Text" : "   <configuration> ",
+        "Line" : 441,
+        "CharPositionInLine" : 34
+      },
+      "72" : {
+        "Text" : "     <verbose>false</verbose> ",
+        "Line" : 442,
+        "CharPositionInLine" : 45
+      },
+      "73" : {
+        "Text" : "     <failOnViolation>false</failOnViolation> ",
+        "Line" : 443,
+        "CharPositionInLine" : 61
+      },
+      "74" : {
+        "Text" : "     <includeTestSourceDirectory>false</includeTestSourceDirectory> ",
+        "Line" : 444,
+        "CharPositionInLine" : 83
+      },
+      "75" : {
+        "Text" : "     <failOnWarning>false</failOnWarning> ",
+        "Line" : 445,
+        "CharPositionInLine" : 57
+      },
+      "76" : {
+        "Text" : "     <sourceDirectory>${basedir}/src/main/scala</sourceDirectory> ",
+        "Line" : 446,
+        "CharPositionInLine" : 81
+      },
+      "77" : {
+        "Text" : "     <testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory> ",
+        "Line" : 447,
+        "CharPositionInLine" : 89
+      },
+      "78" : {
+        "Text" : "     <configLocation>scalastyle&#45;config.xml</configLocation> ",
+        "Line" : 448,
+        "CharPositionInLine" : 79
+      },
+      "79" : {
+        "Text" : "     <outputFile>scalastyle&#45;output.xml</outputFile> ",
+        "Line" : 449,
+        "CharPositionInLine" : 71
+      },
+      "80" : {
+        "Text" : "     <outputEncoding>UTF&#45;8</outputEncoding> ",
+        "Line" : 450,
+        "CharPositionInLine" : 63
+      },
+      "81" : {
+        "Text" : "   </configuration> ",
+        "Line" : 451,
+        "CharPositionInLine" : 35
+      },
+      "82" : {
+        "Text" : "   <executions> ",
+        "Line" : 452,
+        "CharPositionInLine" : 31
+      },
+      "83" : {
+        "Text" : "     <execution> ",
+        "Line" : 453,
+        "CharPositionInLine" : 32
+      },
+      "84" : {
+        "Text" : "       <phase>package</phase> ",
+        "Line" : 454,
+        "CharPositionInLine" : 45
+      },
+      "85" : {
+        "Text" : "       <goals> ",
+        "Line" : 455,
+        "CharPositionInLine" : 30
+      },
+      "86" : {
+        "Text" : "         <goal>check</goal> ",
+        "Line" : 456,
+        "CharPositionInLine" : 43
+      },
+      "87" : {
+        "Text" : "       </goals> ",
+        "Line" : 457,
+        "CharPositionInLine" : 31
+      },
+      "88" : {
+        "Text" : "     </execution> ",
+        "Line" : 458,
+        "CharPositionInLine" : 33
+      },
+      "89" : {
+        "Text" : "   </executions> ",
+        "Line" : 459,
+        "CharPositionInLine" : 32
+      },
+      "90" : {
+        "Text" : " </plugin> ",
+        "Line" : 460,
+        "CharPositionInLine" : 26
+      },
+      "CommentCount" : 91
+    },
+    "containers/jvm/rpc-test/pom.xml" : {
+      "ObjectId" : "1799a960781873911050bf4f631ef65f35ca0313",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "<properties>",
+        "Line" : 13,
+        "CharPositionInLine" : 22
+      },
+      "1" : {
+        "Text" : "<spark.driver.memory>2g</spark.driver.memory>",
+        "Line" : 14,
+        "CharPositionInLine" : 55
+      },
+      "2" : {
+        "Text" : "</properties>",
+        "Line" : 15,
+        "CharPositionInLine" : 23
+      },
+      "3" : {
+        "Text" : " <relocations> ",
+        "Line" : 45,
+        "CharPositionInLine" : 33
+      },
+      "4" : {
+        "Text" : "   <relocation> ",
+        "Line" : 46,
+        "CharPositionInLine" : 34
+      },
+      "5" : {
+        "Text" : "     <pattern>org.eclipse.jetty</pattern> ",
+        "Line" : 47,
+        "CharPositionInLine" : 60
+      },
+      "6" : {
+        "Text" : "     <shadedPattern>edu.berkeley.veloxms.jetty</shadedPattern> ",
+        "Line" : 48,
+        "CharPositionInLine" : 81
+      },
+      "7" : {
+        "Text" : "   </relocation> ",
+        "Line" : 49,
+        "CharPositionInLine" : 35
+      },
+      "8" : {
+        "Text" : " </relocations> ",
+        "Line" : 50,
+        "CharPositionInLine" : 34
+      },
+      "9" : {
+        "Text" : " <minimizeJar>true</minimizeJar> ",
+        "Line" : 52,
+        "CharPositionInLine" : 51
+      },
+      "10" : {
+        "Text" : " <promoteTransitiveDependencies>true</promoteTransitiveDependencies> ",
+        "Line" : 53,
+        "CharPositionInLine" : 87
+      },
+      "CommentCount" : 11
+    },
+    "containers/jvm/spark-container-impl/pom.xml" : {
+      "ObjectId" : "5b9a009df0b02b12b3c8d82689940509fab786c4",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " <dependency> ",
+        "Line" : 27,
+        "CharPositionInLine" : 26
+      },
+      "1" : {
+        "Text" : "   <groupId>org.apache.xbean</groupId> ",
+        "Line" : 28,
+        "CharPositionInLine" : 51
+      },
+      "2" : {
+        "Text" : "   <artifactId>xbean&#45;asm5&#45;shaded</artifactId> ",
+        "Line" : 29,
+        "CharPositionInLine" : 66
+      },
+      "3" : {
+        "Text" : " </dependency> ",
+        "Line" : 30,
+        "CharPositionInLine" : 27
+      },
+      "4" : {
+        "Text" : " <dependency> ",
+        "Line" : 36,
+        "CharPositionInLine" : 26
+      },
+      "5" : {
+        "Text" : "     <groupId>org.ow2.asm</groupId> ",
+        "Line" : 37,
+        "CharPositionInLine" : 48
+      },
+      "6" : {
+        "Text" : "     <artifactId>asm</artifactId> ",
+        "Line" : 38,
+        "CharPositionInLine" : 46
+      },
+      "7" : {
+        "Text" : " </dependency> ",
+        "Line" : 39,
+        "CharPositionInLine" : 27
+      },
+      "8" : {
+        "Text" : " <dependency> ",
+        "Line" : 40,
+        "CharPositionInLine" : 26
+      },
+      "9" : {
+        "Text" : "   <groupId>org.apache.bcel</groupId> ",
+        "Line" : 41,
+        "CharPositionInLine" : 50
+      },
+      "10" : {
+        "Text" : "   <artifactId>bcel</artifactId> ",
+        "Line" : 42,
+        "CharPositionInLine" : 45
+      },
+      "11" : {
+        "Text" : " </dependency> ",
+        "Line" : 43,
+        "CharPositionInLine" : 27
+      },
+      "12" : {
+        "Text" : " <relocations> ",
+        "Line" : 75,
+        "CharPositionInLine" : 33
+      },
+      "13" : {
+        "Text" : "   <relocation> ",
+        "Line" : 76,
+        "CharPositionInLine" : 34
+      },
+      "14" : {
+        "Text" : "     <pattern>org.eclipse.jetty</pattern> ",
+        "Line" : 77,
+        "CharPositionInLine" : 60
+      },
+      "15" : {
+        "Text" : "     <shadedPattern>edu.berkeley.veloxms.jetty</shadedPattern> ",
+        "Line" : 78,
+        "CharPositionInLine" : 81
+      },
+      "16" : {
+        "Text" : "   </relocation> ",
+        "Line" : 79,
+        "CharPositionInLine" : 35
+      },
+      "17" : {
+        "Text" : " </relocations> ",
+        "Line" : 80,
+        "CharPositionInLine" : 34
+      },
+      "18" : {
+        "Text" : " <minimizeJar>true</minimizeJar> ",
+        "Line" : 82,
+        "CharPositionInLine" : 51
+      },
+      "19" : {
+        "Text" : " <promoteTransitiveDependencies>true</promoteTransitiveDependencies> ",
+        "Line" : 83,
+        "CharPositionInLine" : 87
+      },
+      "CommentCount" : 20
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "3be4e1dce337daebba817c8290c6409037e52575",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Targets that we develop\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/benchmarks/CMakeLists.txt" : {
+      "ObjectId" : "10d1119dbaba4148735e6901e025a8a220445118",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##################################\n\n# Benchmark executable\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##################################\n\n# RPC Layer Benchmarking executable\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##################################\n\n# RPC Layer Protocol Testing executable\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/container/CMakeLists.txt" : {
+      "ObjectId" : "6ad2d8fea8696e790c03090d6ec1eed3aeeb6d64",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##################################\n\n# C++ container static library for use with Rcpp\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##################################\n\n# Container executable for rpc testing\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/frontends/CMakeLists.txt" : {
+      "ObjectId" : "b874199e5e171602539bc191bef27250cdae53f2",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##################################\n\n# Query REST frontend executable\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##################################\n\n# Tests for frontends\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/libclipper/CMakeLists.txt" : {
+      "ObjectId" : "09e70e37944c7ec9ac9ef525b32fdd84feb964fa",
+      "LastModified" : "2019-01-01T16:47:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Define library. Only source files here!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define headers for this library. PUBLIC headers are used for\n\n# compiling the library, and will be added to consumers' build\n\n# paths.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# config_test resets the value of the config so it should always\n\n# be last in the list\n",
+        "Line" : 47,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "src/libs/CMakeLists.txt" : {
+      "ObjectId" : "222599c1a06123bb6fd73048fdfdab06274e5ee9",
+      "LastModified" : "2019-01-01T16:47:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##########################################\n\n### ZeroMQ\n\n##########################################\n\n# Find and link zeromq installed library\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include zeromq C++ wrapper\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##########################################\n\n### HTTPServer\n\n##########################################\n\n# Include httpserver library\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "##########################################\n\n### CXXOpts Option Parser\n\n##########################################\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "##########################################\n\n### Spdlog\n\n##########################################\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "##########################################\n\n### Base64\n\n##########################################\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "##########################################\n\n### Concurrent Queue\n\n##########################################\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "##########################################\n\n### DLib Machine Learning\n\n#########################################\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/management/CMakeLists.txt" : {
+      "ObjectId" : "2001cedf8c1dc1e8f1d4f12a384706cd65ff452e",
+      "LastModified" : "2018-05-28T16:45:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##################################\n\n# Management REST frontend executable\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##################################\n\n# Tests for management\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 19,
+    "MAKEFILE" : 1,
+    "MAVEN" : 7
+  },
+  "ElapsedTime" : 1394
+}

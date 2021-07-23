@@ -1,0 +1,586 @@
+{
+  "Repository" : "78750693",
+  "Revision" : "HEAD",
+  "ObjectId" : "eed4917f5a482b2995b4ad1e0334866bb933e73c",
+  "CommitTime" : "2018-11-10T21:45:23Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "4352efa552a88af8a8c21ae5b2d6111b7eb8fbcd",
+      "LastModified" : "2018-10-31T17:26:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - cmake file\n\n# Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Get version number before calling project().\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add targets for maintainers: release, changelog\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add user-settable options.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Compiler setup.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Google Test\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Add all tests as dependencies to \"tests\" so the coverage target can\n\n# depend on them.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# PEGTL\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Rang\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# CLI11\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Spdlog\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# json\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# CodeCoverage\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Doxygen\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc)\n",
+        "Line" : 139,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# get all project files\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# additional target to perform cppcheck run, requires cppcheck\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# additional target to perform clang-format run, requires clang-format\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 18
+    },
+    "cmake/CodeCoverage.cmake" : {
+      "ObjectId" : "28e19f8f57872058b40a298ed3025a047af70bd8",
+      "LastModified" : "2017-10-29T00:19:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2012 - 2017, Lars Bilke\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n# 1. Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#\n\n# 2. Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#\n\n# 3. Neither the name of the copyright holder nor the names of its contributors\n\n#    may be used to endorse or promote products derived from this software without\n\n#    specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n\n# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n# CHANGES:\n\n#\n\n# 2012-01-31, Lars Bilke\n\n# - Enable Code Coverage\n\n#\n\n# 2013-09-17, Joakim Söderberg\n\n# - Added support for Clang.\n\n# - Some additional usage instructions.\n\n#\n\n# 2016-02-03, Lars Bilke\n\n# - Refactored functions to use named parameters\n\n#\n\n# 2017-06-02, Lars Bilke\n\n# - Merged with modified version from github.com/ufz/ogs\n\n#\n\n#\n\n# USAGE:\n\n#\n\n# 1. Copy this file into your cmake modules path.\n\n#\n\n# 2. Add the following line to your CMakeLists.txt:\n\n#      include(CodeCoverage)\n\n#\n\n# 3. Append necessary compiler flags:\n\n#      APPEND_COVERAGE_COMPILER_FLAGS()\n\n#\n\n# 4. If you need to exclude additional directories from the report, specify them\n\n#    using the COVERAGE_EXCLUDES variable before calling SETUP_TARGET_FOR_COVERAGE.\n\n#    Example:\n\n#      set(COVERAGE_EXCLUDES 'dir1/*' 'dir2/*')\n\n#\n\n# 5. Use the functions described below to create a custom make target which\n\n#    runs your test executable and produces a code coverage report.\n\n#\n\n# 6. Build a Debug build:\n\n#      cmake -DCMAKE_BUILD_TYPE=Debug ..\n\n#      make\n\n#      make my_coverage_target\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# NOT GCOV_PATH\n",
+        "Line" : 80,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 117,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Defines a target for running and collection code coverage information\n\n# Builds dependencies, runs the given executable and outputs reports.\n\n# NOTE! The executable should always have a ZERO as exit code otherwise\n\n# the coverage generation will not complete.\n\n#\n\n# SETUP_TARGET_FOR_COVERAGE(\n\n#     NAME testrunner_coverage                    # New target name\n\n#     EXECUTABLE testrunner -j ${PROCESSOR_COUNT} # Executable in PROJECT_BINARY_DIR\n\n#     DEPENDENCIES testrunner                     # Dependencies to build first\n\n# )\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 144,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# Setup target\n",
+        "Line" : 146,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 149,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Run tests\n",
+        "Line" : 152,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 155,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE\n",
+        "Line" : 164,
+        "CharPositionInLine" : 14
+      },
+      "11" : {
+        "Text" : "# Defines a target for running and collection code coverage information\n\n# Builds dependencies, runs the given executable and outputs reports.\n\n# NOTE! The executable should always have a ZERO as exit code otherwise\n\n# the coverage generation will not complete.\n\n#\n\n# SETUP_TARGET_FOR_COVERAGE_HTML(\n\n#     NAME testrunner_coverage                    # New target name\n\n#     EXECUTABLE testrunner -j ${PROCESSOR_COUNT} # Executable in PROJECT_BINARY_DIR\n\n#     DEPENDENCIES testrunner                     # Dependencies to build first\n\n# )\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 185,
+        "CharPositionInLine" : 12
+      },
+      "13" : {
+        "Text" : "# NOT GENHTML_PATH\n",
+        "Line" : 189,
+        "CharPositionInLine" : 12
+      },
+      "14" : {
+        "Text" : "# Setup target\n",
+        "Line" : 191,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 194,
+        "CharPositionInLine" : 8
+      },
+      "16" : {
+        "Text" : "# Run tests\n",
+        "Line" : 197,
+        "CharPositionInLine" : 8
+      },
+      "17" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 200,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 211,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_HTML\n",
+        "Line" : 217,
+        "CharPositionInLine" : 14
+      },
+      "20" : {
+        "Text" : "# Defines a target for running and collection code coverage information\n\n# Builds dependencies, runs the given executable and outputs reports.\n\n# NOTE! The executable should always have a ZERO as exit code otherwise\n\n# the coverage generation will not complete.\n\n#\n\n# SETUP_TARGET_FOR_COVERAGE_COBERTURA(\n\n#     NAME ctest_coverage                    # New target name\n\n#     EXECUTABLE ctest -j ${PROCESSOR_COUNT} # Executable in PROJECT_BINARY_DIR\n\n#     DEPENDENCIES executable_target         # Dependencies to build first\n\n# )\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# NOT SIMPLE_PYTHON_EXECUTABLE\n",
+        "Line" : 238,
+        "CharPositionInLine" : 12
+      },
+      "22" : {
+        "Text" : "# NOT GCOVR_PATH\n",
+        "Line" : 242,
+        "CharPositionInLine" : 12
+      },
+      "23" : {
+        "Text" : "# Combine excludes to several -e arguments\n",
+        "Line" : 244,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Run tests\n",
+        "Line" : 252,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# Running gcovr\n",
+        "Line" : 255,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 263,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_COBERTURA\n",
+        "Line" : 269,
+        "CharPositionInLine" : 14
+      },
+      "28" : {
+        "Text" : "# APPEND_COVERAGE_COMPILER_FLAGS\n",
+        "Line" : 275,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 29
+    },
+    "cmake/GitRelease.cmake" : {
+      "ObjectId" : "fcb69049e41dd7b7da79bbeefbab6ba9c72ab5f0",
+      "LastModified" : "2018-05-15T21:48:40Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/GitReleaseScript.cmake" : {
+      "ObjectId" : "f6ed79b5d0a1dd8f7c51960800ae5f612b9113f6",
+      "LastModified" : "2018-05-15T21:48:40Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/GitVersion.cmake" : {
+      "ObjectId" : "fb403fa3fd9e4759f78620b4a6d8d8504a2b0da2",
+      "LastModified" : "2018-05-15T21:48:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - cmake file\n\n# Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This file defines two variables:\n\n# - GIT_VERSION_STRING with the format \"1.2.3\" usable for cmake project()\n\n# - GIT_VERSION_STRING_FULL with the format \"v1.2.3-TAG-NUMBER-ID-dirty\"\n\n# where any part but the version number may be omitted (see git-describe).\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Travis CI makes a shallow clone (depth 50) which may not\n\n# include any tags.  Fallback with --always, but note that in\n\n# this case we might not have a version number after all.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 7
+      },
+      "3" : {
+        "Text" : "# In case we couldn't find a version tag with git, we add the one from\n\n# the file VERSION.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# CMAKE_SOURCE_DIR is valid even before project() is called.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Possible results:\n\n# \"v0.0.3-56-g396a0b4\": git describe found a version tag.\n\n# \"v0.0.3-mytag-10-g396a0b4\": git describe found another tag, we added version from file\n\n# \"v0.0.3-396a0b4-dirty\": no tags, we added version from file\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Find major, minor, patch\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "legacy/CMakeLists.txt" : {
+      "ObjectId" : "2c58928c1d9de4fd33303b1622301fef8ef8c914",
+      "LastModified" : "2018-10-31T17:26:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - tests\n\n#   Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# libgpg-error\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# libassuan\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# libgcrypt\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# libksba\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "legacy/gnupg/tests/gpgme/Makefile.am" : {
+      "ObjectId" : "f1c19eb16fef142b9c73c0da84ab6e973174729e",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am - For tests/gpgme\n\n# Copyright (C) 2016 g10 Code GmbH\n\n#\n\n# This file is part of GnuPG.\n\n#\n\n# GnuPG is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# GnuPG is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, see <https://www.gnu.org/licenses/>.\n\n# Process this file with automake to create Makefile.in\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Programs required before we can run these tests.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# XXX: Currently, one cannot override automake's 'check' target.  As a\n\n# workaround, we avoid defining 'TESTS', thus automake will not emit\n\n# the 'check' target.  For extra robustness, we merely define a\n\n# dependency on 'xcheck', so this hack should also work even if\n\n# automake would emit the 'check' target, as adding dependencies to\n\n# targets is okay.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We need to depend on a couple of programs so that the tests don't\n\n# start before all programs are built.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "legacy/gnupg/tests/gpgsm/Makefile.am" : {
+      "ObjectId" : "e54db7842a8038a7ce07209cc84bf3fba1f63c8a",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am - For tests/gpgme\n\n# Copyright (C) 2016 g10 Code GmbH\n\n#\n\n# This file is part of GnuPG.\n\n#\n\n# GnuPG is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# GnuPG is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, see <https://www.gnu.org/licenses/>.\n\n# Process this file with automake to create Makefile.in\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Programs required before we can run these tests.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# XXX: Currently, one cannot override automake's 'check' target.  As a\n\n# workaround, we avoid defining 'TESTS', thus automake will not emit\n\n# the 'check' target.  For extra robustness, we merely define a\n\n# dependency on 'xcheck', so this hack should also work even if\n\n# automake would emit the 'check' target, as adding dependencies to\n\n# targets is okay.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We need to depend on a couple of programs so that the tests don't\n\n# start before all programs are built.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "legacy/gnupg/tests/migrations/Makefile.am" : {
+      "ObjectId" : "d90c9c7f9a8a6da6d31fb6031fb3a59faba6ac5e",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am - For tests/openpgp\n\n# Copyright (C) 2016 g10 Code GmbH\n\n#\n\n# This file is part of GnuPG.\n\n#\n\n# GnuPG is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# GnuPG is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, see <https://www.gnu.org/licenses/>.\n\n# Process this file with automake to create Makefile.in\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Programs required before we can run these tests.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# XXX: Currently, one cannot override automake's 'check' target.  As a\n\n# workaround, we avoid defining 'TESTS', thus automake will not emit\n\n# the 'check' target.  For extra robustness, we merely define a\n\n# dependency on 'xcheck', so this hack should also work even if\n\n# automake would emit the 'check' target, as adding dependencies to\n\n# targets is okay.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We need to depend on a couple of programs so that the tests don't\n\n# start before all programs are built.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "legacy/gnupg/tests/openpgp/Makefile.am" : {
+      "ObjectId" : "506bce526976e9e8a1fe2462fc4136b9c5acebef",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am - For tests/openpgp\n\n# Copyright (C) 1998, 1999, 2000, 2001, 2003,\n\n#               2010 Free Software Foundation, Inc.\n\n#\n\n# This file is part of GnuPG.\n\n#\n\n# GnuPG is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# GnuPG is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, see <https://www.gnu.org/licenses/>.\n\n# Process this file with automake to create Makefile.in\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Programs required before we can run these tests.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# XXX: Currently, one cannot override automake's 'check' target.  As a\n\n# workaround, we avoid defining 'TESTS', thus automake will not emit\n\n# the 'check' target.  For extra robustness, we merely define a\n\n# dependency on 'xcheck', so this hack should also work even if\n\n# automake would emit the 'check' target, as adding dependencies to\n\n# targets is okay.\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We need to depend on a couple of programs so that the tests don't\n\n# start before all programs are built.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "legacy/gnupg/tests/pkits/Makefile.am" : {
+      "ObjectId" : "3dc2f16d66e163bfb48c24932870a3ddfcd064df",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am - tests using NIST's PKITS\n\n#     \tCopyright (C) 2004, 2008 Free Software Foundation, Inc.\n\n#\n\n# This file is part of GnuPG.\n\n#\n\n# GnuPG is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# GnuPG is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, see <https://www.gnu.org/licenses/>.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## Process this file with automake to produce Makefile.in\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "legacy/libassuan/tests/Makefile.am" : {
+      "ObjectId" : "46b9794e46caf75976a05658445b7384ca19e038",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile for Assuan regression tests\n\n# Copyright (C) 2006 Free Software Foundation, Inc.\n\n#\n\n# This file is part of Assuan.\n\n#\n\n# Assuan is free software; you can redistribute it and/or modify it\n\n# under the terms of the GNU Lesser General Public License as\n\n# published by the Free Software Foundation; either version 3 of\n\n# the License, or (at your option) any later version.\n\n#\n\n# Assuan is distributed in the hope that it will be useful, but\n\n# WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n# Lesser General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Lesser General Public\n\n# License along with this program; if not, see <http://www.gnu.org/licenses/>.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## Process this file with automake to produce Makefile.in\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "legacy/libksba/tests/Makefile.am" : {
+      "ObjectId" : "759b626298ecb4536da677fa5873d7f743bc9df0",
+      "LastModified" : "2017-10-16T04:28:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Makefile.am - for the KSBA regression tests\n\n#       Copyright (C) 2001, 2003 g10 Code GmbH\n\n#\n\n# This file is part of KSBA.\n\n#\n\n# KSBA is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# KSBA is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, see <http://www.gnu.org/licenses/>.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## Process this file with automake to produce Makefile.in\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build the OID table: Note that the binary includes data from an\n\n# another program and we may not be allowed to distribute this.  This\n\n# ain't no problem as the programs using this generated data are not\n\n# installed and thus not distributed.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "neopg-tool/CMakeLists.txt" : {
+      "ObjectId" : "18cb1ecde94e1b04aea858d7306b90789cb67db2",
+      "LastModified" : "2018-11-10T03:03:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - application\n\n# Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NeoPG tool (binary)\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tests\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Locale\n",
+        "Line" : 272,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# get_target_property(_src_list neopg-tool SOURCES)\n",
+        "Line" : 288,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "neopg-tool/locale/CMakeLists.txt" : {
+      "ObjectId" : "71a6b74c3c80fa0cce2287c473a076128cd0acca",
+      "LastModified" : "2018-10-31T17:26:04Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "neopg-tool/tests/CMakeLists.txt" : {
+      "ObjectId" : "85c213469e0ed57907c09987e5520ba22da9f3af",
+      "LastModified" : "2018-10-31T17:26:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - tests\n\n# Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Pure unit tests are located alongside the implementation.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "neopg/CMakeLists.txt" : {
+      "ObjectId" : "f4e187d91b40a8d823a8c4f53a3828af1d1143bc",
+      "LastModified" : "2018-10-31T17:26:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - library\n\n# Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# libneopg\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "neopg/tests/CMakeLists.txt" : {
+      "ObjectId" : "501dd22b0a67624b8dcdfe91d53c8c5fe28f0a18",
+      "LastModified" : "2018-10-31T17:26:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NeoPG - tests\n\n# Copyright 2017 The NeoPG developers\n\n#\n\n# NeoPG is released under the Simplified BSD License (see license.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Pure unit tests are located alongside the implementation.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 11,
+    "AUTOMAKE" : 7
+  },
+  "ElapsedTime" : 1928
+}

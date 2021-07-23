@@ -1,0 +1,1556 @@
+{
+  "Repository" : "7776438",
+  "Revision" : "HEAD",
+  "ObjectId" : "d9af22e53697d3fe676231be4f3432c84c8b3872",
+  "CommitTime" : "2019-04-14T17:19:44Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "d3cf123f6109b7e1a495025ea9eb7a9fba0e160a",
+      "LastModified" : "2018-02-28T03:39:20Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################################################\n\n#                                                                           #\n\n#  READ examples/CMakeLists.txt TO SEE HOW TO USE DLIB FROM C++ WITH CMAKE  #\n\n#                                                                           #\n\n#############################################################################\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# When you call add_subdirectory(dlib) from a parent CMake project dlib's\n\n# CMake scripts will assume you want to statically compile dlib into\n\n# whatever you are building rather than create a standalone copy of dlib.\n\n# This means CMake will build dlib as a static library, disable dlib's\n\n# install targets so they don't clutter your project, and adjust a few other\n\n# minor things that are convenient when statically building dlib as part of\n\n# your own projects.\n\n#\n\n# On the other hand, if there is no parent CMake project or if\n\n# DLIB_IN_PROJECT_BUILD is set to false, CMake will compile dlib as a normal\n\n# standalone library (either shared or static, based on the state of CMake's\n\n# BUILD_SHARED_LIBS flag), and include the usual install targets so you can\n\n# install dlib on your computer via `make install`.  Since the only reason\n\n# to build this CMakeLists.txt (the one you are reading right now) by itself\n\n# is if you want to install dlib, we indicate as such by setting\n\n# DLIB_IN_PROJECT_BUILD to false.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 2
+    },
+    "dlib/CMakeLists.txt" : {
+      "ObjectId" : "c19ee8a876226e2805f0d87bc02571010b0aa88c",
+      "LastModified" : "2019-04-14T17:19:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Only print these messages once, even if dlib is added multiple times via add_subdirectory()\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Adhere to GNU filesystem layout conventions\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This policy tells cmake to really honor CXX_VISIBILITY_PRESET rather than\n\n# ignore it for backwards compatibility.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 3
+      },
+      "4" : {
+        "Text" : "# default to a Release build (except if CMAKE_BUILD_TYPE is set)\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Set DLIB_VERSION in the including CMake file so they can use it to do whatever they want. \n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# True when building a python extension module using Visual Studio.  We care\n\n# about this because a huge number of windows users have broken systems, and\n\n# in particular, they have broken or incompatibly installed copies of things\n\n# like libjpeg or libpng.  So if we detect we are in this mode we will never\n\n# ever link to those libraries.  Instead, we link to the copy included with\n\n# dlib.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 3
+      },
+      "7" : {
+        "Text" : "# Check if we are being built as part of a pybind11 module. \n",
+        "Line" : 72,
+        "CharPositionInLine" : 3
+      },
+      "8" : {
+        "Text" : "# Just setting CMAKE_POSITION_INDEPENDENT_CODE should be enough to set\n\n# -fPIC for GCC but sometimes it still doesn't get set, so make sure it\n\n# does.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 9
+      },
+      "9" : {
+        "Text" : "# Make DLIB_ASSERT statements not abort the python interpreter, but just return an error.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "# DLIB_IN_PROJECT_BUILD==true means you are using dlib by invoking\n\n# add_subdirectory(dlib) in the parent project. In this case, we always want\n\n# to build dlib as a static library so the parent project doesn't need to\n\n# deal with some random dlib shared library file.  It is much better to\n\n# statically compile dlib into the parent project.  So the following bit of\n\n# CMake ensures that happens.  However, we have to take care to compile dlib\n\n# with position independent code if appropriate (i.e. if the parent project\n\n# is a shared library).\n",
+        "Line" : 85,
+        "CharPositionInLine" : 3
+      },
+      "11" : {
+        "Text" : "# Just setting CMAKE_POSITION_INDEPENDENT_CODE should be enough to set\n\n# -fPIC for GCC but sometimes it still doesn't get set, so make sure it\n\n# does.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 9
+      },
+      "12" : {
+        "Text" : "# Tell cmake to build dlib as a static library\n",
+        "Line" : 103,
+        "CharPositionInLine" : 3
+      },
+      "13" : {
+        "Text" : "# Set only because there are old target_link_libraries() statements in the\n\n# FindCUDA.cmake file that comes with CMake that error out if the new behavior\n\n# is used.  In newer versions of CMake we can instead set CUDA_LINK_LIBRARIES_KEYWORD which fixes this issue.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 3
+      },
+      "14" : {
+        "Text" : "# Suppress superfluous randlib warnings about libdlib.a having no symbols on MacOSX.\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Don't try to call add_library(dlib) and setup dlib's stuff if it has already\n\n# been done by some other part of the current cmake project.  We do this\n\n# because it avoids getting warnings/errors about cmake policy CMP0002.  This\n\n# happens when a project tries to call add_subdirectory() on dlib more than\n\n# once.  This most often happens when the top level of a project depends on two\n\n# or more other things which both depend on dlib. \n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#set (DLIB_USE_FFTW_STR \"Disable this if you don't want to link against fftw\" )\n",
+        "Line" : 183,
+        "CharPositionInLine" : 3
+      },
+      "17" : {
+        "Text" : "# Set these variables so they are set in the config.h.in file when dlib\n\n# is installed.\n",
+        "Line" : 201,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Set these variables so they are set in the config.h.in file when dlib\n\n# is installed.\n",
+        "Line" : 208,
+        "CharPositionInLine" : 6
+      },
+      "19" : {
+        "Text" : "# Never force the asserts off when doing an in project build.  The only\n\n# time this matters is when using visual studio.  The visual studio IDE\n\n# has a drop down that lets the user select either release or debug\n\n# builds.  The DLIB_ASSERT macro is setup to enable/disable automatically\n\n# based on this drop down (via preprocessor magic).  However, if\n\n# DLIB_DISABLE_ASSERTS is defined it permanently disables asserts no\n\n# matter what, which would defeat the visual studio drop down.  So here\n\n# we make a point to not do that kind of severe disabling when in a\n\n# project build.  It should also be pointed out that DLIB_DISABLE_ASSERTS\n\n# is only needed when building and installing dlib as a separately\n\n# installed library.  It doesn't matter when doing an in project build. \n",
+        "Line" : 213,
+        "CharPositionInLine" : 6
+      },
+      "20" : {
+        "Text" : "#option(DLIB_USE_FFTW ${DLIB_USE_FFTW_STR} OFF)\n",
+        "Line" : 237,
+        "CharPositionInLine" : 6
+      },
+      "21" : {
+        "Text" : "#option(DLIB_USE_FFTW ${DLIB_USE_FFTW_STR} ON)\n",
+        "Line" : 247,
+        "CharPositionInLine" : 6
+      },
+      "22" : {
+        "Text" : "#toggle_preprocessor_switch(DLIB_USE_FFTW)\n",
+        "Line" : 256,
+        "CharPositionInLine" : 3
+      },
+      "23" : {
+        "Text" : "# we want to link to the right stuff depending on our platform.  \n",
+        "Line" : 326,
+        "CharPositionInLine" : 6
+      },
+      "24" : {
+        "Text" : "###############################################################################\n",
+        "Line" : 327,
+        "CharPositionInLine" : 32
+      },
+      "25" : {
+        "Text" : "############################################################################\n",
+        "Line" : 333,
+        "CharPositionInLine" : 20
+      },
+      "26" : {
+        "Text" : "# If both X11 and anaconda are installed, it's possible for the\n\n# anaconda path to appear before /opt/X11, so we remove anaconda.\n",
+        "Line" : 338,
+        "CharPositionInLine" : 15
+      },
+      "27" : {
+        "Text" : "# Make sure X11 is in the include path.  Note that we look for\n\n# Xlocale.h rather than Xlib.h because it avoids finding a partial\n\n# copy of the X11 headers on systems with anaconda installed.\n",
+        "Line" : 349,
+        "CharPositionInLine" : 15
+      },
+      "28" : {
+        "Text" : "##################################################################################\n",
+        "Line" : 377,
+        "CharPositionInLine" : 14
+      },
+      "29" : {
+        "Text" : "# link to the nsl library if it exists.  this is something you need sometimes \n",
+        "Line" : 378,
+        "CharPositionInLine" : 9
+      },
+      "30" : {
+        "Text" : "# link to the socket library if it exists.  this is something you need on solaris\n",
+        "Line" : 384,
+        "CharPositionInLine" : 9
+      },
+      "31" : {
+        "Text" : "##################################################################################\n",
+        "Line" : 407,
+        "CharPositionInLine" : 15
+      },
+      "32" : {
+        "Text" : "# If we can't find libpng then statically compile it in.\n",
+        "Line" : 442,
+        "CharPositionInLine" : 12
+      },
+      "33" : {
+        "Text" : "# If we can't find libjpeg then statically compile it in.\n",
+        "Line" : 504,
+        "CharPositionInLine" : 12
+      },
+      "34" : {
+        "Text" : "# Try to find BLAS, LAPACK and MKL\n",
+        "Line" : 568,
+        "CharPositionInLine" : 9
+      },
+      "35" : {
+        "Text" : "# This bit of weirdness is to work around a bug in cmake \n",
+        "Line" : 612,
+        "CharPositionInLine" : 12
+      },
+      "36" : {
+        "Text" : "# There is some bug in cmake that causes it to mess up the\n\n# -std=c++11 option if you let it propagate it to nvcc in some\n\n# cases.  So instead we disable this and manually include\n\n# things from CMAKE_CXX_FLAGS in the CUDA_NVCC_FLAGS list below.\n",
+        "Line" : 624,
+        "CharPositionInLine" : 12
+      },
+      "37" : {
+        "Text" : "# Grab all the -D flags from CMAKE_CXX_FLAGS so we can pass them\n\n# to nvcc.\n",
+        "Line" : 630,
+        "CharPositionInLine" : 15
+      },
+      "38" : {
+        "Text" : "# Check if we are being built as part of a pybind11 module. \n",
+        "Line" : 634,
+        "CharPositionInLine" : 15
+      },
+      "39" : {
+        "Text" : "# Don't export unnecessary symbols.\n",
+        "Line" : 636,
+        "CharPositionInLine" : 18
+      },
+      "40" : {
+        "Text" : "# Note that we add __STRICT_ANSI__ to avoid freaking out nvcc with gcc specific\n\n# magic in the standard C++ header files (since nvcc uses gcc headers on\n\n# linux).\n",
+        "Line" : 643,
+        "CharPositionInLine" : 12
+      },
+      "41" : {
+        "Text" : "# sometimes this setting isn't propagated to NVCC, which then causes the\n\n# compile to fail.  So make sure it's propagated.\n",
+        "Line" : 655,
+        "CharPositionInLine" : 15
+      },
+      "42" : {
+        "Text" : "# Visual studio doesn't have -fPIC so don't do it in that case.\n",
+        "Line" : 657,
+        "CharPositionInLine" : 29
+      },
+      "43" : {
+        "Text" : "# make sure cuda is really working by doing a test compile\n",
+        "Line" : 665,
+        "CharPositionInLine" : 15
+      },
+      "44" : {
+        "Text" : "# see https://github.com/davisking/dlib/issues/363\n",
+        "Line" : 673,
+        "CharPositionInLine" : 29
+      },
+      "45" : {
+        "Text" : "# Find where cuSOLVER is since the FindCUDA cmake package doesn't\n\n# bother to look for it in older versions of cmake.\n",
+        "Line" : 705,
+        "CharPositionInLine" : 12
+      },
+      "46" : {
+        "Text" : "# CUDA 10.1 doesn't install symbolic links to libcusolver.so in\n\n# the usual place.  This is probably a bug in the cuda\n\n# installer.  In any case, If we haven't found cusolver yet go\n\n# look in the cuda install folder for it.  New versions of cmake\n\n# do this correctly, but older versions need help.\n",
+        "Line" : 710,
+        "CharPositionInLine" : 15
+      },
+      "47" : {
+        "Text" : "# Also find OpenMP since cuSOLVER needs it.  Importantly, we only\n\n# look for one to link to if our use of BLAS, specifically the\n\n# Intel MKL, hasn't already decided what to use.  This is because\n\n# it makes the MKL bug out if you link to another openmp lib other\n\n# than Intel's when you use the MKL. I'm also not really sure when\n\n# explicit linking to openmp became unnecessary, but for\n\n# sufficiently older versions of cuda it was needed.  Then in\n\n# versions of cmake newer than 3.11 linking to openmp started to\n\n# mess up the switches passed to nvcc, so you can't just leave\n\n# these \"try to link to openmp\" statements here going forward.  Fun\n\n# times.\n",
+        "Line" : 722,
+        "CharPositionInLine" : 12
+      },
+      "48" : {
+        "Text" : "# make sure sqlite3.h is in the include path\n",
+        "Line" : 782,
+        "CharPositionInLine" : 9
+      },
+      "49" : {
+        "Text" : "# make sure fftw3.h is in the include path\n",
+        "Line" : 797,
+        "CharPositionInLine" : 9
+      },
+      "50" : {
+        "Text" : "# Tell CMake to build dlib via add_library()/cuda_add_library()\n",
+        "Line" : 811,
+        "CharPositionInLine" : 6
+      },
+      "51" : {
+        "Text" : "# The old cuda_add_library() command doesn't support CMake's newer dependency\n\n# stuff, so we have to set the include path manually still, which we do here.\n",
+        "Line" : 813,
+        "CharPositionInLine" : 9
+      },
+      "52" : {
+        "Text" : "##### end of if NOT DLIB_ISO_CPP_ONLY ##########################################################\n",
+        "Line" : 821,
+        "CharPositionInLine" : 13
+      },
+      "53" : {
+        "Text" : "# These are private in this case because they will be controlled by the\n\n# contents of dlib/config.h once it's installed. But for in project\n\n# builds, there is no real config.h so they are public in the above case.\n",
+        "Line" : 833,
+        "CharPositionInLine" : 6
+      },
+      "54" : {
+        "Text" : "# Do this so that dlib/config.h won't set DLIB_NOT_CONFIGURED. This will then allow\n\n# the code in dlib/threads_kernel_shared.cpp to emit a linker error for users who\n\n# don't use the configured config.h file generated by cmake.\n",
+        "Line" : 837,
+        "CharPositionInLine" : 6
+      },
+      "55" : {
+        "Text" : "# Do this so that dlib/config.h can record the version of dlib it's configured with\n\n# and ultimately issue a linker error to people who try to use a binary dlib that is\n\n# the wrong version.\n",
+        "Line" : 842,
+        "CharPositionInLine" : 6
+      },
+      "56" : {
+        "Text" : "# Allow the unit tests to ask us to compile the all/source.cpp file just to make sure it compiles.\n",
+        "Line" : 851,
+        "CharPositionInLine" : 3
+      },
+      "57" : {
+        "Text" : "# Install the library\n",
+        "Line" : 868,
+        "CharPositionInLine" : 3
+      },
+      "58" : {
+        "Text" : "# Windows considers .dll to be runtime artifacts\n",
+        "Line" : 874,
+        "CharPositionInLine" : 53
+      },
+      "59" : {
+        "Text" : "# overwrite config.h with the configured one\n",
+        "Line" : 897,
+        "CharPositionInLine" : 6
+      },
+      "60" : {
+        "Text" : "## Config.cmake generation and installation\n",
+        "Line" : 903,
+        "CharPositionInLine" : 6
+      },
+      "61" : {
+        "Text" : "## dlib-1.pc generation and installation\n",
+        "Line" : 924,
+        "CharPositionInLine" : 6
+      },
+      "62" : {
+        "Text" : "# Add a cpack \"package\" target. This will create an archive containing\n\n# the built library file, the header files, and cmake and pkgconfig\n\n# configuration files.\n",
+        "Line" : 930,
+        "CharPositionInLine" : 6
+      },
+      "63" : {
+        "Text" : "# Give the output library files names that are unique functions of the\n\n# visual studio mode that compiled them.  We do this so that people who\n\n# compile dlib and then copy the .lib files around (which they shouldn't be\n\n# doing in the first place!) will hopefully be slightly less confused by\n\n# what happens since, at the very least, the filenames will indicate what\n\n# visual studio runtime they go with.\n",
+        "Line" : 940,
+        "CharPositionInLine" : 3
+      },
+      "64" : {
+        "Text" : "# Check if we are being built as part of a pybind11 module. \n",
+        "Line" : 953,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# Don't export unnecessary symbols.\n",
+        "Line" : 955,
+        "CharPositionInLine" : 3
+      },
+      "66" : {
+        "Text" : "# If we are using the Intel MKL on windows then try and copy the iomp dll\n\n# file to the output folder.  We do this since a very large number of\n\n# windows users don't understand that they need to add the Intel MKL's\n\n# folders to their PATH to use the Intel MKL.  They then complain on the\n\n# dlib forums.  Copying the Intel MKL dlls to the output directory removes\n\n# the need to add the Intel MKL to the PATH.\n",
+        "Line" : 961,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 67
+    },
+    "dlib/cmake_utils/add_global_compiler_switch.cmake" : {
+      "ObjectId" : "5f3d83ce4eafbdd17e2ecd2a7d84c28d1a774492",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make macros that can add compiler switches to the entire project.  Not just\n\n# to the current cmake folder being built.  \n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If removing the switch would change the flags then it's already present\n\n# and we don't need to do anything.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 2
+    },
+    "dlib/cmake_utils/check_if_avx_instructions_executable_on_host.cmake" : {
+      "ObjectId" : "a5d7320f4ea7059ef250063b62012e26fda63a67",
+      "LastModified" : "2018-05-22T01:21:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This script checks if your compiler and host processor can generate and then run programs with AVX instructions.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't rerun this script if its already been executed.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set to false unless we find out otherwise in the code below.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "dlib/cmake_utils/check_if_neon_available.cmake" : {
+      "ObjectId" : "0510707df7726569fba015f2d3e28eb2db4fd01c",
+      "LastModified" : "2018-05-22T01:21:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This script checks if __ARM_NEON__ is defined for your compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't rerun this script if its already been executed.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set to false unless we find out otherwise in the code below.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# test if __ARM_NEON__ is defined\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "dlib/cmake_utils/check_if_sse4_instructions_executable_on_host.cmake" : {
+      "ObjectId" : "e2605819ee2ed5ce097281faab7c82c9fc7ec21f",
+      "LastModified" : "2018-06-10T13:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This script checks if your compiler and host processor can generate and then run programs with SSE4 instructions.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't rerun this script if its already been executed.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set to false unless we find out otherwise in the code below.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "dlib/cmake_utils/find_blas.cmake" : {
+      "ObjectId" : "362efde83c737eeb6836391ce6410c9775178e85",
+      "LastModified" : "2019-04-14T17:19:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n\n#\n\n# This cmake file tries to find installed BLAS and LAPACK libraries.  \n\n# It looks for an installed copy of the Intel MKL library first and then\n\n# attempts to find some other BLAS and LAPACK libraries if you don't have \n\n# the Intel MKL.\n\n#\n\n#  blas_found               - True if BLAS is available\n\n#  lapack_found             - True if LAPACK is available\n\n#  found_intel_mkl          - True if the Intel MKL library is available\n\n#  found_intel_mkl_headers  - True if Intel MKL headers are available\n\n#  blas_libraries           - link against these to use BLAS library \n\n#  lapack_libraries         - link against these to use LAPACK library \n\n#  mkl_libraries            - link against these to use the MKL library\n\n#  mkl_include_dir          - add to the include path to use the MKL library\n\n#  openmp_libraries         - Set to Intel's OpenMP library if and only if we\n\n#                             find the MKL.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# setting this makes CMake allow normal looking if else statements\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# # This commented out stuff would link directly to MATLAB's built in\n\n# BLAS and LAPACK. But it's better to not link to anything and do a\n\n#find_library(MATLAB_BLAS_LIBRARY mwblas  PATHS ${MATLAB_LIB_FOLDERS} )\n\n#find_library(MATLAB_LAPACK_LIBRARY mwlapack  PATHS ${MATLAB_LIB_FOLDERS} )\n\n#if (MATLAB_BLAS_LIBRARY AND MATLAB_LAPACK_LIBRARY)\n\n#    add_subdirectory(external/cblas)\n\n#    set(blas_libraries  ${MATLAB_BLAS_LIBRARY} cblas  )\n\n#    set(lapack_libraries  ${MATLAB_LAPACK_LIBRARY} )\n\n#    set(blas_found 1)\n\n#    set(lapack_found 1)\n\n#    message(STATUS \"Found MATLAB's BLAS and LAPACK libraries\")\n\n#endif()\n",
+        "Line" : 38,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# We need cblas since MATLAB doesn't provide cblas symbols.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 6
+      },
+      "4" : {
+        "Text" : "## Don't try to link to anything other than MATLAB's own internal blas\n\n## and lapack libraries because doing so generally upsets MATLAB.  So\n\n## we just end here no matter what.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# First, search for libraries via pkg-config, which is the cleanest path\n",
+        "Line" : 65,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "# Get mkl_include_dir\n",
+        "Line" : 110,
+        "CharPositionInLine" : 3
+      },
+      "7" : {
+        "Text" : "# Search for the needed libraries from the MKL.  We will try to link against the mkl_rt\n\n# file first since this way avoids linking bugs in some cases.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# if we found the MKL \n",
+        "Line" : 124,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "# Search for the needed libraries from the MKL.  This time try looking for a different\n\n# set of MKL files and try to link against those.\n",
+        "Line" : 138,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "# If we found the MKL \n",
+        "Line" : 161,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# try to find some other LAPACK libraries if we didn't find the MKL\n",
+        "Line" : 177,
+        "CharPositionInLine" : 3
+      },
+      "12" : {
+        "Text" : "# If you compiled OpenBLAS with LAPACK in it then it should have the\n\n# sgetrf_single function in it.  So if we find that function in\n\n# OpenBLAS then just use OpenBLAS's LAPACK. \n",
+        "Line" : 201,
+        "CharPositionInLine" : 9
+      },
+      "13" : {
+        "Text" : "# set(lapack_libraries gfortran) \n",
+        "Line" : 207,
+        "CharPositionInLine" : 12
+      },
+      "14" : {
+        "Text" : "# try to find some other BLAS libraries if we didn't find the MKL\n",
+        "Line" : 226,
+        "CharPositionInLine" : 3
+      },
+      "15" : {
+        "Text" : "# CentOS 7 atlas\n",
+        "Line" : 239,
+        "CharPositionInLine" : 3
+      },
+      "16" : {
+        "Text" : "# Make sure we really found a CBLAS library.  That is, it needs to expose\n\n# the proper cblas link symbols.  So here we test if one of them is present\n\n# and assume everything is good if it is. Note that we don't do this check if\n\n# we found the Intel MKL since for some reason CHECK_FUNCTION_EXISTS doesn't work\n\n# with it.  But it's fine since the MKL should always have cblas.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 3
+      },
+      "17" : {
+        "Text" : "# Get mkl_include_dir\n",
+        "Line" : 342,
+        "CharPositionInLine" : 3
+      },
+      "18" : {
+        "Text" : "# Search for the needed libraries from the MKL.  \n",
+        "Line" : 356,
+        "CharPositionInLine" : 3
+      },
+      "19" : {
+        "Text" : "# See if we can find the dll that goes with this, so we can copy it to\n\n# the output folder, since a very large number of windows users don't\n\n# understand that they need to add the Intel MKL's folders to their\n\n# PATH to use the Intel MKL.  They then complain on the dlib forums.\n\n# Copying the Intel MKL dlls to the output directory removes the need\n\n# to add the Intel MKL to the PATH.\n",
+        "Line" : 375,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "# If we found the MKL \n",
+        "Line" : 388,
+        "CharPositionInLine" : 3
+      },
+      "21" : {
+        "Text" : "# Make sure the version of the Intel MKL we found is compatible with\n\n# the compiler we are using.  One way to do this check is to see if we can\n\n# link to it right now.\n",
+        "Line" : 397,
+        "CharPositionInLine" : 6
+      },
+      "22" : {
+        "Text" : "# When all else fails use CMake's built in functions to find BLAS and LAPACK\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# If using lapack, determine whether to mangle functions\n",
+        "Line" : 433,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "dlib/cmake_utils/find_libjpeg.cmake" : {
+      "ObjectId" : "5a702f382de7e603dbb1c637b97f88843a41e3da",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#This script just runs CMake's built in JPEG finding tool.  But it also checks that the\n\n#copy of libjpeg that cmake finds actually builds and links.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't rerun this script if its already been executed.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dlib/cmake_utils/find_libpng.cmake" : {
+      "ObjectId" : "f59414e86d84c959bce09f0610a569f78cb9e8c4",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#This script just runs CMake's built in PNG finding tool.  But it also checks that the\n\n#copy of libpng that cmake finds actually builds and links.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't rerun this script if its already been executed.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dlib/cmake_utils/set_compiler_specific_options.cmake" : {
+      "ObjectId" : "7004333bee564e65df31398f6b49c404dfbee8e6",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Check if we are being built as part of a pybind11 module. \n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# For python users, enable SSE4 and AVX if they have these instructions.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 3
+      },
+      "2" : {
+        "Text" : "# push USING_OLD_VISUAL_STUDIO_COMPILER to the parent so we can use it in the\n\n# examples CMakeLists.txt file.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Setup some options to allow a user to enable SSE and AVX instruction use.  \n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# else if using Visual Studio \n",
+        "Line" : 84,
+        "CharPositionInLine" : 60
+      },
+      "5" : {
+        "Text" : "# Use SSE2 by default when using Visual Studio.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "# Visual studio doesn't have an /arch:SSE2 flag when building in 64 bit modes.\n\n# So only give it when we are doing a 32 bit build.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Visual studio doesn't have an /arch:SSE2 flag when building in 64 bit modes.\n\n# So only give it when we are doing a 32 bit build.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# By default, g++ won't warn or error if you forget to return a value in a\n\n# function which requires you to do so.  This option makes it give a warning\n\n# for doing this.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 3
+      },
+      "9" : {
+        "Text" : "# Increase clang's default tempalte recurision depth so the dnn examples don't error out.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 3
+      },
+      "10" : {
+        "Text" : "# By default Visual Studio does not support .obj files with more than 65k sections.\n\n# However, code generated by file_to_code_ex and code using DNN module can have\n\n# them.  So this flag enables > 65k sections, but produces .obj files\n\n# that will not be readable by VS 2005.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 3
+      },
+      "11" : {
+        "Text" : "# Build dlib with all cores.  Don't propagate the setting to client programs\n\n# though since they might compile large translation units that use too much\n\n# RAM.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 3
+      },
+      "12" : {
+        "Text" : "# Clang can compile all Dlib's code at Windows platform. Tested with Clang 5\n",
+        "Line" : 152,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 13
+    },
+    "dlib/cmake_utils/tell_visual_studio_to_use_static_runtime.cmake" : {
+      "ObjectId" : "e5fb0912920f071ba587e666869dab2e3f8c84b7",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Including this cmake script into your cmake project will cause visual studio\r\n\n# to build your project against the static C runtime.\r\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dlib/cmake_utils/test_for_avx/CMakeLists.txt" : {
+      "ObjectId" : "7d72402339f022e21f93f2eabe50b9a77667e6ef",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Pull this in since it sets the AVX compile options by putting that kind of stuff into the active_compile_opts list.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make this build fail so that calling try_compile statements will error in this case.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 2
+    },
+    "dlib/cmake_utils/test_for_cpp11/CMakeLists.txt" : {
+      "ObjectId" : "bc6f025636a08b6e60242d4f9753cf6984dd96e9",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Try to enable C++11\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dlib/cmake_utils/test_for_cuda/CMakeLists.txt" : {
+      "ObjectId" : "16de507ea859b1f3dbce086ee7a1e3727950ba5b",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Override the FindCUDA.cmake setting to avoid duplication of host flags if using a toolchain:\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dlib/cmake_utils/test_for_cudnn/CMakeLists.txt" : {
+      "ObjectId" : "08320594668a03dadd34db67bf4ba87ffe74d57d",
+      "LastModified" : "2019-03-15T12:23:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Override the FindCUDA.cmake setting to avoid duplication of host flags if using a toolchain:\r\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dlib/cmake_utils/test_for_libjpeg/CMakeLists.txt" : {
+      "ObjectId" : "1650bd099f29d93fb5ee2c29d4e660f76095b405",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dlib/cmake_utils/test_for_libpng/CMakeLists.txt" : {
+      "ObjectId" : "65cd85a4d51bba1b7ff7052bf5f64ffa2f15d632",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dlib/cmake_utils/test_for_neon/CMakeLists.txt" : {
+      "ObjectId" : "0b6eb6f288c6458fc671638c87eef0106f3ba8e6",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dlib/cmake_utils/test_for_sse4/CMakeLists.txt" : {
+      "ObjectId" : "6a07d1a5dc415048ac25ba12be345e8a759e1a04",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Pull this in since it sets the SSE4 compile options by putting that kind of stuff into the active_compile_opts list.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make this build fail so that calling try_compile statements will error in this case.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 2
+    },
+    "dlib/cmake_utils/use_cpp_11.cmake" : {
+      "ObjectId" : "e49e30f2a35685335e1b7ea45e10020ce3b0281a",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This script creates a function, enable_cpp11_for_target(), which checks if your\n\n# compiler has C++11 support and enables it if it does.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set to false unless we find out otherwise in the code below.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Now turn on the appropriate compiler switch to enable C++11 if you have a\n\n# C++11 compiler.  In CMake 3.1 there is a simple flag you can set, but earlier\n\n# verions of CMake are not so convenient.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Since we don't know what compiler this is just try to build a c++11 project and see if it compiles.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 6
+      },
+      "4" : {
+        "Text" : "# Set a flag if the compiler you are using is capable of providing C++11 features.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 3
+      },
+      "5" : {
+        "Text" : "# Tell cmake that we need C++11 for dlib\n",
+        "Line" : 73,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# cxx_decltype_incomplete_return_types  # purposfully commented out because cmake errors out on this when using visual studio and cmake 3.8.0\n",
+        "Line" : 83,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# Sometimes clang will lie and report that it supports C++11 when\n\n# really it doesn't support thread_local.  So check for that.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 9
+      },
+      "8" : {
+        "Text" : "# Always enable whatever partial C++11 support we have, even if it isn't full\n\n# support, and just hope for the best.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "dlib/external/cblas/CMakeLists.txt" : {
+      "ObjectId" : "0d800ae13f9aabe2104e2f9ed17c11d00d2450cb",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#cblas_ccopy.c\n",
+        "Line" : 18,
+        "CharPositionInLine" : 3
+      },
+      "2" : {
+        "Text" : "#cblas_cgbmv.c\n",
+        "Line" : 21,
+        "CharPositionInLine" : 3
+      },
+      "3" : {
+        "Text" : "#cblas_chbmv.c\n\n#cblas_chemm.c\n\n#cblas_chemv.c\n\n#cblas_cher2.c\n\n#cblas_cher2k.c\n\n#cblas_cher.c\n\n#cblas_cherk.c\n\n#cblas_chpmv.c\n\n#cblas_chpr2.c\n\n#cblas_chpr.c\n",
+        "Line" : 26,
+        "CharPositionInLine" : 3
+      },
+      "4" : {
+        "Text" : "#cblas_csscal.c\n\n#cblas_cswap.c\n\n#cblas_csymm.c\n\n#cblas_csyr2k.c\n\n#cblas_csyrk.c\n\n#cblas_ctbmv.c\n\n#cblas_ctbsv.c\n\n#cblas_ctpmv.c\n\n#cblas_ctpsv.c\n\n#cblas_ctrmm.c\n\n#cblas_ctrmv.c\n",
+        "Line" : 37,
+        "CharPositionInLine" : 3
+      },
+      "5" : {
+        "Text" : "#cblas_ctrsv.c\n\n#cblas_dasum.c\n",
+        "Line" : 49,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "#cblas_dcopy.c\n",
+        "Line" : 52,
+        "CharPositionInLine" : 3
+      },
+      "7" : {
+        "Text" : "#cblas_dgbmv.c\n",
+        "Line" : 54,
+        "CharPositionInLine" : 3
+      },
+      "8" : {
+        "Text" : "#cblas_dnrm2.c\n\n#cblas_drot.c\n\n#cblas_drotg.c\n\n#cblas_drotm.c\n\n#cblas_drotmg.c\n\n#cblas_dsbmv.c\n",
+        "Line" : 58,
+        "CharPositionInLine" : 3
+      },
+      "9" : {
+        "Text" : "#cblas_dsdot.c\n\n#cblas_dspmv.c\n\n#cblas_dspr2.c\n\n#cblas_dspr.c\n\n#cblas_dswap.c\n\n#cblas_dsymm.c\n\n#cblas_dsymv.c\n\n#cblas_dsyr2.c\n\n#cblas_dsyr2k.c\n\n#cblas_dsyr.c\n\n#cblas_dsyrk.c\n\n#cblas_dtbmv.c\n\n#cblas_dtbsv.c\n\n#cblas_dtpmv.c\n\n#cblas_dtpsv.c\n\n#cblas_dtrmm.c\n\n#cblas_dtrmv.c\n",
+        "Line" : 65,
+        "CharPositionInLine" : 3
+      },
+      "10" : {
+        "Text" : "#cblas_dtrsv.c\n\n#cblas_dzasum.c\n\n#cblas_dznrm2.c\n\n#cblas_icamax.c\n\n#cblas_idamax.c\n\n#cblas_isamax.c\n\n#cblas_izamax.c\n\n#cblas_sasum.c\n",
+        "Line" : 83,
+        "CharPositionInLine" : 3
+      },
+      "11" : {
+        "Text" : "#cblas_scasum.c\n\n#cblas_scnrm2.c\n\n#cblas_scopy.c\n",
+        "Line" : 92,
+        "CharPositionInLine" : 3
+      },
+      "12" : {
+        "Text" : "#cblas_sdsdot.c\n\n#cblas_sgbmv.c\n",
+        "Line" : 96,
+        "CharPositionInLine" : 3
+      },
+      "13" : {
+        "Text" : "#cblas_snrm2.c\n\n#cblas_srot.c\n\n#cblas_srotg.c\n\n#cblas_srotm.c\n\n#cblas_srotmg.c\n\n#cblas_ssbmv.c\n",
+        "Line" : 101,
+        "CharPositionInLine" : 3
+      },
+      "14" : {
+        "Text" : "#cblas_sspmv.c\n\n#cblas_sspr2.c\n\n#cblas_sspr.c\n\n#cblas_sswap.c\n\n#cblas_ssymm.c\n\n#cblas_ssymv.c\n\n#cblas_ssyr2.c\n\n#cblas_ssyr2k.c\n\n#cblas_ssyr.c\n\n#cblas_ssyrk.c\n\n#cblas_stbmv.c\n\n#cblas_stbsv.c\n\n#cblas_stpmv.c\n\n#cblas_stpsv.c\n\n#cblas_strmm.c\n\n#cblas_strmv.c\n",
+        "Line" : 108,
+        "CharPositionInLine" : 3
+      },
+      "15" : {
+        "Text" : "#cblas_strsv.c\n",
+        "Line" : 125,
+        "CharPositionInLine" : 3
+      },
+      "16" : {
+        "Text" : "#cblas_zcopy.c\n",
+        "Line" : 128,
+        "CharPositionInLine" : 3
+      },
+      "17" : {
+        "Text" : "#cblas_zdscal.c\n\n#cblas_zgbmv.c\n",
+        "Line" : 131,
+        "CharPositionInLine" : 3
+      },
+      "18" : {
+        "Text" : "#cblas_zhbmv.c\n\n#cblas_zhemm.c\n\n#cblas_zhemv.c\n\n#cblas_zher2.c\n\n#cblas_zher2k.c\n\n#cblas_zher.c\n\n#cblas_zherk.c\n\n#cblas_zhpmv.c\n\n#cblas_zhpr2.c\n\n#cblas_zhpr.c\n",
+        "Line" : 137,
+        "CharPositionInLine" : 3
+      },
+      "19" : {
+        "Text" : "#cblas_zswap.c\n\n#cblas_zsymm.c\n\n#cblas_zsyr2k.c\n\n#cblas_zsyrk.c\n\n#cblas_ztbmv.c\n\n#cblas_ztbsv.c\n\n#cblas_ztpmv.c\n\n#cblas_ztpsv.c\n\n#cblas_ztrmm.c\n\n#cblas_ztrmv.c\n",
+        "Line" : 148,
+        "CharPositionInLine" : 3
+      },
+      "20" : {
+        "Text" : "#cblas_ztrsv.c\n",
+        "Line" : 159,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 21
+    },
+    "dlib/external/pybind11/CMakeLists.txt" : {
+      "ObjectId" : "4280ba742d3ef19a72ed7d8cd7db19adbdfbc866",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMakeLists.txt -- Build system for the pybind11 modules\n\n#\n\n# Copyright (c) 2015 Wenzel Jakob <wenzel@inf.ethz.ch>\n\n#\n\n# All rights reserved. Use of this source code is governed by a\n\n# BSD-style license that can be found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# cmake warns if loaded from a min-3.0-required parent dir, so silence the warning:\n",
+        "Line" : 11,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# CMake versions < 3.4.0 do not support try_compile/pthread checks without C as active language.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Check if pybind11 is being used directly or via add_subdirectory\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Cache variables so pybind11_add_module can be used in parent projects\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# NB: when adding a header don't forget to also add it to setup.py\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# extract project version from source\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# CMake >= 3.0\n",
+        "Line" : 94,
+        "CharPositionInLine" : 42
+      },
+      "8" : {
+        "Text" : "# Build an interface library target:\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# to match exported target\n",
+        "Line" : 97,
+        "CharPositionInLine" : 50
+      },
+      "10" : {
+        "Text" : "# GNUInstallDirs \"DATADIR\" wrong here; CMake search path wants \"share\".\n",
+        "Line" : 122,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Remove CMAKE_SIZEOF_VOID_P from ConfigVersion.cmake since the library does\n\n# not depend on architecture specific settings or libraries.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 12
+    },
+    "dlib/external/pybind11/tools/FindCatch.cmake" : {
+      "ObjectId" : "9d490c5aade2151ebdd8cc84509361ba1c061f84",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find the Catch test framework or download it (single header)\n\n#\n\n# This is a quick module for internal use. It assumes that Catch is\n\n# REQUIRED and that a minimum version is provided (not EXACT). If\n\n# a suitable version isn't found locally, the single header file\n\n# will be downloaded and placed in the build dir: PROJECT_BINARY_DIR.\n\n#\n\n# This code sets the following variables:\n\n#  CATCH_INCLUDE_DIR      - path to catch.hpp\n\n#  CATCH_VERSION          - version number\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Extract the version number from catch.hpp\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Download the single-header version of Catch\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Look for catch locally\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Download the header if it wasn't found or if it's outdated\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "dlib/external/pybind11/tools/FindEigen3.cmake" : {
+      "ObjectId" : "9c546a05d859b18c49554d7ee7221cc486b7760e",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Eigen3 lib\n\n#\n\n# This module supports requiring a minimum version, e.g. you can do\n\n#   find_package(Eigen3 3.1.2)\n\n# to require version 3.1.2 or newer of Eigen3.\n\n#\n\n# Once done this will define\n\n#\n\n#  EIGEN3_FOUND - system has eigen lib with correct version\n\n#  EIGEN3_INCLUDE_DIR - the eigen include directory\n\n#  EIGEN3_VERSION - eigen version\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, 2007 Montel Laurent, <montel@kde.org>\n\n# Copyright (c) 2008, 2009 Gael Guennebaud, <g.gael@free.fr>\n\n# Copyright (c) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>\n\n# Redistribution and use is allowed according to the terms of the 2-clause BSD license.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# in cache already\n",
+        "Line" : 58,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "dlib/external/pybind11/tools/FindPythonLibsNew.cmake" : {
+      "ObjectId" : "b29b287de72bc1249e51279a99643891a743e9a5",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find python libraries\n\n# This module finds the libraries corresponding to the Python interpreter\n\n# FindPythonInterp provides.\n\n# This code sets the following variables:\n\n#\n\n#  PYTHONLIBS_FOUND           - have the Python libs been found\n\n#  PYTHON_PREFIX              - path to the Python installation\n\n#  PYTHON_LIBRARIES           - path to the python library\n\n#  PYTHON_INCLUDE_DIRS        - path to where Python.h is found\n\n#  PYTHON_MODULE_EXTENSION    - lib extension, e.g. '.so' or '.pyd'\n\n#  PYTHON_MODULE_PREFIX       - lib name prefix: usually an empty string\n\n#  PYTHON_SITE_PACKAGES       - path to installation site-packages\n\n#  PYTHON_IS_DEBUG            - whether the Python interpreter is a debug build\n\n#\n\n# Thanks to talljimbo for the patch adding the 'LDVERSION' config\n\n# variable usage.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2001-2009 Kitware, Inc.\n\n# Copyright 2012 Continuum Analytics, Inc.\n\n#\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n#\n\n# * Redistributions of source code must retain the above copyright\n\n# notice, this list of conditions and the following disclaimer.\n\n#\n\n# * Redistributions in binary form must reproduce the above copyright\n\n# notice, this list of conditions and the following disclaimer in the\n\n# documentation and/or other materials provided with the distribution.\n\n#\n\n# * Neither the names of Kitware, Inc., the Insight Software Consortium,\n\n# nor the names of their contributors may be used to endorse or promote\n\n# products derived from this software without specific prior written\n\n# permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\n# \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n\n# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n\n# # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n\n# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n\n# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n\n# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\n# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#=============================================================================\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Checking for the extension makes sure that `LibsNew` was found and not just `Libs`.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Use the Python interpreter to find the libs.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# According to http://stackoverflow.com/questions/646518/python-how-to-detect-debug-interpreter\n\n# testing whether sys has the gettotalrefcount function is a reliable, cross-platform\n\n# way to detect a CPython debug interpreter.\n\n#\n\n# The library suffix is from the config var LDVERSION sometimes, otherwise\n\n# VERSION. VERSION will typically be like \"2.7\" on unix, and \"27\" on windows.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Convert the process output into a list\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Make sure the Python has the same pointer-size as the chosen compiler\n\n# Skip if CMAKE_SIZEOF_VOID_P is not defined\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# The built-in FindPython didn't always give the version numbers\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Make sure all directory separators are '/'\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# when run in a venv, PYTHON_PREFIX points to it. But the libraries remain in the\n\n# original python installation. They may be found relative to PYTHON_INCLUDE_DIR.\n",
+        "Line" : 145,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# raise an error if the python libs are still not found.\n",
+        "Line" : 153,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "#message(STATUS \"Searching for Python libs in ${_PYTHON_LIBS_SEARCH}\")\n\n# Probably this needs to be more involved. It would be nice if the config\n\n# information the python interpreter itself gave us were more complete.\n",
+        "Line" : 164,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# If all else fails, just set the name/version and let the linker figure out the path.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# We use PYTHON_INCLUDE_DIR, PYTHON_LIBRARY and PYTHON_DEBUG_LIBRARY for the\n\n# cache entries because they are meant to specify the location of a single\n\n# library. We now set the variables listed by the documentation for this\n\n# module.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "dlib/external/pybind11/tools/pybind11Tools.cmake" : {
+      "ObjectId" : "9b550808b0a6ede44fc52f17258882cbcfafd161",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# tools/pybind11Tools.cmake -- Build system for the pybind11 modules\n\n#\n\n# Copyright (c) 2015 Wenzel Jakob <wenzel@inf.ethz.ch>\n\n#\n\n# All rights reserved. Use of this source code is governed by a\n\n# BSD-style license that can be found in the LICENSE file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add a CMake parameter for choosing a desired Python version\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Checks whether the given CXX/linker flags can compile and link a cxx file.  cxxflags and\n\n# linkerflags are lists of flags to use.  The result variable is a unique variable name for each set\n\n# of flags: the compilation result will be cached base on the result variable.  If the flags work,\n\n# sets them in cxxflags_out/linkerflags_out internal cache variables (in addition to ${result}).\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Internal: find the appropriate link time optimization flags for this compiler\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Clang Gold plugin does not support -Os; append -O3 to MinSizeRel builds to override it\n",
+        "Line" : 66,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# Intel equivalent to LTO is called IPO\n",
+        "Line" : 84,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# cmake only interprets libraries as linker flags when they start with a - (otherwise it\n\n# converts /LTCG to \\LTCG as if it was a Windows path).  Luckily MSVC supports passing flags\n\n# with - instead of /, even if it is a bit non-standard:\n",
+        "Line" : 88,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Enable LTO flags if found, except for Debug builds\n",
+        "Line" : 102,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Build a Python extension module:\n\n# pybind11_add_module(<name> [MODULE | SHARED] [EXCLUDE_FROM_ALL]\n\n#                     [NO_EXTRAS] [THIN_LTO] source1 [source2 ...])\n\n#\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# from project CMakeLists.txt\n\n# from pybind11Config\n",
+        "Line" : 134,
+        "CharPositionInLine" : 37
+      },
+      "10" : {
+        "Text" : "# The prefix and extension are provided by FindPythonLibsNew.cmake\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# -fvisibility=hidden is required to allow multiple modules compiled against\n\n# different pybind versions to work properly, and for some features (e.g.\n\n# py::module_local).  We force it on everything inside the `pybind11`\n\n# namespace; also turning it on for a pybind module compilation here avoids\n\n# potential warnings or issues from having mixed hidden/non-hidden types.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Link against the Python shared library on Windows\n",
+        "Line" : 151,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# It's quite common to have multiple copies of the same Python version\n\n# installed on one's system. E.g.: one copy from the OS and another copy\n\n# that's statically linked into an application like Blender or Maya.\n\n# If we link our plugin library against the OS Python here and import it\n\n# into Blender or Maya later on, this will cause segfaults when multiple\n\n# conflicting Python instances are active at the same time (even when they\n\n# are of the same version).\n",
+        "Line" : 154,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Windows is not affected by this issue since it handles DLL imports\n\n# differently. The solution for Linux and Mac OS is simple: we just don't\n\n# link against the Python library. The resulting shared library will have\n\n# missing symbols, but that's perfectly fine -- they will be resolved at\n\n# import time.\n",
+        "Line" : 162,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Suppress CMake >= 3.0 warning for shared libraries\n",
+        "Line" : 171,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# Make sure C++11/14 are enabled\n",
+        "Line" : 176,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Strip unnecessary sections of the binary on Linux/Mac OS\n",
+        "Line" : 186,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# /MP enables multithreaded builds (relevant when there are many files), /bigobj is\n\n# needed for bigger binding projects due to the limit to 64k addressable sections\n",
+        "Line" : 199,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Only set these options for C++ files.  This is important so that, for\n\n# instance, projects that include other types of source files like CUDA\n\n# .cu files don't get these options propagated to nvcc since that would\n\n# cause the build to fail.\n",
+        "Line" : 205,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 20
+    },
+    "dlib/java/CMakeLists.txt" : {
+      "ObjectId" : "4d66a513c0d62332a19aad9b66b4fcefd389de31",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Additional dependencies\n\n#add_subdirectory(../../dlib dlib_build)\n\n#set(additional_link_libraries dlib::dlib)\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tell swig to put the output files (the shared library and .jar) into the local folder.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Alternatively, instead of using install_target_output_folder, you can tell\n\n# cmake to output the shared library, java source files, and the jar to\n\n# separate output folders.  These commands would put them into folders thelib,\n\n# thesrc, and thejar, respectively.\n\n#set(install_shared_library_output_folder thelib)\n\n#set(install_java_source_output_folder    thesrc)\n\n#set(install_jar_output_folder            thejar)\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "dlib/matlab/CMakeLists.txt" : {
+      "ObjectId" : "b9a0beab9e833212b128723242ff8bd4f605950a",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# You can tell cmake where to put the mex files when you run 'make install' by\n\n# setting this variable.  The path is relative to this CMakeLists.txt file.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Compile the example_mex_function.cpp file and link it to dlib.  Note\n\n# that you can give a list of things to link to here.  E.g. \n\n#    add_mex_function(some_other_mex_function pthread dlib fftw) \n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dlib/test/CMakeLists.txt" : {
+      "ObjectId" : "d6147cb0edd327911a20f21e2dd520ad2f179cb4",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# create a variable called target_name and set it to the string \"dtest\"\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# compile the dlib/all/source.cpp file into its own object just to make sure it compiles\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This variable contains a list of all the tests we are building\n\n# into the regression test suite.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# add all the cpp files we want to compile to this list.  This tells\n\n# cmake that they are part of our target (which is the executable named dtest)\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Turn on all warnings when using gcc.\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "dlib/test/blas_bindings/CMakeLists.txt" : {
+      "ObjectId" : "5deddee04c45578cab818434d1adbb0042eb8e33",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This variable contains a list of all the tests we are building\n\n# into the regression test suite.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# create a variable called target_name and set it to the string \"test\"\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# add all the cpp files we want to compile to this list.  This tells\n\n# cmake that they are part of our target (which is the executable named test)\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tell cmake to link our target executable to dlib\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "dlib/test/examples/CMakeLists.txt" : {
+      "ObjectId" : "93bd9a1395d174c34443898077027ad4bfe788b9",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Disable some warnings from gcc when compiling the examples because fixing them would make the\n\n# examples harder to read.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dlib/test/gui/CMakeLists.txt" : {
+      "ObjectId" : "2ab3c2b47f4261c64f44a280b0723ba1affde1a3",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# create a variable called target_name and set it to the string \"test\"\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add all the cpp files we want to compile to this list.  This tells\n\n# cmake that they are part of our target (which is the executable named test)\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Tell cmake to link our target executable to dlib.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "dlib/test/tools/CMakeLists.txt" : {
+      "ObjectId" : "adbd43cb91311fcadf1fd6e0adc53e1ffa4cc076",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/CMakeLists.txt" : {
+      "ObjectId" : "5c408d74f5e504955fa9e4ee7269190c8ab00ba2",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n#  _______ _    _ _____  _____     _____  _____                 \n\n# |__   __| |  | |_   _|/ ____|   |_   _|/ ____|       /\\       \n\n#    | |  | |__| | | | | (___       | | | (___        /  \\      \n\n#    | |  |  __  | | |  \\___ \\      | |  \\___ \\      / /\\ \\     \n\n#    | |  | |  | |_| |_ ____) |    _| |_ ____) |    / ____ \\    \n\n#    |_|__|_|_ |_|_____|_____/__  |_____|_____/    /_/  _ \\_\\   \n\n#   |__   __| |  | |__   __/ __ \\|  __ \\|_   _|   /\\   | |      \n\n#      | |  | |  | |  | | | |  | | |__) | | |    /  \\  | |      \n\n#      | |  | |  | |  | | | |  | |  _  /  | |   / /\\ \\ | |      \n\n#      | |  | |__| |  | | | |__| | | \\ \\ _| |_ / ____ \\| |____  \n\n#      |_|   \\____/   |_|  \\____/|_|  \\_\\_____/_/    \\_\\______| \n\n#\n\n#\n\n#    _____  ______          _____      _______ _    _ ______       \n\n#   |  __ \\|  ____|   /\\   |  __ \\    |__   __| |  | |  ____|      \n\n#   | |__) | |__     /  \\  | |  | |      | |  | |__| | |__         \n\n#   |  _  /|  __|   / /\\ \\ | |  | |      | |  |  __  |  __|        \n\n#   | | \\ \\| |____ / ____ \\| |__| |      | |  | |  | | |____       \n\n#   |_|__\\_\\______/_/_ __\\_\\_____/__ _   |_|__|_|_ |_|______|_ _ _ \n\n#  / ____/ __ \\|  \\/  |  \\/  |  ____| \\ | |__   __/ ____| | | | | |\n\n# | |   | |  | | \\  / | \\  / | |__  |  \\| |  | | | (___   | | | | |\n\n# | |   | |  | | |\\/| | |\\/| |  __| | . ` |  | |  \\___ \\  | | | | |\n\n# | |___| |__| | |  | | |  | | |____| |\\  |  | |  ____) | |_|_|_|_|\n\n#  \\_____\\____/|_|  |_|_|  |_|______|_| \\_|  |_| |_____/  (_|_|_|_)\n\n#                                                                  \n\n#\n\n#\n\n# This is a CMake makefile.  CMake is a tool that helps you build C++ programs.\n\n# You can download CMake from http://www.cmake.org.  This CMakeLists.txt file\n\n# you are reading builds dlib's example programs. \n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Every project needs a name.  We call this the \"examples\" project.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tell cmake we will need dlib.  This command will pull in dlib and compile it\n\n# into your project.  Note that you don't need to compile or install dlib.  All\n\n# cmake needs is the dlib source code folder and it will take care of everything.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The next thing we need to do is tell CMake about the code you want to\n\n# compile.  We do this with the add_executable() statement which takes the name\n\n# of the output executable and then a list of .cpp files to compile.  Here we\n\n# are going to compile one of the dlib example programs which has only one .cpp\n\n# file, assignment_learning_ex.cpp.  If your program consisted of multiple .cpp\n\n# files you would simply list them here in the add_executable() statement.  \n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Finally, you need to tell CMake that this program, assignment_learning_ex,\n\n# depends on dlib.  You do that with this statement: \n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# To compile this program all you need to do is ask cmake.  You would type\n\n# these commands from within the directory containing this CMakeLists.txt\n\n# file:\n\n#   mkdir build\n\n#   cd build\n\n#   cmake ..\n\n#   cmake --build . --config Release\n\n#\n\n# The cmake .. command looks in the parent folder for a file named\n\n# CMakeLists.txt, reads it, and sets up everything needed to build program.\n\n# Also, note that CMake can generate Visual Studio or XCode project files.  So\n\n# if instead you had written:\n\n#   cd build\n\n#   cmake .. -G Xcode\n\n#\n\n# You would be able to open the resulting Xcode project and compile and edit\n\n# the example programs within the Xcode IDE.  CMake can generate a lot of\n\n# different types of IDE projects.  Run the cmake -h command to see a list of\n\n# arguments to -G to see what kinds of projects cmake can generate for you.  It\n\n# probably includes your favorite IDE in the list.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#################################################################################\n\n#################################################################################\n\n#  A CMakeLists.txt file can compile more than just one program.  So below we\n\n#  tell it to compile the other dlib example programs using pretty much the\n\n#  same CMake commands we used above.\n\n#################################################################################\n\n#################################################################################\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Since there are a lot of examples I'm going to use a macro to simplify this\n\n# CMakeLists.txt file.  However, usually you will create only one executable in\n\n# your cmake projects and use the syntax shown above.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# if an example requires GUI, call this macro to check DLIB_NO_GUI_SUPPORT to include or exclude\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# The deep learning toolkit requires a compiler with essentially complete C++11\n\n# support.  However, versions of Visual Studio prior to October 2016 didn't\n\n# provide enough C++11 support to compile the DNN tooling, but were good enough\n\n# to compile the rest of dlib.  So new versions of Visual Studio 2015 will\n\n# work.  However, Visual Studio 2017 had some C++11 support regressions, so it\n\n# wasn't until December 2017 that Visual Studio 2017 had good enough C++11\n\n# support to compile the DNN examples.  So if you are using Visual Studio, make\n\n# sure you have an updated version if you want to compile the DNN code.\n\n#\n\n# Also note that Visual Studio users should give the -T host=x64 option so that\n\n# CMake will instruct Visual Studio to use its 64bit toolchain.  If you don't\n\n# do this then by default Visual Studio uses a 32bit toolchain, WHICH RESTRICTS\n\n# THE COMPILER TO ONLY 2GB OF RAM, causing it to run out of RAM and crash when\n\n# compiling some of the DNN examples.  So generate your project with a statement\n\n# like this:\n\n#   cmake .. -G \"Visual Studio 14 2015 Win64\" -T host=x64 \n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#here we apply our macros \n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "tools/archive/CMakeLists.txt" : {
+      "ObjectId" : "8a3e4d7bfc133a25ef48b99166f011c56d46532d",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/convert_dlib_nets_to_caffe/CMakeLists.txt" : {
+      "ObjectId" : "f9518df21627388f1ef73a6c28fddaff796d4832",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/htmlify/CMakeLists.txt" : {
+      "ObjectId" : "02cae2172ea6a96d86c75d364722292d68152867",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# create a variable called target_name and set it to the string \"htmlify\"\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add all the cpp files we want to compile to this list.  This tells\n\n# cmake that they are part of our target (which is the executable named htmlify)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Tell cmake to link our target executable to dlib.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tools/imglab/CMakeLists.txt" : {
+      "ObjectId" : "46c64fb3eaa729136ff7b06a6ba5dfa707331515",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This is a CMake makefile.  You can find the cmake utility and\n\n# information about it at http://www.cmake.org\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# create a variable called target_name and set it to the string \"imglab\"\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add all the cpp files we want to compile to this list.  This tells\n\n# cmake that they are part of our target (which is the executable named imglab)\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Tell cmake to link our target executable to dlib.  \n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tools/python/CMakeLists.txt" : {
+      "ObjectId" : "369aebc0e3768f39949485932f994916b74b80d7",
+      "LastModified" : "2019-03-15T12:44:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Pybind11's cmake scripts enable link time optimization by default.  However,\n\n# it makes linking take a really long time and doesn't seem to substantively\n\n# improve runtime performance.  So we disable LTO here to make building dlib\n\n# faster.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Avoid cmake warnings about changes in behavior of some Mac OS X path \n\n# variable we don't care about.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To avoid dll hell, always link everything statically when compiling in\n\n# visual studio.  This way, the resulting library won't depend on a bunch\n\n# of other dll files and can be safely copied to someone else's computer\n\n# and expected to run.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Tell cmake to compile all these cpp files into a dlib python module.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Only add the GUI module if requested\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Set the output library name to dlib because that's what setup.py and distutils expects.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 39
+  },
+  "ElapsedTime" : 3183
+}

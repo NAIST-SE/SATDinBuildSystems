@@ -1,0 +1,1163 @@
+{
+  "Repository" : "58334379",
+  "Revision" : "HEAD",
+  "ObjectId" : "b21e0f55489c489f64c77dd70e669ad99e8dacfa",
+  "CommitTime" : "2019-04-18T21:25:05Z",
+  "Files" : {
+    "CMake/CodeCoverage.cmake" : {
+      "ObjectId" : "da05c06cbb6761d7ee9084a3c12d62385e14727a",
+      "LastModified" : "2016-09-26T12:09:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2012 - 2015, Lars Bilke\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n# 1. Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#\n\n# 2. Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#\n\n# 3. Neither the name of the copyright holder nor the names of its contributors\n\n#    may be used to endorse or promote products derived from this software without\n\n#    specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n\n# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n#\n\n#\n\n# 2012-01-31, Lars Bilke\n\n# - Enable Code Coverage\n\n#\n\n# 2013-09-17, Joakim Söderberg\n\n# - Added support for Clang.\n\n# - Some additional usage instructions.\n\n#\n\n# USAGE:\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 0. (Mac only) If you use Xcode 5.1 make sure to patch geninfo as described here:\n\n#      http://stackoverflow.com/a/22404544/80480\n\n#\n\n# 1. Copy this file into your cmake modules path.\n\n#\n\n# 2. Add the following line to your CMakeLists.txt:\n\n#      INCLUDE(CodeCoverage)\n\n#\n\n# 3. Set compiler flags to turn off optimization and enable coverage:\n\n#    SET(CMAKE_CXX_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\t SET(CMAKE_C_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\n\n# 3. Use the function SETUP_TARGET_FOR_COVERAGE to create a custom make target\n\n#    which runs your test executable and produces a lcov code coverage report:\n\n#    Example:\n\n#\t SETUP_TARGET_FOR_COVERAGE(\n\n#\t\t\t\tmy_coverage_target  # Name for custom target.\n\n#\t\t\t\ttest_driver         # Name of the test driver executable that runs the tests.\n\n#\t\t\t\t\t\t\t\t\t# NOTE! This should always have a ZERO as exit code\n\n#\t\t\t\t\t\t\t\t\t# otherwise the coverage generation will not complete.\n\n#\t\t\t\tcoverage            # Name of output directory.\n\n#\t\t\t\t)\n\n#\n\n# 4. Build a Debug build:\n\n#\t cmake -DCMAKE_BUILD_TYPE=Debug ..\n\n#\t make\n\n#\t make my_coverage_target\n\n#\n\n#\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NOT GCOV_PATH\n",
+        "Line" : 78,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Clang version 3.0.0 and greater now supports gcov as well.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# NOT CMAKE_COMPILER_IS_GNUCXX\n",
+        "Line" : 87,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 113,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests.\n\n#\t\t\t\t\t\tMUST return ZERO always, even on errors.\n\n#\t\t\t\t\t\tIf not, no coverage report will be created!\n\n# Param _outputname     lcov output is generated as _outputname.info\n\n#                       HTML report is generated in _outputname/index.html\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 128,
+        "CharPositionInLine" : 16
+      },
+      "9" : {
+        "Text" : "# NOT GENHTML_PATH\n",
+        "Line" : 132,
+        "CharPositionInLine" : 16
+      },
+      "10" : {
+        "Text" : "# Setup target\n",
+        "Line" : 134,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 137,
+        "CharPositionInLine" : 16
+      },
+      "12" : {
+        "Text" : "# Run tests\n",
+        "Line" : 140,
+        "CharPositionInLine" : 16
+      },
+      "13" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 143,
+        "CharPositionInLine" : 16
+      },
+      "14" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 151,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE\n",
+        "Line" : 157,
+        "CharPositionInLine" : 14
+      },
+      "16" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests\n\n# Param _outputname     cobertura output is generated as _outputname.xml\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# NOT PYTHON_EXECUTABLE\n",
+        "Line" : 168,
+        "CharPositionInLine" : 16
+      },
+      "18" : {
+        "Text" : "# NOT GCOVR_PATH\n",
+        "Line" : 172,
+        "CharPositionInLine" : 16
+      },
+      "19" : {
+        "Text" : "# Run tests\n",
+        "Line" : 176,
+        "CharPositionInLine" : 16
+      },
+      "20" : {
+        "Text" : "# Running gcovr\n",
+        "Line" : 179,
+        "CharPositionInLine" : 16
+      },
+      "21" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 185,
+        "CharPositionInLine" : 8
+      },
+      "22" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_COBERTURA\n",
+        "Line" : 191,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 23
+    },
+    "CMake/Coveralls.cmake" : {
+      "ObjectId" : "42503973103a563c8300da9a68fce806dfce33e6",
+      "LastModified" : "2015-09-27T09:30:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# The MIT License (MIT)\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n\n#\n\n# Copyright (C) 2014 Joakim Söderberg <joakim.soderberg@gmail.com>\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# must be outside coveralls_setup() to get correct path\n",
+        "Line" : 25,
+        "CharPositionInLine" : 50
+      },
+      "2" : {
+        "Text" : "#\n\n# Param _COVERAGE_SRCS\tA list of source files that coverage should be collected for.\n\n# Param _COVERALLS_UPLOAD Upload the result to coveralls?\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# When passing a CMake list to an external process, the list\n\n# will be converted from the format \"1;2;3\" to \"1 2 3\".\n\n# This means the script we're calling won't see it as a list\n\n# of sources, but rather just one long path. We remedy this\n\n# by replacing \";\" with \"*\" and then reversing that in the script\n\n# that we're calling.\n\n# http://cmake.3232098.n2.nabble.com/Passing-a-CMake-list-quot-as-is-quot-to-a-custom-target-td6505681.html\n",
+        "Line" : 47,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "#message(\"Coverage sources: ${COVERAGE_SRCS}\")\n",
+        "Line" : 60,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# Zero the coverage counters.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Run regress tests.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Generate Gcov and translate it into coveralls JSON.\n\n# We do this by executing an external CMake script.\n\n# (We don't want this to run at CMake generation time, but after compilation and everything has run).\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# TODO: This is passed like: \"a b c\", not \"a;b;c\"\n",
+        "Line" : 75,
+        "CharPositionInLine" : 39
+      },
+      "9" : {
+        "Text" : "# Upload the JSON to coveralls.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 10
+    },
+    "CMake/CoverallsClear.cmake" : {
+      "ObjectId" : "7206886c70d0ceba003cd5ecf6dbf201293cd311",
+      "LastModified" : "2015-09-27T09:30:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# The MIT License (MIT)\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n\n#\n\n# Copyright (C) 2014 Joakim Söderberg <joakim.soderberg@gmail.com>\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# do not follow symlinks in file(GLOB_RECURSE ...)\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "CMake/CoverallsGenerateGcov.cmake" : {
+      "ObjectId" : "04c433da297689eb730c51817611347be5001aa4",
+      "LastModified" : "2015-09-27T09:30:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# The MIT License (MIT)\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n\n#\n\n# Copyright (C) 2014 Joakim Söderberg <joakim.soderberg@gmail.com>\n\n#\n\n# This is intended to be run by a custom target in a CMake project like this.\n\n# 0. Compile program with coverage support.\n\n# 1. Clear coverage data. (Recursively delete *.gcda in build dir)\n\n# 2. Run the unit tests.\n\n# 3. Run this script specifying which source files the coverage should be performed on.\n\n#\n\n# This script will then use gcov to generate .gcov files in the directory specified\n\n# via the COV_PATH var. This should probably be the same as your cmake build dir.\n\n#\n\n# It then parses the .gcov files to convert them into the Coveralls JSON format:\n\n# https://coveralls.io/docs/api\n\n#\n\n# Example for running as standalone CMake script from the command line:\n\n# (Note it is important the -P is at the end...)\n\n# $ cmake -DCOV_PATH=$(pwd) \n\n#         -DCOVERAGE_SRCS=\"catcierge_rfid.c;catcierge_timer.c\" \n\n#         -P ../cmake/CoverallsGcovUpload.cmake\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Make sure we have the needed arguments.\n\n#\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Since it's not possible to pass a CMake list properly in the\n\n# \"1;2;3\" format to an external process, we have replaced the\n\n# \";\" with \"*\", so reverse that here so we get it back into the\n\n# CMake list format.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# convert all paths in COVERAGE_SRCS to absolute paths\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# TODO: Fill in git remote data\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Branch.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "############################# Macros #########################################\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# This macro converts from the full path format gcov outputs:\n\n#\n\n#    /path/to/project/root/build/#path#to#project#root#subdir#the_file.c.gcov\n\n#\n\n# to the original source file path the .gcov is for:\n\n#\n\n#   /path/to/project/root/subdir/the_file.c\n\n#\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# /path/to/project/root/build/#path#to#project#root#subdir#the_file.c.gcov \n\n# -> \n\n# #path#to#project#root#subdir#the_file.c.gcov   \n",
+        "Line" : 157,
+        "CharPositionInLine" : 1
+      },
+      "9" : {
+        "Text" : "# #path#to#project#root#subdir#the_file.c.gcov -> /path/to/project/root/subdir/the_file.c\n",
+        "Line" : 162,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "##############################################################################\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Get the coverage data.\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Get a list of all the object directories needed by gcov\n\n# (The directories the .gcda files and .o files are found in)\n\n# and run gcov on those.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# The -p below refers to \"Preserve path components\",\n\n# This means that the generated gcov filename of a source file will\n\n# keep the original files entire filepath, but / is replaced with #.\n\n# Example:\n\n#\n\n# /path/to/project/root/build/CMakeFiles/the_file.dir/subdir/the_file.c.gcda\n\n# ------------------------------------------------------------------------------\n\n# File '/path/to/project/root/subdir/the_file.c'\n\n# Lines executed:68.34% of 199\n\n# /path/to/project/root/subdir/the_file.c:creating '#path#to#project#root#subdir#the_file.c.gcov'\n\n#\n\n# If -p is not specified then the file is named only \"the_file.c.gcov\"\n\n#\n",
+        "Line" : 182,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "# TODO: Make these be absolute path\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Get only the filenames to use for filtering.\n\n#set(COVERAGE_SRCS_NAMES \"\")\n\n#foreach (COVSRC ${COVERAGE_SRCS})\n\n#\tget_filename_component(COVSRC_NAME ${COVSRC} NAME)\n\n#\tmessage(\"${COVSRC} -> ${COVSRC_NAME}\")\n\n#\tlist(APPEND COVERAGE_SRCS_NAMES \"${COVSRC_NAME}\")\n\n#endforeach()\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#\n\n# Filter out all but the gcov files we want.\n\n#\n\n# We do this by comparing the list of COVERAGE_SRCS filepaths that the\n\n# user wants the coverage data for with the paths of the generated .gcov files,\n\n# so that we only keep the relevant gcov files.\n\n#\n\n# Example:\n\n# COVERAGE_SRCS =\n\n#\t\t\t\t/path/to/project/root/subdir/the_file.c\n\n#\n\n# ALL_GCOV_FILES =\n\n#\t\t\t\t/path/to/project/root/build/#path#to#project#root#subdir#the_file.c.gcov\n\n#\t\t\t\t/path/to/project/root/build/#path#to#project#root#subdir#other_file.c.gcov\n\n# \n\n# Result should be:\n\n# GCOV_FILES = \n\n#\t\t\t\t/path/to/project/root/build/#path#to#project#root#subdir#the_file.c.gcov\n\n#\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#message(\"Look in coverage sources: ${COVERAGE_SRCS}\")\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#\n\n# /path/to/project/root/build/#path#to#project#root#subdir#the_file.c.gcov \n\n# -> \n\n# /path/to/project/root/subdir/the_file.c \n",
+        "Line" : 241,
+        "CharPositionInLine" : 1
+      },
+      "19" : {
+        "Text" : "# Is this in the list of source files?\n\n# TODO: We want to match against relative path filenames from the source file root...\n",
+        "Line" : 248,
+        "CharPositionInLine" : 1
+      },
+      "20" : {
+        "Text" : "# We remove it from the list, so we don't bother searching for it again.\n\n# Also files left in COVERAGE_SRCS_REMAINING after this loop ends should\n\n# have coverage data generated from them (no lines are covered).\n",
+        "Line" : 256,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# TODO: Enable setting these\n",
+        "Line" : 265,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Read the GCOV files line by line and get the coverage data.\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# The new coveralls API doesn't need the entire source (Yay!)\n\n# However, still keeping that part for now. Will cleanup in the future.\n",
+        "Line" : 299,
+        "CharPositionInLine" : 1
+      },
+      "24" : {
+        "Text" : "# Loads the gcov file as a list of lines.\n\n# (We first open the file and replace all occurences of [] with _\n\n#  because CMake will fail to parse a line containing unmatched brackets...\n\n#  also the \\ to escaped \\n in macros screws up things.)\n\n# https://public.kitware.com/Bug/view.php?id=15369\n",
+        "Line" : 304,
+        "CharPositionInLine" : 1
+      },
+      "25" : {
+        "Text" : "# Remove file contents to avoid encoding issues (cmake 2.8 has no ENCODING option)\n",
+        "Line" : 314,
+        "CharPositionInLine" : 1
+      },
+      "26" : {
+        "Text" : "# Instead of trying to parse the source from the\n\n# gcov file, simply read the file contents from the source file.\n\n# (Parsing it from the gcov is hard because C-code uses ; in many places\n\n#  which also happens to be the same as the CMake list delimeter).\n",
+        "Line" : 321,
+        "CharPositionInLine" : 1
+      },
+      "27" : {
+        "Text" : "# According to http://json.org/ these should be escaped as well.\n\n# Don't know how to do that in CMake however...\n\n#string(REPLACE \"\\b\" \"\\\\\\\\b\" GCOV_FILE_SOURCE \"${GCOV_FILE_SOURCE}\")\n\n#string(REPLACE \"\\f\" \"\\\\\\\\f\" GCOV_FILE_SOURCE \"${GCOV_FILE_SOURCE}\")\n\n#string(REGEX REPLACE \"\\u([a-fA-F0-9]{4})\" \"\\\\\\\\u\\\\1\" GCOV_FILE_SOURCE \"${GCOV_FILE_SOURCE}\")\n",
+        "Line" : 332,
+        "CharPositionInLine" : 1
+      },
+      "28" : {
+        "Text" : "# We want a json array of coverage data as a single string\n\n# start building them from the contents of the .gcov\n",
+        "Line" : 338,
+        "CharPositionInLine" : 1
+      },
+      "29" : {
+        "Text" : "# Line number for the .gcov.\n",
+        "Line" : 342,
+        "CharPositionInLine" : 24
+      },
+      "30" : {
+        "Text" : "#message(\"${GCOV_LINE}\")\n\n# Example of what we're parsing:\n\n# Hitcount  |Line | Source\n\n# \"        8:   26:        if (!allowed || (strlen(allowed) == 0))\"\n",
+        "Line" : 345,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# Check if we should exclude lines using the Lcov syntax.\n",
+        "Line" : 355,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# Lines with 0 line numbers are metadata and can be ignored.\n",
+        "Line" : 385,
+        "CharPositionInLine" : 3
+      },
+      "33" : {
+        "Text" : "# Translate the hitcount into valid JSON values.\n",
+        "Line" : 391,
+        "CharPositionInLine" : 5
+      },
+      "34" : {
+        "Text" : "# Advanced way of removing the trailing comma in the JSON array.\n\n# \"[1, 2, 3, \" -> \"[1, 2, 3\"\n",
+        "Line" : 413,
+        "CharPositionInLine" : 1
+      },
+      "35" : {
+        "Text" : "# Append the trailing ] to complete the JSON array.\n",
+        "Line" : 417,
+        "CharPositionInLine" : 1
+      },
+      "36" : {
+        "Text" : "# Generate the final JSON for this file.\n",
+        "Line" : 420,
+        "CharPositionInLine" : 1
+      },
+      "37" : {
+        "Text" : "# Loop through all files we couldn't find any coverage for\n\n# as well, and generate JSON for those as well with 0% coverage.\n",
+        "Line" : 427,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Set variables for json replacement\n",
+        "Line" : 431,
+        "CharPositionInLine" : 1
+      },
+      "39" : {
+        "Text" : "# Loads the source file as a list of lines.\n",
+        "Line" : 436,
+        "CharPositionInLine" : 1
+      },
+      "40" : {
+        "Text" : "# Remove trailing comma, and complete JSON array with ]\n",
+        "Line" : 452,
+        "CharPositionInLine" : 1
+      },
+      "41" : {
+        "Text" : "# Generate the final JSON for this file.\n",
+        "Line" : 456,
+        "CharPositionInLine" : 1
+      },
+      "42" : {
+        "Text" : "# Get rid of trailing comma.\n",
+        "Line" : 462,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Generate the final complete JSON!\n",
+        "Line" : 466,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 44
+    },
+    "CMake/FindAvahi.cmake" : {
+      "ObjectId" : "1a6cdca15fdfd574cd1faf1289904029bbf44793",
+      "LastModified" : "2017-02-24T11:33:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2015 Damien Buhl (alias daminetreg)\n\n# All rights reserved.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Try to find Avahi client and libdns_sd_compat library.\n\n# It can be used as :\n\n#\n\n# find_package(Avahi REQUIRED)\n\n# target_link_libraries(program Avahi::client Avahi::compat_libdns_sd)\n\n#\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# avahi-common & avahi-client\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# avahi-compat-libdns_sd\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "CMake/FindDNSSD.cmake" : {
+      "ObjectId" : "7a65b5b1019d8f4aaf28febf77001f5b43fc050f",
+      "LastModified" : "2017-02-24T11:33:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Copyright 2011 Stefan Eilemann <eile@eyescale.ch>\n\n#\n\n#  Redistribution and use in source and binary forms, with or without\n\n#  modification, are permitted provided that the following conditions are met:\n\n#\n\n#  - Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#  - Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#  - Neither the name of Eyescale Software GmbH nor the names of its\n\n#    contributors may be used to endorse or promote products derived from this\n\n#    software without specific prior written permission.\n\n#\n\n#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n\n#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\n#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n\n#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n\n#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n\n#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n\n#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n\n#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n\n#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n\n#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n\n#  POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n#==================================\n\n#\n\n# - Find ZeroConf headers\n\n#\n\n#==================================\n\n#\n\n# The following environment variables are respected for finding Dnssd.\n\n# CMAKE_PREFIX_PATH can also be used for this (see find_library() CMake\n\n# documentation).\n\n#\n\n#    DNSSD_ROOT\n\n#\n\n# This module defines the following output variables:\n\n#\n\n#    DNSSD_FOUND - Was Dnssd and all of the specified components found?\n\n#\n\n#    DNSSD_INCLUDE_DIRS - Where to find the headers\n\n#\n\n#    DNSSD_LIBRARIES - The Dnssd libraries\n\n#\n\n#==================================\n\n# Example Usage:\n\n#\n\n#  find_package(DNSSD REQUIRED)\n\n#  include_directories(${DNSSD_INCLUDE_DIRS})\n\n#\n\n#  add_executable(foo foo.cc)\n\n#  target_link_libraries(foo ${DNSSD_LIBRARIES})\n\n#\n\n#==================================\n\n# Naming convention:\n\n#  Local variables of the form _dnssd_foo\n\n#  Output variables of the form DNSSD_FOO\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Zero out everything, we didn't meet version requirements\n",
+        "Line" : 132,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "CMake/FindLeapMotion.cmake" : {
+      "ObjectId" : "f49ee37b27700c5a495c4a7f7a104512f77e8047",
+      "LastModified" : "2018-04-04T11:45:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# only supported on windows\n",
+        "Line" : 2,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# LEAP_SDK : should point to for instance\n\n# LeapDeveloperKit_3.2.1+45911_win/LeapSDK\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "CMake/FindMaxSDK.cmake" : {
+      "ObjectId" : "59257cc052b5189bde0c14f2503f3b1043b9d83b",
+      "LastModified" : "2018-04-04T11:45:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://github.com/marsyas/marsyas/blob/master/cmake-modules/FindMaxSDK.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Just to test if Max/MSP found!!\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "CMake/FindPhidgets.cmake" : {
+      "ObjectId" : "48218cd5f94a15a404795e10329c80f3caf82f3a",
+      "LastModified" : "2018-04-04T11:45:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This defines:\n\n#\n\n#  LIBPHIDGETS_FOUND - system has libphidgets\n\n#  LIBPHIDGETS_INCLUDE_DIR - the libphidgets include directory\n\n#  LIBPHIDGETS_LIBRARIES - Link these to use libphidgets\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMake/FindUSB.cmake" : {
+      "ObjectId" : "732a7b897fcb57cf15192602238dd1b68bbae114",
+      "LastModified" : "2018-04-04T11:45:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find the freetype library\n\n# Once done this defines\n\n#\n\n#  LIBUSB_FOUND - system has libusb\n\n#  LIBUSB_INCLUDE_DIR - the libusb include directory\n\n#  LIBUSB_LIBRARIES - Link these to use libusb\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, 2008  Laurent Montel, <montel@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 15,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Compat. feature_summary expects the _FOUND variable to match the module name\n\n# TODO: KDE5 should probably be renamed FindLibUSB.cmake\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "CMake/GenerateStaticExport.cmake" : {
+      "ObjectId" : "45fc7cffb94c254196ae0d69bc16050f7ed86c33",
+      "LastModified" : "2019-03-21T21:13:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: Install this macro separately?\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# TODO: Install this macro separately?\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Option overrides\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Default options\n",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "CMake/OssiaConfiguration.cmake" : {
+      "ObjectId" : "6c1847c8515bc4fc32ecdf8e94183f448104f70a",
+      "LastModified" : "2019-03-30T19:51:58Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build settings :\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#option(OSSIA_SUBMODULE_AUTOUPDATE \"Auto update submodule\" ON)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Bindings :\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Protocols :\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Requires Qt\n",
+        "Line" : 50,
+        "CharPositionInLine" : 54
+      },
+      "5" : {
+        "Text" : "# Requires Qt\n",
+        "Line" : 51,
+        "CharPositionInLine" : 67
+      },
+      "6" : {
+        "Text" : "# Requires Qt\n",
+        "Line" : 52,
+        "CharPositionInLine" : 64
+      },
+      "7" : {
+        "Text" : "# Requires Phidgets library\n",
+        "Line" : 53,
+        "CharPositionInLine" : 63
+      },
+      "8" : {
+        "Text" : "# Requires LeapMotion Orion library\n",
+        "Line" : 54,
+        "CharPositionInLine" : 67
+      },
+      "9" : {
+        "Text" : "# Requires SDL2 library\n",
+        "Line" : 55,
+        "CharPositionInLine" : 63
+      },
+      "10" : {
+        "Text" : "#use wiiuse\n",
+        "Line" : 56,
+        "CharPositionInLine" : 60
+      },
+      "11" : {
+        "Text" : "#use libartnet\n",
+        "Line" : 57,
+        "CharPositionInLine" : 58
+      },
+      "12" : {
+        "Text" : "# System detection\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#      -Wa,--compress-debug-sections\n\n#      -Wl,--compress-debug-sections=zlib\n",
+        "Line" : 388,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Common setup\n",
+        "Line" : 424,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# So that make install after make all_unity does not rebuild everything :\n",
+        "Line" : 434,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# We disable debug infos on OS X on travis because it takes up too much space\n",
+        "Line" : 437,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Compiler & linker flags\n",
+        "Line" : 458,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# switch statement contains default but no case labels\n\n# pragma mark -\n\n# this object file does not define any previously undefined public symbols\n\n# inherits via dominance\n\n# DLL stuff\n\n# initializing: conversion from size_t to int, possible loss of data or 'argument': conversion from size_t to ..., possible loss of data\n\n# DLL stuff\n\n# return : conversion from foo to bar, possible loss of data\n\n# argument : truncation from double to float\n\n# decorated name length exceeded\n\n# destructor was implicityl defined as deleted\n\n# conversion from int to bool, performance warning\n\n# unsafe mix of const bool <= const int\n\n# unsafe mix of const bool == const int\n\n# SCL_SECURE_NO_WARNINGS\n",
+        "Line" : 466,
+        "CharPositionInLine" : 16
+      },
+      "19" : {
+        "Text" : "#-Wweak-vtables\n",
+        "Line" : 546,
+        "CharPositionInLine" : 6
+      },
+      "20" : {
+        "Text" : "#    if(APPLE)\n\n#        set(CMAKE_SHARED_LINKER_FLAGS \"${CMAKE_SHARED_LINKER_FLAGS} -Wl,-warn_weak_exports\")\n\n#        set(CMAKE_EXE_LINKER_FLAGS \"${CMAKE_EXE_LINKER_FLAGS} -Wl,-warn_weak_exports\")\n\n#        set(CMAKE_MODULE_LINKER_FLAGS \"${CMAKE_MODULE_LINKER_FLAGS} -Wl,-warn_weak_exports\")\n\n#    endif()\n",
+        "Line" : 610,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 21
+    },
+    "CMake/OssiaDeps.cmake" : {
+      "ObjectId" : "c4ade8b5a981f3d220b2397bb9dee854dd9f675e",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Download various dependencies\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMake/android_toolchain.cmake" : {
+      "ObjectId" : "aec2a000ab4615c98ba00f73d9dcf0394c4719ac",
+      "LastModified" : "2018-04-04T11:45:12Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/ossia_git_info.cmake" : {
+      "ObjectId" : "e3479596986652d3c26770114faef55a8c1b45cb",
+      "LastModified" : "2018-04-04T11:45:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO sanitize\n\n#if((${ARGN}\" MATCHES \"&&\") OR\n\n# (ARGN MATCHES \"||\") OR\n\n# (ARGN MATCHES \"\\\\;\"))\n\n# message(\"Please report the following error to the project!\")\n\n# message(FATAL_ERROR \"Looks like someone's doing something nefarious with git_describe! Passed arguments ${ARGN}\")\n\n#endif()\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "#message(STATUS \"Arguments to execute_process: ${ARGN}\")\n",
+        "Line" : 46,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "CMake/toolchain/arm-linux-gnueabihf.cmake" : {
+      "ObjectId" : "4af1e0e26bdce61f1d845918292cbd1171927aff",
+      "LastModified" : "2018-09-11T09:57:19Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CMake defines to cross-compile to ARM/Linux on BCM2708 using glibc.\n\n# It's used on the well known Raspberry Pi platform.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# search for programs in the build host directories\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# rdynamic means the backtrace should work\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "CMake/toolchain/mingw-llvm.cmake" : {
+      "ObjectId" : "34d18518a8041dfe16e8341b59b33c545d3d8226",
+      "LastModified" : "2018-10-02T11:11:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# CMake defines to cross-compile to ARM/Linux on BCM2708 using glibc.\n\n# It's used on the well known Raspberry Pi platform.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# search for programs in the build host directories\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "e70120970d2b77a99d3e7cbbc3f65619e1313796",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Configuration\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Dependencies\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Main library\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Examples & tests\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "Documentation/Examples/CMakeLists.txt" : {
+      "ObjectId" : "42e4601a23f18550d653e4c86af54e49c7b9ab1e",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#ossia_add_example(preset_device_example \"${CMAKE_CURRENT_SOURCE_DIR}/Preset/DeviceExample.cpp\")\n\n#ossia_add_example(preset_parsing_example \"${CMAKE_CURRENT_SOURCE_DIR}/Preset/ParsingExample.cpp\")\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Documentation/Examples/Qt/Colors/CMakeLists.txt" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Documentation/Tutorial/C/Makefile" : {
+      "ObjectId" : "f27ba4cced7d1b49cb08d19cae09c9873dc3cc51",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "Documentation/Tutorial/CPP14/Makefile" : {
+      "ObjectId" : "c925e5dad4b59e433b4e7f9b6a6252bd88046e91",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "Documentation/Tutorial/CPP98/Makefile" : {
+      "ObjectId" : "8e13f485ce9f1452569bf95d018310a1408f118e",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "OSSIA/CMakeLists.txt" : {
+      "ObjectId" : "b8d836e0de96fb1cddbd0868b1cea0e48a34750a",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "### Project options ###\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "### Library ###\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "### Some status info ###\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "OSSIA/InstallBoost.cmake" : {
+      "ObjectId" : "6df1d6b4aabf0f7594423dbcedf11e7f7b895a7e",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "OSSIA/ossia-c/CMakeLists.txt" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "OSSIA/ossia-java/CMakeLists.txt" : {
+      "ObjectId" : "f271c6b77d511a13b51719ee250631601ecd5118",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# download JNA jar\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# compile ossia.java\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Copy the ossia shared object into the .jar\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# TODO arm\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "OSSIA/ossia-max/CMakeLists.txt" : {
+      "ObjectId" : "b0b2c8329cb8ebf714b29c2a70ebc9a1b785c075",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add_custom_target just to display sources files in qtcreator\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Shim externals to allow objects to be found by Max search box\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We only export the Max required symbols.\n\n# This is of utmost importance for support in Max4Live : ossia and Ableton Live both use \n\n# boost.asio, which leads to conflicts at runtime\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "OSSIA/ossia-node/CMakeLists.txt" : {
+      "ObjectId" : "8278653f69899c28cfd6d49e3f45b5a2f6d8d1fe",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "OSSIA/ossia-pd/CMakeLists.txt" : {
+      "ObjectId" : "9289ae49bb1de1f6b4075ba1aac3c9a1011f536a",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# First download Pd.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# Extract Pd.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# These two lines are used to display the QMLs in the project view of IDEs\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Win32 uses DLL as a suffix for pd externals\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# using Clang\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# using GCC\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# using Intel C++\n",
+        "Line" : 145,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# using Visual Studio C++\n\n# TODO\n",
+        "Line" : 147,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# need to call enable_testing() here\n\n# to update test on CMakeLists.txt changes\n\n# enable_testing()\n",
+        "Line" : 170,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 9
+    },
+    "OSSIA/ossia-python/CMakeLists.txt" : {
+      "ObjectId" : "f9428073b92f4ed371b4ee2ac469925a6b4527b3",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "OSSIA/ossia_bindings.cmake" : {
+      "ObjectId" : "4ab16c6f772cbdec23b9660921fa984e7abbb78b",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Bindings\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "OSSIA/ossia_ci.cmake" : {
+      "ObjectId" : "e130b5f28c8f03faf68e2c91016459363115686a",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "OSSIA/ossia_features.cmake" : {
+      "ObjectId" : "c0d04b30238c4d9c3a70151242bb5111779fe56f",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "### Protocol setup ###\n\n# These two are always here:\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Additional features\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Needed because in Ubuntu the static package isn't built with -fPIC\n",
+        "Line" : 237,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "OSSIA/ossia_install.cmake" : {
+      "ObjectId" : "980fc6ac3c685114445fd7b0ae3c423494ff3b9a",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Linux\n",
+        "Line" : 22,
+        "CharPositionInLine" : 11
+      },
+      "1" : {
+        "Text" : "# Default case, C / C++ library\n\n# Install\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install headers\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Install export header\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Install used libraries headers\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "OSSIA/ossia_setup.cmake" : {
+      "ObjectId" : "9dc001a0218c5b9d07aefa43cb3873c86d637960",
+      "LastModified" : "2019-03-21T21:13:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Useful properties\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Compile options\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# target_compile_options(ossia PUBLIC \"$<$<CONFIG:Release>:-flto>\")\n",
+        "Line" : 26,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# TODO fix the weak symbol problem on OS X release build with fsanitize=address\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "#set_target_properties(ossia PROPERTIES NO_SONAME 1)\n",
+        "Line" : 66,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 5
+    },
+    "OSSIA/ossia_sources.cmake" : {
+      "ObjectId" : "ecc769b0d7421bdf3222074bf6290d5a16aaf86d",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## Editor ##\n",
+        "Line" : 2,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "#    \"${CMAKE_CURRENT_SOURCE_DIR}/ossia/detail/instantiations.hpp\"\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## Network ##\n",
+        "Line" : 51,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "#    \"${CMAKE_CURRENT_SOURCE_DIR}/ossia/ossia.cpp\"\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#    \"${CMAKE_CURRENT_SOURCE_DIR}/ossia/detail/instantiations.cpp\"\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#    \"${CMAKE_CURRENT_SOURCE_DIR}/ossia/network/dataspace/dataspace.cpp\"\n",
+        "Line" : 183,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "OSSIA/ossia_tooling.cmake" : {
+      "ObjectId" : "c349bf66df6900d61f8a287fe3e79a4ac9235ca7",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Coverage\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Taken from http://www.labri.fr/perso/fleury/posts/programming/using-clang-tidy-and-clang-format.html\n\n# Adding clang-format target if executable is found\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Adding clang-tidy target if executable is found\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Tests/CMakeLists.txt" : {
+      "ObjectId" : "75864efc202223cb4c0be282fc97423224ea8d8d",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "### Setup ###\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "### Tests ###\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# this test is too reliant on specific hardware capabilities to run on travis\n",
+        "Line" : 39,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# The following lines are used to display the QMLs in the project view of IDEs\n",
+        "Line" : 72,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "### Benchmarks ###\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# add_test(NAME ossia_target_${TESTNAME} COMMAND ossia_${TESTNAME})\n",
+        "Line" : 141,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# A command to copy the test data.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "tools/gen_variant/CMakeLists.txt" : {
+      "ObjectId" : "50199085d4afdf7bd2bc16491c2abbd3f0d39423",
+      "LastModified" : "2019-03-04T17:18:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 37,
+    "MAKEFILE" : 3
+  },
+  "ElapsedTime" : 6793
+}

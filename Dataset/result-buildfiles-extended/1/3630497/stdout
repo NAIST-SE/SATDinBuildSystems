@@ -1,0 +1,335 @@
+{
+  "Repository" : "3630497",
+  "Revision" : "HEAD",
+  "ObjectId" : "dbdb146eb569033d46f7d06beba92d7c00ee3b89",
+  "CommitTime" : "2018-06-03T19:57:46Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "d25b9ec5491df4f58794dc80f3a5709eaed3e0e4",
+      "LastModified" : "2017-12-10T10:52:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#   Copyright (C) 2011-2013  Povilas Kanapickas <povilas@radix.lt>\n\n#\n\n#   Distributed under the Boost Software License, Version 1.0.\n\n#       (See accompanying file LICENSE_1_0.txt or copy at\n\n#           http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Custom make dist target. Assumes source directory is a git repository.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# we may append to the archive now if needed\n",
+        "Line" : 24,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Check what instruction sets the current host supports. Use them for testing\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ------------------------------------------------------------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/SimdppMultiarch.cmake" : {
+      "ObjectId" : "80315d48a909a3796d84567f465b46b762bdfd39",
+      "LastModified" : "2017-12-10T10:52:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#   Copyright (C) 2012-2013  Povilas Kanapickas <povilas@radix.lt>\n\n#\n\n#   Distributed under the Boost Software License, Version 1.0.\n\n#       (See accompanying file LICENSE_1_0.txt or copy at\n\n#           http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Compiler checks (internal)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Architecture descriptions (internal)\n\n#\n\n# Each architecture has the following information specific to it:\n\n#  - SIMDPP_${ARCH}_TEST_CODE: source code snippet that uses functionality\n\n#       from that arch. Used for @c check_cxx_source_runs macro.\n\n#       We are taking extra care to confuse the compiler so that it does not\n\n#       optimize things out. Nowadays compilers have good sense of when things\n\n#       don't have side effects and will see through simple obfuscation\n\n#       patterns.\n\n#  - SIMDPP_${ARCH}_CXX_FLAGS: compiler flags that are needed for compilation.\n\n#  - SIMDPP_${ARCH}_DEFINE: defines the macro that is needed to enable the\n\n#       specific instruction set within the library.\n\n#  - SIMDPP_${ARCH}_SUFFIX: defines a suffix to append to the filename of the\n\n#       source file specific to this architecture.\n\n#\n\n# Three lists are created:\n\n#\n\n#  - SIMDPP_ARCHS_PRI - primary architectures.\n\n#  - SIMDPP_ARCHS_SEC - secondary architectures. Effectively equivalent to one\n\n#       of the primary architectures, just different instructions are generated\n\n#       in specific scenarios.\n\n#  - SIMDPP_ARCHS - all architectures\n\n#\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "###\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# intel does not support FMA4\n",
+        "Line" : 414,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "#unsupported on MSVC\n",
+        "Line" : 502,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "#unsupported on MSVC\n",
+        "Line" : 561,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "#unsupported on MSVC\n",
+        "Line" : 605,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "#unsupported on MSVC\n",
+        "Line" : 645,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Given one arch, returns compilation flags and an unique identifier (internal)\n\n# If the given architecture does not exist, sets both result variables to \"\"\n\n#\n\n# Arguments:\n\n#\n\n# - CXX_FLAGS_VAR: the name of a variable to store the compilation flags to\n\n#\n\n# - DEFINES_LIST_VAR: the name of a variable to store comma defimited list of\n\n# preprocessor defines for the current architecture.\n\n#\n\n# - UNIQUE_ID_VAR: the name of a variable to store the unique identifier to\n\n#\n\n# - ARCH: an architecture\n\n#\n",
+        "Line" : 963,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n#\n\n# simdpp_multiarch(FILE_LIST_VAR SRC_FILE [ARCH...])\n\n#\n\n# A function that encapsulates the generation of build rules for libsimdpp\n\n# multi-architecture source files. The function creates a copy of @a SRC_FILE\n\n# for each supplied architecture definition. Each of these files is configured\n\n# with appropriate compile flags for the given architecture. The list of copied\n\n# files is appended to the variable supplied by @a FILE_LIST_VAR which can then\n\n# be used in add_library or add_executable calls.\n\n#\n\n# All copied files are placed in the build directory. The directory of\n\n# @a SRC_FILE is added to the default include paths.\n\n#\n\n# Arguments:\n\n#\n\n# * FILE_LIST_VAR: the name of the variable to append the list of generated\n\n#   files to\n\n#\n\n# * SRC_FILE: the name of the source file relative to the @a\n\n#   CMAKE_CURRENT_SOURCE_DIR\n\n#\n\n# * ARCH...: a list of architecture definitions. Each architecture definition\n\n#   consist of comma separated list of identifiers directly corresponding to\n\n#   macros defined in simdpp/simd.h, which ultimately identify instruction set\n\n#   features. The user of the function must ensure that sensible combination of\n\n#   identifiers is supplied.\n\n#\n\n#   The following identifiers are currently supported:\n\n#   X86_SSE2, X86_SSE3, X86_SSSE3, X86_SSE4_1,\n\n#   X86_AVX, X86_AVX2, X86_FMA3, X86_FMA4,\n\n#   X86_AVX512F, X86_AVX512BW, X86_AVX512DQ, X86_AVX512VL, X86_XOP,\n\n#   ARM_NEON, ARM_NEON_FLT_SP, ARM64_NEON,\n\n#   MIPS_MSA, POWER_ALTIVEC, POWER_VSX_206, POWER_VSX_207\n\n#\n",
+        "Line" : 1006,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# strip FILE_LIST_VAR and SRC_FILE args\n",
+        "Line" : 1055,
+        "CharPositionInLine" : 30
+      },
+      "12" : {
+        "Text" : "# Copy the source file and add the required flags\n",
+        "Line" : 1061,
+        "CharPositionInLine" : 12
+      },
+      "13" : {
+        "Text" : "# CMake does not support adding per-source-file include directories.\n\n# Also when CXX_FLAGS is used for this purpose, CMake does not add\n\n# local includes as the dependencies of the result object file thus\n\n# does not rebuild the file when these included files are changed.\n\n# The work around is to use add_custom_command with IMPLICIT_DEPENDS\n\n# option which only works on make-based systems\n",
+        "Line" : 1065,
+        "CharPositionInLine" : 12
+      },
+      "14" : {
+        "Text" : "# For the first file that is being processed, set it to emit\n\n# dispatcher code. The required flags will be added later\n",
+        "Line" : 1079,
+        "CharPositionInLine" : 12
+      },
+      "15" : {
+        "Text" : "# Add required dispatcher predefined macros for this architecture\n",
+        "Line" : 1085,
+        "CharPositionInLine" : 12
+      },
+      "16" : {
+        "Text" : "# Emit dispatcher code in the first valid generated file.\n",
+        "Line" : 1091,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Given a list of archs, return all possible permutations of them (internal)\n\n#\n\n# Arguments:\n\n#\n\n# - ALL_ARCHS_VAL: the name of the variable to store the permutation to\n\n#\n\n# - ARCH...: a list of supported architectures\n",
+        "Line" : 1103,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# all x86_64 processors\n",
+        "Line" : 1121,
+        "CharPositionInLine" : 8
+      },
+      "19" : {
+        "Text" : "# Since Prescott, Merom (Core architecture)\n\n# Since later K8 steppings, fully supported since K10\n",
+        "Line" : 1125,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "# Since Merom (Core architecture)\n\n# Since Bobcat and Bulldozer\n",
+        "Line" : 1130,
+        "CharPositionInLine" : 8
+      },
+      "21" : {
+        "Text" : "# Since Penryl (45 nm Merom shrink)\n\n# Since Bulldozer\n",
+        "Line" : 1135,
+        "CharPositionInLine" : 8
+      },
+      "22" : {
+        "Text" : "# Since Nehalem and K10.\n",
+        "Line" : 1140,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# NOTE: These two architectures are the only that support popcnt and\n\n# don't support AVX. There's no full overlap of the instruction set\n\n# support in these architectures, thus these two separate configs were\n\n# omitted from the default instruction set matrix.\n",
+        "Line" : 1142,
+        "CharPositionInLine" : 8
+      },
+      "24" : {
+        "Text" : "# Since Sandy Bridge, Bulldozer, Jaguar\n",
+        "Line" : 1148,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# Since Haswell, Piledriver (later Bulldozer variant)\n\n# All CPUs in this range support popcnt\n",
+        "Line" : 1152,
+        "CharPositionInLine" : 12
+      },
+      "26" : {
+        "Text" : "# Since Bulldozer until Zen. Jaguar does not support FMA4 nor FMA3\n\n# All CPUs in this range support popcnt\n",
+        "Line" : 1156,
+        "CharPositionInLine" : 12
+      },
+      "27" : {
+        "Text" : "# Since Haswell and Zen\n\n# All Intel and AMD CPUs that support AVX2 also support FMA3 and POPCNT,\n\n# thus separate X86_AVX2 config is not needed.\n",
+        "Line" : 1162,
+        "CharPositionInLine" : 8
+      },
+      "28" : {
+        "Text" : "# Since Haswell, Piledriver (later Bulldozer variant)\n\n# All Intel and AMD CPUs that support FMA3 also support AVX, thus\n\n# separate X86_FMA3 config is not needed\n",
+        "Line" : 1170,
+        "CharPositionInLine" : 8
+      },
+      "29" : {
+        "Text" : "# Since Bulldozer until Zen\n\n# All AMD CPUs that support FMA4 also support AVX, thus\n\n# separate X86_FMA4 config is not needed\n",
+        "Line" : 1175,
+        "CharPositionInLine" : 8
+      },
+      "30" : {
+        "Text" : "# Since Knights Landing, Skylake-X\n\n# All Intel CPUs that support AVX512F also support FMA3 and POPCNT,\n\n# thus separate X86_512F config is not needed.\n",
+        "Line" : 1180,
+        "CharPositionInLine" : 8
+      },
+      "31" : {
+        "Text" : "# All Intel processors that support AVX512BW also support\n\n# AVX512DQ and AVX512VL\n",
+        "Line" : 1188,
+        "CharPositionInLine" : 20
+      },
+      "32" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n#\n\n# simdpp_get_compilable_archs(ARCH_LIST_VAR)\n\n#\n\n# Returns a list of architectures that are supported by the current build\n\n# system. The generated list may be used as an argument to simdpp_multiarch.\n\n#\n\n# Arguments:\n\n#\n\n# * ARCH_LIST_VAR: the name of the variable to put the architecture list to\n\n#\n",
+        "Line" : 1223,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n#\n\n# simdpp_get_runnable_archs(ARCH_LIST_VAR)\n\n#\n\n# Returns a list of architectures that are supported by the current build\n\n# system and the processor. The generated list may be used as an argument to\n\n# simdpp_multiarch.\n\n#\n\n# Arguments:\n\n#\n\n# * ARCH_LIST_VAR: the name of the variable to put the architecture list to\n\n#\n",
+        "Line" : 1249,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 34
+    },
+    "doc/Makefile" : {
+      "ObjectId" : "99eab27a6f8efe3c57553416be29ab35a6938d5a",
+      "LastModified" : "2016-03-11T08:41:37Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "examples/dynamic_dispatch/Makefile" : {
+      "ObjectId" : "76b60ab4404681b8e4b9da19f33ed23ec925450e",
+      "LastModified" : "2016-03-11T08:41:37Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#test_null.o\n",
+        "Line" : 3,
+        "CharPositionInLine" : 74
+      },
+      "1" : {
+        "Text" : "# Uncomment this if you want to check the non-vectorized variant.\n\n#test_null.o: test.cc\n\n#   g++ test.cc -c $(CXXFLAGS) -o test_null.o\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "simdpp/CMakeLists.txt" : {
+      "ObjectId" : "19d6011b7493abc5d4b60506667574910e1f3777",
+      "LastModified" : "2016-04-26T19:13:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#   Copyright (C) 2013  Povilas Kanapickas <povilas@radix.lt>\n\n#\n\n#   Distributed under the Boost Software License, Version 1.0.\n\n#       (See accompanying file LICENSE_1_0.txt or copy at\n\n#           http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't enable header tests by default because configuring it takes excessive\n\n# amount of time\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "ecf2fc6fe4e09a3e11547dad54c5357ea369f7df",
+      "LastModified" : "2017-12-10T10:52:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#   Copyright (C) 2013  Povilas Kanapickas <povilas@radix.lt>\n\n#\n\n#   Distributed under the Boost Software License, Version 1.0.\n\n#       (See accompanying file LICENSE_1_0.txt or copy at\n\n#           http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# LIST_CONTAINS(<var> ENTRY [LIST...])\n\n#\n\n# Helper macro that checks whether a list contains a specific entry. It sets\n\n# ${VAR} to TRUE if VALUE is within LIST.\n\n#\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# check available architectures\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ------------------------------------------------------------------------------\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We need to specify test configuration to be able to test compilation failure\n\n# tests on MSVC.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# print compiler detection information\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# don't use x87 in any of the tests because it performs calculations with\n\n# different precision\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# enable _vectorcall on i386 builds (only works on MSVC 2013)\n",
+        "Line" : 127,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Xcode clang linker spends very long time in deduplication pass when\n\n# linking the test executable unless -fvisibility-inlines-hidden is passed.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# We don't want to break testing on old environments where newer cmake\n\n# versions are not easily available.\n",
+        "Line" : 139,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Dispatcher test\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# ------------------------------------------------------------------------------\n\n# Expression test\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "test/compile_fail/CMakeLists.txt" : {
+      "ObjectId" : "94d95a13347ae1a39b6b0fcbf8a1923b927f385a",
+      "LastModified" : "2017-12-10T10:52:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#   Copyright (C) 2017  Povilas Kanapickas <povilas@radix.lt>\n\n#\n\n#   Distributed under the Boost Software License, Version 1.0.\n\n#       (See accompanying file LICENSE_1_0.txt or copy at\n\n#           http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 5,
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 1425
+}

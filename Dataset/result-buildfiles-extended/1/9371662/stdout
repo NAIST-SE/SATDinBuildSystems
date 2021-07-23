@@ -1,0 +1,589 @@
+{
+  "Repository" : "9371662",
+  "Revision" : "HEAD",
+  "ObjectId" : "e070d4a0bec27e4744b09f63030ac8e42e975def",
+  "CommitTime" : "2019-03-27T16:44:15Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "e27feca77752aa262daf447fe4346ee55805acbb",
+      "LastModified" : "2019-03-18T15:21:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Further sources will be added later in the file\n",
+        "Line" : 15,
+        "CharPositionInLine" : 34
+      },
+      "1" : {
+        "Text" : "# Enable debug symbols by default\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# === Platform-Specific Settings ==============================================\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# set(CMAKE_EXE_LINKER_FLAGS \"${CMAKE_EXE_LINKER_FLAGS} <whatever else we want here>\")\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# pagezero_size, image_base are needed for LuaJIT to work properly See:\n\n# https://stackoverflow.com/questions/20858911/lua-open-returns-null-using-\n\n# luajit\n",
+        "Line" : 39,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} <whatever else we want here>\")\n\n# set(CMAKE_EXE_LINKER_FLAGS \"${CMAKE_EXE_LINKER_FLAGS} <whatever else we want here>\")\n",
+        "Line" : 52,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# === Auto-configure Libraries with CMake Modules =============================\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# === Libraries ===============================================================\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# --- OpenGL ------------------------------------------------------------------\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Detect and add ICU\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# can't find io on windows... ARGH\n",
+        "Line" : 66,
+        "CharPositionInLine" : 46
+      },
+      "11" : {
+        "Text" : "# Detect and add SFML to the include and library paths\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Detect and add Boost to the include and library paths\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Detect and add SFGUI to the include and library paths\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# === LuaJIT Sources ==========================================================\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# === Project Sources and Include Files =======================================\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# === Putting It All Together =================================================\n",
+        "Line" : 563,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# get_cmake_property(_variableNames VARIABLES)\n\n# list (SORT _variableNames)\n\n# foreach (_variableName ${_variableNames})\n\n#     message(STATUS \"${_variableName}=${${_variableName}}\")\n\n# endforeach()\n",
+        "Line" : 649,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 18
+    },
+    "cmake_modules/FindICU.cmake" : {
+      "ObjectId" : "59dd891afaacc26235bcff4ec8e71350ac415f6c",
+      "LastModified" : "2019-02-24T20:24:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This module can find the International Components for Unicode (ICU) libraries\n\n#\n\n# Requirements:\n\n# - CMake >= 2.8.3 (for new version of find_package_handle_standard_args)\n\n#\n\n# The following variables will be defined for your use:\n\n#   - ICU_FOUND             : were all of your specified components found?\n\n#   - ICU_INCLUDE_DIRS      : ICU include directory\n\n#   - ICU_LIBRARIES         : ICU libraries\n\n#   - ICU_VERSION           : complete version of ICU (x.y.z)\n\n#   - ICU_VERSION_MAJOR     : major version of ICU\n\n#   - ICU_VERSION_MINOR     : minor version of ICU\n\n#   - ICU_VERSION_PATCH     : patch version of ICU\n\n#   - ICU_<COMPONENT>_FOUND : were <COMPONENT> found? (FALSE for non specified component if it is not a dependency)\n\n#\n\n# For windows or non standard installation, define ICU_ROOT_DIR variable to point to the root installation of ICU. Two ways:\n\n#   - run cmake with -DICU_ROOT_DIR=<PATH>\n\n#   - define an environment variable with the same name before running cmake\n\n# With cmake-gui, before pressing \"Configure\":\n\n#   1) Press \"Add Entry\" button\n\n#   2) Add a new entry defined as:\n\n#     - Name: ICU_ROOT_DIR\n\n#     - Type: choose PATH in the selection list\n\n#     - Press \"...\" button and select the root installation of ICU\n\n#\n\n# Example Usage:\n\n#\n\n#   1. Copy this file in the root of your project source directory\n\n#   2. Then, tell CMake to search this non-standard module in your project directory by adding to your CMakeLists.txt:\n\n#     set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})\n\n#   3. Finally call find_package() once, here are some examples to pick from\n\n#\n\n#   Require ICU 4.4 or later\n\n#     find_package(ICU 4.4 REQUIRED)\n\n#\n\n#   if(ICU_FOUND)\n\n#      add_executable(myapp myapp.c)\n\n#      include_directories(${ICU_INCLUDE_DIRS})\n\n#      target_link_libraries(myapp ${ICU_LIBRARIES})\n\n#      # with CMake >= 3.0.0, the last two lines can be replaced by the following\n\n#      target_link_libraries(myapp ICU::ICU)\n\n#   endif(ICU_FOUND)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########## <ICU finding> ##########\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "########## Private ##########\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Prefix for all ICU relative public variables\n",
+        "Line" : 50,
+        "CharPositionInLine" : 58
+      },
+      "4" : {
+        "Text" : "# Prefix for all ICU relative internal variables\n",
+        "Line" : 53,
+        "CharPositionInLine" : 58
+      },
+      "5" : {
+        "Text" : "# Prefix for all pkg-config relative internal variables\n",
+        "Line" : 56,
+        "CharPositionInLine" : 58
+      },
+      "6" : {
+        "Text" : "# <deprecated>\n\n# for future removal\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# </deprecated>\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# <icu component name> <library name 1> ... <library name N>\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Common and Data libraries\n\n# Internationalization library\n\n# Stream and I/O Library\n\n# Layout library\n\n# Paragraph Layout library\n",
+        "Line" : 86,
+        "CharPositionInLine" : 43
+      },
+      "10" : {
+        "Text" : "########## Public ##########\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# may be done in the _icu_declare_component macro\n",
+        "Line" : 105,
+        "CharPositionInLine" : 85
+      },
+      "12" : {
+        "Text" : "# Check components\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# uc required at least\n",
+        "Line" : 109,
+        "CharPositionInLine" : 45
+      },
+      "14" : {
+        "Text" : "# if pkg-config is available check components dependencies and append `pkg-config icu-<component> --variable=prefix` to hints\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# list(APPEND ${ICU_PRIVATE_VAR_NS}_HINTS ENV ICU_ROOT_DIR)\n\n# message(\"${ICU_PRIVATE_VAR_NS}_HINTS = ${${ICU_PRIVATE_VAR_NS}_HINTS}\")\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Includes\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "########## <part to keep synced with tests/version/CMakeLists.txt> ##########\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# ICU >= 4.4\n",
+        "Line" : 156,
+        "CharPositionInLine" : 71
+      },
+      "19" : {
+        "Text" : "# ICU [2;4.4[\n",
+        "Line" : 158,
+        "CharPositionInLine" : 76
+      },
+      "20" : {
+        "Text" : "# ICU [1.4;2[\n",
+        "Line" : 160,
+        "CharPositionInLine" : 74
+      },
+      "21" : {
+        "Text" : "# ICU 1.3\n",
+        "Line" : 162,
+        "CharPositionInLine" : 66
+      },
+      "22" : {
+        "Text" : "# ICU 1.3\n",
+        "Line" : 168,
+        "CharPositionInLine" : 105
+      },
+      "23" : {
+        "Text" : "# [1.3;1.4[ as #define ICU_VERSION \"3\" (no patch version, ie all 1.3.X versions will be detected as 1.3.0)\n",
+        "Line" : 169,
+        "CharPositionInLine" : 8
+      },
+      "24" : {
+        "Text" : "#\n\n# Since version 4.9.1, ICU release version numbering was totaly changed, see:\n\n# - http://site.icu-project.org/download/49\n\n# - http://userguide.icu-project.org/design#TOC-Version-Numbers-in-ICU\n\n#\n",
+        "Line" : 174,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# ICU [1.4;1.8[\n",
+        "Line" : 182,
+        "CharPositionInLine" : 125
+      },
+      "26" : {
+        "Text" : "# [1.4;1.8[ as #define U_ICU_VERSION \"1.4.1.2\" but it seems that some 1.4.[12](?:\\.\\d)? have releasing error and appears as 1.4.0\n",
+        "Line" : 183,
+        "CharPositionInLine" : 8
+      },
+      "27" : {
+        "Text" : "# copy CMAKE_MATCH_1, no longer valid on the following if\n",
+        "Line" : 184,
+        "CharPositionInLine" : 67
+      },
+      "28" : {
+        "Text" : "########## </part to keep synced with tests/version/CMakeLists.txt> ##########\n",
+        "Line" : 198,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "# Check libraries\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Try to find out compiler flags\n",
+        "Line" : 247,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Check find_package arguments\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# <deprecated>\n\n# for compatibility with previous versions, alias old ICU_(MAJOR|MINOR|PATCH)_VERSION to ICU_VERSION_$1\n",
+        "Line" : 272,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# </deprecated>\n",
+        "Line" : 277,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "#             set_target_properties(\"ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}\" PROPERTIES INTERFACE_INCLUDE_DIRECTORIES \"${${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR}\")\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "########## </ICU finding> ##########\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "########## <resource bundle support> ##########\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "########## Private ##########\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "########## Public ##########\n",
+        "Line" : 324,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#\n\n# Prototype:\n\n#   icu_generate_resource_bundle([NAME <name>] [PACKAGE] [DESTINATION <location>] [FILES <list of files>])\n\n#\n\n# Common arguments:\n\n#   - NAME <name>                      : name of output package and to create dummy targets\n\n#   - FILES <file 1> ... <file N>      : list of resource bundles sources\n\n#   - DEPENDS <target1> ... <target N> : required to package as library (shared or static), a list of cmake parent targets to link to\n\n#                                        Note: only (PREVIOUSLY DECLARED) add_executable and add_library as dependencies\n\n#   - DESTINATION <location>           : optional, directory where to install final binary file(s)\n\n#   - FORMAT <name>                    : optional, one of none (ICU4C binary format, default), java (plain java) or xliff (XML), see below\n\n#\n\n# Arguments depending on FORMAT:\n\n#   - none (default):\n\n#       * PACKAGE     : if present, package all resource bundles together. Default is to stop after building individual *.res files\n\n#       * TYPE <name> : one of :\n\n#           + common or archive (default) : archive all ressource bundles into a single .dat file\n\n#           + library or dll              : assemble all ressource bundles into a separate and loadable library (.dll/.so)\n\n#           + static                      : integrate all ressource bundles to targets designed by DEPENDS parameter (as a static library)\n\n#       * NO_SHARED_FLAGS                 : only with TYPE in ['library', 'dll', 'static'], do not append ICU_C(XX)_SHARED_FLAGS to targets given as DEPENDS argument\n\n#   - JAVA:\n\n#       * BUNDLE <name> : required, prefix for generated classnames\n\n#   - XLIFF:\n\n#       (none)\n\n#\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#\n\n# For an archive, the idea is to generate the following dependencies:\n\n#\n\n#   root.txt => root.res \\\n\n#                        |\n\n#   en.txt   => en.res   |\n\n#                        | => pkglist.txt => application.dat\n\n#   fr.txt   => fr.res   |\n\n#                        |\n\n#   and so on            /\n\n#\n\n# Lengend: 'A => B' means B depends on A\n\n#\n\n# Steps (correspond to arrows):\n\n#   1) genrb (from .txt to .res)\n\n#   2) generate a file text (pkglist.txt) with all .res files to put together\n\n#   3) build final archive (from *.res/pkglist.txt to .dat)\n\n#\n",
+        "Line" : 352,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "##### <check for pkgdata/genrb availability> #####\n",
+        "Line" : 373,
+        "CharPositionInLine" : 4
+      },
+      "42" : {
+        "Text" : "##### </check for pkgdata/genrb availability> #####\n",
+        "Line" : 383,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "##### <constants> #####\n",
+        "Line" : 385,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "##### </constants> #####\n",
+        "Line" : 390,
+        "CharPositionInLine" : 4
+      },
+      "45" : {
+        "Text" : "##### <hash constants> #####\n\n# filename extension of built resource bundle (without dot)\n",
+        "Line" : 392,
+        "CharPositionInLine" : 4
+      },
+      "46" : {
+        "Text" : "# alias: none (default) = common = archive ; dll = library ; static\n",
+        "Line" : 397,
+        "CharPositionInLine" : 4
+      },
+      "47" : {
+        "Text" : "# filename prefix of built package\n",
+        "Line" : 404,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "# filename extension of built package (with dot)\n",
+        "Line" : 408,
+        "CharPositionInLine" : 4
+      },
+      "49" : {
+        "Text" : "# pkgdata option mode specific\n",
+        "Line" : 412,
+        "CharPositionInLine" : 4
+      },
+      "50" : {
+        "Text" : "# cmake library type for output package\n",
+        "Line" : 416,
+        "CharPositionInLine" : 4
+      },
+      "51" : {
+        "Text" : "##### </hash constants> #####\n",
+        "Line" : 420,
+        "CharPositionInLine" : 4
+      },
+      "52" : {
+        "Text" : "# output variable name\n",
+        "Line" : 424,
+        "CharPositionInLine" : 20
+      },
+      "53" : {
+        "Text" : "# options (true/false) (default value: false)\n",
+        "Line" : 425,
+        "CharPositionInLine" : 8
+      },
+      "54" : {
+        "Text" : "# univalued parameters (default value: \"\")\n",
+        "Line" : 427,
+        "CharPositionInLine" : 8
+      },
+      "55" : {
+        "Text" : "# multivalued parameters (default value: \"\")\n",
+        "Line" : 429,
+        "CharPositionInLine" : 8
+      },
+      "56" : {
+        "Text" : "# assert(${PARSED_ARGS_NAME} != \"\")\n",
+        "Line" : 434,
+        "CharPositionInLine" : 4
+      },
+      "57" : {
+        "Text" : "# assert(length(PARSED_ARGS_FILES) > 0)\n",
+        "Line" : 439,
+        "CharPositionInLine" : 4
+      },
+      "58" : {
+        "Text" : "# assert(${UPPER_FORMAT} in ['', 'java', 'xlif'])\n",
+        "Line" : 446,
+        "CharPositionInLine" : 4
+      },
+      "59" : {
+        "Text" : "# assert(${PARSED_ARGS_BUNDLE} != \"\")\n",
+        "Line" : 452,
+        "CharPositionInLine" : 8
+      },
+      "60" : {
+        "Text" : "# assert(${PARSED_ARGS_FORMAT} == \"\")\n",
+        "Line" : 459,
+        "CharPositionInLine" : 8
+      },
+      "61" : {
+        "Text" : "# assert(${UPPER_MODE} in ['', 'common', 'archive', 'dll', library'])\n",
+        "Line" : 465,
+        "CharPositionInLine" : 8
+      },
+      "62" : {
+        "Text" : "# Package name: strip file extension if present\n",
+        "Line" : 472,
+        "CharPositionInLine" : 8
+      },
+      "63" : {
+        "Text" : "# Target name to build package\n",
+        "Line" : 474,
+        "CharPositionInLine" : 8
+      },
+      "64" : {
+        "Text" : "# Target name to build intermediate list file\n",
+        "Line" : 476,
+        "CharPositionInLine" : 8
+      },
+      "65" : {
+        "Text" : "# Directory (absolute) to set as \"current directory\" for genrb (does not include package directory, -p)\n\n# We make our \"cook\" there to prevent any conflict\n",
+        "Line" : 478,
+        "CharPositionInLine" : 8
+      },
+      "66" : {
+        "Text" : "# CMake < 2.8.10\n",
+        "Line" : 480,
+        "CharPositionInLine" : 44
+      },
+      "67" : {
+        "Text" : "# CMake >= 2.8.10\n",
+        "Line" : 482,
+        "CharPositionInLine" : 46
+      },
+      "68" : {
+        "Text" : "# Directory (absolute) where resource bundles are built: concatenation of RESOURCE_GENRB_CHDIR_DIR and package name\n",
+        "Line" : 485,
+        "CharPositionInLine" : 8
+      },
+      "69" : {
+        "Text" : "# Output (relative) path for built package\n",
+        "Line" : 487,
+        "CharPositionInLine" : 8
+      },
+      "70" : {
+        "Text" : "# Output (absolute) path for the list file\n",
+        "Line" : 493,
+        "CharPositionInLine" : 8
+      },
+      "71" : {
+        "Text" : "#         set(RESOURCE_GENRB_CHDIR_DIR \"UNUSED\")\n",
+        "Line" : 499,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "##### <templates> #####\n",
+        "Line" : 518,
+        "CharPositionInLine" : 8
+      },
+      "73" : {
+        "Text" : "##### </templates> #####\n",
+        "Line" : 532,
+        "CharPositionInLine" : 8
+      },
+      "74" : {
+        "Text" : "# build <locale>.txt from <locale>.res\n",
+        "Line" : 534,
+        "CharPositionInLine" : 8
+      },
+      "75" : {
+        "Text" : "# dummy target (ICU+RB+<name>+<locale>) for each locale to build the <locale>.res file from its <locale>.txt by the add_custom_command above\n",
+        "Line" : 548,
+        "CharPositionInLine" : 8
+      },
+      "76" : {
+        "Text" : "# convert semicolon separated list to a space separated list\n\n# NOTE: if the pkglist.txt file starts (or ends?) with a whitespace, pkgdata add an undefined symbol (named <package>_) for it\n",
+        "Line" : 564,
+        "CharPositionInLine" : 4
+      },
+      "77" : {
+        "Text" : "# create a text file (pkglist.txt) with the list of the *.res to package together\n",
+        "Line" : 569,
+        "CharPositionInLine" : 8
+      },
+      "78" : {
+        "Text" : "# run pkgdata from pkglist.txt\n",
+        "Line" : 575,
+        "CharPositionInLine" : 8
+      },
+      "79" : {
+        "Text" : "# assert(${PARSED_ARGS_DEPENDS} != \"\")\n",
+        "Line" : 583,
+        "CharPositionInLine" : 12
+      },
+      "80" : {
+        "Text" : "# http://www.mail-archive.com/cmake-commits@cmake.org/msg01135.html\n",
+        "Line" : 606,
+        "CharPositionInLine" : 12
+      },
+      "81" : {
+        "Text" : "# dummy intermediate target (ICU+PKG+<name>+DUMMY) to link the package to the produced library by running pkgdata (see add_custom_command above)\n",
+        "Line" : 608,
+        "CharPositionInLine" : 12
+      },
+      "82" : {
+        "Text" : "# dummy target (ICU+PKG+<name>) to run pkgdata (see add_custom_command above)\n",
+        "Line" : 616,
+        "CharPositionInLine" : 12
+      },
+      "83" : {
+        "Text" : "# dummy target (ICU+PKG+<name>+PKGLIST) to build the file pkglist.txt\n",
+        "Line" : 623,
+        "CharPositionInLine" : 8
+      },
+      "84" : {
+        "Text" : "# package => pkglist.txt\n",
+        "Line" : 629,
+        "CharPositionInLine" : 8
+      },
+      "85" : {
+        "Text" : "# pkglist.txt => *.res\n",
+        "Line" : 631,
+        "CharPositionInLine" : 8
+      },
+      "86" : {
+        "Text" : "########## </resource bundle support> ##########\n",
+        "Line" : 641,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "########## <debug> ##########\n",
+        "Line" : 643,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# IN (args)\n",
+        "Line" : 655,
+        "CharPositionInLine" : 4
+      },
+      "89" : {
+        "Text" : "# OUT\n\n# Found\n",
+        "Line" : 661,
+        "CharPositionInLine" : 4
+      },
+      "90" : {
+        "Text" : "# Flags\n",
+        "Line" : 664,
+        "CharPositionInLine" : 4
+      },
+      "91" : {
+        "Text" : "# Linking\n",
+        "Line" : 671,
+        "CharPositionInLine" : 4
+      },
+      "92" : {
+        "Text" : "# Version\n",
+        "Line" : 674,
+        "CharPositionInLine" : 4
+      },
+      "93" : {
+        "Text" : "# <COMPONENT>_(FOUND|LIBRARY)\n",
+        "Line" : 679,
+        "CharPositionInLine" : 4
+      },
+      "94" : {
+        "Text" : "########## </debug> ##########\n",
+        "Line" : 690,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 95
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 2
+  },
+  "ElapsedTime" : 1812
+}

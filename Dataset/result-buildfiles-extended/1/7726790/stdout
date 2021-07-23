@@ -1,0 +1,573 @@
+{
+  "Repository" : "7726790",
+  "Revision" : "HEAD",
+  "ObjectId" : "745231bad149b369f2ed114e7258cafb1e615093",
+  "CommitTime" : "2019-03-28T21:15:11Z",
+  "Files" : {
+    "pcre2-10.30/CMakeLists.txt" : {
+      "ObjectId" : "fbc37fe98e00a159965d5bfe66eb9c3bb8ca2a1b",
+      "LastModified" : "2017-09-20T15:02:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMakeLists.txt\n\n#\n\n#\n\n# This file enables PCRE2 to be built with the CMake configuration and build\n\n# tool. Download CMake in source or binary form from http://www.cmake.org/\n\n# Converted to support PCRE2 from the original PCRE file, August 2014.\n\n#\n\n# Original listfile by Christian Ehrlicher <Ch.Ehrlicher@gmx.de>\n\n# Refined and expanded by Daniel Richard G. <skunk@iSKUNK.ORG>\n\n# 2007-09-14 mod by Sheri so 7.4 supported configuration options can be entered\n\n# 2007-09-19 Adjusted by PH to retain previous default settings\n\n# 2007-12-26 (a) On UNIX, use names libpcre instead of just pcre\n\n#            (b) Ensure pcretest and pcregrep link with the local library,\n\n#                not a previously-installed one.\n\n#            (c) Add PCRE_SUPPORT_LIBREADLINE, PCRE_SUPPORT_LIBZ, and\n\n#                PCRE_SUPPORT_LIBBZ2.\n\n# 2008-01-20 Brought up to date to include several new features by Christian\n\n#            Ehrlicher.\n\n# 2008-01-22 Sheri added options for backward compatibility of library names\n\n#            when building with minGW:\n\n#            if \"ON\", NON_STANDARD_LIB_PREFIX causes shared libraries to\n\n#            be built without \"lib\" as prefix. (The libraries will be named\n\n#            pcre.dll, pcreposix.dll and pcrecpp.dll).\n\n#            if \"ON\", NON_STANDARD_LIB_SUFFIX causes shared libraries to\n\n#            be built with suffix of \"-0.dll\". (The libraries will be named\n\n#            libpcre-0.dll, libpcreposix-0.dll and libpcrecpp-0.dll - same names\n\n#            built by default with Configure and Make.\n\n# 2008-01-23 PH removed the automatic build of pcredemo.\n\n# 2008-04-22 PH modified READLINE support so it finds NCURSES when needed.\n\n# 2008-07-03 PH updated for revised UCP property support (change of files)\n\n# 2009-03-23 PH applied Steven Van Ingelgem's patch to change the name\n\n#            CMAKE_BINARY_DIR to PROJECT_BINARY_DIR so that it works when PCRE\n\n#            is included within another project.\n\n# 2009-03-23 PH applied a modified version of Steven Van Ingelgem's patches to\n\n#            add options to stop the building of pcregrep and the tests, and\n\n#            to disable the final configuration report.\n\n# 2009-04-11 PH applied Christian Ehrlicher's patch to show compiler flags that\n\n#            are set by specifying a release type.\n\n# 2010-01-02 PH added test for stdint.h\n\n# 2010-03-02 PH added test for inttypes.h\n\n# 2011-08-01 PH added PCREGREP_BUFSIZE\n\n# 2011-08-22 PH added PCRE_SUPPORT_JIT\n\n# 2011-09-06 PH modified WIN32 ADD_TEST line as suggested by Sergey Cherepanov\n\n# 2011-09-06 PH added PCRE_SUPPORT_PCREGREP_JIT\n\n# 2011-10-04 Sheri added support for including coff data in windows shared libraries\n\n#            compiled with MINGW if pcre.rc and/or pcreposix.rc are placed in\n\n#            the source dir by the user prior to building\n\n# 2011-10-04 Sheri changed various add_test's to use exes' location built instead\n\n#            of DEBUG location only (likely only matters in MSVC)\n\n# 2011-10-04 Sheri added scripts to provide needed variables to RunTest and\n\n#            RunGrepTest (used for UNIX and Msys)\n\n# 2011-10-04 Sheri added scripts to provide needed variables and to execute\n\n#            RunTest.bat in Win32 (for effortless testing with \"make test\")\n\n# 2011-10-04 Sheri Increased minimum required cmake version\n\n# 2012-01-06 PH removed pcre_info.c and added pcre_string_utils.c\n\n# 2012-01-10 Zoltan Herczeg added libpcre16 support\n\n# 2012-01-13 Stephen Kelly added out of source build support\n\n# 2012-01-17 PH applied Stephen Kelly's patch to parse the version data out\n\n#            of the configure.ac file\n\n# 2012-02-26 PH added support for libedit\n\n# 2012-09-06 PH added support for PCRE_EBCDIC_NL25\n\n# 2012-09-08 ChPe added PCRE32 support\n\n# 2012-10-23 PH added support for VALGRIND and GCOV\n\n# 2012-12-08 PH added patch from Daniel Richard G to quash some MSVC warnings\n\n# 2013-07-01 PH realized that the \"support\" for GCOV was a total nonsense and\n\n#            so it has been removed.\n\n# 2013-10-08 PH got rid of the \"source\" command, which is a bash-ism (use \".\")\n\n# 2013-11-05 PH added support for PARENS_NEST_LIMIT\n\n# 2014-08-29 PH converted the file for PCRE2 (which has no C++).\n\n# 2015-04-24 PH added support for PCRE2_DEBUG\n\n# 2015-07-16 PH updated for new pcre2_find_bracket source module\n\n# 2015-08-24 PH correct C_FLAGS setting (patch from Roy Ivy III)\n\n# 2015-10=16 PH added support for never-backslash-C\n\n# 2016-03-01 PH applied Chris Wilson's patch for MSVC static\n\n# 2016-06-24 PH applied Chris Wilson's second patch, putting the first under\n\n#            a new option instead of being unconditional.\n\n# 2016-10-05 PH fixed a typo (PCRE should be PCRE2) in above patch\n\n#            fix by David Gaussmann\n\n# 2016-10-07 PH added PCREGREP_MAX_BUFSIZE\n\n# 2017-03-11 PH turned HEAP_MATCH_RECURSE into a NO-OP for 10.30\n\n# 2017-04-08 PH added HEAP_LIMIT\n\n# 2017-06-15 ZH added SUPPORT_JIT_SEALLOC support\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Increased minimum to 2.8.0 to support newer add_test features. Set policy\n\n# CMP0026 to avoid warnings for the use of LOCATION in GET_TARGET_PROPERTY.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# for FindReadline.cmake\n",
+        "Line" : 92,
+        "CharPositionInLine" : 51
+      },
+      "3" : {
+        "Text" : "# external packages\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configuration checks\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# User-configurable options\n\n#\n\n# Note: CMakeSetup displays these in alphabetical order, regardless of\n\n# the order we use here.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# bzip2 lib\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# zlib\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# editline lib\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# readline lib\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Prepare build configuration\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# This next one used to reference ${READLINE_LIBRARY})\n\n# but I was advised to add the NCURSES test as well, along with\n\n# some modifications to cmake/FindReadline.cmake which should\n\n# make it possible to override the default if necessary. PH\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# libedit is a plug-compatible alternative to libreadline\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Output files\n",
+        "Line" : 372,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Parse version numbers and date out of configure.ac\n",
+        "Line" : 378,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Read only the first 50 lines of the file\n",
+        "Line" : 382,
+        "CharPositionInLine" : 17
+      },
+      "16" : {
+        "Text" : "# What about pcre2-config and libpcre2.pc?\n",
+        "Line" : 402,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Character table generation\n",
+        "Line" : 404,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Source code\n",
+        "Line" : 422,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Fix static compilation with MSVC: https://bugs.exim.org/show_bug.cgi?id=1681\n\n# This code was taken from the CMake wiki, not from WebM.\n",
+        "Line" : 491,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Build setup\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# needed to make sure to not link debug libs\n\n# against release libs and vice versa\n",
+        "Line" : 512,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# 8-bit library\n",
+        "Line" : 520,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# 16-bit library\n",
+        "Line" : 543,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# 32-bit library\n",
+        "Line" : 561,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Executables\n",
+        "Line" : 579,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Testing\n",
+        "Line" : 589,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# exes in Debug location tested by the RunTest shell script\n\n# via \"make test\"\n",
+        "Line" : 625,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# =================================================\n",
+        "Line" : 634,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Write out a CTest configuration file\n\n#\n",
+        "Line" : 635,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# Provide environment for executing the bat file version of RunTest\n",
+        "Line" : 671,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "# Both the sh and bat file versions of RunTest are run if make test is used\n\n# in msys\n",
+        "Line" : 694,
+        "CharPositionInLine" : 6
+      },
+      "32" : {
+        "Text" : "# Changed to accommodate testing whichever location was just built\n",
+        "Line" : 703,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# Installation\n",
+        "Line" : 711,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Help, only for nice output\n",
+        "Line" : 747,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# end CMakeLists.txt\n",
+        "Line" : 830,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 36
+    },
+    "pcre2-10.30/Makefile.am" : {
+      "ObjectId" : "7fa98c5d07335e85e1b89ad767eedfdff89c0d88",
+      "LastModified" : "2017-09-20T15:02:57Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## Process this file with automake to produce Makefile.in.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## This seems to have become necessary for building in non-source directory.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## Specify the documentation files that are distributed.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The Libtool libraries to install.  We'll add to this later.\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Unit tests you want to run when people type 'make check'.\n\n# TESTS is for binary unit tests, check_SCRIPTS for script-based tests\n",
+        "Line" : 217,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Some of the binaries we make are to be installed, and others are\n\n# (non-user-visible) helper programs needed to build the libraries.\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Additional files to delete on 'make clean', 'make distclean',\n\n# and 'make maintainer-clean'.\n",
+        "Line" : 230,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Additional files to bundle with the distribution, over and above what\n\n# the Autotools include by default.\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# These files contain additional m4 macros that are used by autoconf.\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# These files contain maintenance information\n",
+        "Line" : 247,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# These files are used in the preparation of a release\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# These files are usable versions of pcre2.h and config.h that are distributed\n\n# for the benefit of people who are building PCRE2 manually, without the\n\n# Autotools support.\n",
+        "Line" : 263,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# The only difference between pcre2.h.in and pcre2.h is the setting of the PCRE\n\n# version number. Therefore, we can create the generic version just by copying.\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# It is more complicated for config.h.generic. We need the version that results\n\n# from a default configuration so as to get all the default values for PCRE\n\n# configuration macros such as MATCH_LIMIT and NEWLINE. We can get this by\n\n# doing a configure in a temporary directory. However, some trickery is needed,\n\n# because the source directory may already be configured. If you just try\n\n# running configure in a new directory, it complains. For this reason, we move\n\n# config.status out of the way while doing the default configuration. The\n\n# resulting config.h is munged by perl to put #ifdefs round any #defines for\n\n# macros with values, and to #undef all boolean macros such as HAVE_xxx and\n\n# SUPPORT_xxx. We also get rid of any gcc-specific visibility settings. Make\n\n# sure that PCRE2_EXP_DEFN is unset (in case it has visibility settings).\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#define\\s((?:HAVE|SUPPORT|STDC)_\\w+)/){print\"/* #undef $$1 */\\n\";$$blank=0;next;}' \\\n\t  -e 'if(/^#define\\s(?!PACKAGE|VERSION)(\\w+)/){print\"#ifndef $$1\\n$$_#endif\\n\";$$blank=0;next;}' \\\n\t  -e 'if(/^\\s*$$/){print unless $$blank; $$blank=1;} else{print;$$blank=0;}' \\\n\t  _generic/src/config.h >$@\n",
+        "Line" : 303,
+        "CharPositionInLine" : 12
+      },
+      "15" : {
+        "Text" : "# These are the header files we'll install. We do not distribute pcre2.h\n\n# because it is generated from pcre2.h.in.\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# This is the \"config\" script.\n",
+        "Line" : 317,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "## ---------------------------------------------------------------\n\n## The dftables program is used to rebuild character tables before compiling\n\n## PCRE2, if --enable-rebuild-chartables is specified. It is not a user-visible\n\n## program. The default (when --enable-rebuild-chartables is not specified) is\n\n## to copy a distributed set of tables that are defined for ASCII code. In this\n\n## case, dftables is not needed.\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# WITH_REBUILD_CHARTABLES\n",
+        "Line" : 338,
+        "CharPositionInLine" : 6
+      },
+      "19" : {
+        "Text" : "## Define the list of common sources, then arrange to build whichever of the\n\n## 8-, 16-, or 32-bit libraries are configured.\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 386,
+        "CharPositionInLine" : 6
+      },
+      "21" : {
+        "Text" : "# WITH_PCRE2_16\n",
+        "Line" : 399,
+        "CharPositionInLine" : 6
+      },
+      "22" : {
+        "Text" : "# WITH_PCRE2_32\n",
+        "Line" : 412,
+        "CharPositionInLine" : 6
+      },
+      "23" : {
+        "Text" : "# The pcre2_chartables.c.dist file is the default version of\n\n# pcre2_chartables.c, used unless --enable-rebuild-chartables is specified.\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# The JIT compiler lives in a separate directory, but its files are #included\n\n# when pcre2_jit_compile.c is processed, so they must be distributed.\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Some of the JIT sources are also in separate files that are #included.\n",
+        "Line" : 448,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 456,
+        "CharPositionInLine" : 6
+      },
+      "27" : {
+        "Text" : "# WITH_PCRE2_16\n",
+        "Line" : 459,
+        "CharPositionInLine" : 6
+      },
+      "28" : {
+        "Text" : "# WITH_PCRE2_32\n",
+        "Line" : 462,
+        "CharPositionInLine" : 6
+      },
+      "29" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 467,
+        "CharPositionInLine" : 6
+      },
+      "30" : {
+        "Text" : "# WITH_PCRE2_16\n",
+        "Line" : 470,
+        "CharPositionInLine" : 6
+      },
+      "31" : {
+        "Text" : "# WITH_PCRE2_32\n\n# WITH_VALGRIND\n",
+        "Line" : 473,
+        "CharPositionInLine" : 6
+      },
+      "32" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 479,
+        "CharPositionInLine" : 6
+      },
+      "33" : {
+        "Text" : "# WITH_PCRE2_16\n",
+        "Line" : 482,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# WITH_PCRE2_32\n\n# WITH_GCOV\n",
+        "Line" : 485,
+        "CharPositionInLine" : 6
+      },
+      "35" : {
+        "Text" : "## A version of the 8-bit library that has a POSIX API.\n",
+        "Line" : 488,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# WITH_GCOV\n\n# WITH_PCRE2_8\n",
+        "Line" : 500,
+        "CharPositionInLine" : 6
+      },
+      "37" : {
+        "Text" : "## Build pcre2grep and optional fuzzer stuff if the 8-bit library is enabled\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# WITH_GCOV\n",
+        "Line" : 514,
+        "CharPositionInLine" : 6
+      },
+      "39" : {
+        "Text" : "## If fuzzer support is enabled, build a non-distributed library containing the\n\n## fuzzing function. Also build the standalone checking binary from the same\n\n## source but using -DSTANDALONE.\n",
+        "Line" : 516,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# WITH FUZZ_SUPPORT\n\n# WITH_PCRE2_8\n",
+        "Line" : 530,
+        "CharPositionInLine" : 6
+      },
+      "41" : {
+        "Text" : "## -------- Testing ----------\n",
+        "Line" : 533,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "## If JIT support is enabled, arrange for the JIT test program to run.\n",
+        "Line" : 535,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 545,
+        "CharPositionInLine" : 6
+      },
+      "44" : {
+        "Text" : "# WITH_PCRE2_16\n",
+        "Line" : 548,
+        "CharPositionInLine" : 6
+      },
+      "45" : {
+        "Text" : "# WITH_PCRE2_32\n",
+        "Line" : 551,
+        "CharPositionInLine" : 6
+      },
+      "46" : {
+        "Text" : "# WITH_GCOV\n\n# WITH_JIT\n",
+        "Line" : 555,
+        "CharPositionInLine" : 6
+      },
+      "47" : {
+        "Text" : "# Build the general pcre2test program. The file src/pcre2_printint.c is\n\n# #included by pcre2test as many times as needed, at different code unit\n\n# widths.\n",
+        "Line" : 558,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 570,
+        "CharPositionInLine" : 6
+      },
+      "49" : {
+        "Text" : "# WITH_PCRE2_16\n",
+        "Line" : 574,
+        "CharPositionInLine" : 6
+      },
+      "50" : {
+        "Text" : "# WITH_PCRE2_32\n",
+        "Line" : 578,
+        "CharPositionInLine" : 6
+      },
+      "51" : {
+        "Text" : "# WITH_VALGRIND\n",
+        "Line" : 582,
+        "CharPositionInLine" : 6
+      },
+      "52" : {
+        "Text" : "# WITH_GCOV\n",
+        "Line" : 587,
+        "CharPositionInLine" : 6
+      },
+      "53" : {
+        "Text" : "## The main library tests. Each test is a binary plus a script that runs that\n\n## binary in various ways. We install these test binaries in case folks find it\n\n## helpful. The two .bat files are for running the tests under Windows.\n",
+        "Line" : 589,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "## When the 8-bit library is configured, pcre2grep will have been built.\n",
+        "Line" : 597,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# WITH_PCRE2_8\n",
+        "Line" : 603,
+        "CharPositionInLine" : 6
+      },
+      "56" : {
+        "Text" : "## Distribute all the test data files\n",
+        "Line" : 605,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# RunTest and RunGrepTest should clean up after themselves, but just in case\n\n# they don't, add their working files to CLEANFILES.\n",
+        "Line" : 694,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "## ------------ End of testing -------------\n",
+        "Line" : 712,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# PCRE2 demonstration program. Not built automatcally. The point is that the\n\n# users should build it themselves. So just distribute the source.\n",
+        "Line" : 715,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# We have .pc files for pkg-config users.\n",
+        "Line" : 721,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# gcov/lcov code coverage reporting\n\n#\n\n# Coverage reporting targets:\n\n#\n\n# coverage: Create a coverage report from 'make check'\n\n# coverage-baseline: Capture baseline coverage information\n\n# coverage-reset: This zeros the coverage counters only\n\n# coverage-report: This creates the coverage report only\n\n# coverage-clean-report: This removes the generated coverage report\n\n#   without cleaning the coverage data itself\n\n# coverage-clean-data: This removes the captured coverage data without\n\n#   removing the coverage files created at compile time (*.gcno)\n\n# coverage-clean: This cleans all coverage data including the generated\n\n#   coverage report.\n",
+        "Line" : 739,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# Without coverage support, still arrange for 'make distclean' to get rid of\n\n# any coverage files that may have been left from a different configuration.\n",
+        "Line" : 823,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# WITH_GCOV\n",
+        "Line" : 836,
+        "CharPositionInLine" : 6
+      },
+      "64" : {
+        "Text" : "## CMake support\n",
+        "Line" : 838,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "## end Makefile.am\n",
+        "Line" : 848,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 66
+    },
+    "pcre2-10.30/cmake/FindEditline.cmake" : {
+      "ObjectId" : "2d0b7cc543c3b5259ea2886d1903ee39c27ea93e",
+      "LastModified" : "2017-09-20T15:02:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Modified from FindReadline.cmake (PH Feb 2012)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "pcre2-10.30/cmake/FindPackageHandleStandardArgs.cmake" : {
+      "ObjectId" : "151d81250318e646a3baf86b4515fa237f725b5d",
+      "LastModified" : "2017-09-20T15:02:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIND_PACKAGE_HANDLE_STANDARD_ARGS(NAME (DEFAULT_MSG|\"Custom failure message\") VAR1 ... )\n\n#    This macro is intended to be used in FindXXX.cmake modules files.\n\n#    It handles the REQUIRED and QUIET argument to FIND_PACKAGE() and\n\n#    it also sets the <UPPERCASED_NAME>_FOUND variable.\n\n#    The package is found if all variables listed are TRUE.\n\n#    Example:\n\n#\n\n#    FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibXml2 DEFAULT_MSG LIBXML2_LIBRARIES LIBXML2_INCLUDE_DIR)\n\n#\n\n#    LibXml2 is considered to be found, if both LIBXML2_LIBRARIES and \n\n#    LIBXML2_INCLUDE_DIR are valid. Then also LIBXML2_FOUND is set to TRUE.\n\n#    If it is not found and REQUIRED was used, it fails with FATAL_ERROR, \n\n#    independent whether QUIET was used or not.\n\n#    If it is found, the location is reported using the VAR1 argument, so \n\n#    here a message \"Found LibXml2: /usr/lib/libxml2.so\" will be printed out.\n\n#    If the second argument is DEFAULT_MSG, the message in the failure case will \n\n#    be \"Could NOT find LibXml2\", if you don't like this message you can specify\n\n#    your own custom failure message there.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "pcre2-10.30/cmake/FindReadline.cmake" : {
+      "ObjectId" : "1d4cc55843136c7802eb4892b0b6fcffb13e95e3",
+      "LastModified" : "2017-09-20T15:02:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# from http://websvn.kde.org/trunk/KDE/kdeedu/cmake/modules/FindReadline.cmake\n\n# http://websvn.kde.org/trunk/KDE/kdeedu/cmake/modules/COPYING-CMAKE-SCRIPTS\n\n# --> BSD licensed\n\n#\n\n# GNU Readline library finder\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 2008-04-22 The next clause used to read like this:\n\n#\n\n#  FIND_LIBRARY(READLINE_LIBRARY NAMES readline)\n\n#        FIND_LIBRARY(NCURSES_LIBRARY NAMES ncurses )\n\n#        include(FindPackageHandleStandardArgs)\n\n#        FIND_PACKAGE_HANDLE_STANDARD_ARGS(Readline DEFAULT_MSG NCURSES_LIBRARY READLINE_INCLUDE_DIR READLINE_LIBRARY )\n\n#\n\n# I was advised to modify it such that it will find an ncurses library if\n\n# required, but not if one was explicitly given, that is, it allows the\n\n# default to be overridden. PH \n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 4,
+    "AUTOMAKE" : 1
+  },
+  "ElapsedTime" : 4733
+}

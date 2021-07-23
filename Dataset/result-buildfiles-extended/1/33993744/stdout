@@ -1,0 +1,653 @@
+{
+  "Repository" : "33993744",
+  "Revision" : "HEAD",
+  "ObjectId" : "92e5bf508121360b9151357817a5ac1ea43ebb17",
+  "CommitTime" : "2019-04-18T01:52:09Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "3df5cf4b5ecbe146fc57d6130862358eccc00741",
+      "LastModified" : "2019-04-17T17:16:28Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Make targets:\n\n#\n\n#  all    : builds all binaries in development mode, without web assets (default)\n\n#  full   : builds all binaries for PRODUCTION use\n\n#  release: prepares a release tarball\n\n#  clean  : removes all buld artifacts\n\n#  test   : runs tests\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To update the Teleport version, update VERSION variable:\n\n# Naming convention:\n\n#\tfor stable releases we use \"1.0.0\" format\n\n#   for pre-releases, we use   \"1.0.0-beta.2\" format\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# These are standard autotools variables, don't change them please\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# PAM support will only be built into Teleport if headers exist at build time.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# On Windows only build tsh. On all other platforms build teleport, tctl,\n\n# and tsh.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# 'make all' builds all 3 executables and places them in the current directory.\n\n#\n\n# IMPORTANT: the binaries will not contain the web UI assets and `teleport`\n\n#            won't start without setting the environment variable DEBUG=1\n\n#            This is the default build target for convenience of working on\n\n#            a web UI.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# By making these 3 targets below (tsh, tctl and teleport) PHONY we are solving\n\n# several problems:\n\n# * Build will rely on go build internal caching https://golang.org/doc/go1.10 at all times\n\n# * Manual change detection was broken on a large dependency tree\n\n# If you are considering changing this behavior, please consult with dev team first\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# make full - Builds Teleport binaries with the built-in web assets and\n\n# places them into $(BUILDDIR). On Windows, this target is skipped because\n\n# only tsh is built.\n\n#\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# make clean - Removed all build artifacts.\n\n#\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n# make release - Produces a binary release tarball.\n\n#\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# make release-unix - Produces a binary release tarball containing teleport,\n\n# tctl, and tsh.\n\n#\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#\n\n# make release-windows - Produces a binary release tarball containing teleport,\n\n# tctl, and tsh.\n\n#\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#\n\n# Builds docs using containerized mkdocs\n\n#\n",
+        "Line" : 160,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# Runs the documentation site inside a container on localhost with live updates\n\n# Convenient for editing documentation.\n\n#\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#\n\n# tests everything: called by Jenkins\n\n#\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#\n\n# integration tests. need a TTY to work and not compatible with a race detector\n\n#\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# This rule triggers re-generation of version.go and gitref.go if Makefile changes\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# make tag - prints a tag to use with git for the current version\n\n# \tTo put a new release on Github:\n\n# \t\t- bump VERSION variable\n\n# \t\t- run make setver\n\n# \t\t- commit changes to git\n\n# \t\t- build binaries with 'make release'\n\n# \t\t- run `make tag` and use its output to 'git tag' and 'git push --tags'\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# build/webassets.zip archive contains the web assets (UI) which gets\n\n# appended to teleport binary\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Dockerized build: usefule for making Linux releases on OSX\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Interactively enters a Docker container (which you can build and run Teleport inside of)\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# buildbox builds docker buildbox image used to compile binaries and generate GRPc stuff\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# proto generates GRPC defs from service definitions\n",
+        "Line" : 267,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# proto generates GRPC stuff inside buildbox\n",
+        "Line" : 272,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# standard GRPC output\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# make install will installs system-wide teleport\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "assets/marketplace/Makefile" : {
+      "ObjectId" : "d62628362fd99d568064cf928c73318c48a73f1c",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# VPC ID used for builds\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# VPC subnet used for builds\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Public AMI name\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Marketplace AMI name ?=\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Default build region\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Teleport version\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Teleport UID is the UID of a non-privileged 'teleport' user\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Instance type is a single value, sorry\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Use comma-separated values without spaces for multiple regions\n\n# For now, limit AMI to regions with DynamoDB encryption at rest enabled\n\n# https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Generate timestamp for builds\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# S3 Bucket ID\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Telegraf version\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# InfluxDB version\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Grafana version\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Build local 'debug' AMI\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Build named 'production' AMI and marketplace version\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Build local 'debug' AMI\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Build named 'production' AMI and marketplace version\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Other helpers\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "assets/marketplace/cloudformation/Makefile" : {
+      "ObjectId" : "cbb0ad0fe6728ab13fb4aaab46ec650b95876528",
+      "LastModified" : "2019-01-29T18:26:32Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# VPC ID used for builds\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# VPC subnet used for builds\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Override for AMI name if needed\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Default build region\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Teleport version\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Teleport UID is the UID of a non-privileged 'teleport' user\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Instance type is a single value, sorry\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Use comma-separated values without spaces for multiple regions\n\n# For now, limit AMI to regions with DynamoDB encryption at rest enabled\n\n# https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Cloudformation stack name to create, e.g. test1\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Stack parameters, e.g ParameterKey=KeyName,ParameterValue=KeyName ParameterKey=DomainName,ParameterValue=teleport.example.com ParameterKey=DomainAdminEmail,ParameterValue=admin@example.com ParameterKey=HostedZoneID,ParameterValue=AWSZONEID\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# License S3 URI for enterprise builds, e.g. s3://example.com/path/to/license\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Generate timestamp for builds\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Jenkins test CloudFormation stack name\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Jenkins Cloudformation parameters path\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# YAML filename\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# S3 Bucket ID\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# this target builds a generic AMI used for the Enterprise edition of Teleport in Cloudformation\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# this target builds the actual named AMI used for the Enterprise edition of Teleport in Cloudformation\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Stack functionality\n\n# Create\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Update\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Describe\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Delete\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Jenkins helpers\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "build.assets/Makefile" : {
+      "ObjectId" : "64285411020ca457f9d92dec97684fa649c33d82",
+      "LastModified" : "2019-02-13T00:39:21Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# This Makefile is used for producing official Teleport releases\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Build 'teleport' release inside a docker container\n\n#\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3,
+      "Errorlog" : "line 150:48 token recognition error at: '\" OS=windows\\n\u0000'\n"
+    },
+    "docker/Makefile" : {
+      "ObjectId" : "573b8a1baa3999ad1d41f91a7cb33b068bca5f5c",
+      "LastModified" : "2019-01-29T18:26:32Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# location of the test enterprise license file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# location of the test pro license file\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# whether to look for enterprise or pro license\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Default target starts two Teleport clusters\n\n#\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# 'make down' stops all Teleport containers, deletes them\n\n# and their network\n\n#\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# `make enter-one` gives you shell inside auth server\n\n# of cluster \"one\"\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# `make enter-two` gives you shell inside auth server\n\n# of cluster \"two\"\n\n#\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# `make enter-sshd` gives you shell inside sshd container\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# `make enter-two-proxy` gives you shell inside proxy server\n\n# of cluster \"two\"\n\n#\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# `make enter-two-node` gives you shell inside a node\n\n# of cluster \"two\"\n\n#\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "examples/aws/terraform/Makefile" : {
+      "ObjectId" : "0b2b1772e7d9033d1e9b63e2783b681ba34f5615",
+      "LastModified" : "2019-03-14T12:11:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set up terraform variables in a separate environment file, or inline here\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This region should support EFS\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Cluster name is a unique cluster name to use, should be unique and not contain spaces or other special characters\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# AWS SSH key name to provision in installed instances, should be available in the region\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Full absolute path to the license file for Teleport Enterprise or Pro.\n\n# This license will be copied into SSM and then pulled down on the auth nodes to enable Enterprise/Pro functionality\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# AMI name contains the version of Teleport to install, and whether to use OSS or Enterprise version\n\n# These AMIs are published by Gravitational and shared as public whenever a new version of Teleport is released\n\n# To list available AMIs:\n\n# OSS: aws ec2 describe-images --filters 'Name=name,Values=gravitational-teleport-ami-oss*'\n\n# Enterprise: aws ec2 describe-images --filters 'Name=name,Values=gravitational-teleport-ami-ent*'\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Route 53 zone to use, should be the zone registered in AWS, e.g. example.com\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Subdomain to set up in the zone above, e.g. cluster.example.com\n\n# This will be used for internet access for users connecting to teleport proxy\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Bucket name to store encrypted letsencrypt certificates.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Email of your support org, used for Letsencrypt cert registration process.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Setup grafana password for \"admin\" user. Grafana will be served on https://cluster.example.com:8443 after install\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# (optional) Set to true to use ACM (Amazon Certificate Manager) to provision certificates rather than Letsencrypt\n\n# If you wish to use a pre-existing ACM certificate rather than having Terraform generate one for you, you can import it:\n\n# terraform import aws_acm_certificate.cert <certificate_arn>\n\n# TF_VAR_use_acm ?=\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Plan launches terraform plan\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Apply launches terraform apply\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Destroy destroys the infrastructure, it doesn't ask for confirmation so be sure you actually want to\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "examples/etcd/certs/Makefile" : {
+      "ObjectId" : "0e3bdd31773a4de13eddee28d752309cae970696",
+      "LastModified" : "2019-01-29T18:26:32Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#!/bin/bash\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# output:\n\n#   ca-key.pem      : private key of the trusted CA\n\n#   ca-cert.pem     : self-signed CA cert\n\n#   client-crt.pem  : client cert signed by CA\n\n# \tclient-key.pem  : private key of the client\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# generate client key:\n",
+        "Line" : 13,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# sign it with CA:\n",
+        "Line" : 20,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# generate server key:\n",
+        "Line" : 32,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# sign it with CA:\n",
+        "Line" : 39,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# Generates the \"root\" private key+cert which will become the trusted CA \n\n# which can sign client certificates\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# removes everything\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "modules/pam_teleport/Makefile" : {
+      "ObjectId" : "4c7b6a26bbb6d47555415c68a80447d912af447f",
+      "LastModified" : "2019-01-29T18:26:32Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# PAM_POLICY_PATH is where the PAM policy for PAM-aware applications is\n\n# defined.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# PAM_MODULE_PATH is determined by the OS.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# LD and LD_FLAGS controls the linker and linker flags to use and are\n\n# determined by the OS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "tool/tctl/Makefile" : {
+      "ObjectId" : "a942108c11a2992f9497917c030317f228023502",
+      "LastModified" : "2019-01-29T18:26:32Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/Makefile" : {
+      "ObjectId" : "24d48cb3b36d1b3058c7d8a88e6df21812651d34",
+      "LastModified" : "2019-01-29T18:26:32Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Need unique names to allow parallel jenkins builds\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#HOST_TMP_VOL:= $(shell mktemp -d)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##############################\n\n#   Docker Targets\n\n##############################\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# Builds dist files\n\n#\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Removes the local Docker container\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# 'make docker-enter' builds a Docker container with a website\n\n#\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "##############################\n\n#   Native Localhost\n\n##############################\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# locally installs npm packages and builds\n\n#\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# 'make run' starts a local debugging environment\n\n#\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 10
+  },
+  "ElapsedTime" : 3668
+}

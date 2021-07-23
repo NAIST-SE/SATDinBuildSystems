@@ -1,0 +1,1730 @@
+{
+  "Repository" : "3406875",
+  "Revision" : "HEAD",
+  "ObjectId" : "f70588b761cfc756d18c53430509ccbaf9b0640f",
+  "CommitTime" : "2019-04-18T01:05:11Z",
+  "Files" : {
+    "build.xml" : {
+      "ObjectId" : "0adf5191596243208c54e7275a752155e2ee8e2b",
+      "LastModified" : "2019-04-11T23:35:16Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Control whether ErrorProne compiler is enabled. Disabled by default. ",
+        "Line" : 90,
+        "CharPositionInLine" : 80
+      },
+      "1" : {
+        "Text" : " Javadoc in 1.8 became stricter about parsing the docs. This disables some of those checks ",
+        "Line" : 103,
+        "CharPositionInLine" : 101
+      },
+      "2" : {
+        "Text" : " redirect slf4j to java.util.logging ",
+        "Line" : 211,
+        "CharPositionInLine" : 95
+      },
+      "3" : {
+        "Text" : " maven interop ",
+        "Line" : 217,
+        "CharPositionInLine" : 27
+      },
+      "4" : {
+        "Text" : " Default target so that a command line build can\n       do more than one thing.\n\n       clear-successful-build must be first, and mark-successful-build last, in the list of dependencies.",
+        "Line" : 301,
+        "CharPositionInLine" : 109
+      },
+      "5" : {
+        "Text" : " The function Function class was only introduced in Java 8. ",
+        "Line" : 307,
+        "CharPositionInLine" : 72
+      },
+      "6" : {
+        "Text" : " Do not add dependencies. The bootstrapper is intended to keep the system ClassLoader free\n         of classes that might conflict with those used by compiler plugins and annotation\n         processors. As such it cannot depend on third-party libraries, directly or indirectly. ",
+        "Line" : 356,
+        "CharPositionInLine" : 100
+      },
+      "7" : {
+        "Text" : " Be very careful what is added here, and leave comments justifying each addition. See the\n      comment in bootstrapper-classpath above for more details on why. ",
+        "Line" : 376,
+        "CharPositionInLine" : 75
+      },
+      "8" : {
+        "Text" : " The Tracing API jar must be accessible to both Buck and compiler plugins, so we put it\n      in the bootstrapper. Compiler plugins will have their own copy linked in, but the ClassLoaders\n      will end up loading this one instead when they are run inside Buck. ",
+        "Line" : 380,
+        "CharPositionInLine" : 78
+      },
+      "9" : {
+        "Text" : " The Tracing API is a very light JAR meant to be included in compiler plugins that may\n    be run outside of Buck. As such, it can take no dependencies. ",
+        "Line" : 387,
+        "CharPositionInLine" : 70
+      },
+      "10" : {
+        "Text" : " This jar is loaded in each compiler class loader, which is unrelated to Buck's class\n    loader. Do not take dependencies on Buck code outside of the bootstrapper here. Compiler\n    code (tools.jar) and third-party libraries are OK, though keep in mind that every class included\n    in the jar will be freshly loaded for each invocation of the compiler. ",
+        "Line" : 406,
+        "CharPositionInLine" : 79
+      },
+      "11" : {
+        "Text" : " Conditional compilation so we can simultaneously build against Java 8 and 11. ",
+        "Line" : 421,
+        "CharPositionInLine" : 95
+      },
+      "12" : {
+        "Text" : " Put the tracing jar in resources so it can be dynamically loaded at runtime. See\n     com.facebook.buck.jvm.java.plugin.Plugin ",
+        "Line" : 431,
+        "CharPositionInLine" : 50
+      },
+      "13" : {
+        "Text" : " suppress ManifestMerger2 warnings ",
+        "Line" : 455,
+        "CharPositionInLine" : 51
+      },
+      "14" : {
+        "Text" : "\n      javac-params can contain any extra parameters to the javac ant command.\n\n      include and exclude elements are automatically relative to ${src.dir}.\n\n      According to http://ant.apache.org/manual/Tasks/javac.html, the only way\n      to enumerate the .java inputs to javac in Ant is to set the sourcepath\n      to the empty string, set the srcdir to something, and use include/exclude\n      elements to filter things under the srcdir.\n    ",
+        "Line" : 476,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "\n      compiler-params can contain any extra parameters to the buck.build.compiler compiler.\n    ",
+        "Line" : 480,
+        "CharPositionInLine" : 8
+      },
+      "16" : {
+        "Text" : "\n          ecj does not appear to support -Werror. As suggested by\n          http://stackoverflow.com/a/14927725/396304, we specify an Eclipse preferences\n          file to ECJ with the rules we want to enforce set to error.\n\n          To see the full list of compiler options available, read the Javadoc for JavaCore at:\n          http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Freference%2Fapi%2Forg%2Feclipse%2Fjdt%2Fcore%2FJavaCore.html\n          Apparently Eclipse refuses to publish traditional Javadoc with manageable URLs.\n        ",
+        "Line" : 504,
+        "CharPositionInLine" : 12
+      },
+      "17" : {
+        "Text" : " error-prone does not like referencing concrete immutables classes ",
+        "Line" : 514,
+        "CharPositionInLine" : 83
+      },
+      "18" : {
+        "Text" : " there is no point in checking generated code ",
+        "Line" : 516,
+        "CharPositionInLine" : 62
+      },
+      "19" : {
+        "Text" : "\n            These patterns are excluded because they are compiled elsewhere\n            and are deliberately isolated from Buck's core.\n          ",
+        "Line" : 557,
+        "CharPositionInLine" : 14
+      },
+      "20" : {
+        "Text" : " Conditional compilation so we can simultaneously build against Java 8 and 11. ",
+        "Line" : 567,
+        "CharPositionInLine" : 97
+      },
+      "21" : {
+        "Text" : "\n       Note: two of the dx tests (the two tests for the merger) run the command\n       \"dalvik\" and expect it to be a working dalvik virtual machine.\n       Fulfilling this expectation is no easy task.  Here's how I did it.\n\n       - Be on Linux (Dalvik doesn't build for Mac).\n       - Check out Android (I used ICS because I had it lying around).\n       - make -kj25 dalvik-host\n       - If you built on a remote machine, rsync \"out\" to where you are\n         developing Buck, inside of a dedicated directory called \"android\"\n         or something.\n       - Edit android/out/host/linux-x86/dalvik to change the log tags to\n         \"*:w\", because a spurious info message was messing up the test.\n       - Delete android/out/host/linux-x86/dx so the tests will use our dx.\n       - Run this rule as\n         ANDROID_BUILD_TOP=/path/to/android PATH=$PATH:$ANDROID_BUILD_TOP/out/host/linux-x86/bin ant dx-tests\n       ",
+        "Line" : 835,
+        "CharPositionInLine" : 11
+      },
+      "22" : {
+        "Text" : "\n  Runs pmd on the file(s) specified in the property \"lint.files\",\n  separated by commas. Writes output to ${lint.outputpath}.\n  ",
+        "Line" : 891,
+        "CharPositionInLine" : 6
+      },
+      "23" : {
+        "Text" : "\n  Runs pmd on all source and test files.\n  ",
+        "Line" : 908,
+        "CharPositionInLine" : 6
+      },
+      "24" : {
+        "Text" : "\n  Copy classpath jars to a directory buck_repo.py can use, so that buck built with ant continues\n  to work after checking out a different revision or making changes to classpaths file.\n\n  This also generates a classpaths file that contains all classpath entries that should be added\n  when running buck binary.\n  ",
+        "Line" : 938,
+        "CharPositionInLine" : 6
+      },
+      "25" : {
+        "Text" : " turn all paths into repo relative as buck_repo.py expects ",
+        "Line" : 958,
+        "CharPositionInLine" : 73
+      },
+      "26" : {
+        "Text" : "\n   Builds a jar of a module with resources\n   ",
+        "Line" : 1037,
+        "CharPositionInLine" : 7
+      },
+      "27" : {
+        "Text" : "\n   Copies module resources that should be kept outside of module's jar file.\n   ",
+        "Line" : 1087,
+        "CharPositionInLine" : 7
+      },
+      "28" : {
+        "Text" : " Conditional compilation so we can simultaneously build against Java 8 and 11. ",
+        "Line" : 1124,
+        "CharPositionInLine" : 97
+      },
+      "29" : {
+        "Text" : " The latest version of the javadocs is only for 4.12 ",
+        "Line" : 1136,
+        "CharPositionInLine" : 69
+      },
+      "30" : {
+        "Text" : " Buck test runner has references to JUnit and TestNG. ",
+        "Line" : 1150,
+        "CharPositionInLine" : 66
+      },
+      "31" : {
+        "Text" : " Include the Compiler Tree API stub because its types are used in some places. ",
+        "Line" : 1154,
+        "CharPositionInLine" : 91
+      },
+      "32" : {
+        "Text" : " Guava depends on some j2objc stuff when dealing with javadocs. ",
+        "Line" : 1157,
+        "CharPositionInLine" : 76
+      },
+      "33" : {
+        "Text" : " Buck's Android support library has references to Android. ",
+        "Line" : 1172,
+        "CharPositionInLine" : 71
+      },
+      "34" : {
+        "Text" : "\n            This is the recommended way to link to Android's Javadoc.\n            This problem derives from Android's refusal to publish the package-list file\n            with their Javadoc: http://stackoverflow.com/a/2823592/396304.\n\n            Surprisingly, the generated Javadoc does link to http://d.android.com/\n            rather than a local file:/// URI that points to the local $ANDROID_HOME.\n          ",
+        "Line" : 1194,
+        "CharPositionInLine" : 14
+      },
+      "35" : {
+        "Text" : " Runs javadoc with -private to catch errors in all possible docblocks. ",
+        "Line" : 1210,
+        "CharPositionInLine" : 83
+      },
+      "CommentCount" : 36
+    },
+    "programs/defs.bzl" : {
+      "ObjectId" : "b16d868b9923fe76c227d996860fbbfb3ef17e0a",
+      "LastModified" : "2019-03-07T06:20:43Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present Facebook, Inc.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\"); you may\n# not use this file except in compliance with the License. You may obtain\n# a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n# License for the specific language governing permissions and limitations\n# under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\" Functions for BUCK file in this package \"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\" Gets the release version from the command line or \"\" \"\"\"",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "\"\"\" Gets the release version from the command line or \"\" \"\"\"",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "\"\"\"\n    Gets the gen_buck_info command to run based on configuration\n\n    Args:\n        gen_buck_info_target: The target that contains gen_buck_info script\n\n    Returns:\n        The cmd string to run\n    \"\"\"",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "test/com/facebook/buck/android/testdata/android_project/apps/multidex/dontobfuscate.pro" : {
+      "ObjectId" : "d97e92a6d03949d614d8a05c1c569b14e7663cd3",
+      "LastModified" : "2017-03-27T17:57:39Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/android/testdata/android_project/apps/multidex/obfuscate.pro" : {
+      "ObjectId" : "be5974acc54670c37611016e5fad45a881f0d14a",
+      "LastModified" : "2017-03-27T17:57:39Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/android/testdata/android_project/apps/sample/dontobfuscate.pro" : {
+      "ObjectId" : "d97e92a6d03949d614d8a05c1c569b14e7663cd3",
+      "LastModified" : "2017-03-27T17:57:39Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/android/testdata/android_project/native/proguard_gen/expected-16.pro" : {
+      "ObjectId" : "0ff3a75a99d082c67fb14c097da917388473c118",
+      "LastModified" : "2018-07-05T20:04:43Z",
+      "FileType" : "QMAKE",
+      "0" : {
+        "Text" : "# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/libs/armeabi/libgnustl_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/libs/armeabi/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/libs/armeabi-v7a/libgnustl_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/libs/armeabi-v7a/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/libs/x86/libgnustl_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/libs/x86/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard-16#copy_native_libs_dex__/metadata.txt\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/android/testdata/android_project/native/proguard_gen/expected-17.pro" : {
+      "ObjectId" : "4aad9e8e73e21452531631f372cb32e698f664ea",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "QMAKE",
+      "0" : {
+        "Text" : "# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/armeabi-v7a/libgnustl_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/armeabi-v7a/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/x86/libgnustl_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/x86/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/metadata.txt\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/android/testdata/android_project/native/proguard_gen/expected.pro" : {
+      "ObjectId" : "5df627086a0e40e31bd3b8480c9bc099b31b5f69",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "QMAKE",
+      "0" : {
+        "Text" : "# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/armeabi-v7a/libc++_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/armeabi-v7a/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/x86/libc++_shared.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/libs/x86/libnative_cxx_lib.so\n\n# buck-out/bin/apps/sample/__native_dex_app_with_native_lib_proguard#copy_native_libs_dex__/metadata.txt\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/cli/testdata/audit_includes/java_rules.bzl" : {
+      "ObjectId" : "c79d6ede748437ee93c30ca71a299bebcb1e1a0e",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/cli/testdata/audit_includes_transitive/included_java_rules.bzl" : {
+      "ObjectId" : "c79d6ede748437ee93c30ca71a299bebcb1e1a0e",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/cli/testdata/audit_includes_transitive/java_rules.bzl" : {
+      "ObjectId" : "ecee46edf1472c6b67ba00c8afeaab9bfcc40eae",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/parser/testdata/build_file_name/BUILD" : {
+      "ObjectId" : "d105dfc537e43cc59ef7f781e8f48171691363d6",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/parser/testdata/cross_cell_load/a/ext.bzl" : {
+      "ObjectId" : "cfe3d3578065c9383e35824f2f7d454b7814d35b",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Ext macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/cross_cell_load/a/lib.bzl" : {
+      "ObjectId" : "603dd18e4f9918099c770049e65d69653f51b078",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Lib macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/cross_cell_load/b/lib2.bzl" : {
+      "ObjectId" : "1377f973b2a76a946048114386898b2a0d1ea5b5",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Lib2 macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/deprecated_cell_syntax/cell/lib.bzl" : {
+      "ObjectId" : "f4fc08aa878d42a69c4a0f8afefe881de55d266b",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Lib macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# the cell format intentionally uses a deprecated cell format\n# @lint-ignore SKYLINT",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/com/facebook/buck/parser/testdata/deprecated_cell_syntax/cell/lib2.bzl" : {
+      "ObjectId" : "b2b34ce59af83c33ff04960dbd972f15b5dbcbe6",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Lib macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/disable_implicit_native_rules/python/implicit_in_extension_bzl/extension.bzl" : {
+      "ObjectId" : "0e224344c163f81deb574207f38b8233548b28f8",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" Example module \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\" Make you a java \"\"\"",
+        "Line" : 4,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "test/com/facebook/buck/parser/testdata/disable_implicit_native_rules/python/native_in_extension_bzl/extension.bzl" : {
+      "ObjectId" : "daf0d0d8dde95ce2bbf107a1eea7abf719c38561",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" Example module \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\" Make you a java \"\"\"",
+        "Line" : 4,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "test/com/facebook/buck/parser/testdata/disable_implicit_native_rules/skylark/implicit_in_extension_bzl/extension.bzl" : {
+      "ObjectId" : "0e224344c163f81deb574207f38b8233548b28f8",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" Example module \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\" Make you a java \"\"\"",
+        "Line" : 4,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "test/com/facebook/buck/parser/testdata/disable_implicit_native_rules/skylark/native_in_extension_bzl/extension.bzl" : {
+      "ObjectId" : "daf0d0d8dde95ce2bbf107a1eea7abf719c38561",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" Example module \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\" Make you a java \"\"\"",
+        "Line" : 4,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "test/com/facebook/buck/parser/testdata/package_implicit_includes/cell/name.bzl" : {
+      "ObjectId" : "4e3ab0448bc9f148760eda4982d0f646a55c5c25",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" Ignored docstring \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/package_implicit_includes/default/has_symbol/name.bzl" : {
+      "ObjectId" : "25b90e6f63f9805d1c5be2cf527cc846be9908e6",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" IGNORED DOCSTRING \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/package_implicit_includes/default/no_symbol/name.bzl" : {
+      "ObjectId" : "bc2da751f3167e7a4e2f33453ed49ea25d88e55f",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" IGNORED DOCSTRING \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/package_implicit_includes/get_suffix.bzl" : {
+      "ObjectId" : "28d9d8a5d9cc873d52de6e241537c8ae156cd0e9",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" IGNORED DOCSTRING \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/package_implicit_includes/root/foo/bar/name.bzl" : {
+      "ObjectId" : "8cd8d0c2630b5227593956d7f9acb87064930352",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" IGNORED DOCSTRING \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/package_implicit_includes/root/name.bzl" : {
+      "ObjectId" : "392b4affc2e515a2d45e07ecb91a616aa28f8a96",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\" IGNORED DOCSTRING \"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/python_dsl_warnings/cell/ext.bzl" : {
+      "ObjectId" : "b53a538dce0eb6eec5f43a2f8ac3a6f73c072613",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Provides extension macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/parser/testdata/python_dsl_warnings/cell/lib.bzl" : {
+      "ObjectId" : "01625c4410f662326ffd2c7cd2c81e12a867b2f2",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "\"\"\"Provides library macros.\"\"\"",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/com/facebook/buck/testutil/endtoend/testdata/mobile/android/buck_imports/visible_android_library.bzl" : {
+      "ObjectId" : "b88b69cda58c17fb5aef962dd37a89fc826b50c3",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present, Facebook, Inc.\n# All rights reserved.\n#\n# This source code is licensed under the license found in the\n# LICENSE file in the root directory of this source tree.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Exposes an auto-public version of android_library\"\"\"",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"android_library that is by default public\"\"\"",
+        "Line" : 10,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "test/com/facebook/buck/testutil/endtoend/testdata/mobile/android/configs/dont_obfuscate.pro" : {
+      "ObjectId" : "794dc22ed9cc9efeb8856095218c244b5900bfbf",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "test/com/facebook/buck/testutil/endtoend/testdata/mobile/ios/buck_imports/visible_apple_library.bzl" : {
+      "ObjectId" : "26642f47cb5cddb138296b0eafd413283528ab40",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present, Facebook, Inc.\n# All rights reserved.\n#\n# This source code is licensed under the license found in the\n# LICENSE file in the root directory of this source tree.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Exposes an auto-public version of apple_library. We use this to test loading macros\"\"\"",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"apple_library that is by default public\"\"\"",
+        "Line" : 10,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "third-party/py/argparse/doc/Makefile" : {
+      "ObjectId" : "60e53ae9bfc28fcced4601d85505e05e67cd6521",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "third-party/py/pathlib/docs/Makefile" : {
+      "ObjectId" : "6cf09d88652025fbf7c9fc218c02959d534faaed",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "third-party/py/six/documentation/Makefile" : {
+      "ObjectId" : "eebafcd6d60f129cb5c626fb2e04d40f78e375da",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "third-party/skylark/bazel-skylib/BUILD" : {
+      "ObjectId" : "38be5dc8d93375f48abb7261b720d770569e0a4f",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Apache 2.0",
+        "Line" : 1,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 1
+    },
+    "third-party/skylark/bazel-skylib/lib.bzl" : {
+      "ObjectId" : "eb3f39a0a3c25e7a51d3b71c32236bf2ba90285b",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Index from which multiple modules can be loaded.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The unittest module is treated differently to give more convenient names to\n# the assert functions, while keeping them in the same .bzl file.",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "third-party/skylark/bazel-skylib/lib/BUILD" : {
+      "ObjectId" : "271ffd49566016a11422e6aeab0bcf57e1cd3aaf",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "third-party/skylark/bazel-skylib/lib/collections.bzl" : {
+      "ObjectId" : "c86842b3e76c90d3c18b8c553bdd7884365d94ae",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing functions that operate on collections.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Inserts `separator` after each item in `iterable`.\n\n  Args:\n    separator: The value to insert after each item in `iterable`.\n    iterable: The list into which to intersperse the separator.\n  Returns:\n    A new list with `separator` after each item in `iterable`.\n  \"\"\"",
+        "Line" : 19,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "\"\"\"Inserts `separator` before each item in `iterable`.\n\n  Args:\n    separator: The value to insert before each item in `iterable`.\n    iterable: The list into which to intersperse the separator.\n  Returns:\n    A new list with `separator` before each item in `iterable`.\n  \"\"\"",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "\"\"\"Returns a list of unique elements in `iterable`.\n\n  Requires all the elements to be hashable.\n\n  Args:\n    iterable: An iterable to filter.\n  Returns:\n    A new list with all unique elements from `iterable`.\n  \"\"\"",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "third-party/skylark/bazel-skylib/lib/dicts.bzl" : {
+      "ObjectId" : "ee1076cb016d41cda22e3d2cc82f7432803820d0",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing functions that operate on dictionaries.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Returns a new `dict` that has all the entries of the given dictionaries.\n\n  If the same key is present in more than one of the input dictionaries, the\n  last of them in the argument list overrides any earlier ones.\n\n  This function is designed to take zero or one arguments as well as multiple\n  dictionaries, so that it follows arithmetic identities and callers can avoid\n  special cases for their inputs: the sum of zero dictionaries is the empty\n  dictionary, and the sum of a single dictionary is a copy of itself.\n\n  Args:\n    *dictionaries: Zero or more dictionaries to be added.\n  Returns:\n    A new `dict` that has all the entries of the given dictionaries.\n  \"\"\"",
+        "Line" : 19,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "third-party/skylark/bazel-skylib/lib/paths.bzl" : {
+      "ObjectId" : "925abccc19793a15688d32f4795958707a53851f",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing file path manipulation functions.\n\nNOTE: The functions in this module currently only support paths with Unix-style\npath separators (forward slash, \"/\"); they do not handle Windows-style paths\nwith backslash separators or drive letters.\n\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Returns the basename (i.e., the file portion) of a path.\n\n  Note that if `p` ends with a slash, this function returns an empty string.\n  This matches the behavior of Python's `os.path.basename`, but differs from\n  the Unix `basename` command (which would return the path segment preceding\n  the final slash).\n\n  Args:\n    p: The path whose basename should be returned.\n  Returns:\n    The basename of the path, which includes the extension.\n  \"\"\"",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "\"\"\"Returns the dirname of a path.\n\n  The dirname is the portion of `p` up to but not including the file portion\n  (i.e., the basename). Any slashes immediately preceding the basename are not\n  included, unless omitting them would make the dirname empty.\n\n  Args:\n    p: The path whose dirname should be returned.\n  Returns:\n    The dirname of the path.\n  \"\"\"",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# If there are multiple consecutive slashes, strip them all out as Python's\n# os.path.dirname does.",
+        "Line" : 55,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "\"\"\"Returns `True` if `path` is an absolute path.\n\n  Args:\n    path: A path (which is a string).\n  Returns:\n    `True` if `path` is an absolute path.\n  \"\"\"",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "\"\"\"Joins one or more path components intelligently.\n\n  This function mimics the behavior of Python's `os.path.join` function on POSIX\n  platform. It returns the concatenation of `path` and any members of `others`,\n  inserting directory separators before each component except the first. The\n  separator is not inserted if the path up until that point is either empty or\n  already ends in a separator.\n\n  If any component is an absolute path, all previous components are discarded.\n\n  Args:\n    path: A path segment.\n    *others: Additional path segments.\n  Returns:\n    A string containing the joined paths.\n  \"\"\"",
+        "Line" : 72,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "\"\"\"Normalizes a path, eliminating double slashes and other redundant segments.\n\n  This function mimics the behavior of Python's `os.path.normpath` function on\n  POSIX platforms; specifically:\n\n  - If the entire path is empty, \".\" is returned.\n  - All \".\" segments are removed, unless the path consists solely of a single\n    \".\" segment.\n  - Trailing slashes are removed, unless the path consists solely of slashes.\n  - \"..\" segments are removed as long as there are corresponding segments\n    earlier in the path to remove; otherwise, they are retained as leading \"..\"\n    segments.\n  - Single and double leading slashes are preserved, but three or more leading\n    slashes are collapsed into a single leading slash.\n  - Multiple adjacent internal slashes are collapsed into a single slash.\n\n  Args:\n    path: A path.\n  Returns:\n    The normalized path.\n  \"\"\"",
+        "Line" : 102,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Only pop the last segment if it isn't another \"..\".",
+        "Line" : 142,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Preserve leading \"..\" segments for relative paths.",
+        "Line" : 145,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "\"\"\"Returns the portion of `path` that is relative to `start`.\n\n  Because we do not have access to the underlying file system, this\n  implementation differs slightly from Python's `os.path.relpath` in that it\n  will fail if `path` is not beneath `start` (rather than use parent segments to\n  walk up to the common file system root).\n\n  Relativizing paths that start with parent directory references is not allowed.\n\n  Args:\n    path: The path to relativize.\n    start: The ancestor path against which to relativize.\n  Returns:\n    The portion of `path` that is relative to `start`.\n  \"\"\"",
+        "Line" : 158,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "\"\"\"Replaces the extension of the file at the end of a path.\n\n  If the path has no extension, the new extension is added to it.\n\n  Args:\n    p: The path whose extension should be replaced.\n    new_extension: The new extension for the file. The new extension should\n        begin with a dot if you want the new filename to have one.\n  Returns:\n    The path with the extension replaced (or added, if it did not have one).\n  \"\"\"",
+        "Line" : 196,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "\"\"\"Splits the path `p` into a tuple containing the root and extension.\n\n  Leading periods on the basename are ignored, so\n  `path.split_extension(\".bashrc\")` returns `(\".bashrc\", \"\")`.\n\n  Args:\n    p: The path whose root and extension should be split.\n  Returns:\n    A tuple `(root, ext)` such that the root is the path without the file\n    extension, and `ext` is the file extension (which, if non-empty, contains\n    the leading dot). The returned tuple always satisfies the relationship\n    `root + ext == p`.\n  \"\"\"",
+        "Line" : 211,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# If there is no dot or the only dot in the basename is at the front, then\n# there is no extension.",
+        "Line" : 227,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 14
+    },
+    "third-party/skylark/bazel-skylib/lib/selects.bzl" : {
+      "ObjectId" : "daf15c7aa431168a8c4abbcf12f3ba1b79521297",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing convenience interfaces for select().\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Drop-in replacement for `select()` that supports ORed keys.\n\n  Args:\n    input_dict: The same dictionary `select()` takes, except keys may take\n        either the usual form `\"//foo:config1\"` or\n        `(\"//foo:config1\", \"//foo:config2\", ...)` to signify\n        `//foo:config1` OR `//foo:config2` OR `...`.\n\n        Example:\n\n        ```build\n        deps = selects.with_or({\n            \"//configs:one\": [\":dep1\"],\n            (\"//configs:two\", \"//configs:three\"): [\":dep2or3\"],\n            \"//configs:four\": [\":dep4\"],\n            \"//conditions:default\": [\":default\"]\n        })\n        ```\n\n        Key labels may appear at most once anywhere in the input.\n\n  Returns:\n    A native `select()` that expands\n\n    `(\"//configs:two\", \"//configs:three\"): [\":dep2or3\"]`\n\n    to\n\n    ```build\n    \"//configs:two\": [\":dep2or3\"],\n    \"//configs:three\": [\":dep2or3\"],\n    ```\n  \"\"\"",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "\"\"\"Variation of `with_or` that returns the dict of the `select()`.\n\n  Unlike `select()`, the contents of the dict can be inspected by Skylark\n  macros.\n\n  Args:\n    input_dict: Same as `with_or`.\n\n  Returns:\n    A dictionary usable by a native `select()`.\n  \"\"\"",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "third-party/skylark/bazel-skylib/lib/sets.bzl" : {
+      "ObjectId" : "edaf8275c30256efba3a292a9ef2e99ab738007d",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing common set algorithms.\n\nCAUTION: Operating on sets, particularly sets contained in providers, may\nasymptotically slow down the analysis phase. While constructing large sets with\naddition/union is fast (there is no linear-time copy involved), the\n`difference` function and various comparison predicates involve linear-time\ntraversals.\n\nFor convenience, the functions in this module can take either sets or lists as\ninputs; operations that take lists treat them as if they were sets (i.e.,\nduplicate elements are ignored). Functions that return new sets always return\nthem as the `set` type, regardless of the types of the inputs.\n\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Verifies that all arguments are either sets or lists.\n\n  The build will fail if any of the arguments is neither a set nor a list.\n\n  Args:\n    *args: A list of values that must be sets or lists.\n  \"\"\"",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "\"\"\"Returns whether two sets are equal.\n\n  Args:\n    a: A depset or a list.\n    b: A depset or a list.\n  Returns:\n    True if `a` is equal to `b`, False otherwise.\n  \"\"\"",
+        "Line" : 46,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "\"\"\"Returns whether `a` is a subset of `b`.\n\n  Args:\n    a: A depset or a list.\n    b: A depset or a list.\n\n  Returns:\n    True if `a` is a subset of `b`, False otherwise.\n  \"\"\"",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "\"\"\"Returns whether two sets are disjoint.\n\n  Two sets are disjoint if they have no elements in common.\n\n  Args:\n    a: A set or list.\n    b: A set or list.\n\n  Returns:\n    True if `a` and `b` are disjoint, False otherwise.\n  \"\"\"",
+        "Line" : 76,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "\"\"\"Returns the intersection of two sets.\n\n  Args:\n    a: A set or list.\n    b: A set or list.\n\n  Returns:\n    A set containing the elements that are in both `a` and `b`.\n  \"\"\"",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "\"\"\"Returns the union of several sets.\n\n  Args:\n    *args: An arbitrary number of sets or lists.\n\n  Returns:\n    The set union of all sets or lists in `*args`.\n  \"\"\"",
+        "Line" : 109,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "\"\"\"Returns the elements in `a` that are not in `b`.\n\n  Args:\n    a: A set or list.\n    b: A set or list.\n\n  Returns:\n    A set containing the elements that are in `a` but not in `b`.\n  \"\"\"",
+        "Line" : 125,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 9
+    },
+    "third-party/skylark/bazel-skylib/lib/shell.bzl" : {
+      "ObjectId" : "4173fe7ba851ccda8e1388e4a19a15d38a80834f",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing shell utility functions.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Creates a string from a sequence that can be used as a shell array.\n\n  For example, `shell.array_literal([\"a\", \"b\", \"c\"])` would return the string\n  `(\"a\" \"b\" \"c\")`, which can be used in a shell script wherever an array\n  literal is needed.\n\n  Note that all elements in the array are quoted (using `shell.quote`) for\n  safety, even if they do not need to be.\n\n  Args:\n    iterable: A sequence of elements. Elements that are not strings will be\n        converted to strings first, by calling `str()`.\n  Returns:\n    A string that represents the sequence as a shell array; that is,\n    parentheses containing the quoted elements.\n  \"\"\"",
+        "Line" : 19,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "\"\"\"Quotes the given string for use in a shell command.\n\n  This function quotes the given string (in case it contains spaces or other\n  shell metacharacters.)\n\n  Args:\n    s: The string to quote.\n  Returns:\n    A quoted version of the string that can be passed to a shell command.\n  \"\"\"",
+        "Line" : 39,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "third-party/skylark/bazel-skylib/lib/structs.bzl" : {
+      "ObjectId" : "78715cca9f1067dc17a1893a2a9b4e4a5c3527b1",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing functions that operate on structs.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Converts a `struct` to a `dict`.\n\n  Args:\n    s: A `struct`.\n  Returns:\n    A `dict` whose keys and values are the same as the fields in `s`. The\n    transformation is only applied to the struct's fields and not to any\n    nested values.\n  \"\"\"",
+        "Line" : 19,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "third-party/skylark/bazel-skylib/lib/unittest.bzl" : {
+      "ObjectId" : "f1208a3cf48723c5491462d0251918a6f2f81e6f",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit testing support.\n\nUnlike most Skylib files, this exports two modules: `unittest` which contains\nfunctions to declare and define unit tests, and `asserts` which contains the\nassertions used to within tests.\n\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Creates a unit test rule from its implementation function.\n\n  Each unit test is defined in an implementation function that must then be\n  associated with a rule so that a target can be built. This function handles\n  the boilerplate to create and return a test rule and captures the\n  implementation function's name so that it can be printed in test feedback.\n\n  The optional `attrs` argument can be used to define dependencies for this\n  test, in order to form unit tests of rules.\n\n  An example of a unit test:\n\n  ```\n  def _your_test(ctx):\n    env = unittest.begin(ctx)\n\n    # Assert statements go here\n\n    unittest.end(env)\n\n  your_test = unittest.make(_your_test)\n  ```\n\n  Recall that names of test rules must end in `_test`.\n\n  Args:\n    impl: The implementation function of the unit test.\n    attrs: An optional dictionary to supplement the attrs passed to the\n        unit test's `rule()` constructor.\n  Returns:\n    A rule definition that should be stored in a global whose name ends in\n    `_test`.\n  \"\"\"",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Derive the name of the implementation function for better test feedback.\n# Skylark currently stringifies a function as \"<function NAME>\", so we use\n# that knowledge to parse the \"NAME\" portion out. If this behavior ever\n# changes, we'll need to update this.\n# TODO(bazel-team): Expose a ._name field on functions to avoid this.",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "\"\"\"Defines a `test_suite` target that contains multiple tests.\n\n  After defining your test rules in a `.bzl` file, you need to create targets\n  from those rules so that `blaze test` can execute them. Doing this manually\n  in a BUILD file would consist of listing each test in your `load` statement\n  and then creating each target one by one. To reduce duplication, we recommend\n  writing a macro in your `.bzl` file to instantiate all targets, and calling\n  that macro from your BUILD file so you only have to load one symbol.\n\n  For the case where your unit tests do not take any (non-default) attributes --\n  i.e., if your unit tests do not test rules -- you can use this function to\n  create the targets and wrap them in a single test_suite target. In your\n  `.bzl` file, write:\n\n  ```\n  def your_test_suite():\n    unittest.suite(\n        \"your_test_suite\",\n        your_test,\n        your_other_test,\n        yet_another_test,\n    )\n  ```\n\n  Then, in your `BUILD` file, simply load the macro and invoke it to have all\n  of the targets created:\n\n  ```\n  load(\"//path/to/your/package:tests.bzl\", \"your_test_suite\")\n  your_test_suite()\n  ```\n\n  If you pass _N_ unit test rules to `unittest.suite`, _N_ + 1 targets will be\n  created: a `test_suite` target named `${name}` (where `${name}` is the name\n  argument passed in here) and targets named `${name}_test_${i}`, where `${i}`\n  is the index of the test in the `test_rules` list, which is used to uniquely\n  name each target.\n\n  Args:\n    name: The name of the `test_suite` target, and the prefix of all the test\n        target names.\n    *test_rules: A list of test rules defines by `unittest.test`.\n  \"\"\"",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "\"\"\"Begins a unit test.\n\n  This should be the first function called in a unit test implementation\n  function. It initializes a \"test environment\" that is used to collect\n  assertion failures so that they can be reported and logged at the end of the\n  test.\n\n  Args:\n    ctx: The Skylark context. Pass the implementation function's `ctx` argument\n        in verbatim.\n  Returns:\n    A test environment struct that must be passed to assertions and finally to\n    `unittest.end`. Do not rely on internal details about the fields in this\n    struct as it may change.\n  \"\"\"",
+        "Line" : 137,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "\"\"\"Ends a unit test and logs the results.\n\n  This must be called before the end of a unit test implementation function so\n  that the results are reported.\n\n  Args:\n    env: The test environment returned by `unittest.begin`.\n  \"\"\"",
+        "Line" : 156,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "\"\"\"Unconditionally causes the current test to fail.\n\n  Args:\n    env: The test environment returned by `unittest.begin`.\n    msg: The message to log describing the failure.\n  \"\"\"",
+        "Line" : 178,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "\"\"\"Asserts that the given `condition` is true.\n\n  Args:\n    env: The test environment returned by `unittest.begin`.\n    condition: A value that will be evaluated in a Boolean context.\n    msg: An optional message that will be printed that describes the failure.\n        If omitted, a default will be used.\n  \"\"\"",
+        "Line" : 192,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "\"\"\"Asserts that the given `condition` is false.\n\n  Args:\n    env: The test environment returned by `unittest.begin`.\n    condition: A value that will be evaluated in a Boolean context.\n    msg: An optional message that will be printed that describes the failure.\n        If omitted, a default will be used.\n  \"\"\"",
+        "Line" : 207,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "\"\"\"Asserts that the given `expected` and `actual` values are equal.\n\n  Args:\n    env: The test environment returned by `unittest.begin`.\n    expected: The expected value of some computation.\n    actual: The actual value returned by some computation.\n    msg: An optional message that will be printed that describes the failure.\n        If omitted, a default will be used.\n  \"\"\"",
+        "Line" : 220,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "\"\"\"Asserts that the given `expected` and `actual` sets are equal.\n\n  Args:\n    env: The test environment returned by `unittest.begin`.\n    expected: The expected set resulting from some computation.\n    actual: The actual set returned by some computation.\n    msg: An optional message that will be printed that describes the failure.\n        If omitted, a default will be used.\n  \"\"\"",
+        "Line" : 239,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 12
+    },
+    "third-party/skylark/bazel-skylib/skylark_library.bzl" : {
+      "ObjectId" : "2526f5c84dc9f93d950beecf36eebb31bf9c0590",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Skylib module containing a library rule for aggregating rules files.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# All dependent files should be listed in both `files` and in `runfiles`;\n# this ensures that a `skylark_library` can be referenced as `data` from\n# a separate program, or from `tools` of a genrule().",
+        "Line" : 31,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# We also define our own provider struct, for aggregation and testing.",
+        "Line" : 39,
+        "CharPositionInLine" : 6
+      },
+      "4" : {
+        "Text" : "\"\"\"Creates a logical collection of Skylark .bzl files.\n\nArgs:\n  srcs: List of `.bzl` files that are processed to create this target.\n  deps: List of other `skylark_library` targets that are required by the\n    Skylark files listed in `srcs`.\n\nExample:\n  Suppose your project has the following structure:\n\n  ```\n  [workspace]/\n      WORKSPACE\n      BUILD\n      checkstyle/\n          BUILD\n          checkstyle.bzl\n      lua/\n          BUILD\n          lua.bzl\n          luarocks.bzl\n  ```\n\n  In this case, you can have `skylark_library` targets in `checkstyle/BUILD` and\n  `lua/BUILD`:\n\n  `checkstyle/BUILD`:\n\n  ```python\n  load(\"@bazel_skylib//:skylark_library.bzl\", \"skylark_library\")\n\n  skylark_library(\n      name = \"checkstyle-rules\",\n      srcs = [\"checkstyle.bzl\"],\n  )\n  ```\n\n  `lua/BUILD`:\n\n  ```python\n  load(\"@bazel_skylib//:skylark_library.bzl\", \"skylark_library\")\n\n  skylark_library(\n      name = \"lua-rules\",\n      srcs = [\n          \"lua.bzl\",\n          \"luarocks.bzl\",\n      ],\n  )\n  ```\n\"\"\"",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "third-party/skylark/bazel-skylib/tests/BUILD" : {
+      "ObjectId" : "4dd4a465b3302adc01c02747fefc37e36fc7c373",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "CommentCount" : 0
+    },
+    "third-party/skylark/bazel-skylib/tests/collections_tests.bzl" : {
+      "ObjectId" : "0f5cd2cba357ef271bd5ceea54ff0cc0a5f78d79",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for collections.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for collections.after_each.\"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# We don't care what type the separator is, we just put it there; so None\n# should be just as valid as anything else.",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "\"\"\"Unit tests for collections.before_each.\"\"\"",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# We don't care what type the separator is, we just put it there; so None\n# should be just as valid as anything else.",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for collections.bzl tests.\"\"\"",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 7
+    },
+    "third-party/skylark/bazel-skylib/tests/dicts_tests.bzl" : {
+      "ObjectId" : "40b06550c47c923602434c608b473181af377106",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for dicts.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for dicts.add.\"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Test zero- and one-argument behavior.",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Test simple two-argument behavior.",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Test simple more-than-two-argument behavior.",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Test same-key overriding.",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Test some other boundary cases.",
+        "Line" : 44,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Since dictionaries are passed around by reference, make sure that the\n# result of dicts.add is always a *copy* by modifying it afterwards and\n# ensuring that the original argument doesn't also reflect the change. We do\n# this to protect against someone who might attempt to optimize the function\n# by returning the argument itself in the one-argument case.",
+        "Line" : 47,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for dicts.bzl tests.\"\"\"",
+        "Line" : 63,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 10
+    },
+    "third-party/skylark/bazel-skylib/tests/paths_tests.bzl" : {
+      "ObjectId" : "57659166517bc9d77013e675b602d3d9f89fc037",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for paths.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for paths.basename.\"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Verify some degenerate cases.",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Verify some realistic cases.",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Verify that we correctly duplicate Python's os.path.basename behavior,\n# where a trailing slash means the basename is empty.",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "\"\"\"Unit tests for paths.dirname.\"\"\"",
+        "Line" : 46,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Verify some degenerate cases.",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Verify some realistic cases.",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Verify that we correctly duplicate Python's os.path.dirname behavior,\n# where a trailing slash means the dirname is the same as the original\n# path (without the trailing slash).",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "\"\"\"Unit tests for paths.is_absolute.\"\"\"",
+        "Line" : 72,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Try a degenerate case.",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Try some relative paths.",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Try some absolute paths.",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "\"\"\"Unit tests for paths.join.\"\"\"",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# Try a degenerate case.",
+        "Line" : 98,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Try some basic paths.",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Make sure an initially absolute path stays absolute.",
+        "Line" : 106,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Make sure an absolute path later in the list resets the result.",
+        "Line" : 110,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Make sure a leading empty segment doesn't make it absolute.",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Try some trailing slash scenarios.",
+        "Line" : 119,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Make sure that adjacent empty segments don't add extra path separators.",
+        "Line" : 129,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "\"\"\"Unit tests for paths.normalize.\"\"\"",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# Try the most basic case.",
+        "Line" : 143,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Try some basic adjacent-slash removal.",
+        "Line" : 146,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Try some \".\" removal.",
+        "Line" : 150,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Try some \"..\" removal.",
+        "Line" : 156,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Make sure one or two initial slashes are preserved, but three or more are\n# collapsed to a single slash.",
+        "Line" : 165,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Trailing slashes should be removed unless the entire path is a trailing\n# slash.",
+        "Line" : 171,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "\"\"\"Unit tests for paths.relativize.\"\"\"",
+        "Line" : 183,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# Make sure that relative-to-current-directory works in all forms.",
+        "Line" : 186,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# Try some regular cases.",
+        "Line" : 190,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# Try a case where a parent directory is normalized away.",
+        "Line" : 195,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# TODO(allevato): Test failure cases, once that is possible.",
+        "Line" : 198,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "\"\"\"Unit tests for paths.replace_extension.\"\"\"",
+        "Line" : 206,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# Try some degenerate cases.",
+        "Line" : 209,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# Try a directory with an extension and basename that doesn't have one.",
+        "Line" : 214,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# Now try some things with legit extensions.",
+        "Line" : 218,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# Verify that we don't insert a period on the extension if none is provided.",
+        "Line" : 226,
+        "CharPositionInLine" : 2
+      },
+      "39" : {
+        "Text" : "\"\"\"Unit tests for paths.split_extension.\"\"\"",
+        "Line" : 235,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# Try some degenerate cases.",
+        "Line" : 238,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "# Try some paths whose basenames start with \".\".",
+        "Line" : 243,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# Try some directories with extensions with basenames that don't have one.",
+        "Line" : 250,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Now try some things that will actually get split.",
+        "Line" : 255,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for paths.bzl tests.\"\"\"",
+        "Line" : 269,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 45
+    },
+    "third-party/skylark/bazel-skylib/tests/selects_tests.bzl" : {
+      "ObjectId" : "210fd324106e1064806779783ea817a15cedb588",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for selects.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for with_or.\"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# We actually test on with_or_dict because Skylark can't get the\n# dictionary from a select().",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Test select()-compatible input syntax.",
+        "Line" : 27,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Test OR syntax.",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Test mixed syntax.",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for selects.bzl tests.\"\"\"",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 8
+    },
+    "third-party/skylark/bazel-skylib/tests/sets_tests.bzl" : {
+      "ObjectId" : "8c643966380378a9029289dfb94c82a4cf277faf",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for sets.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for sets.is_equal.\n\n  Note that if this test fails, the results for the other `sets` tests will be\n  inconclusive because they use `asserts.set_equals`, which in turn calls\n  `sets.is_equal`.\n  \"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Verify that the implementation is not using == on the sets directly.",
+        "Line" : 37,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# If passing a list, verify that duplicate elements are ignored.",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "\"\"\"Unit tests for sets.is_subset.\"\"\"",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# If passing a list, verify that duplicate elements are ignored.",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "\"\"\"Unit tests for sets.disjoint.\"\"\"",
+        "Line" : 69,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# If passing a list, verify that duplicate elements are ignored.",
+        "Line" : 80,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "\"\"\"Unit tests for sets.intersection.\"\"\"",
+        "Line" : 89,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# If passing a list, verify that duplicate elements are ignored.",
+        "Line" : 100,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "\"\"\"Unit tests for sets.union.\"\"\"",
+        "Line" : 109,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# If passing a list, verify that duplicate elements are ignored.",
+        "Line" : 122,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "\"\"\"Unit tests for sets.difference.\"\"\"",
+        "Line" : 131,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# If passing a list, verify that duplicate elements are ignored.",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for sets.bzl tests.\"\"\"",
+        "Line" : 151,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 16
+    },
+    "third-party/skylark/bazel-skylib/tests/shell_tests.bzl" : {
+      "ObjectId" : "5e8c2800615aa0a151dcb7f5b014cc63e0946483",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for shell.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for shell.array_literal.\"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "\"\"\"Unit tests for shell.quote.\"\"\"",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "\"\"\"Test spawning a real shell.\"\"\"",
+        "Line" : 58,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# For logging:",
+        "Line" : 77,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# The following is a shell representation of what the echo of the quoted\n# array will look like.  It looks a bit confusing considering it's shell\n# quoted into Python.  Shell using single quotes to minimize shell\n# escaping, so only the single quote needs to be escaped as '\\'', all\n# others are essentially kept literally.",
+        "Line" : 79,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for shell.bzl tests.\"\"\"",
+        "Line" : 102,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 8
+    },
+    "third-party/skylark/bazel-skylib/tests/structs_tests.bzl" : {
+      "ObjectId" : "b072d5b8f10ecd685a4959d5a14c78febc0c83bc",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2017 The Bazel Authors. All rights reserved.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Unit tests for structs.bzl.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Unit tests for dicts.add.\"\"\"",
+        "Line" : 21,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Test zero- and one-argument behavior.",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Test simple two-argument behavior.",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Test simple more-than-two-argument behavior.",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Test transformation is not applied transitively.",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "\"\"\"Creates the test targets and test suite for structs.bzl tests.\"\"\"",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 8
+    },
+    "tools/build_rules/file_alias.bzl" : {
+      "ObjectId" : "66444ccb197300ed1eb8555690ed64a7d1616f97",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present Facebook, Inc.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\"); you may\n# not use this file except in compliance with the License. You may obtain\n# a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n# License for the specific language governing permissions and limitations\n# under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Provides file_alias macro.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Exports a file from source in current package.\n\n    This is useful for renaming files that are passed as resources.\n\n    Args:\n      name: output file name.\n      source: path or label identifying the original file.\n      visibility: targets this file should be made visible to.\n    \"\"\"",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "tools/build_rules/java_rules.bzl" : {
+      "ObjectId" : "0fca0ef50b0403f0222f36729484a32cf2a5d1e2",
+      "LastModified" : "2019-04-11T23:35:16Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present Facebook, Inc.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\"); you may\n# not use this file except in compliance with the License. You may obtain\n# a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n# License for the specific language governing permissions and limitations\n# under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Module containing java macros.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Returns a shallow copy of dict with key_to_omit omitted.\"\"\"",
+        "Line" : 40,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# deps, provided_deps and plugins are handled in kwargs so that immutables can be handled there",
+        "Line" : 50,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "\"\"\"java_test wrapper that provides sensible defaults for buck tests.\n\n    Args:\n      name: name\n      vm_args: vm_args\n      labels: labels\n      run_test_separately: run_test_separately\n      has_immutable_types: has_immutable_types\n      module_deps: A list of modules this test depends on\n      **kwargs: kwargs\n    \"\"\"",
+        "Line" : 52,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# When actually running Buck, the launcher script loads the bootstrapper,\n# and the bootstrapper loads the rest of Buck. For unit tests, which don't\n# run Buck, we have to add a direct dependency on the bootstrapper in case\n# they exercise code that uses it.",
+        "Line" : 86,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# Don't use the system-installed JNA; extract it from the local jar.",
+        "Line" : 93,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# Add -Dsun.zip.disableMemoryMapping=true to work around a JDK issue\n# related to modifying JAR/ZIP files that have been loaded into memory:\n#\n# http://bugs.sun.com/view_bug.do?bug_id=7129299\n#\n# This has been observed to cause a problem in integration tests such as\n# CachedTestIntegrationTest where `buck build //:test` is run repeatedly\n# such that a corresponding `test.jar` file is overwritten several times.\n# The CompiledClassFileFinder in JavaTestRule creates a java.util.zip.ZipFile\n# to enumerate the zip entries in order to find the set of .class files\n# in `test.jar`. This interleaving of reads and writes appears to match\n# the conditions to trigger the issue reported on bugs.sun.com.\n#\n# Currently, we do not set this flag in bin/buck_common, as Buck does not\n# normally modify the contents of buck-out after they are loaded into\n# memory. However, we may need to use this flag when running buckd where\n# references to zip files may be long-lived.\n#\n# Finally, note that when you specify this flag,\n# `System.getProperty(\"sun.zip.disableMemoryMapping\")` will return `null`\n# even though you have specified the flag correctly. Apparently sun.misc.VM\n# (http://www.docjar.com/html/api/sun/misc/VM.java.html) saves the property\n# internally, but removes it from the set of system properties that are\n# publicly accessible.",
+        "Line" : 96,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 8
+    },
+    "tools/build_rules/module_rules.bzl" : {
+      "ObjectId" : "23f813daa13d5e6ae753993cb66bf3a4e0e2cb8b",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present Facebook, Inc.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\"); you may\n# not use this file except in compliance with the License. You may obtain\n# a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n# License for the specific language governing permissions and limitations\n# under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Contains build rules for Buck modules\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Declares a buck module\n\n    Args:\n      name: name\n      module_deps: A list of modules this module depends on\n      module_resources: A list of files that needs to be placed along a module\n      **kwargs: kwargs\n    \"\"\"",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# This target is not used directly by module rules, but by `java_test` to get access\n# to all provided dependencies of the current module.",
+        "Line" : 87,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "\"\"\" Returns target for module's binary \"\"\"",
+        "Line" : 105,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "\"\"\" Converts modules to a map with resources for packaging in a Python binary \"\"\"",
+        "Line" : 109,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "\"\"\" Converts modules to a map with resources to keep them outside of module jars \"\"\"",
+        "Line" : 118,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 7
+    },
+    "tools/build_rules/module_rules_for_tests.bzl" : {
+      "ObjectId" : "0a4907f2a7faf0620e279ae63dc459e611993f6e",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present Facebook, Inc.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\"); you may\n# not use this file except in compliance with the License. You may obtain\n# a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n# License for the specific language governing permissions and limitations\n# under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Contains build rules for supporting Buck modules in tests\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\" Converts the given module dependencies to module dependencies for testing \"\"\"",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "tools/build_rules/python_rules.bzl" : {
+      "ObjectId" : "91f7e766918de5928928c47ec541b04b598b72ad",
+      "LastModified" : "2019-03-12T17:19:40Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright 2018-present Facebook, Inc.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\"); you may\n# not use this file except in compliance with the License. You may obtain\n# a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n# License for the specific language governing permissions and limitations\n# under the License.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "\"\"\"Module containing Python macros.\"\"\"",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "\"\"\"Determine interpreter override arguments based on a buck config.\n\n    For example, `--config user.buck_pex_interpreter=python2` will generate a pex\n    which invokes `python2` instead of the default, `python<major>.<minor>`.\n\n    Returns:\n      a list of arguments to pass to python interpreter.\n    \"\"\"",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "QMAKE" : 7,
+    "MAKEFILE" : 3,
+    "BAZEL" : 49,
+    "ANT" : 1
+  },
+  "ElapsedTime" : 13947
+}

@@ -1,0 +1,393 @@
+{
+  "Repository" : "6357343",
+  "Revision" : "HEAD",
+  "ObjectId" : "75d96cfeabf6366012090594382bda635b6cfb38",
+  "CommitTime" : "2019-04-17T20:51:23Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "076df40fca488dd54348e0a21e3f76491a167ce9",
+      "LastModified" : "2019-02-24T23:59:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Eric Niebler 2014\n\n# Copyright Gonzalo Brito Gadeschi 2014, 2017\n\n# Copyright Louis Dionne 2015\n\n# Copyright Casey Carter 2016\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Export compilation data-base\n",
+        "Line" : 20,
+        "CharPositionInLine" : 38
+      },
+      "2" : {
+        "Text" : "# Test all headers\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add header files as sources to fix MSVS 2017 not finding source during debugging\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Grab the range-v3 version numbers:\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Try to build a new version.hpp\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If the new version.hpp is materially different from the one in the source\n\n# directory, update it, commit, and tag.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Check that README.md and Version.cmake are the only changed file:\n",
+        "Line" : 92,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 8
+    },
+    "Version.cmake" : {
+      "ObjectId" : "437a34d3c69a98fd1ccec11e6bb482b0c2d18db5",
+      "LastModified" : "2018-10-18T18:12:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# To update the range-v3 version, from a *CLEAN* working directory, update the version numbers below.\n\n# This makefile will generate a new version.hpp, *AMEND THE MOST RECENT COMMIT*, and git-tag the commit.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/TestHeaders.cmake" : {
+      "ObjectId" : "30e69f236310e761483d53484536bda6ea647ebc",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Louis Dionne 2013-2016\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n\n#\n\n#\n\n# This CMake module provides a function generating unit tests to make sure\n\n# that every public header can be included on its own.\n\n#\n\n# When a C++ library or application has many header files, it can happen that\n\n# a header does not include all the other headers it depends on. When this is\n\n# the case, it can happen that including that header file on its own will\n\n# break the compilation. This CMake module generates a dummy unit test for\n\n# each header file considered public: this unit test is just a program of\n\n# the form\n\n#\n\n#   #include <the/public/header.hpp>\n\n#   int main() { }\n\n#\n\n# If this succeeds to compile, it means that the header can be included on\n\n# its own, which is what clients expect. Otherwise, you have a problem.\n\n# Since writing these dumb unit tests by hand is tedious and repetitive,\n\n# you can use this CMake module to automate this task.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generates header-inclusion unit tests for all the specified headers.\n\n#\n\n# For each specified header with path `xxx/yyy/zzz.hpp`, a target named\n\n# `test.header.xxx.yyy.zzz` is created. This target builds the unit test\n\n# including `xxx/yyy/zzz.hpp`.\n\n#\n\n# Parameters\n\n# ----------\n\n# HEADERS headers:\n\n#   A list of header files to generate the inclusion tests for. All headers\n\n#   in this list must be represented as relative paths from the root of the\n\n#   include directory added to the compiler's header search path. In other\n\n#   words, it should be possible to include all headers in this list as\n\n#\n\n#       #include <${header}>\n\n#\n\n#   For example, for a library with the following structure:\n\n#\n\n#       project/\n\n#           doc/\n\n#           test/\n\n#           ...\n\n#           include/\n\n#               boost/\n\n#                   hana.hpp\n\n#                   hana/\n\n#                       transform.hpp\n\n#                       tuple.hpp\n\n#                       pair.hpp\n\n#                       ...\n\n#\n\n#   When building the unit tests for that library, we'll add `-I project/include'\n\n#   to the compiler's arguments. The list of public headers should therefore contain\n\n#\n\n#       boost/hana.hpp\n\n#       boost/hana/transform.hpp\n\n#       boost/hana/tuple.hpp\n\n#       boost/hana/pair.hpp\n\n#       ...\n\n#\n\n#   Usually, all the 'public' header files of a library should be tested for\n\n#   standalone inclusion. A header is considered 'public' if a client should\n\n#   be able to include that header on its own.\n\n#\n\n# [EXCLUDE excludes]:\n\n#   An optional list of headers or regexes for which no unit test should be\n\n#   generated. Basically, any header in the list specified by the `HEADERS`\n\n#   argument that matches anything in `EXCLUDE` will be skipped.\n\n#\n\n# [MASTER_TARGET target]:\n\n#   An optional target name that will be made a dependent of all the generated\n\n#   targets. This can be used to create a target that will build all the\n\n#   header-inclusion tests.\n\n#\n\n# [LINK_LIBRARIES libraries]:\n\n#   An optional list of libraries that should be linked into each generated\n\n#   executable. The libraries are linked into the target using the usual\n\n#   `target_link_libraries`.\n\n#\n\n# [EXCLUDE_FROM_ALL]:\n\n#   If set to true, the generated targets are excluded from the 'all' target.\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# options\n\n# 1 value args\n\n# multivalued args\n",
+        "Line" : 87,
+        "CharPositionInLine" : 62
+      },
+      "CommentCount" : 3
+    },
+    "cmake/ranges_diagnostics.cmake" : {
+      "ObjectId" : "52bd2340b2db9a4a21552d1e79c378ed03553d87",
+      "LastModified" : "2019-02-24T23:59:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Louis Dionne 2015\n\n# Copyright Gonzalo Brito Gadeschi 2015\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n\n#\n\n# Setup compiler flags (more can be set on a per-target basis or in\n\n# subdirectories)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Enable all warnings:\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Selectively disable those warnings that are not worth it:\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/ranges_env.cmake" : {
+      "ObjectId" : "a3d01ca840c65fc8b276aaf1fccf083f9adce6ce",
+      "LastModified" : "2019-02-15T16:18:39Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Gonzalo Brito Gadeschi 2015\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n\n#\n\n# Detects the C++ compiler, system, build-type, etc.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Clang-CL will blow up in the standard library if compiling with less than\n\n# C++14, and MSVC doesn't support less than C++14 at all.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# MSVC is currently supported only in 17+ mode\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Build type\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Find Valgrind\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/ranges_flags.cmake" : {
+      "ObjectId" : "00e2317915fad3cea810f365d8337bcac893dd44",
+      "LastModified" : "2019-03-21T01:45:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Louis Dionne 2015\n\n# Copyright Gonzalo Brito Gadeschi 2015\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n\n#\n\n# Setup compiler flags (more can be set on a per-target basis or in\n\n# subdirectories)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Compilation flags\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# All compilation flags\n\n# Language flag: version of the C++ standard to use\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Enable strict mode\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Enable \"normal\" warnings and make them errors:\n",
+        "Line" : 30,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Enable \"normal\" warnings and make them errors:\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# On linux libc++ re-exports the system math headers. The ones from libstdc++\n\n# use the GCC __extern_always_inline intrinsic which is not supported by clang\n\n# versions 3.6, 3.7, 3.8, 3.9, 4.0, and current trunk 5.0 (as of 2017.04.13).\n\n#\n\n# This works around it by replacing __extern_always_inline with inline using a\n\n# macro:\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Template diagnostic flags\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Clang modules support\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Sanitizer support: detect incompatible sanitizer combinations\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# AddressSanitizer support\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# This policy enables passing the linker flags to the linker when trying to\n\n# test the features, which is required to successfully link ASan binaries\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# LeakSanitizer not supported on MacOSX\n",
+        "Line" : 87,
+        "CharPositionInLine" : 25
+      },
+      "13" : {
+        "Text" : "#ASAN flags must be passed to the linker:\n",
+        "Line" : 97,
+        "CharPositionInLine" : 23
+      },
+      "14" : {
+        "Text" : "# MemorySanitizer support\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# This policy enables passing the linker flags to the linker when trying to\n\n# compile the examples, which is required to successfully link MSan binaries\n",
+        "Line" : 106,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Build types:\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Clang can generate debug info tuned for LLDB or GDB\n",
+        "Line" : 125,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# The quality of ASan and MSan error messages suffers if we disable the\n\n# frame pointer, so leave it enabled when compiling with either of them:\n",
+        "Line" : 140,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Sized deallocation is not available in MacOSX:\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# Probe for library and compiler support for aligned new\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Probe for coroutine TS support\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 22
+    },
+    "cmake/ranges_options.cmake" : {
+      "ObjectId" : "bee2eb15d5d046bcb4ec8cb8e4b88a5e7cbcd78b",
+      "LastModified" : "2019-03-21T01:45:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Gonzalo Brito Gadeschi 2015\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n\n#\n\n# CMake options\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Enable verbose configure when passing -Wdev to CMake\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "doc/CMakeLists.txt" : {
+      "ObjectId" : "60234118f9b61ea1a582961f2db3f115a5cc8005",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#=============================================================================\n\n# Setup the documentation\n\n#=============================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# if (NOT TARGET benchmarks)\n\n#     message(STATUS\n\n#         \"The 'benchmarks' target is not available; the 'doc' and \"\n\n#         \"'gh-pages.{clean,copy,update}' targets will be unavailable. \"\n\n#         \"The 'doc.check' target can still be used to generate the \"\n\n#         \"documentation to check for errors/warnings.\")\n\n#     return()\n\n# endif()\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#     DEPENDS benchmarks\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "doc/clean-gh-pages.cmake" : {
+      "ObjectId" : "8fb22f4875a9d5c1d93fd46cb228a37fc44986e7",
+      "LastModified" : "2016-09-01T20:37:32Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "example/CMakeLists.txt" : {
+      "ObjectId" : "1d4ffe1aaee1351859395ff1b70ee7ee4c9d1468",
+      "LastModified" : "2019-02-15T16:18:39Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# examples use a less draconian set of compiler warnings\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# rv3_add_test(example.fibonacci fibonacci fibonacci.cpp)\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Guarded with a variable because the calendar example causes gcc to puke.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "perf/CMakeLists.txt" : {
+      "ObjectId" : "b3b9d4bb6f11ef92292fd94043183e96e05c3f5f",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "7612a67fe63b6019aaa4ef3993ff50bf13400345",
+      "LastModified" : "2019-02-15T16:18:39Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/action/CMakeLists.txt" : {
+      "ObjectId" : "87096305e0761f7cabacd619b0f222e619789b49",
+      "LastModified" : "2019-02-15T16:18:39Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/algorithm/CMakeLists.txt" : {
+      "ObjectId" : "fef7bcfe2b339d79a2293efc5b6454d8648818b1",
+      "LastModified" : "2019-02-15T16:18:39Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/experimental/CMakeLists.txt" : {
+      "ObjectId" : "de2d7f24495dac5e3f35daf2876142faa81815fb",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/experimental/utility/CMakeLists.txt" : {
+      "ObjectId" : "f466442b494aa94768bc6256c0ad9cd7aabd28b5",
+      "LastModified" : "2019-02-15T16:18:39Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/experimental/view/CMakeLists.txt" : {
+      "ObjectId" : "115c9750c386d19e189c8b41ca335839a44e1c7d",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/numeric/CMakeLists.txt" : {
+      "ObjectId" : "51bb98ae9f71ce1b687cfe0cf41cf950e02b285b",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/utility/CMakeLists.txt" : {
+      "ObjectId" : "3621ba9f68bb0092e9da96e507d47233d093f724",
+      "LastModified" : "2019-04-09T18:48:11Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/view/CMakeLists.txt" : {
+      "ObjectId" : "533c272f4aa7f9f2f78e199954d9563570c760d4",
+      "LastModified" : "2019-04-09T18:48:11Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test_package/CMakeLists.txt" : {
+      "ObjectId" : "ade620948dabf5a265448658d12da55a13d1d08a",
+      "LastModified" : "2018-11-14T00:21:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Range v3 library\n\n#\n\n#  Copyright Luis Martinez de Bartolome Izquierdo 2016\n\n#\n\n#  Use, modification and distribution is subject to the\n\n#  Boost Software License, Version 1.0. (See accompanying\n\n#  file LICENSE_1_0.txt or copy at\n\n#  http://www.boost.org/LICENSE_1_0.txt)\n\n#\n\n# Project home: https://github.com/ericniebler/range-v3\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 21
+  },
+  "ElapsedTime" : 1878
+}

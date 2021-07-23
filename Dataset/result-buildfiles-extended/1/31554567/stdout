@@ -1,0 +1,1331 @@
+{
+  "Repository" : "31554567",
+  "Revision" : "HEAD",
+  "ObjectId" : "95356d4d03868ae805630cb87c6aec08fa7319dc",
+  "CommitTime" : "2017-07-27T23:10:18Z",
+  "Files" : {
+    "CMake/ExternalProjectDependency.cmake" : {
+      "ObjectId" : "361922c129bafd9147b7f64d68cdbcb4239e13fb",
+      "LastModified" : "2016-11-04T15:19:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# ExternalProjectDependency\n\n# -------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###########################################################################\n\n#\n\n#  Program: 3D Slicer\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  See COPYRIGHT.txt\n\n#  or http://www.slicer.org/copyright/copyright.txt for details.\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.\n\n#  and was partially funded by NIH grant 3P41RR013218-12S1\n\n#\n\n###########################################################################\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#.rst:\n\n# .. cmake:variable:: EXTERNAL_PROJECT_DIR\n\n#\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#.rst:\n\n# .. cmake:variable:: EXTERNAL_PROJECT_FILE_PREFIX\n\n#\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Compute -G arg for configuring external projects with the same CMake generator:\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#.rst:\n\n# .. cmake:function:: mark_as_superbuild\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  mark_as_superbuild(<varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]])\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  mark_as_superbuild(\n\n#      VARS <varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]]\n\n#      [PROJECTS <projectname> [<projectname> [...]] | ALL_PROJECTS]\n\n#      [LABELS <label1> [<label2> [...]]]\n\n#    )\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  PROJECTS corresponds to a list of <projectname> that will be added using 'ExternalProject_Add' function.\n\n#           If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'\n\n#           Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.\n\n#           If instead 'ALL_PROJECTS' is specified, the variables and labels will be passed to all projects.\n\n#\n\n#  VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>\n\n#\n\n#\n\n#  LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to\n\n#         the <projectname> as CMake CACHE args of the form:\n\n#           -D<projectname>_EP_LABEL_<label1>=<varname1>;<varname2>[...]\n\n#           -D<projectname>_EP_LABEL_<label2>=<varname1>;<varname2>[...]\n\n#\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# XXX Display warning with variable type is also specified for cache variable.\n",
+        "Line" : 109,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "#\n\n#  _sb_extract_varname_and_vartype(<cmake_varname_and_type> <varname_var> [<vartype_var>])\n\n#\n\n#  <cmake_varname_and_type> corresponds to variable name and variable type passed as \"<varname>:<vartype>\"\n\n#\n\n#  <varname_var> will be set to \"<varname>\"\n\n#\n\n#  <vartype_var> is an optional variable name that will be set to \"<vartype>\"\n\n#\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Get list length\n",
+        "Line" : 156,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# If the list has 0 or 1 element, there is no need to loop over.\n",
+        "Line" : 158,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Get current item_value\n",
+        "Line" : 164,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# .. and append non-empty value to output string\n",
+        "Line" : 167,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# Append separator if current element is NOT the last one.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "#\n\n#  _sb_cmakevar_to_cmakearg(<cmake_varname_and_type> <cmake_arg_var> <has_cfg_intdir_var> [<varname_var> [<vartype_var>]])\n\n#\n\n#  <cmake_varname_and_type> corresponds to variable name and variable type passed as \"<varname>:<vartype>\"\n\n#\n\n#  <cmake_arg_var> is a variable name that will be set to \"-D<varname>:<vartype>=${<varname>}\"\n\n#\n\n#  <has_int_dir_var> is set to either TRUE or FALSE.\n\n#                      FALSE means that the value does NOT reference ${CMAKE_CFG_INTDIR} and\n\n#                      the generated cmake argument should be passed to ExternalProject_Add as CMAKE_CACHE_ARGS.\n\n#                      TRUEmeans that the value does reference ${CMAKE_CFG_INTDIR} and\n\n#                      the generated cmake argument should be passed to ExternalProject_Add as CMAKE_ARGS.\n\n#\n\n#  <varname_var> is an optional variable name that will be set to \"<varname>\"\n\n#\n\n#  <vartype_var> is an optional variable name that will be set to \"<vartype>\"\n\n#\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Separate list item with <EP_LIST_SEPARATOR>\n",
+        "Line" : 212,
+        "CharPositionInLine" : 6
+      },
+      "15" : {
+        "Text" : "#\n\n#  _sb_append_to_cmake_args(\n\n#      VARS <varname1>:<vartype1> [<varname2>:<vartype2> [...]]\n\n#      [PROJECTS <projectname> [<projectname> [...]] | ALL_PROJECTS]\n\n#      [LABELS <label1> [<label2> [...]]]\n\n#    )\n\n#\n\n#  PROJECTS corresponds to a list of <projectname> that will be added using 'ExternalProject_Add' function.\n\n#           If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'\n\n#           Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.\n\n#           If instead 'ALL_PROJECTS' is specified, the variables and labels will be passed to all projects.\n\n#\n\n#  VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>\n\n#\n\n#\n\n#  LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to\n\n#         the <projectname> as CMake CACHE args of the form:\n\n#           -D<projectname>_EP_LABEL_<label1>=<varname1>;<varname2>[...]\n\n#           -D<projectname>_EP_LABEL_<label2>=<varname1>;<varname2>[...]\n\n#\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Set list of CMake args associated with each label\n",
+        "Line" : 296,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "#.rst:\n\n# .. cmake:function:: ExternalProject_Message\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  ExternalProject_Message(<project_name> <msg> [condition])\n\n#\n",
+        "Line" : 351,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#\n\n#  superbuild_stack_content(<stack_name> <output_var>)\n\n#\n\n#  <stack_name> corresponds to the name of stack.\n\n#\n\n#  <output_var> is the name of CMake variable that will be set with the content\n\n#  of the stack identified by <stack_name>.\n\n#\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n#  superbuild_stack_size(<stack_name> <output_var>)\n\n#\n\n#  <stack_name> corresponds to the name of stack.\n\n#\n\n#  <output_var> is the name of CMake variable that will be set with the size\n\n#  of the stack identified by <stack_name>.\n\n#\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#\n\n#  superbuild_stack_push(<stack_name> <value>)\n\n#\n\n#  <stack_name> corresponds to the name of stack.\n\n#\n\n#  <value> is appended to the stack identified by <stack_name>.\n\n#\n",
+        "Line" : 396,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#\n\n#  superbuild_stack_pop(<stack_name> <item_var>)\n\n#\n\n#  <stack_name> corresponds to the name of stack.\n\n#\n\n#  <item_var> names a CMake variable that will be set with the item\n\n#  removed from the stack identified by <stack_name>\n\n#\n",
+        "Line" : 407,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#.rst:\n\n# .. cmake:function:: ExternalProject_Include_Dependencies\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  ExternalProject_Include_Dependencies(<project_name>\n\n#      [PROJECT_VAR <project_var>]\n\n#      [EP_ARGS_VAR <external_project_args_var>]\n\n#      [DEPENDS_VAR <depends_var>]\n\n#      [USE_SYSTEM_VAR <use_system_var>]\n\n#      [SUPERBUILD_VAR <superbuild_var>]\n\n#    )\n\n#\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 458,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Set default for optional PROJECT_VAR parameter\n",
+        "Line" : 471,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "#message(\"[${project_name}] Setting _sb_PROJECT_VAR with default value '${_sb_PROJECT_VAR}'\")\n",
+        "Line" : 475,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# Skip if project already included\n",
+        "Line" : 485,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Set default for optional DEPENDS_VAR and EP_ARGS parameters\n",
+        "Line" : 491,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "#message(\"[${project_name}] Setting _sb_${param}_VAR with default value '${_sb_${param}_VAR}'\")\n",
+        "Line" : 495,
+        "CharPositionInLine" : 6
+      },
+      "29" : {
+        "Text" : "# Set top level project\n",
+        "Line" : 499,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# Set default for optional USE_SYSTEM_VAR parameter\n",
+        "Line" : 505,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "#message(\"[${project_name}] Setting _sb_USE_SYSTEM_VAR with default value '${_sb_USE_SYSTEM_VAR}'\")\n",
+        "Line" : 508,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# Set default for optional SUPERBUILD_VAR parameter\n",
+        "Line" : 511,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "#message(\"[${project_name}] Setting _sb_SUPERBUILD_VAR with default value '${_sb_SUPERBUILD_VAR}'\")\n",
+        "Line" : 514,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "# Keeping track of variable name independently of the recursion\n",
+        "Line" : 517,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "#message(\"[${project_name}] Setting _sb_SB_VAR with default value '${_sb_SB_VAR}'\")\n",
+        "Line" : 520,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# Set local variables\n",
+        "Line" : 523,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# Keep track of the projects\n",
+        "Line" : 529,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# Use system ?\n",
+        "Line" : 532,
+        "CharPositionInLine" : 2
+      },
+      "39" : {
+        "Text" : "# Is this the first run ?\n",
+        "Line" : 538,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# Set \"use system\" variable if it has NOT already been explicitly set\n",
+        "Line" : 547,
+        "CharPositionInLine" : 6
+      },
+      "41" : {
+        "Text" : "#message(${_sb_proj} \"Property SB_${dep}_USE_SYSTEM set to [${_sb_USE_SYSTEM_VAR}:${_sb_USE_SYSTEM}]\")\n",
+        "Line" : 551,
+        "CharPositionInLine" : 8
+      },
+      "42" : {
+        "Text" : "#message(${_sb_proj} \"[${_sb_proj}] Property SB_${dep}_OPTIONAL set to ${_optional}\")\n",
+        "Line" : 556,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "# Display dependency of project being processed\n",
+        "Line" : 562,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Save variables\n",
+        "Line" : 576,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# Include dependencies\n",
+        "Line" : 586,
+        "CharPositionInLine" : 2
+      },
+      "46" : {
+        "Text" : "# XXX - Refactor - Add a single variable named 'EXTERNAL_PROJECT_DIRS'\n",
+        "Line" : 590,
+        "CharPositionInLine" : 6
+      },
+      "47" : {
+        "Text" : "# Restore variables\n",
+        "Line" : 604,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# Use system ?\n",
+        "Line" : 614,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "#ExternalProject_Message(${_sb_proj} \"Clean up\")\n",
+        "Line" : 661,
+        "CharPositionInLine" : 4
+      },
+      "50" : {
+        "Text" : "# Set public variables\n",
+        "Line" : 667,
+        "CharPositionInLine" : 2
+      },
+      "51" : {
+        "Text" : "#message(\"[${_sb_proj}] #################################\")\n\n#message(\"[${_sb_proj}] Setting ${_sb_PROJECT_VAR}:${_sb_proj}\")\n\n#message(\"[${_sb_proj}] Setting ${_sb_EP_ARGS_VAR}:${${_sb_EP_ARGS_VAR}}\")\n\n#message(\"[${_sb_proj}] Setting ${_sb_DEPENDS_VAR}:${${_sb_DEPENDS_VAR}}\")\n\n#message(\"[${_sb_proj}] Setting ${_sb_USE_SYSTEM_VAR}:${_sb_USE_SYSTEM}\")\n",
+        "Line" : 672,
+        "CharPositionInLine" : 2
+      },
+      "52" : {
+        "Text" : "#.rst:\n\n# .. cmake:function:: ExternalProject_Add_Empty\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  ExternalProject_Add_Empty(<project_name>\n\n#      DEPENDS <depends>\n\n#    )\n\n#\n",
+        "Line" : 679,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 694,
+        "CharPositionInLine" : 2
+      },
+      "54" : {
+        "Text" : "#.rst:\n\n# .. cmake:function:: ExternalProject_Install_CMake\n\n#\n\n# Install an external CMake-based project as part of the ``install`` target.\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  ExternalProject_Install_CMake(<project_name>)\n\n#\n\n# This causes building the main project's ``install`` target to also execute\n\n# the CMake install script for the specified external project. The project must\n\n# be previously declared with :command:`ExternalProject_Add`.\n\n#\n",
+        "Line" : 713,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 55
+    },
+    "CMake/FindGit.cmake" : {
+      "ObjectId" : "31e1de344879dfe077a3663d3d2ffea6dc642cec",
+      "LastModified" : "2017-02-21T21:46:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "################################################################################\n\n#\n\n#  Program: 3D Slicer\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  See COPYRIGHT.txt\n\n#  or http://www.slicer.org/copyright/copyright.txt for details.\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.\n\n#  and was partially funded by NIH grant 3P41RR013218-12S1\n\n#\n\n################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# The module defines the following variables:\n\n#   GIT_EXECUTABLE - path to git command line client\n\n#   GIT_FOUND - true if the command line client was found\n\n#\n\n# If the command line client executable is found the macro\n\n#  GIT_WC_INFO(<dir> <var-prefix>)\n\n# is defined to extract information of a git working copy at\n\n# a given location.\n\n#\n\n# The macro defines the following variables:\n\n#  <var-prefix>_WC_REVISION_HASH - Current SHA1 hash\n\n#  <var-prefix>_WC_REVISION - Current SHA1 hash\n\n#  <var-prefix>_WC_REVISION_NAME - Name associated with <var-prefix>_WC_REVISION_HASH\n\n#  <var-prefix>_WC_URL - output of command `git config --get remote.origin.url'\n\n#  <var-prefix>_WC_ROOT - Same value as working copy URL\n\n#  <var-prefix>_WC_LAST_CHANGED_DATE - date of last commit\n\n#  <var-prefix>_WC_GITSVN - Set to false\n\n#\n\n# ... and also the following ones if it's a git-svn repository:\n\n#  <var-prefix>_WC_GITSVN - Set to True if it is a\n\n#  <var-prefix>_WC_INFO - output of command `git svn info'\n\n#  <var-prefix>_WC_URL - url of the associated SVN repository\n\n#  <var-prefix>_WC_ROOT - root url of the associated SVN repository\n\n#  <var-prefix>_WC_REVISION - current SVN revision number\n\n#  <var-prefix>_WC_LAST_CHANGED_AUTHOR - author of last commit\n\n#  <var-prefix>_WC_LAST_CHANGED_DATE - date of last commit\n\n#  <var-prefix>_WC_LAST_CHANGED_REV - revision of last commit\n\n#  <var-prefix>_WC_LAST_CHANGED_LOG - last log of base revision\n\n#\n\n# Example usage:\n\n#   find_package(Git)\n\n#   if(GIT_FOUND)\n\n#    GIT_WC_INFO(${PROJECT_SOURCE_DIR} Project)\n\n#    message(\"Current revision is ${Project_WC_REVISION_HASH}\")\n\n#    message(\"git found: ${GIT_EXECUTABLE}\")\n\n#   endif()\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Look for 'git' or 'eg' (easy git)\n\n#\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Prefer .cmd variants on Windows unless running in a Makefile\n\n# in the MSYS shell.\n\n#\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Note: Due to a bug in 'git.cmd' preventing it from returning the exit code of 'git',\n\n#       we excluded it from the list of executables to search.\n\n# See http://code.google.com/p/msysgit/issues/detail?id=428\n\n# TODO Check if 'git' exists, get the associated version, if the corresponding version\n\n#      is known to have a working version of 'git.cmd', use it.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Check if this git is likely to be a git-svn repository\n",
+        "Line" : 125,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# In case git-svn is used, attempt to extract svn info\n",
+        "Line" : 133,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# If there is no 'remote.origin', default to \"NA\" value and print a warning message.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Handle the QUIETLY and REQUIRED arguments and set GIT_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "CMake/dcmqiBlockSetCMakeOSXVariables.cmake" : {
+      "ObjectId" : "0a44cd7eb4f0ad820348b572da16794664edd872",
+      "LastModified" : "2017-02-21T21:46:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "################################################################################\n\n#\n\n#  Program: 3D Slicer\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  See COPYRIGHT.txt\n\n#  or http://www.slicer.org/copyright/copyright.txt for details.\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.\n\n#  and was partially funded by NIH grant 3P41RR013218-12S1\n\n#\n\n################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# dcmqiBlockSetCMakeOSXVariables\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Adapted from Paraview/Superbuild/CMakeLists.txt\n\n#\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Note: Change architecture *before* any enable_language() or project()\n\n#       calls so that it's set properly to detect 64-bit-ness, and\n\n#       deployment target for the standard c++ library.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Waiting universal binaries are supported and tested, complain if\n\n# multiple architectures are specified.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# See CMake/Modules/Platform/Darwin.cmake)\n\n#   8.x == Mac OSX 10.4 (Tiger)\n\n#   9.x == Mac OSX 10.5 (Leopard)\n\n#  10.x == Mac OSX 10.6 (Snow Leopard)\n\n#  11.x == Mac OSX 10.7 (Lion)\n\n#  12.x == Mac OSX 10.8 (Mountain Lion)\n\n#  13.x == Mac OSX 10.9 (Mavericks)\n\n#  14.x == Mac OSX 10.10 (Yosemite)\n",
+        "Line" : 44,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Explicitly set the OSX_SYSROOT to the latest one, as its required\n\n#       when the OSX_DEPLOYMENT_TARGET is explicitly set\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# find the latest SDK\n",
+        "Line" : 74,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# extract version from SDK\n",
+        "Line" : 76,
+        "CharPositionInLine" : 10
+      },
+      "9" : {
+        "Text" : "# add to cache to allow interactive editing after fatal error\n",
+        "Line" : 106,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 10
+    },
+    "CMake/dcmqiConfigureVersionTarget.cmake" : {
+      "ObjectId" : "c42c9e73192f84745bc65c33528b8fe78ecea5aa",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "################################################################################\n\n#\n\n#  Program: 3D Slicer\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  See COPYRIGHT.txt\n\n#  or http://www.slicer.org/copyright/copyright.txt for details.\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.\n\n#  and was partially funded by NIH grant 3P41RR013218-12S1\n\n#\n\n################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# dcmqiConfigureVersionTarget\n\n# ---------------------------\n\n#\n\n# Add a target named 'dcmqiConfigureVersion'.\n\n#\n\n# It has been designed to be included in the build system of DCMQI.\n\n#\n\n# The following variables are expected to be defined in the including scope:\n\n#\n\n#   GIT_EXECUTABLE\n\n#   DCMQI_BINARY_DIR\n\n#   DCMQI_CMAKE_DIR\n\n#   DCMQI_LATEST_TAG\n\n#   DCMQI_SOURCE_DIR\n\n#   DCMQI_VERSION\n\n#   PROJECT_NAME\n\n#\n\n# It also sets the following variable in the including scope:\n\n#\n\n#   DCMQI_CPACK_PROJECT_CONFIG_FILE\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Parameters\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# VersionConfigure.h\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# DCMQICPackOptions.cmake\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Sanity checks\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Add configure version target\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Collect version information\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Sanity checks\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Variables expected to be set by 'dcmqiVersion' module.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Configure version header and packaging options\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "CMake/dcmqiFunctionExtractGitTagNames.cmake" : {
+      "ObjectId" : "54beb8c5736164d83d8764c5e509d1c15dac0a66",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "################################################################################\n\n#\n\n#  Program: 3D Slicer\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  See COPYRIGHT.txt\n\n#  or http://www.slicer.org/copyright/copyright.txt for details.\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.\n\n#  and was partially funded by NIH grant 3P41RR013218-12S1\n\n#\n\n################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# dcmqiFunctionExtractGitTagNames\n\n# -------------------------------\n\n#\n\n# dcmqiFunctionExtractGitTagNames(\n\n#   OUTPUT_VARIABLE <varname>\n\n#   GIT_REF <ref>\n\n#   [SOURCE_DIR <dir>]\n\n#   )\n\n#\n\n# If any, this function set the variable <varname> with the list of tag\n\n# names associated with <ref>.\n\n#\n\n# If <ref> is not provided, it defaults to \"HEAD\"\n\n#\n\n# If <dir> is not provided, it defaults to the value of CMAKE_CURRENT_SOURCE_DIR\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Defaults\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#\n\n# Note: Since git does *NOT* provide a direct way to get\n\n#       these, we first get the <sha> of one of the tag associated\n\n#       with <ref>, then we group all the tags by SHA and return the\n\n#       list of tags associated with <sha>.\n\n#\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# For debugging\n",
+        "Line" : 72,
+        "CharPositionInLine" : 17
+      },
+      "6" : {
+        "Text" : "# Is ref associated with at least one tag ?\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Get tag's sha\n",
+        "Line" : 90,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Get all tags\n",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Convert space separated string into a list\n",
+        "Line" : 109,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Get sha of each tag\n",
+        "Line" : 115,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 11
+    },
+    "CMake/dcmqiTest.cmake" : {
+      "ObjectId" : "88b627ae38ed1bc5bf65e7f0c1e504d084465a9d",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file contains CMake functions and macros used when testing DCMQI\n\n# libraries and modules.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Create DCMQI executable wrapper for testing the selected command-line modules.\n\n#\n\n# Arguments - Input\n\n#   EXECUTABLE_NAME - name of the executable wrapper\n\n#   MODULE_NAME     - name of the module to test\n\n#\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQI wrapper for add_test that set test LABELS using MODULE_NAME value\n\n# and add test dependencies if TEST_DEPENDS is specified.\n\n#\n\n# Usage:\n\n#\n\n#  dcmqi_add_test(\n\n#    NAME itkimage2segimage_hello\n\n#    MODULE_NAME segmentation\n\n#    COMMAND $<TARGET_FILE:itkimage2segimage> --help\n\n#    )\n\n#\n\n# where in addition of the arguments already accepted by 'add_test',\n\n# the following named arguments are also valid:\n\n#\n\n# MODULE_NAME      - string used as test LABEL (required)\n\n# COMMAND          - command to execute  (required)\n\n#                    When build as a Slicer extension the command will be\n\n#                    executed using ${SEM_LAUNCH_COMMAND\n\n# TEST_DEPENDS     - list of test dependencies (optional)\n\n# RESOURCE_LOCK    - Specify a list of resources that are locked by this test.\n\n#                    If multiple tests specify the same resource lock, they are\n\n#                    guaranteed not to run concurrently.\n\n#\n\n#\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "CMake/dcmqiVersion.cmake" : {
+      "ObjectId" : "41436aa785df54ca90d3589efe5780cae39e1b71",
+      "LastModified" : "2017-04-09T21:18:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# dcmqiVersion\n\n# ------------\n\n#\n\n# This module will set these variables in the including scope:\n\n#\n\n# ::\n\n#\n\n#   DCMQI_VERSION_IS_RELEASE\n\n#   DCMQI_VERSION_QUALIFIER\n\n#\n\n# It will also set all variables describing the SCM associated\n\n# with DCMQI_SOURCE_DIR.\n\n#\n\n# It has been designed to be included in the build system of DCMQI.\n\n#\n\n# The following variables are expected to be defined in the including\n\n# scope:\n\n#\n\n# ::\n\n#\n\n#   GIT_EXECUTABLE\n\n#   DCMQI_CMAKE_DIR\n\n#   DCMQI_LATEST_TAG\n\n#   DCMQI_SOURCE_DIR\n\n#\n\n#\n\n# Details description:\n\n#\n\n# .. variable:: DCMQI_VERSION_IS_RELEASE\n\n#\n\n#   Indicate if the current build is release. A particular build is a\n\n#   release if the HEAD of the associated Git checkout corresponds to\n\n#   a tag (either lightweight or annotated).\n\n#\n\n# .. variable:: DCMQI_CMAKE_DIR\n\n#\n\n#   Directory containing all CMake modules included in this module.\n\n#\n\n# .. variable:: DCMQI_LATEST_TAG\n\n#\n\n#   Name of the latest tag. It is used to reference the \"bleeding edge\"\n\n#   version on GitHub. This lightweight tag is automatically updated\n\n#   by a script running on CI services like Appveyor, CircleCI or TravisCI.\n\n#\n\n# .. variable:: DCMQI_SOURCE_DIR\n\n#\n\n#   DCMQI Git checkout\n\n#\n\n#\n\n# Dependent CMake modules:\n\n#\n\n# ::\n\n#\n\n#   dcmqiMacroExtractRepositoryInfo\n\n#   FindGit.cmake\n\n#\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n# Sanity checks\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Update CMake module path\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQI version number\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# If at least one tag (different from \"${DCMQI_LATEST_TAG}\") is\n\n# associated with HEAD, we are building a release\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# YYYYMMDD\n",
+        "Line" : 125,
+        "CharPositionInLine" : 75
+      },
+      "CommentCount" : 6
+    },
+    "CMakeExternals/DCMTK.cmake" : {
+      "ObjectId" : "ed41993d7d5d79d99b1463696ca41f52046be029",
+      "LastModified" : "2017-07-20T11:28:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# DCMTK\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# see github issue #25\n",
+        "Line" : 64,
+        "CharPositionInLine" : 33
+      },
+      "3" : {
+        "Text" : "# see github issue #25\n",
+        "Line" : 65,
+        "CharPositionInLine" : 36
+      },
+      "4" : {
+        "Text" : "# see github issue #25\n",
+        "Line" : 66,
+        "CharPositionInLine" : 32
+      },
+      "5" : {
+        "Text" : "# see github issue #25\n",
+        "Line" : 67,
+        "CharPositionInLine" : 34
+      },
+      "6" : {
+        "Text" : "# see github issue #25\n",
+        "Line" : 68,
+        "CharPositionInLine" : 33
+      },
+      "7" : {
+        "Text" : "# see github issue #178\n",
+        "Line" : 69,
+        "CharPositionInLine" : 35
+      },
+      "8" : {
+        "Text" : "# If an external DCMTK was provided via DCMTK_DIR and the external DCMTK\n\n# build/install used a CMAKE_DEBUG_POSTFIX value for distinguishing debug\n\n# and release libraries in the same build/install tree, the same debug\n\n# postfix needs to be passed to the CTK configure step. The FindDCMTK\n\n# script then takes the DCMTK_CMAKE_DEBUG_POSTFIX variable into account\n\n# when looking for DCMTK debug libraries.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "CMakeExternals/ITK.cmake" : {
+      "ObjectId" : "f25546c91d4bd458e1b0bdf8dabdae57bb220340",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# ITK\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-DITK_BUILD_DEFAULT_MODULES:BOOL=OFF # cut down build time to help CI\n\n#-DITKGroup_IO:BOOL=ON\n",
+        "Line" : 63,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# Required by SlicerExecutionModel\n\n#${BUILD_SHARED_LIBS} ## HACK:  QUICK CHANGE\n",
+        "Line" : 69,
+        "CharPositionInLine" : 30
+      },
+      "4" : {
+        "Text" : "# DCMTK\n",
+        "Line" : 72,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# ZLIB\n",
+        "Line" : 76,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 6
+    },
+    "CMakeExternals/SlicerExecutionModel.cmake" : {
+      "ObjectId" : "ae8bcd2fcb5f87d98adc3dbe58ecd275de6035bc",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Unused\n",
+        "Line" : 43,
+        "CharPositionInLine" : 50
+      },
+      "CommentCount" : 4
+    },
+    "CMakeExternals/zlib.cmake" : {
+      "ObjectId" : "09f6c7755b6c1deea28afe97cce62db4c5c715ef",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## CXX should not be needed, but it a cmake default test\n",
+        "Line" : 39,
+        "CharPositionInLine" : 6
+      },
+      "4" : {
+        "Text" : "# The project is provided using ZLIB_ROOT, nevertheless since other project may depend on zlib,\n\n# let's add an 'empty' one\n",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "ce695fe1f4f04cadff5c1ffa8e23a3191328a076",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Superbuild\n\n#\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,\n\n#       we ensure that the bitness will be properly detected.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Extension meta-information\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Set a default build type if none was specified\n\n#\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Set the possible values of build type for cmake-gui\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Option default values\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Default values used when DCMQI is integrated into Slicer as Remote project.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Options\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Standalone vs Slicer extension option\n\n#\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# This option should be named after the project name, it corresponds to the\n\n# option set to ON when the project is build by the Slicer Extension build\n\n# system.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Superbuild Option - Enabled by default\n\n#\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Output directories.\n\n#\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Make sure the directory exists\n",
+        "Line" : 118,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQI version number\n\n#\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Append the library version information to the library target\n\n# properties.  A parent project may set its own properties and/or may\n\n# block this.\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Install directories, used for install rules.\n\n#\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Other options\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Git protocol option\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Dependencies\n\n#\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Slicer\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# JsonCpp\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Superbuild script\n\n#\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Dependencies\n\n#\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Testing\n\n#\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQI library, applications and tests\n\n#\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQITargets\n\n#\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Version information\n\n#\n\n# Add target extracting version information. The target configures\n\n# 'DCMQICPackOptions.cmake' and 'dcmqiVersionConfigure.h'\n\n#\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQIConfig\n\n#\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Configure 'DCMQIConfig.cmake'\n",
+        "Line" : 288,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# For a build tree\n",
+        "Line" : 291,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Packaging\n\n#\n",
+        "Line" : 312,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 32
+    },
+    "SuperBuild.cmake" : {
+      "ObjectId" : "46d288f0d3e84358dbd65098acd50d134009f765",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "###########################################################################\n\n#\n\n#  Library:   DCMQI\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  Licensed under the Apache License, Version 2.0 (the \"License\");\n\n#  you may not use this file except in compliance with the License.\n\n#  You may obtain a copy of the License at\n\n#\n\n#      http://www.apache.org/licenses/LICENSE-2.0.txt\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n###########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# DCMQI dependencies - Projects should be TOPOLOGICALLY ordered\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# WARNING - No change should be required after this comment\n\n#           when you are adding a new external project dependency.\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Make sure ${DCMQI_BINARY_DIR}/${PROJECT_NAME_LC}-build/bin exists\n\n# May be used by some external project to install libs\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# XXX Workaround https://gitlab.kitware.com/cmake/cmake/issues/15448\n\n#     and explicitly pass GIT_EXECUTABLE and Subversion_SVN_EXECUTABLE\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# This custom external project step forces the build and later\n\n# steps to run whenever a top level build is done...\n\n#\n\n# BUILD_ALWAYS flag is available in CMake 3.1 that allows force build\n\n# of external projects without this workaround. Remove this workaround\n\n# and use the CMake flag instead, when DCMQI's required minimum CMake\n\n# version will be at least 3.1.\n\n#\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "apps/CMakeLists.txt" : {
+      "ObjectId" : "a2c2dbe713c8510d9370f6a5941beb156c405f6f",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "apps/paramaps/CMakeLists.txt" : {
+      "ObjectId" : "6a2d27255944ba364089a720582512b0006eb4b1",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# DCMQI\n\n#\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# SlicerExecutionModel\n\n#\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "apps/paramaps/Testing/CMakeLists.txt" : {
+      "ObjectId" : "87d34f2a5ec13b556525e2f474b69dd319c26e2b",
+      "LastModified" : "2017-07-20T11:28:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "apps/seg/CMakeLists.txt" : {
+      "ObjectId" : "e9afbc06d921fbb6466734718dff8a58a6036228",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# DCMQI\n\n#\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# SlicerExecutionModel\n\n#\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "apps/seg/Testing/CMakeLists.txt" : {
+      "ObjectId" : "5411acfa006ab3e2aff58b0071a017c8dec3b25d",
+      "LastModified" : "2017-07-20T20:22:58Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "apps/sr/CMakeLists.txt" : {
+      "ObjectId" : "9a669caf5f805eabef26b2207119ca7135355430",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# DCMQI\n\n#\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# SlicerExecutionModel\n\n#\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "apps/sr/Testing/CMakeLists.txt" : {
+      "ObjectId" : "d1c7058461970447c97b90d6a292541641eeae8d",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "doc/CMakeLists.txt" : {
+      "ObjectId" : "4d1ed69efa2559c7274bcc029e932c2b8cdafc04",
+      "LastModified" : "2017-04-09T21:04:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# General json syntax validation\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Schema validation\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# create argument list for all referenced common schemata\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# -r needs to be used when specifying a schema that has references to external files\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# validation of each common schema\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# validation of each specific (sr, seg, pm) schema file including referenced common schemata\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Example validation tests\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# function to simplify creation of example validation tests\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# -d stands for data that needs to be validated\n",
+        "Line" : 90,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "# validation of each specific (sr, seg, pm) example file including specific schema and referenced common schemata\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Context validation tests\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# function for # function to simplify creation of context tests\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# -d stands for data that needs to be validated\n",
+        "Line" : 129,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 13
+    },
+    "docker/Makefile" : {
+      "ObjectId" : "cff9e7a76199c3388d683fd59a04667d94af75a7",
+      "LastModified" : "2017-07-20T20:22:58Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Parameters\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Name of the docker executable\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Docker organization to pull the images from\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Directories\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Shell\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Targets\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Pull dockcross image\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Ignore error because of https://circleci.com/docs/docker-btrfs-error/\n",
+        "Line" : 32,
+        "CharPositionInLine" : 1
+      },
+      "8" : {
+        "Text" : "# Download and build dicom3tools\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Download and install \"ajv\" and \"jsonlint\" tools\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# If needed, download node\n",
+        "Line" : 52,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Install tools required to run DCMQI \"doc\" tests\n",
+        "Line" : 57,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "# Configure, build and package\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Build \"dcmqi\" docker image\n\n#\n\n# Docker expects package content to be in directory dcmqi-linux. As a\n\n# workaround, the content of the cpack-generated package, stored in\n\n# dcmqi-<version>-linux-<date>-<hash> directory is copied to dcmqi-linux.\n\n#\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "libsrc/CMakeLists.txt" : {
+      "ObjectId" : "02e7caf25b320f5595153527e4d07331dfd8a3ff",
+      "LastModified" : "2017-07-20T20:22:58Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 22,
+    "MAKEFILE" : 1
+  },
+  "ElapsedTime" : 1094
+}

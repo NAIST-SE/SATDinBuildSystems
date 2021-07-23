@@ -1,0 +1,442 @@
+{
+  "Repository" : "62666365",
+  "Revision" : "HEAD",
+  "ObjectId" : "82a75d4b0fac5debf8845ec0a0b86f5b1362408a",
+  "CommitTime" : "2019-04-18T17:47:39Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "3ed0b64fd80c3d7b4938cada74afb5428bdc61c5",
+      "LastModified" : "2019-04-17T20:57:11Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Manifest tool for multi-arch images\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/crosvm/Makefile" : {
+      "ObjectId" : "59e43d6787b55277c296dc6da70c279d6fd8a026",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "kernel/Makefile" : {
+      "ObjectId" : "da58d05ee8bddb7f2ca437da695c67ab5308ecfb",
+      "LastModified" : "2019-04-13T17:36:44Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This builds the supported LinuxKit kernels. Kernels are wrapped up\n\n# in a scratch container, which contains the bzImage, a tar\n\n# ball with modules, the kernel sources, and in some case, the perf binary.\n\n#\n\n# Each kernel is pushed to hub twice:\n\n# - linuxkit/kernel:<kernel>.<major>.<minor>-<hash>\n\n# - linuxkit/kernel:<kernel>.<major>.<minor>\n\n# The <hash> is the git tree hash of the current directory. The build\n\n# will only rebuild the kernel image if the git tree hash changed.\n\n#\n\n# For some kernels we also build a separate package containing the perf utility\n\n# which is specific to a given kernel. perf packages are tagged the same way\n\n# kernel packages.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Name and Org on Hub\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# You can specify an extra options for the Makefile. This will:\n\n# - append a config$(EXTRA) to the kernel config for your kernel/arch\n\n# - append $(EXTRA) to the CONFIG_LOCALVERSION of your kernel\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# You can enable debug options for the Makefile. This will:\n\n# - append a config-dbg to the kernel config for your kernel/arch\n\n# - append -dbg to the CONFIG_LOCALVERSION of your kernel\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Setting this is only really useful with the show-tag target\n",
+        "Line" : 33,
+        "CharPositionInLine" : 18
+      },
+      "5" : {
+        "Text" : "# Others can't be dirty by definition\n",
+        "Line" : 36,
+        "CharPositionInLine" : 28
+      },
+      "6" : {
+        "Text" : "# Path to push-manifest.sh\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Targets:\n\n# build: Builds all kernels\n\n# push:  Pushes and sign all tagged kernel images to hub\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# A template for defining kernel build\n\n# Arguments:\n\n# $1: Full kernel version, e.g., 4.9.22\n\n# $2: Kernel \"series\", e.g., 4.9.x\n\n# $3: Build a specific kernel like -rt: Preempt-RT (used as suffix for image)\n\n# This defines targets like:\n\n# build_4.9.x and  push_4.9.x and adds them as dependencies\n\n# to the global targets\n\n# Set $3 to \"-rt\", to build Preempt-RT kernels. This defines targets like\n\n# build_4.14.x-rt and adds \"-rt\" to the hub image name.\n\n# Set $4 to \"-dbg\", to build debug kernels. This defines targets like\n\n# build_4.9.x-dbg and adds \"-dbg\" to the hub image name.\n\n# Set $3 to \"-rt\" and $4 to \"-dbg\" to build debug Preempt-RT kernel.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# 'docker build' with the FROM image supplied as --build-arg\n\n# *and* with DOCKER_CONTENT_TRUST=1 currently does not work\n\n# (https://github.com/moby/moby/issues/34199). So, we pull the image\n\n# with DCT as part of the dependency on build_$(2)$(3)$(4) and then build\n\n# with DOCKER_CONTENT_TRUST explicitly set to 0\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Skip perf build for now. See:\n\n# https://github.com/linuxkit/linuxkit/issues/3299\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Only build BCC on x86 and only on latest LTS and latest stable kernels.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# ZFS does not compile against -dbg kernels because CONFIG_DEBUG_LOCK_ALLOC\n\n# is incompatible with CDDL, apparently (this is ./configure check)\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# Build Targets\n\n# Debug targets only for latest stable and LTS stable\n\n#\n",
+        "Line" : 249,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Target for kernel config\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "pkg/Makefile" : {
+      "ObjectId" : "4484fd3472e83d04e32dd0bd3a26d126188af640",
+      "LastModified" : "2018-01-25T13:50:28Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "pkg/tss/src/glibc_stubs/Makefile" : {
+      "ObjectId" : "5364edd6aca1481eac2caf5ff69da53b8b4599a0",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/clear-containers/kernel/Makefile" : {
+      "ObjectId" : "854d4784ec16dd524970fb9d25a1c4336f44fadd",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We push the image to hub twice, once with the full kernel version of\n\n# \"linuxkit/kernel:<kernel version>.<major version>.<minor version>-<n>\",\n\n# where \"<n>\" is a monotonically increasing config number, and as\n\n# \"linuxkit/kernel:<kernel version>.<major version>.x\". This version\n\n# number is stored in IMAGE_VERSION.\n\n#\n\n# We expect most users to us the \"<kernel version>.<major version>.x\"\n\n# variant as this simply is the latest version of a given major kernel\n\n# version. This version number is stored in IMAGE_MAJOR_VERSION.\n\n#\n\n# For IMAGE_VERSION, the \"<n>\" must be increased whenever\n\n# the kernel config or the patches change. We don't expect this to\n\n# happen very often as the minor version number gets update quite\n\n# frequently.\n\n#\n\n# IMAGE_VERSION is used to determine if a new image should be pushed to hub.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#build a kernel using dockerfile and save image hash in kernel.tag\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#Extract $(PKG) from image with built kernel\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME: Remove when linuxkit allow get vmlinux from docker images\n\n# Rename vmlinux to bzImage\n",
+        "Line" : 48,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 4
+    },
+    "projects/clear-containers/tools/Makefile" : {
+      "ObjectId" : "7e1829e00e7c9b0582f26ee081042687738f66be",
+      "LastModified" : "2018-01-25T13:50:28Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/compose/Makefile" : {
+      "ObjectId" : "5387b0b419251f8777486500ab99ba6e7899a76c",
+      "LastModified" : "2018-08-17T12:19:38Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# use make here for each image rather than a single for loop so we can cache dependencies\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "projects/ima-namespace/Makefile" : {
+      "ObjectId" : "fff3b5348ad49710d37a461e713f52271fdaa6e6",
+      "LastModified" : "2018-01-25T13:50:28Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/ima-namespace/ima-utils/Makefile" : {
+      "ObjectId" : "7b04aca5cf4895e59e02322f600924f94ec38c7d",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/ima-namespace/kernel/Makefile" : {
+      "ObjectId" : "255a2621091bee11094a7e640bafb0892f0eaf1f",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This builds the supported LinuxKit kernels. Kernels are wrapped up\n\n# in a minimal toybox container, which contains the bzImage, a tar\n\n# ball with modules and the kernel source.\n\n#\n\n# Each kernel is pushed to hub twice, once as\n\n# linuxkit/kernel:<kernel>.<major>.<minor>-<hash> and once as\n\n# inuxkit/kernel:<kernel>.<major>.x. The <hash> is the git tree hash\n\n# of the current directory. The build will only rebuild the kernel\n\n# image if the git tree hash changed.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Git tree hash of this directory. Override to force build\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Name and Org on Hub\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Targets:\n\n# build: builds all kernels\n\n# push:  pushes all tagged kernel images to hub\n\n# sign:  sign and push all kernel images to hub\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# A template for defining kernel build\n\n# Arguments:\n\n# $1: Full kernel version, e.g., 4.9.22\n\n# $2: Kernel \"series\", e.g., 4.9.x\n\n# $3: Build a debug kernel (used as suffix for image)\n\n# This defines targets like:\n\n# build_4.9.x, push_4.9.x and sign_4.9.x and adds them as dependencies\n\n# to the global targets\n\n# Set $3 to \"_dbg\", to build debug kernels. This defines targets like\n\n# build_4.9.x_dbg and adds \"_dbg\" to the hub image name.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Build Targets\n\n# Debug targets only for latest stable and LTS stable\n\n#\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "projects/landlock/kernel-landlock/Makefile" : {
+      "ObjectId" : "bea23e9d525d9fc743b5cc075d626170cda0a4c2",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We push the image to hub twice, once with the full kernel version of\n\n# \"mobylinux/kernel:<kernel version>.<major version>.<minor version>-<n>\",\n\n# where \"<n>\" is a monotonically increasing config number, and as\n\n# \"mobylinux/kernel:<kernel version>.<major version>.x\". This version\n\n# number is stored in IMAGE_VERSION.\n\n#\n\n# We expect most users to us the \"<kernel version>.<major version>.x\"\n\n# variant as this simply is the latest version of a given major kernel\n\n# version. This version number is stored in IMAGE_MAJOR_VERSION.\n\n#\n\n# For IMAGE_VERSION, the \"<n>\" must be increased whenever\n\n# the kernel config or the patches change. We don't expect this to\n\n# happen very often as the minor version number gets update quite\n\n# frequently.\n\n#\n\n# IMAGE_VERSION is used to determine if a new image should be pushed to hub.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "projects/memorizer/kernel-memorizer/Makefile" : {
+      "ObjectId" : "e1decd5a6d55408bf6cad620a8eaa736ed87f51a",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This builds the supported LinuxKit kernels. Kernels are wrapped up\n\n# in a scratch container, which contains the bzImage, a tar\n\n# ball with modules, the kernel sources, and in some case, the perf binary.\n\n#\n\n# Each kernel is pushed to hub twice:\n\n# - linuxkit/kernel:<kernel>.<major>.<minor>-<hash>\n\n# - linuxkit/kernel:<kernel>.<major>.<minor>\n\n# The <hash> is the git tree hash of the current directory. The build\n\n# will only rebuild the kernel image if the git tree hash changed.\n\n#\n\n# For some kernels we also build a separate package containing the perf utility\n\n# which is specific to a given kernel. perf packages are tagged the same way\n\n# kernel packages.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Git tree hash of this directory. Override to force build\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Name and Org on Hub\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add '-dirty' to hash if the repository is not clean. make does not\n\n# concatenate strings without spaces, so we use the documented trick\n\n# of replacing the space with nothing.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Targets:\n\n# build: builds all kernels\n\n# push:  pushes and sign all tagged kernel images to hub\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# A template for defining kernel build\n\n# Arguments:\n\n# $1: Full kernel version, e.g., 4.9.22\n\n# $2: Kernel \"series\", e.g., 4.9.x\n\n# $3: Build a debug kernel (used as suffix for image)\n\n# This defines targets like:\n\n# build_4.9.x and  push_4.9.x and adds them as dependencies\n\n# to the global targets\n\n# Set $3 to \"_dbg\", to build debug kernels. This defines targets like\n\n# build_4.9.x_dbg and adds \"_dbg\" to the hub image name.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Build Targets\n\n# Debug targets only for latest stable and LTS stable\n\n#\n\n#$(eval $(call kernel,4.10,4.10.x))\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#$(eval $(call kernel,4.11.7,4.11.x,_dbg))\n\n#$(eval $(call kernel,4.9.34,4.9.x))\n\n#$(eval $(call kernel,4.9.34,4.9.x,_dbg))\n\n#$(eval $(call kernel,4.4.74,4.4.x))\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "projects/miragesdk/examples/https-unikernel/Makefile" : {
+      "ObjectId" : "eff3a1e267be5ae31d53a9ee1e8ad31c95381348",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/miragesdk/src/Makefile" : {
+      "ObjectId" : "77943fded454760913c52662b437487bfe30dcf4",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#### DEV\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "projects/miragesdk/src/fdd/Makefile" : {
+      "ObjectId" : "2a4b5d48d63bd07c6092e0364633a91107e05fa9",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "### FIXME: use Makefile template\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "projects/okernel/Makefile" : {
+      "ObjectId" : "4352bf8f183d9b607141adca30e8f7a2a378a910",
+      "LastModified" : "2018-01-25T13:50:28Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/selinux/Makefile" : {
+      "ObjectId" : "829c3316b3f0bfaa11660d079cde2d25d80a33d2",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/selinux/init/Makefile" : {
+      "ObjectId" : "c1f0d2d08720481d2d55e11421127c9d2416cd85",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "projects/selinux/kernel/Makefile" : {
+      "ObjectId" : "728403425dafb3391667643afcb3673804b3b2c7",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# We push the image to hub twice, once with the full kernel version of\n\n# \"mobylinux/kernel:<kernel version>.<major version>.<minor version>-<n>\",\n\n# where \"<n>\" is a monotonically increasing config number, and as\n\n# \"mobylinux/kernel:<kernel version>.<major version>.x\". This version\n\n# number is stored in IMAGE_VERSION.\n\n#\n\n# We expect most users to us the \"<kernel version>.<major version>.x\"\n\n# variant as this simply is the latest version of a given major kernel\n\n# version. This version number is stored in IMAGE_MAJOR_VERSION.\n\n#\n\n# For IMAGE_VERSION, the \"<n>\" must be increased whenever\n\n# the kernel config or the patches change. We don't expect this to\n\n# happen very often as the minor version number gets update quite\n\n# frequently.\n\n#\n\n# IMAGE_VERSION is used to determine if a new image should be pushed to hub.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "projects/shiftfs/Makefile" : {
+      "ObjectId" : "4888cf432355d604591e9af38d1baa97e6ebd875",
+      "LastModified" : "2017-07-26T10:46:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This builds the supported LinuxKit kernels. Kernels are wrapped up\n\n# in a minimal toybox container, which contains the bzImage, a tar\n\n# ball with modules and the kernel source.\n\n#\n\n# Each kernel is pushed to hub twice, once as\n\n# linuxkit/kernel:<kernel>.<major>.<minor>-<hash> and once as\n\n# inuxkit/kernel:<kernel>.<major>.x. The <hash> is the git tree hash\n\n# of the current directory. The build will only rebuild the kernel\n\n# image if the git tree hash changed.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Git tree hash of this directory. Override to force build\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Name and Org on Hub\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Targets:\n\n# build: builds all kernels\n\n# push:  pushes all tagged kernel images to hub\n\n# sign:  sign and push all kernel images to hub\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# A template for defining kernel build\n\n# Arguments:\n\n# $1: Full kernel version, e.g., 4.9.22\n\n# $2: Kernel \"series\", e.g., 4.9.x\n\n# $3: Build a debug kernel (used as suffix for image)\n\n# This defines targets like:\n\n# build_4.9.x, push_4.9.x and sign_4.9.x and adds them as dependencies\n\n# to the global targets\n\n# Set $3 to \"_dbg\", to build debug kernels. This defines targets like\n\n# build_4.9.x_dbg and adds \"_dbg\" to the hub image name.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Build Targets\n\n# Debug targets only for latest stable and LTS stable\n\n#\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "test/Makefile" : {
+      "ObjectId" : "96edb2e193c4d848ea4875d0e51fa3d2d303670b",
+      "LastModified" : "2018-08-17T12:19:38Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# TODO: should have a separate target\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: Remove this section once we no longer depend on this in CI\n\n### -------\n\n# Currently the linuxkit-ci runs GCP tests outside of rtf and expects some\n\n# files in ../artifacts. This hacky target puts them there until\n\n# the CI can use rtf for running GCP tests\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "### ------\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/cases/020_kernel/011_kmod_4.9.x/src/Makefile" : {
+      "ObjectId" : "31c8215ddc4e818a8007c29ef06962e40e3570a3",
+      "LastModified" : "2018-01-25T13:50:28Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "test/cases/020_kernel/012_kmod_4.14.x/src/Makefile" : {
+      "ObjectId" : "31c8215ddc4e818a8007c29ef06962e40e3570a3",
+      "LastModified" : "2018-08-20T16:32:42Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "test/cases/020_kernel/015_kmod_4.19.x/src/Makefile" : {
+      "ObjectId" : "31c8215ddc4e818a8007c29ef06962e40e3570a3",
+      "LastModified" : "2018-10-29T18:46:16Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "test/cases/020_kernel/017_kmod_5.0.x/src/Makefile" : {
+      "ObjectId" : "31c8215ddc4e818a8007c29ef06962e40e3570a3",
+      "LastModified" : "2019-03-18T12:07:15Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "test/pkg/Makefile" : {
+      "ObjectId" : "614658aa52654ca8bf887b578af720df89ec5941",
+      "LastModified" : "2019-03-18T12:07:15Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "tools/Makefile" : {
+      "ObjectId" : "57eb9542d55d90ace6790e755de9d38a04504b1f",
+      "LastModified" : "2019-03-18T12:07:15Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# These have more complex builds which have not yet been ported to linuxkit pkg.\n\n# No more entries should be added to this list.\n\n# Note that these are only recursed on for the push target which was the historical behaviour.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/alpine/Makefile" : {
+      "ObjectId" : "8b62087b2e931730ed26b43b42fe449912cb01fe",
+      "LastModified" : "2019-03-18T12:07:15Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# \\(.*\\/.*:[0-9a-f]\\{40\\}\\)/\\1/p;q' versions.$(ARCH)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 16
+      },
+      "CommentCount" : 1
+    },
+    "tools/guestfs/Makefile" : {
+      "ObjectId" : "4bab51172b9afddc467c56bbcc0318d9ac42f376",
+      "LastModified" : "2019-03-18T12:07:15Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 30
+  },
+  "ElapsedTime" : 8175
+}

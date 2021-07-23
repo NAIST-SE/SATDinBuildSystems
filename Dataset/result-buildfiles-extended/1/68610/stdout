@@ -1,0 +1,225 @@
+{
+  "Repository" : "68610",
+  "Revision" : "HEAD",
+  "ObjectId" : "575a2ecb3834ec455e50849757a670f7d4cd2f81",
+  "CommitTime" : "2019-04-11T16:24:48Z",
+  "Files" : {
+    "build.xml" : {
+      "ObjectId" : "5cbb8c935058a5d3d3032b16dca5f798d9971b9f",
+      "LastModified" : "2019-03-14T12:37:55Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Defines jgroups.version ",
+        "Line" : 11,
+        "CharPositionInLine" : 95
+      },
+      "1" : {
+        "Text" : " Also available: colony.css, github.css etc ",
+        "Line" : 41,
+        "CharPositionInLine" : 56
+      },
+      "2" : {
+        "Text" : " 5 minutes per test suite timeout ",
+        "Line" : 47,
+        "CharPositionInLine" : 43
+      },
+      "3" : {
+        "Text" : " Parallelization controls (disable with \"-Dparallel.classes=false\") ",
+        "Line" : 51,
+        "CharPositionInLine" : 80
+      },
+      "4" : {
+        "Text" : " We need to include tools.jar for byteman to inject code into a running agent ",
+        "Line" : 63,
+        "CharPositionInLine" : 90
+      },
+      "5" : {
+        "Text" : " Move byteman-x.y.z.jar to byteman.jar (needed by -javaagent:byteman.jar in byteman tests) ",
+        "Line" : 114,
+        "CharPositionInLine" : 107
+      },
+      "6" : {
+        "Text" : " =================================\n          target: publish-local\n         ================================= ",
+        "Line" : 128,
+        "CharPositionInLine" : 47
+      },
+      "7" : {
+        "Text" : "<ivy:deliver\n                deliverpattern=\"${dist.dir}/ivy.xml\"\n                pubrevision=\"${version}\"\n                status=\"release\"\n                organisation=\"org.jgroups\"\n                module=\"jgroups\"\n                revision=\"${version}\"\n                />",
+        "Line" : 140,
+        "CharPositionInLine" : 22
+      },
+      "8" : {
+        "Text" : "<ivy:makepom ivyfile=\"${root.dir}/ivy.xml\" pomfile=\"${dist.dir}/jgroups-${version}.pom\"/>",
+        "Line" : 142,
+        "CharPositionInLine" : 105
+      },
+      "9" : {
+        "Text" : " artifactspattern=\"${dist.dir}/[artifact]-[revision](-[classifier]).[ext]\" ",
+        "Line" : 151,
+        "CharPositionInLine" : 91
+      },
+      "10" : {
+        "Text" : "<target name=\"publish-remote\" depends=\"define-ivy-task\" description=\"&ndash;&gt; publish this project in the ivy repository\">\n        <property name=\"revision\" value=\"${version}\"/>\n        <ivy:publish artifactspattern=\"${dist.dir}/[artifact]-[revision](-[classifier]).[ext]\"\n                     publishivy=\"false\"\n                     resolver=\"public\"\n                     overwrite=\"true\"\n                     pubrevision=\"${revision}\"\n                     status=\"release\"\n                     organisation=\"org.jgroups\"\n                     module=\"jgroups\"\n                     revision=\"${revision}\"\n                     conf=\"default\"\n                />\n        <echo message=\"project ${ant.project.name} released with version ${revision}\" />\n    </target>\n",
+        "Line" : 190,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : " <target name=\"publish\" description=\"Publish to the staging Nexus repo\" depends=\"define-staging-task\">\n\n        <staging:nexusStagingInfo id=\"target-nexus\"\n                                  stagingDirectory=\"${root.dir}/staging\">\n            <staging:projectInfo groupId=\"org.jgroups\"\n                                 artifactId=\"jgroups\"\n                                 version=\"${jgroups.version}\" />\n            <staging:connectionInfo\n                    baseUrl=\"${nexus.url}\">\n                <staging:authentication\n                        username=\"${nexus.user}\"\n                        password=\"${nexus.password}\" />\n            </staging:connectionInfo>\n        </staging:nexusStagingInfo>\n\n\n        <echo message=\"use is ${nexus.user} and pwd is ${nexus.password}\"/>\n\n        <staging:stageLocally>\n             <staging:nexusStagingInfo refid=\"target-nexus\"/>\n            <fileset refid=\"artifacts\"/>\n        </staging:stageLocally>\n        &lt;!&ndash;<staging:stageLocally>\n            <fileset dir=\"${dist.dir}/\" includes=\"**/*.*\"/>\n        </staging:stageLocally>&ndash;&gt;\n        <staging:stageRemotely>\n            <staging:nexusStagingInfo refid=\"target-nexus\"/>\n        </staging:stageRemotely>\n        <staging:releaseStagingRepository autoDropAfterRelease=\"true\">\n            <staging:nexusStagingInfo refid=\"target-nexus\"/>\n        </staging:releaseStagingRepository>\n\n\n    </target>",
+        "Line" : 227,
+        "CharPositionInLine" : 17
+      },
+      "12" : {
+        "Text" : " <target name=\"define-staging-task\">\n        <taskdef uri=\"antlib:org.sonatype.nexus.ant.staging\"\n                 resource=\"org/sonatype/nexus/ant/staging/antlib.xml\" classpathref=\"jg.classpath\">\n        </taskdef>\n    </target>\n",
+        "Line" : 244,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : " The tag option for Javadoc is available in Java 1.4 or later. ",
+        "Line" : 402,
+        "CharPositionInLine" : 83
+      },
+      "14" : {
+        "Text" : "target name=\"make-pom\" description=\"Copies conf/pom-xml.template to pom.xml and replaces version\">\n        <copy file=\"${pom.template}\"\n              tofile=\"${root.dir}/pom.xml\"\n              overwrite=\"false\" verbose=\"false\">\n            <filterset>\n                <filter token=\"VERSION\" value=\"${version}\"/>\n            </filterset>\n        </copy>\n    </target",
+        "Line" : 499,
+        "CharPositionInLine" : 16
+      },
+      "15" : {
+        "Text" : " Leave a schema named jgrous-4.x.xsd ",
+        "Line" : 513,
+        "CharPositionInLine" : 51
+      },
+      "16" : {
+        "Text" : " <copy todir=\"${compile.dir}/schema\">\n         <fileset dir=\"${compile.dir}/schema\">\n            <include name=\"jgroups*.xsd\"/>\n         </fileset>\n         <globmapper from=\"jgroups*.xsd\" to=\"jgroups.xsd\"/>\n      </copy>",
+        "Line" : 519,
+        "CharPositionInLine" : 17
+      },
+      "17" : {
+        "Text" : " clean the docs directory if docs have been processed ",
+        "Line" : 537,
+        "CharPositionInLine" : 67
+      },
+      "18" : {
+        "Text" : "\n=============================== TestNG ======================================== ",
+        "Line" : 612,
+        "CharPositionInLine" : 84
+      },
+      "19" : {
+        "Text" : " Needed to force reading of properties. Otherwise tcp tests will fail ",
+        "Line" : 681,
+        "CharPositionInLine" : 83
+      },
+      "20" : {
+        "Text" : " Needed to force reading of properties. Otherwise tcp-nio tests will fail ",
+        "Line" : 700,
+        "CharPositionInLine" : 90
+      },
+      "21" : {
+        "Text" : " comma-separated list, e.g. udp,functional ",
+        "Line" : 784,
+        "CharPositionInLine" : 88
+      },
+      "22" : {
+        "Text" : "<element   name=\"additional-args\"    optional=\"true\"/>",
+        "Line" : 796,
+        "CharPositionInLine" : 70
+      },
+      "23" : {
+        "Text" : "<xmlfileset dir=\"${testng.conf.dir}\" includes=\"@{xml.file}\"/>",
+        "Line" : 818,
+        "CharPositionInLine" : 85
+      },
+      "24" : {
+        "Text" : "<additional-args/>",
+        "Line" : 836,
+        "CharPositionInLine" : 42
+      },
+      "25" : {
+        "Text" : "jvmarg value=\"-Dcom.sun.management.jmxremote\"/",
+        "Line" : 852,
+        "CharPositionInLine" : 70
+      },
+      "26" : {
+        "Text" : "permissions>\n                    <grant class=\"javax.management.MBeanTrustPermission\" name=\"*\" actions=\"\"/>\n                    <grant class=\"java.io.FilePermission\" name=\"${manual.dir}/-\" actions=\"read,write\"/>\n                    <grant class=\"java.security.AllPermission\"/>\n                </permissions",
+        "Line" : 857,
+        "CharPositionInLine" : 33
+      },
+      "CommentCount" : 27
+    },
+    "pom.xml" : {
+      "ObjectId" : "22d86fdacabd869ca920e01327fd90618df1beb1",
+      "LastModified" : "2019-03-28T10:49:13Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " nexus-staging-maven-plugin ",
+        "Line" : 15,
+        "CharPositionInLine" : 44
+      },
+      "1" : {
+        "Text" : " Test dependencies ",
+        "Line" : 126,
+        "CharPositionInLine" : 35
+      },
+      "2" : {
+        "Text" : " See configuration details at http://books.sonatype.com/nexus-book/reference/staging-deployment.html ",
+        "Line" : 182,
+        "CharPositionInLine" : 129
+      },
+      "3" : {
+        "Text" : "<source>1.6</source>\n                    <target>1.8</target>",
+        "Line" : 194,
+        "CharPositionInLine" : 44
+      },
+      "4" : {
+        "Text" : "<exclude>org/jgroups/demos/**</exclude>",
+        "Line" : 197,
+        "CharPositionInLine" : 71
+      },
+      "5" : {
+        "Text" : " require Java 8 or higher ",
+        "Line" : 216,
+        "CharPositionInLine" : 62
+      },
+      "6" : {
+        "Text" : " These tests have to go in the main jar ",
+        "Line" : 237,
+        "CharPositionInLine" : 74
+      },
+      "7" : {
+        "Text" : " tests/other and tests/perf are included in the normal sources ",
+        "Line" : 254,
+        "CharPositionInLine" : 97
+      },
+      "8" : {
+        "Text" : " Run the tests via ant ",
+        "Line" : 291,
+        "CharPositionInLine" : 51
+      },
+      "9" : {
+        "Text" : "<execution>\n                        <phase>test</phase>\n                        <configuration>\n                            <tasks unless=\"maven.test.skip\">\n                                <ant antfile=\"${basedir}/build.xml\" target=\"all-tests\">\n                                    <property name=\"build.compiler\" value=\"extJavac\"/>\n                                </ant>\n                            </tasks>\n                        </configuration>\n                        <goals>\n                            <goal>run</goal>\n                        </goals>\n                    </execution>",
+        "Line" : 304,
+        "CharPositionInLine" : 36
+      },
+      "10" : {
+        "Text" : " Make sure we generate src jars too ",
+        "Line" : 307,
+        "CharPositionInLine" : 56
+      },
+      "11" : {
+        "Text" : " Disable default tests: they won't run since they are lacking configuration ",
+        "Line" : 348,
+        "CharPositionInLine" : 96
+      },
+      "12" : {
+        "Text" : "This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.",
+        "Line" : 450,
+        "CharPositionInLine" : 142
+      },
+      "CommentCount" : 13
+    }
+  },
+  "FileTypes" : {
+    "ANT" : 1,
+    "MAVEN" : 1
+  },
+  "ElapsedTime" : 1906
+}

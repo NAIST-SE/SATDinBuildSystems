@@ -1,0 +1,2805 @@
+{
+  "Repository" : "48554796",
+  "Revision" : "HEAD",
+  "ObjectId" : "dc549f55717e5fc2b9c211ef9cb95a08ca84e7f3",
+  "CommitTime" : "2019-04-18T19:19:52Z",
+  "Files" : {
+    "Makefile.am" : {
+      "ObjectId" : "62620ad258f0ad36a584f2881f8f7465e02d5a1c",
+      "LastModified" : "2018-09-14T15:13:04Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# automake requires that we initialize variables to something, even just empty,\n\n# before appending to them with \"+=\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add (+=) target names to this variable to add them to the dependencies of the\n\n# 'clean-local' target\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# used by nodist_pkgconfig_DATA\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# contains all of the \"errnames.txt\" files that are used by maint/extracterrmsgs\n\n# to build src/mpi/errhan/defmsg.h\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# NOTE on our semi-unconventional usage of DIST_SUBDIRS:\n\n# The automake manual recommends thinking of DIST_SUBDIRS as the list of all\n\n# *configured* subdirectories.  The normal autotools model involves\n\n# unconditional configure steps for all/most directories with conditional make\n\n# steps (i.e., conditional inclusion in SUBDIRS).  But in the MPICH case we\n\n# almost always configure exactly the directories that will be included in\n\n# SUBDIRS.  So most additions to DIST_SUBDIRS should be conditional on the same\n\n# condition as the corresponding SUBDIRS addition.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "## Automake attempts to guess the correct linker among the various compilers\n\n## for each language (see \"How the Linker is Chosen\" in the AM manual).\n\n## However, this process is static and doesn't assume that you will \"disable\"\n\n## Fortran support for a library and still actually build that library.\n\n## lib@MPILIBNAME@.la contains both C and F77 source, so AM picks \"F77LD\" as the\n\n## linker.  Instead we manually override automake's choice based on the value of\n\n## enable_f77.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# link with libtool+F77LD\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# link with libtool+CCLD\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## Create lists of files for different libraries\n\n##\n\n## mpi_sources: When compiled with -DMPICH_MPI_FROM_PMPI, these files\n\n## provide \"MPI_\" public functions for the C bindings and end up in\n\n## lib@MPILIBNAME@.  When compiled without this macro, these files\n\n## provide \"PMPI_\" public functions for the C bindings as well as a\n\n## few other internal MPICH functions, all of which end up in\n\n## lib@PMPILIBNAME@ (which is the same as lib@MPILIBNAME@ on systems\n\n## that support weak symbols).\n\n##\n\n## mpi_f77_sources: When compiled with -DMPICH_MPI_FROM_PMPI, these\n\n## files provide the \"mpi_\" public functions for the F77 bindings and\n\n## end up in lib@MPIFCLIBNAME@.\n\n##\n\n## mpi_fc_sources: When compiled with -DMPICH_MPI_FROM_PMPI, these\n\n## files provide the \"mpi_\" public functions for the F90+ bindings and\n\n## end up in lib@MPIFCLIBNAME@.\n\n##\n\n## mpi_cxx_sources: When compiled with -DMPICH_MPI_FROM_PMPI, these\n\n## files provide the \"MPI\" public functions for the C++ bindings and\n\n## end up in lib@MPICXXLIBNAME@.\n\n##\n\n## mpi_core_sources: These files are internal non-public functions\n\n## that are used by all bindings.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# include our subdir automake fragments\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# dropping mpi_fc_sources and mpi_cxx_sources from libmpmpi since they\n\n# don't contribute any PMPI symbols.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# lib@MPILIBNAME@.la might depend on lib@PMPILIBNAME@.la.  We add them\n\n# in that order to lib_LTLIBRARIES so libtool doesn't get\n\n# confused. (see https://bugzilla.redhat.com/show_bug.cgi?id=91110)\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# build the current directory and then the examples directory after everything else\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# README.vin is tricky, we don't actually distribute it when we use release.pl,\n\n# but we do need to distribute it in order for ./autogen.sh to work\n\n# correctly on a distribution tarball.  For now we distribute it when we \"make\n\n# dist\".\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "## FIXME: this should live in src/env/Makefile.mk. Moving it there\n\n## will not cause a problem, but it will break the build if another\n\n## Makefile.mk also decides to create a install-exec-hook target. A\n\n## better approach might be to have each Makefile.mk append to a\n\n## common set of rules.\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# the configure step checks for the 'lib' dir to decide whether a source\n\n# directory has been previously used for an in-path build before allowing a\n\n# VPATH build to continue\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# created by confdb/aclocal_cache.m4\n",
+        "Line" : 286,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# we can only have one clean-local, so we hook into it via conditionally\n\n# defined variables in the dependencies section\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n#  coverage rules\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# $(lib_lib@MPILIBNAME@_la_SOURCES) already contains $(mpi_sources)\n\n# We don't include the $(lib_lib@PMPILIBNAME@_la_SOURCES) here because of gcov's\n\n# inability to correctly handle multiple object files with the same source file.\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# local var meaning (for profiling foo/bar/baz.c):\n\n#   dir=foo/bar\n\n#   bname=baz.c\n\n#   aux=baz\n\n#\n\n# Note that we delete all extra \".gcov\" files that were not the direct goal,\n\n# even though they contain useful information.  A more robust solution is needed\n\n# in the long run, probably one that uses \"--long-file-names --preserve-paths\"\n\n# and some postprocessing in a perl script.\n\n#\n\n# Gcov has no good way to deal with source files that have been compiled twice\n\n# into two different object files, such as\n\n#   bcast.c --> {bcast.o,lib_libpmpi_la-bcast.o}\n\n# It still generates a bcast.c.gcov output for each object file.  Long file\n\n# names and preserved paths do not help with this problem.\n\n# What we can do in this case is to move the second files to a separate\n\n# directory, rename name, and run gcov on the new files.\n\n# For the web-based coverage reports, the gcov output for the two files\n\n# needs to be merged; see maint/gcovmerge .\n\n# To make it easier to re-run the coverage generation, we copy, rather than\n\n# move, when there are two object files for each source file.\n\n# A change to the build procedure broke this target.  This is a partial though\n\n# nearly complete fix to the broken build process.  The generated coverage\n\n# files after the fix appear mostly correct, though there appear to also be\n\n# errors in the gcov output itself (the format of this output changes\n\n# frequently).  However, the coverage analysis is still valuable and has\n\n# identified missing tests.\n\n#\n\n# The problem:\n\n#   The source file is foo.c\n\n#   gcov expects foo.o, foo.gcno, and foo.gcda files\n\n#   The MPICH build process, unfortunately, does not produce a foo.o file;\n\n#   instead, it produces a .libs/lib_lib@MPILIBNAME@_la-foo.o file (and\n\n#   similarly .libs/lib_lib@MPILIBNAME@_la_foo.gcno etc.\n\n#   This change broke this coverage target.  If further changes to the\n\n#   naming conventions for object files are made, make sure that the\n\n#   coverage target is also modified to correspond to those changes.\n\n#\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "## SUBDIRS contains \".\"\n",
+        "Line" : 413,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# heavy handed, but it gets the job done\n",
+        "Line" : 424,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n#  documentation rules\n\n# --------------------------------------------------------------------------\n",
+        "Line" : 435,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Tell make (via the automake SUFFIXES var) that our phony suffixes exist and\n\n# should be considered when dissecting suffix-based implicit rules.  These phony\n\n# suffix files should NOT be added to a .PHONY target, otherwise make will not\n\n# use the implicit rules to attempt to build them.\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# \"make V=1\" support for our documentation recipes\n",
+        "Line" : 445,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# build dir paths for doc generation, used to override subdir (esp. ROMIO) doc\n\n# generation locations/options\n",
+        "Line" : 453,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Provide an easily replaced url root for the generated index file.\n\n# You can override this with URL desired in the index file generated by doctext.\n\n# You can ignore this if you don't use mapnames or tohtml to add links\n\n# to the MPI manual pages to documents.\n",
+        "Line" : 460,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Implicit suffix rules to cause the docs to be built.  These are a bit of a\n\n# hack, but using the implicit rules like this instead of a shell for loop\n\n# permits make -jN to work.\n",
+        "Line" : 466,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# use mandoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 493,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "## MANDOC_SUBDIRS might accidentally contain \".\"\n",
+        "Line" : 502,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "## make 'mandoc' in subdirectory but tell sub-make to output to the top-level\n",
+        "Line" : 507,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "#      FIXME: the 'mancnst' script need to be committed for this to work\n\n#      (cd $(abs_top_builddir) && $(abs_top_srcdir)/doc/mansrc/mancnst)\n",
+        "Line" : 516,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# use htmldoc-local target to force directory creation before running DOCTEXT\n\n# Note that the mpi.cit is appended to by each update, so it must be removed\n\n# and recreated when the documentation files are updated\n",
+        "Line" : 519,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "## HTMLDOC_SUBDIRS might accidentally contain \".\"\n",
+        "Line" : 532,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "## make 'htmldoc' in subdirectory but tell sub-make to output to the top-level\n",
+        "Line" : 537,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# install-man does not have a special \"-local\" target for some reason\n",
+        "Line" : 548,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# this is a variation on the recipe that was previously generated by simplemake\n",
+        "Line" : 550,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# build the latex docs in the old style\n",
+        "Line" : 619,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# install-pdf will not be run by default in a \"make install\" unless we do this\n",
+        "Line" : 624,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# note that these PDFs are currently built in the srcdir, even in a VPATH\n\n# build...\n",
+        "Line" : 626,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# use the _TARGETS var as a workaround for being unable to define multiple\n\n# -local targets\n",
+        "Line" : 636,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# sometimes helpful when debugging macros to see the preprocessed output.\n\n# Also using '-CC' because comments provide useful landmarks\n",
+        "Line" : 641,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 44
+    },
+    "doc/namepub/Makefile" : {
+      "ObjectId" : "271e9714bf972cec5aab78ca8923ab82a18bcfdb",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Use doctext in /home/gropp/bin/$ARCH/doctext \n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Handle older fig2dev programs\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "doc/pmi/Makefile" : {
+      "ObjectId" : "7096d31a4fac28bf01953eaf4f1c3cf0db0c746a",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Handle older fig2dev programs\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1,
+      "Errorlog" : "line 45:33 token recognition error at: '\\1'\nline 46:33 token recognition error at: '\\1'\nline 49:38 token recognition error at: '\\1'\nline 50:38 token recognition error at: '\\1'\nline 66:33 token recognition error at: '\\1'\nline 67:33 token recognition error at: '\\1'\nline 70:38 token recognition error at: '\\1'\nline 71:38 token recognition error at: '\\1'\n"
+    },
+    "examples/Makefile.am" : {
+      "ObjectId" : "f8e9d7f6d459a3712786271970d646a432009e62",
+      "LastModified" : "2018-09-14T15:13:04Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# \"cpi\" is special, we always build it at the end of the regular \"make\" process\n\n# and its main purpose is to catch missing symbol link-time errors before any\n\n# tests are run.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# pmandel requires a separate set of socket calls (its a long story)\n\n# and may not build on most platforms\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/mpi/romio/Makefile.am" : {
+      "ObjectId" : "bd0f0d86cd3b8fcf6b006acd273d9c5e42846a50",
+      "LastModified" : "2018-09-14T15:13:04Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## TODO: need to write an automakefile that handles two primary cases:\n\n## 1) that ROMIO is being embedded within the MPI library, as in MPICH or Open\n\n##    MPI\n\n## 2) that ROMIO is being built standalone, old-school style.  This case is\n\n##    basically unused in modern practice.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# help autoreconf and friends realize where the macros live\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# empty variable initializations so that later code can append (+=)\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n# variables to be populated by the included Makefile.mk fragments:\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# These are files that contain MPI routines (e.g., MPI_File_open).\n\n# In MPICH these will have an MPI_ and a PMPI_ version.  Other implementations\n\n# (like OMPI) only want these to be MPI_ routines, possibly with some\n\n# name-shifting prefix.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# regular old source files that implement ROMIO, such as ADIO code\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# code that may need to be \"up\" called from the MPI library and/or is\n\n# MPI-implementation-specific in some way\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n# when building under MPICH we must be able to find mpi.h\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n# handle the \"include\" directory here\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# nodist_ b/c these are created by config.status and should not be distributed\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# ------------------------------------------------------------------------\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# for the sake of parallel make and avoiding an excessive number of convenience\n\n# libs, we use a subdir automake fragment strategy\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Build a libtool convenience library that the enclosing MPI implementation can\n\n# use by adding it to the right _LIBADD variable.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "## NOTE: ROMIO's old build system builds a bunch of _foo.o objects that contain\n\n## PMPI_ implementations as well as calls to only other PMPI routines.  In\n\n## MPICH, these are the objects that need to go into libmpi, while the foo.o\n\n## objects should go into libpmpi.  Furthermore, the -D option for ROMIO's\n\n## source files is different and inverted (in the boolean sense) compared with\n\n## MPICH's defintion.  And ROMIO was dumping all of the symbols into the main\n\n## libmpi library, regardless of the separate profiling library's existence.\n\n##\n\n## Annoying, right?\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# The current best strategy for now is to build the PMPI symbols as a separate\n\n# convenience lib to permit adding the special \"-D...\" argument for all objects.\n\n# MPICH will then link in both convenience library into libmpi, since it\n\n# won't work very well the other way around.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# assumes that these sources were compiled appropriately (\"-fprofile-arcs\"\n\n# and \"-ftest-coverage\")\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# \"make V=1\" support for our documentation recipes\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Build dir paths where the man pages will be created.  Will usually be\n\n# overridden by MPICH make.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Provide an easily replaced url root for the generated index file.\n\n# You can override this with URL desired in the index file generated by doctext.\n\n# You can ignore this if you don't use mapnames or tohtml to add links\n\n# to the MPI manual pages to documents.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# use mandoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# use htmldoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# sometimes helpful when debugging macros to see the preprocessed output.\n\n# Also using '-CC' because comments provide useful landmarks\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "src/mpi/romio/doc/Makefile" : {
+      "ObjectId" : "f041d5ce0d0dd7671b32f816a6f8d0c7e854b722",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "src/mpi/romio/test-internal/Makefile.am" : {
+      "ObjectId" : "ec7c7eb0ef5aaa57b071545acbbf498e5ff8188b",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This directory is only listed in DIST_SUBDIRS, not SUBDIRS, so its contents\n\n# will not be built by default, but it will participate in \"make distclean\" and\n\n# friends.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# override the normal compilers for the tests\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# because := is not universally avalible, we have to play games to use the\n\n# user-specified LDFLAGS and OUR_LIBS env. variables (if set)\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/mpi/romio/test/Makefile.am" : {
+      "ObjectId" : "cdddf64f511a8188b00cc63b2e35f6e854df5ce8",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This directory is only listed in DIST_SUBDIRS, not SUBDIRS, so its contents\n\n# will not be built by default, but it will participate in \"make distclean\" and\n\n# friends.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# override the normal compilers for the tests\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# because := is not universally avalible, we have to play games to use the\n\n# user-specified LDFLAGS and OUR_LIBS env. variables (if set)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/mpl/Makefile.am" : {
+      "ObjectId" : "2aa0c1a7854995b363c4961cc7df064626dd7feb",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2008 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# assumes that these sources were compiled appropriately (\"-fprofile-arcs\"\n\n# and \"-ftest-coverage\")\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# files that automake doesn't know about by default that should be included in\n\n# the distribution\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/openpa/Makefile.am" : {
+      "ObjectId" : "b119b3b5d416e5ede685ec691ccbc6bbbf53bc59",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: c-basic-offset:4 ; indent-tabs-mode:nil ; -*-\n\n#  \n\n#  (C) 2008 by Argonne National Laboratory.\n\n#      See COPYRIGHT in top-level directory.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# opa_config.h was generated by the AX_PREFIX_CONFIG_H macro in configure.ac\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# files that automake doesn't know about by default that should be included in\n\n# the distribution\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# uses the highlight utility to color code the test output\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This target exists to smooth the integration with MPICH's upcoming build\n\n# system changes to support parallel make (i.e. \"make -j 4\").  It serves no\n\n# other purpose, but should _not_ be removed unless you know what you are doing.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# pkgconfig files\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# make MPICH happy\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/openpa/src/Makefile.am" : {
+      "ObjectId" : "ed282a8aca6852233253136202368fcbdccdfe78",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: c-basic-offset:4 ; indent-tabs-mode:nil ; -*-\n\n#  \n\n#  (C) 2008 by Argonne National Laboratory.\n\n#      See COPYRIGHT in top-level directory.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# \"nobase_\" causes the primitives directory to be preserved when installed\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/openpa/test/Makefile.am" : {
+      "ObjectId" : "8006f227110d350e8d00a8415c8450ca0444afcf",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: c-basic-offset:4 ; indent-tabs-mode:nil ; -*-\n\n#  \n\n#  (C) 2008 by Argonne National Laboratory.\n\n#      See COPYRIGHT in top-level directory.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/pm/hydra/Makefile.am" : {
+      "ObjectId" : "26750213a140accf1d9914ae78a29a7bd66bf7e2",
+      "LastModified" : "2018-05-04T13:32:08Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2009 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The below directories contribute to libhydra\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# External subdirs should be built first, as we might depend on them\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# see note in MPICH Makefile.am about our usage of DIST_SUBDIRS\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Provide an alias for mpirun to support tools that assume that\n\n# mpiexec is called mpirun\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# A special alternate installation target when using multiple process\n\n# managers; this is basically the install target, but without the\n\n# install-exec-hook\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n#.PHONY: mandoc mandoc-local htmldoc htmldoc-local\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# \"make V=1\" support for our documentation recipes\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Build dir paths where the man pages will be created. Will usually be\n\n# overridden by MPICH make.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# use mandoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# use htmldoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# created by confdb/aclocal_cache.m4\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# assumes that these sources were compiled appropriately (\"-fprofile-arcs\"\n\n# and \"-ftest-coverage\")\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "## we don't recurse into SUBDIRS in hydra, since they are only really\n\n## external packages like hwloc\n\n##\tfor subdir in $(SUBDIRS) ; do \\\n##\t    ( cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) coverage ) ; \\\n##\tdone\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "src/pm/hydra2/Makefile.am" : {
+      "ObjectId" : "792fb943457cb8f53d504fbf38d3e842945d9133",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2009 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# External subdirs should be built first, as we might depend on them\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# see note in MPICH Makefile.am about our usage of DIST_SUBDIRS\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Provide an alias for mpirun to support tools that assume that\n\n# mpiexec is called mpirun\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# A special alternate installation target when using multiple process\n\n# managers; this is basically the install target, but without the\n\n# install-exec-hook\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# --------------------------------------------------------------------------\n\n#.PHONY: mandoc mandoc-local htmldoc htmldoc-local\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# \"make V=1\" support for our documentation recipes\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Build dir paths where the man pages will be created. Will usually be\n\n# overridden by MPICH make.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# use mandoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# use htmldoc-local target to force directory creation before running DOCTEXT\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# created by confdb/aclocal_cache.m4\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# assumes that these sources were compiled appropriately (\"-fprofile-arcs\"\n\n# and \"-ftest-coverage\")\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "## we don't recurse into SUBDIRS in hydra, since they are only really\n\n## external packages like hwloc\n\n##\tfor subdir in $(SUBDIRS) ; do \\\n##\t    ( cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) coverage ) ; \\\n##\tdone\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# --------------------------------------------------------------------------\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "test/Makefile.am" : {
+      "ObjectId" : "e08a285c50dabda7b205bf0ddb44b4088346457f",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## FIXME: commented out temporarily, really just want \"mpi\" to be dealt with at\n\n## distclean time for now\n\n##SUBDIRS = mpi util basic commands .\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test both the MPI routines and the MPICH command scripts\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/commands/Makefile.am" : {
+      "ObjectId" : "fb96fcd7c76dd8705de0850de9e152ee246fdb06",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## violate all automake standards and force CC and friends to be MPICC and friends\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# programs with non-C source files\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# this was commented out in the Makefile.sm, not sure why\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\t./cmdtests\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "test/mpi/Makefile.am" : {
+      "ObjectId" : "2c09186ea39e8d6f1ef7a9aaba0d2315f810addb",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# mix in the \"make testing\" rule and other boilerplate\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# DIST_SUBDIRS must be a superset of SUBDIRS, and automake must be able to\n\n# *statically* compute its contents.  The good news is that we can mostly avoid\n\n# duplication because automake is able to \"see\" into simple variable\n\n# assignments that are not driven by a configure @-substitution variable.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## here are automakefile entries for the test/mpi/include dir\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Need to patch some things up:\n\n# Make sure to disable rebuilding the autotools related files - the\n\n# receiver of this distribution may not have the necessary tools and\n\n# should not need them.  Finally, the distributed configure must disable\n\n# maintainer targets by default - otherwise, the unsuspecting user will\n\n# see automake et al attempt to rebuild the autotools, which is likely to\n\n# fail unless the user has the correct versions of all of the tools\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "test/mpi/attr/Makefile.am" : {
+      "ObjectId" : "7be3bb0facaad240215edafeb098e18c2b726311",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/basic/Makefile.am" : {
+      "ObjectId" : "64b296a4f2a98f879724d3812d3d4ecc6c78939c",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/ckpoint/Makefile.am" : {
+      "ObjectId" : "d897d14d617a52ef9c2b6e01d29871919c908063",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/coll/Makefile.am" : {
+      "ObjectId" : "d9dc463fabfede71623e5557a891b5525675533d",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generate tests of the nonblocking collectives by reusing the blocking tests.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/comm/Makefile.am" : {
+      "ObjectId" : "9c8d436b4a273396e3342f45e9aeb03aca4aa82d",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/cxx/Makefile.am" : {
+      "ObjectId" : "490684dbee5ada2d4768ba8dbe81f636d73b5b89",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/attr/Makefile.am" : {
+      "ObjectId" : "87dc29adde6d9601612fb3e36a0652b99f632020",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2010 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## the following entries were disabled in the simplemake version:\n\n##noinst_PROGRAMS += attrerrx attrerrcommx attrerrtypex attrorderx attrordercommx \\\n##                   attrordertypex attrorderwinx baseattr2x baseattrwinx\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#attrerrx_SOURCES = attrerrx.cxx\n\n#attrerrcommx_SOURCES = attrerrcommx.cxx\n\n#attrerrtypex_SOURCES = attrerrtypex.cxx\n\n#attrorderx_SOURCES = attrorderx.cxx\n\n#attrordercommx_SOURCES = attrordercommx.cxx\n\n#attrordertypex_SOURCES = attrordertypex.cxx\n\n#attrorderwinx_SOURCES = attrorderwinx.cxx\n\n#baseattr2x_SOURCES = baseattr2x.cxx\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#baseattrwinx_SOURCES = baseattrwinx.cxx\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "test/mpi/cxx/coll/Makefile.am" : {
+      "ObjectId" : "75a0fd86ef0872cec74e76f42e674714d8a302ec",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2008 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/comm/Makefile.am" : {
+      "ObjectId" : "29866dc76981472014c4984cbb2ac06abd69ed08",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/datatype/Makefile.am" : {
+      "ObjectId" : "23d952b799a0203bb02dffc7f4159227159e0a1d",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/errhan/Makefile.am" : {
+      "ObjectId" : "71b326c61a53dac272da16945655a50bbd1c0552",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## other simplemake directives that were commented out\n\n##adderr_SOURCES = adderr.c\n\n##errstring_SOURCES = errstring.c\n\n##errcode_SOURCES = errcode.c errmsg.c\n\n##errring_SOURCES = errring.c\n\n##EXTRA_PROGRAMS = errcode errring errstring\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/cxx/info/Makefile.am" : {
+      "ObjectId" : "c27648766246bbb2307c0fc2920e9e2961ea5bae",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/init/Makefile.am" : {
+      "ObjectId" : "c78c75e26289f9aeb23fc3da97202e3a8f1412b9",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/io/Makefile.am" : {
+      "ObjectId" : "2ee1776669536bd22b528a5b9fa49f8372292aed",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.cxx\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We don't want to distribute these source files because they are created by\n\n# \"testmerge\", hence \"nodist_foo_SOURCES\"\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# these files are genereated using testmerge (see below)\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# clean up after the test programs\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# a parallel-safe scheme to generate the tests, see the automake-1.11.1 manual,\n\n# section 27.9 \"Handling Tools That Produce Multiple Outputs\" for an explanation\n\n# \n\n# Note that using testmerge at make-time adds a dependency on perl for users.\n\n# See the note in test/mpi/f77/io/Makefile.am for more info.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "## Recover from the removal of $@\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "## mkdir is a portable test-and-set\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## This code is being executed by the first process.\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## This code is being executed by the follower processes.\n\n## Wait until the first process is done.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "## Succeed if and only if the first process succeeded.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# just in case\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "test/mpi/cxx/pt2pt/Makefile.am" : {
+      "ObjectId" : "e3c5c210554e58bf4c78b3d727329f2b7db9517e",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/cxx/rma/Makefile.am" : {
+      "ObjectId" : "f62f073e90e06fe0a4b918ff3ebe423ad2d368f4",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.cxx\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/cxx/spawn/Makefile.am" : {
+      "ObjectId" : "7ea1cca88e2380845775cfeb8f71cc6da017481a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.cxx\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/cxx/topo/Makefile.am" : {
+      "ObjectId" : "da38cda77075390e405075bb5178d0e89e5c6234",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.cxx\" lines because\n\n# automake is too limited to figure this out for itself\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/cxx/util/Makefile.am" : {
+      "ObjectId" : "14b33863b1e28a5645cf9aeb3ffe086f87aeba30",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## list a dummy library that we don't actually build in order to cause automake\n\n## to emit a rule for building mtest.o from mtest.cxx\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/datatype/Makefile.am" : {
+      "ObjectId" : "edf23a3f9fe0553e1fad25b09d35fd6cde1e7d6f",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Some of the tests use a more comprehensive set of datatype tests.\n\n# These must specify a different LDADD that includes the object file\n\n# with these additional routines\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/dtpools/Makefile.am" : {
+      "ObjectId" : "a29812e2458d59dc94cf3e69994019bb206f6fd0",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2018 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/dtpools/include/Makefile.am" : {
+      "ObjectId" : "3c998c4f13afc1258358589b2af755b75754e38a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2018 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/dtpools/src/Makefile.am" : {
+      "ObjectId" : "2647983ea0848a88dddaddbde2d67aefcae7da42",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n#\n\n# (C) 2018 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Coma separated list of MPI datatypes\n",
+        "Line" : 7,
+        "CharPositionInLine" : 52
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errhan/Makefile.am" : {
+      "ObjectId" : "20985929edcedd9233c18395062b4212b7cbc84f",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n\n## We must not list the EXTRA_PROGRAMS in the noinst_PROGRAMS list because\n\n## doing so will include them in the default targets\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/Makefile.am" : {
+      "ObjectId" : "8500b3637faf00d60e5527a28df9dbb3666264fb",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME should \"datatype\" be included in this list?  It was not in the\n\n# simplemake version for some reason and is also missing from the testlist\n\n# file\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/attr/Makefile.am" : {
+      "ObjectId" : "29c566e46bcdf172d4125ba1a4297b897c919869",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/basic/Makefile.am" : {
+      "ObjectId" : "738e61d29646373b276f5ee21a79e797b32a3e46",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/coll/Makefile.am" : {
+      "ObjectId" : "eb505eb4cf942831d6906f69b7e59a1a60faad83",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/comm/Makefile.am" : {
+      "ObjectId" : "b3e38a1ea2736a33fa16a51e4a82b232fb1b0d1a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/cxx/Makefile.am" : {
+      "ObjectId" : "4ee43859d9b721570531c941ef6c56b8fb347c62",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/errors/cxx/errhan/Makefile.am" : {
+      "ObjectId" : "32203748748a7cea89b63c9daa11f7e1a5170194",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.cxx\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/cxx/io/Makefile.am" : {
+      "ObjectId" : "27d837458c99539b3bb375246cf3f9a1d4933e3a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.cxx\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/datatype/Makefile.am" : {
+      "ObjectId" : "21ebc9348eae0c3a80d593d614302cd717fa5f49",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/f08/Makefile.am" : {
+      "ObjectId" : "e02c716843c70650a43add6c2d42ae6175a2a1f7",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/errors/f08/io/Makefile.am" : {
+      "ObjectId" : "77a6d7517af417628a6c828d6c881a81b26ac462",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# This Makefile.am generated automatically by f77tof90\n\n# from test/mpi/errors/f77/io/Makefile.am.  DO NOT EDIT\n\n# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/f77/Makefile.am" : {
+      "ObjectId" : "39cca6cfed5c7f20e87f1f620f159dd96c797211",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/errors/f77/io/Makefile.am" : {
+      "ObjectId" : "735d00221170ad0962aafd0fcc2eb819a6a1b19a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/f90/Makefile.am" : {
+      "ObjectId" : "ab3aeed487cf3d9c00977c75a36e720b94827c3c",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/errors/faults/Makefile.am" : {
+      "ObjectId" : "f6a8c3d77980791557c03e5fa17df8b04544184f",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/group/Makefile.am" : {
+      "ObjectId" : "13ca50f533ced9c7c42fc4a0d900e82f1e2105f1",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/io/Makefile.am" : {
+      "ObjectId" : "f90c371bbf23e62a9052a75806db9da20cfc187e",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/pt2pt/Makefile.am" : {
+      "ObjectId" : "b9c29bac7d1c907f2cff6e33ba47457337edf9d4",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/rma/Makefile.am" : {
+      "ObjectId" : "80eaed1cc5ed305a492e1a1b877706d902c80e90",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/spawn/Makefile.am" : {
+      "ObjectId" : "a9f1b42c45f4a1d35b7fb66c3295dc47d063cee1",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/errors/topo/Makefile.am" : {
+      "ObjectId" : "0c59d6f340863d042165c18d9f424550436749be",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/Makefile.am" : {
+      "ObjectId" : "36605fd140d6700f89e66bbb6886a085741f4b8b",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f08/attr/Makefile.am" : {
+      "ObjectId" : "c54e1128307e4c9996be477d23e0e003faf9ab60",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# This Makefile.am generated automatically by f77tof90\n\n# from test/mpi/f77/attr/Makefile.am.  DO NOT EDIT\n\n# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## attraints.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ensure that \"{comm,type}attr*f.o\" will be rebuilt when attraints.h is updated\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## vim: set ft=automake :\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Remove any created module files, if we know the extension of those files\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "test/mpi/f08/coll/Makefile.am" : {
+      "ObjectId" : "e175ffe75260c526c8eaca7c5f502adc30abfefd",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/comm/Makefile.am" : {
+      "ObjectId" : "cd9dc2b67f6d466872c252a6ef2c31d328268a09",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# This Makefile.am generated automatically by f77tof90\n\n# from test/mpi/f77/comm/Makefile.am.  DO NOT EDIT\n\n# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/datatype/Makefile.am" : {
+      "ObjectId" : "a802e0e6d9783c52a20c4cec57b1b462c1998083",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# This Makefile.am generated automatically by f77tof90\n\n# from test/mpi/f77/datatype/Makefile.am.  DO NOT EDIT\n\n# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/ext/Makefile.am" : {
+      "ObjectId" : "7beb9bd665c9fae38e6ef5d2d80d66af468d76f6",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# allocmemf is an \"extra\" program because it requires a Fortran extension\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# C programs get a different mtest utility object\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## add1size.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when add1size.h is updated\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# we don't get this from Makefile_f90.mtest and we don't include Makefile.mtest\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# FIXME what's up with these rules?  They appear to copy a file to itself in\n\n# non-VPATH builds...\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "test/mpi/f08/info/Makefile.am" : {
+      "ObjectId" : "8a324f7d5015b16e16ec5b65b1536f84862386b3",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/init/Makefile.am" : {
+      "ObjectId" : "7f6438babf59cf239a5fffb07859e182c80b10d5",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Checksizes is created by configure, and is a C program that tests that\n\n# configure has correctly computed the sizes of MPI_Aint and MPI_Offset\n\n# for Fortran.  This is not run by default but can be used to check\n\n# that configure found the correct values.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/f08/io/Makefile.am" : {
+      "ObjectId" : "f6c566df150b64880b90bccca1db67592dd1f757",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We don't want to distribute these source files because they are created by\n\n# \"testmerge\", hence \"nodist_foo_SOURCES\"\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# this is a C only program, so we must either:\n\n# A) prevent the makefile-wide \"LDADD=mtestf90.o\" from affecting this program, or\n\n# B) link with the fortran compiler, otherwise we'll get link failures from\n\n# compilers with runtime support libs, such as PGI\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## these header files will be distributed because they're listed in\n\n## AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when headers are updated\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# these files are genereated using testmerge (see below)\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# a parallel-safe scheme to generate the tests, see the automake-1.11.1 manual,\n\n# section 27.9 \"Handling Tools That Produce Multiple Outputs\" for an explanation\n\n# \n\n# Note that using testmerge at make-time adds a dependency on perl for users.\n\n# It's been like this for a long time, so I don't think it's a problem in\n\n# practice.  The best way to fix this is to drop the nodist_foo_SOURCES lines,\n\n# modify testmerge to output the stamp file, and then enclose modified versions\n\n# of these rules in an \"if MAINAINER_MODE\".  The files also should then move to\n\n# MAINTAINERCLEANFILES from DISTCLEANFILES. [goodell@ 2011-07-11]\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## Recover from the removal of $@\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## mkdir is a portable test-and-set\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "## This code is being executed by the first process.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "## This code is being executed by the follower processes.\n\n## Wait until the first process is done.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "## Succeed if and only if the first process succeeded.\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# just in case\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# clean up after the test programs\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "test/mpi/f08/misc/Makefile.am" : {
+      "ObjectId" : "85b27b896935a3cbdfa4c91c1742c7d7550a7fc5",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/profile/Makefile.am" : {
+      "ObjectId" : "e66ceed3418d0ee64353a2457d1a41ce62f70104",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f08/pt2pt/Makefile.am" : {
+      "ObjectId" : "716b3e8ec6d8c2c1ceca4b3a8cc9205e89ee2506",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/f08/rma/Makefile.am" : {
+      "ObjectId" : "d29d52a6deeea93ce05aa35ab6bec9062a6ebae2",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# This Makefile.am generated automatically by f77tof90\n\n# from test/mpi/f77/rma/Makefile.am.  DO NOT EDIT\n\n# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## this test was commented out in the simplemake version...\n\n##    allocmem\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/f08/spawn/Makefile.am" : {
+      "ObjectId" : "df0a76677b360dd8326c19922634a290e2fe0d50",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f90\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add \"-lU77\" (or equivalent) to the link line for these tests that use getarg\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/f08/subarray/Makefile.am" : {
+      "ObjectId" : "98a71db98a09b2dd6d6b565bf318963b85dc9ea3",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2014 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f08/timer/Makefile.am" : {
+      "ObjectId" : "c5744d392ea337284932ebc335f08c19eea0b147",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f08/topo/Makefile.am" : {
+      "ObjectId" : "624b76fa82af9f42442081b4d1ee3f16f011b497",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f08/util/Makefile.am" : {
+      "ObjectId" : "b37bfcad2c473a1d1aa16ec208032f25e3b02307",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## list a dummy library that we don't actually build in order to cause automake\n\n## to emit a rule for building mtestf08.o from mtestf08.f90\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f77/Makefile.am" : {
+      "ObjectId" : "8261d44277290eb9d2c6f2a48011b0918543b520",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f77/attr/Makefile.am" : {
+      "ObjectId" : "b6995198f3d3a2878af03f0821a16581a29b87d7",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## attraints.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ensure that \"{comm,type}attr*f.o\" will be rebuilt when attraints.h is updated\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "test/mpi/f77/coll/Makefile.am" : {
+      "ObjectId" : "1580d2965a486e14ed0e3164f8c0448399d2c171",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f77/comm/Makefile.am" : {
+      "ObjectId" : "43c11235d95cda9b0bc177c5c2369707538a36e3",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f77/datatype/Makefile.am" : {
+      "ObjectId" : "33e597e6f9e899456ba2537f381a16d6bbb832c1",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## typeaints.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## ensure that dependent tests will be rebuilt when typeaints.h is updated\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "test/mpi/f77/ext/Makefile.am" : {
+      "ObjectId" : "0be94ba559f82a7053324d4aeb4f515e6d8e7736",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# allocmemf is an \"extra\" program because it requires a Fortran extension\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# C programs get a different mtest utility object\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## add1size.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when add1size.h is updated\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# we don't get this from Makefile_f77.mtest and we don't include Makefile.mtest\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "test/mpi/f77/info/Makefile.am" : {
+      "ObjectId" : "a7354fcfdece478f6c3136b01b5dfdbb750b366b",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f77/init/Makefile.am" : {
+      "ObjectId" : "232f98e02252d499aa3ca89b106fe80afd49ecb9",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Checksizes is created by configure, and is a C program that tests that \n\n# configure has correctly computed the sizes of MPI_Aint and MPI_Offset\n\n# for Fortran.  This is not run by default but can be used to check\n\n# that configure found the correct values.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/f77/io/Makefile.am" : {
+      "ObjectId" : "c282dbd3ed61ef988324a34affa83bdc99347a3b",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We don't want to distribute these source files because they are created by\n\n# \"testmerge\", hence \"nodist_foo_SOURCES\"\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# this is a C only program, so we must either:\n\n# A) prevent the makefile-wide \"LDADD=mtestf.o\" from affecting this program, or\n\n# B) link with the fortran compiler, otherwise we'll get link failures from\n\n# compilers with runtime support libs, such as PGI\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## these header files will be distributed because they're listed in\n\n## AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when headers are updated\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# these files are genereated using testmerge (see below)\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# a parallel-safe scheme to generate the tests, see the automake-1.11.1 manual,\n\n# section 27.9 \"Handling Tools That Produce Multiple Outputs\" for an explanation\n\n# \n\n# Note that using testmerge at make-time adds a dependency on perl for users.\n\n# It's been like this for a long time, so I don't think it's a problem in\n\n# practice.  The best way to fix this is to drop the nodist_foo_SOURCES lines,\n\n# modify testmerge to output the stamp file, and then enclose modified versions\n\n# of these rules in an \"if MAINAINER_MODE\".  The files also should then move to\n\n# MAINTAINERCLEANFILES from DISTCLEANFILES. [goodell@ 2011-07-11]\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## Recover from the removal of $@\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## mkdir is a portable test-and-set\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "## This code is being executed by the first process.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "## This code is being executed by the follower processes.\n\n## Wait until the first process is done.\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "## Succeed if and only if the first process succeeded.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# just in case\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# clean up after the test programs\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "test/mpi/f77/profile/Makefile.am" : {
+      "ObjectId" : "e7e280c7e03d54e8c2f8c9ed727dbced3a8f333c",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## attr1aints.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when typeaints.h is updated\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "test/mpi/f77/pt2pt/Makefile.am" : {
+      "ObjectId" : "95823e9f837cdec3baa5a2e21ce1d7e5abc26925",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## attr1aints.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when typeaints.h is updated\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "test/mpi/f77/rma/Makefile.am" : {
+      "ObjectId" : "20fe1d96fb4d0ac782ce90cd3bb14ac83d1300b9",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## this test was commented out in the simplemake version...\n\n##    allocmem\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# see include note in Makefile_f77.mtest\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## addsize.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when addsize.h is updated\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "## DJG: the following comment+code was present in the simplemake version... I'm\n\n## not sure how accurate it is.\n\n# bindir may be used in MPIEXEC, so make sure it is defined\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "test/mpi/f77/spawn/Makefile.am" : {
+      "ObjectId" : "46e37e1252908eb18c9249e99b601a8bb84b1767",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## type1aint.h will be distributed because it's listed in AC_CONFIG_FILES/AC_OUTPUT\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ensure that dependent tests will be rebuilt when type1aint.h is updated\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# add \"-lU77\" (or equivalent) to the link line for these tests that use getarg\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "test/mpi/f77/topo/Makefile.am" : {
+      "ObjectId" : "92ad5ec4214aaeeca8369ad7483d3f01af846b4a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# avoid having to write many \"foo_SOURCES = foo.f\" lines\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f77/util/Makefile.am" : {
+      "ObjectId" : "4e5b63383c7914b5c71ebf10fe1ebdd5e023e8d5",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## list a dummy library that we don't actually build in order to cause automake\n\n## to emit a rule for building mtestf.o from mtestf.f\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f90/Makefile.am" : {
+      "ObjectId" : "f18ae2dc310b9c1254ac44c7adabd76a5506a4a0",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f90/f90types/Makefile.am" : {
+      "ObjectId" : "73a6e828e708d83bdca3dc9ab836d9822addf758",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# these are tests of f90-related functionality, but it's testing the C API, so\n\n# we use the C makefile stub\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/f90/misc/Makefile.am" : {
+      "ObjectId" : "44b4f979d01c371fbaba503e53a2085026e2ea2a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/f90/timer/Makefile.am" : {
+      "ObjectId" : "d2a773e9a88deabf56f6b9d5827553003f3f3c3b",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/ft/Makefile.am" : {
+      "ObjectId" : "7c094b51509d5f2e75a1e29490eb343dfdfcaf7a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/group/Makefile.am" : {
+      "ObjectId" : "3e9ebe9a70bfa139420bd4411e5e24c204a7e3d8",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gtranksperf uses fabs, which may require -lm\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# glpid is a whitebox test that uses mpiimpl.h; it is unlikely to build with the\n\n# current build system setup\n\n#EXTRA_PROGRAMS = glpid\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "test/mpi/impls/Makefile.am" : {
+      "ObjectId" : "f74f9fc67313c9676e24231f64b9e609417b9eb8",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/impls/hydra/Makefile.am" : {
+      "ObjectId" : "6d3ff4deb2d05d77c1f60eb36017a54b69719c43",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/impls/mpich/Makefile.am" : {
+      "ObjectId" : "5b94f899bf60e2326835194ec60d16db0c439578",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2013 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# For future tests - note that the IO and RMA directories are optional,\n\n# and need to be handled as shown in this comment\n\n#SUBDIRS      = $(static_subdirs) $(iodir) $(rmadir)\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For future tests, as noted above\n\n#DIST_SUBDIRS = $(static_subdirs) io rma\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/impls/mpich/mpi_t/Makefile.am" : {
+      "ObjectId" : "d14072f90bf088ef624dd0ffbd9b818fe928466d",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/info/Makefile.am" : {
+      "ObjectId" : "1bc23a8fc73efc15731fac270501b1c4749520ab",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/init/Makefile.am" : {
+      "ObjectId" : "17a1b276ee9b8a70baa8dbcde7c8740de194e719",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/io/Makefile.am" : {
+      "ObjectId" : "dfbd20191e815d39c06a2109a3c5a08c764244cd",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/manual/Makefile.am" : {
+      "ObjectId" : "a870a9d38a683716099ee547e54dd9bf94b6c7b6",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# testconnectserial would like MPICHLIBSTR to be defined as the installation\n\n# directory of the MPI library.  This definition is not required.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/manual/mpi_t/Makefile.am" : {
+      "ObjectId" : "24110f81d677f4bb3c90275df4383647519445e0",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2013 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# these tests are specific to the MPICH ch3:nemesis implementation of nemesis\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/mpi_t/Makefile.am" : {
+      "ObjectId" : "7f6bc8817114d7570597ef6935cfa7a709f491f3",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/perf/Makefile.am" : {
+      "ObjectId" : "9630efda3a3e0c37def9304f70999723abbccce4",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Force all tests to be compiled with optimization \n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# While the AM_CFLAGS should be sufficient, to make this Makefile more\n\n# robust, indicate that these specific programs *must* be compiled with\n\n# optimization\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/mpi/pt2pt/Makefile.am" : {
+      "ObjectId" : "ba6ec7fed9577308f6c73793bc272bd0246b0635",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/rma/Makefile.am" : {
+      "ObjectId" : "8937d233fe2f861ffe0eae9dce8dcff0b3066fdf",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/spawn/Makefile.am" : {
+      "ObjectId" : "cf153798eac8bc9befd1d8afda4c0c24fc35b78e",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/threads/Makefile.am" : {
+      "ObjectId" : "5c4cd4706defbce416a24dacfc5f9aa4bec8b40a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/coll/Makefile.am" : {
+      "ObjectId" : "df41c6d12c53e005c0be5e204f7718207a61f176",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/comm/Makefile.am" : {
+      "ObjectId" : "503c42dd523e55ffc114a10f5cf10b20b2afdade",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/init/Makefile.am" : {
+      "ObjectId" : "7d0e25f260809a0222559758541c89dae7d5710f",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/mpi_t/Makefile.am" : {
+      "ObjectId" : "b921d8a53ee345af057015349f4a994c9159bc2a",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/pt2pt/Makefile.am" : {
+      "ObjectId" : "976572938d083b1fd22f8d9c014283ffc570fe1d",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/rma/Makefile.am" : {
+      "ObjectId" : "7441685ac0873e8eccfec8c8beba4589d52aad8f",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/spawn/Makefile.am" : {
+      "ObjectId" : "ae24608d93207823fe69a2cef2c84f8829933b85",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/mpi/threads/util/Makefile.am" : {
+      "ObjectId" : "bddd7ad44663b46822afac46d54b8c869c27af34",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## -*- Mode: Makefile; -*-\n\n## vim: set ft=automake :\n\n##\n\n## (C) 2011 by Argonne National Laboratory.\n\n##     See COPYRIGHT in top-level directory.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## list a dummy library that we don't actually build in order to cause automake\n\n## to emit a rule for building mtestthread.o from mtestthread.c\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/topo/Makefile.am" : {
+      "ObjectId" : "e4c4abd06d7f3b10d3ae95e7029f8ae6d662a6d5",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## for all programs that are just built from the single corresponding source\n\n## file, we don't need per-target _SOURCES rules, automake will infer them\n\n## correctly\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "test/mpi/util/Makefile.am" : {
+      "ObjectId" : "8baed7d98b78d694d9f46594ca3aeb74d5a78ec2",
+      "LastModified" : "2019-04-13T20:13:10Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# -*- Mode: Makefile; -*-\n\n# vim: set ft=automake :\n\n#\n\n# (C) 2011 by Argonne National Laboratory.\n\n#     See COPYRIGHT in top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 3,
+    "AUTOMAKE" : 123
+  },
+  "ElapsedTime" : 4225
+}

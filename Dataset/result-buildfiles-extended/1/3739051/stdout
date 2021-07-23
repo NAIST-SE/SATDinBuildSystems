@@ -1,0 +1,347 @@
+{
+  "Repository" : "3739051",
+  "Revision" : "HEAD",
+  "ObjectId" : "c0bdab6ff799b3fb9e0ce4eda5d0018e8415b7d4",
+  "CommitTime" : "2019-04-17T22:20:36Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "590478b63d6df2d2485eb0ef88df261e0e9b7535",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This is an experimental cmakefile and doesn't offer all of the options\n\n# available in the configure script!  At this time you should prefer to\n\n# use the configure script to build and install watchman!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# For in-fbsource builds on mac\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# For shipit-transformed builds\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Tell CMake to also look in the directories where getdeps.py installs\n\n# our third-party dependencies.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Mark BUILD_SHARED_LIBS as an \"advanced\" option, since enabling it\n\n# is generally discouraged.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Determine whether we are the git repo produced by shipit, a staging\n\n# area produced by shipit in the FB internal CI, or whether\n\n# we are building in the source monorepo.\n\n# For the FB internal CI flavor running shipit, CMAKE_CURRENT_SOURCE_DIR\n\n# will have a value like \"..../shipit_projects/watchman\".\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If we're building from inside the monorepo, make the local directory\n\n# look like the shipit-transformed source in the git repo.\n\n# On windows we do a dumb recursive copy of the files because we cannot\n\n# guarantee that we'll be successful in setting up a symlink.\n\n# On everything else we set up a simple symlink.\n\n# In theory we can tell cmake to add a non-child subdir and avoid the\n\n# copy/symlink thing, but we'd need to teach various targets how to resolve\n\n# the path and that is rather a lot of work (I spent a couple of hours on this\n\n# before throwing in the towel).\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We use shipit to mirror in these locations from the monorepo\n",
+        "Line" : 77,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# configure_file wants us to define a separate file.  I'd rather not\n\n# have boilerplate for the same thing in two difference files, so we\n\n# roll the checks in together with writing out the features to config.h\n\n# ourselves here.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# While most of these tests are not strictly needed on windows, it is vital\n\n# that we probe for and find strtoll in order for the jansson build to use\n\n# a 64-bit integer type, otherwise the mtime_us field renders as garbage\n\n# in the integration tests.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Now close out config.h.  We only want to touch the file if the contents are\n\n# different, so do a little dance to figure that out.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# This block is for cmake 3.0 which doesn't define the Threads::Threads\n\n# interface section.  Test for that and define it for ourselves.\n",
+        "Line" : 234,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# This block is for cmake 3.0 which doesn't define the OpenSSL::Crypto\n\n# interface section.  Test for that and define it for ourselves.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We indirectly depend on libevent.  Folly pulls in linkage to\n\n# event.lib, but on my system it does so as simply \"event.lib\"\n\n# and that fails linking.  Let's probe for the library and force\n\n# in the library directory for the linker. :-/\n",
+        "Line" : 270,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# DEPENDS \"python/pywatchman/*.py\"\n",
+        "Line" : 296,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Since we cannot portably or reliably reference DESTDIR here, and because\n\n# the cmake documentation is unclear about whether it allows expanding\n\n# DESTDIR on windows, we ask python to install to the binary dir, and\n\n# then manually mirror that directory structure out to the install location.\n",
+        "Line" : 303,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# The use of `.` here for the destination causes cmake to use the\n\n# DESTDIR-modified CMAKE_INSTALL_PREFIX\n",
+        "Line" : 311,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Check target architecture\n",
+        "Line" : 324,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# for cmake 3.0\n",
+        "Line" : 341,
+        "CharPositionInLine" : 71
+      },
+      "19" : {
+        "Text" : "# PubSub.cpp  (in liblog)\n",
+        "Line" : 438,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# hash.cpp (in libhash)\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# string.cpp (in libstring)\n",
+        "Line" : 468,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# cmds/heapprof.cpp\n",
+        "Line" : 487,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# root/poison.cpp (in liberr)\n",
+        "Line" : 504,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# root/warnerr.cpp (in liberr)\n",
+        "Line" : 512,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# We currently only support talking to eden on posix systems\n",
+        "Line" : 526,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Helper function to define a unit test executable\n",
+        "Line" : 592,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# The `check` target runs the unit tests\n",
+        "Line" : 610,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# The `integration` target runs the unit tests and integration tests\n",
+        "Line" : 622,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 29
+    },
+    "build/fbcode_builder/CMake/FindGMock.cmake" : {
+      "ObjectId" : "7a785044a0c5f3b5251f8a90559ac04681d6c967",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Find libgmock\n\n#\n\n#  LIBGMOCK_DEFINES     - List of defines when using libgmock.\n\n#  LIBGMOCK_INCLUDE_DIR - where to find gmock/gmock.h, etc.\n\n#  LIBGMOCK_LIBRARIES   - List of libraries when using libgmock.\n\n#  LIBGMOCK_FOUND       - True if libgmock found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 10,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Explicitly set to empty string if not found to avoid it being\n\n# set to NOTFOUND and breaking compilation\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# The GTEST_LINKED_AS_SHARED_LIBRARY macro must be set properly on Windows.\n\n#\n\n# There isn't currently an easy way to determine if a library was compiled as\n\n# a shared library on Windows, so just assume we've been built against a\n\n# shared build of gmock for now.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBGMOCK_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "build/fbcode_builder/CMake/FindGflags.cmake" : {
+      "ObjectId" : "246ceacdd091fed1a7850d6e3d4cff92c6f8383a",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# Find libgflags.\n\n# There's a lot of compatibility cruft going on in here, both\n\n# to deal with changes across the FB consumers of this and also\n\n# to deal with variances in behavior of cmake itself.\n\n#\n\n# Since this file is named FindGflags.cmake the cmake convention\n\n# is for the module to export both GFLAGS_FOUND and Gflags_FOUND.\n\n# The convention expected by consumers is that we export the\n\n# following variables, even though these do not match the cmake\n\n# conventions:\n\n#\n\n#  LIBGFLAGS_INCLUDE_DIR - where to find gflags/gflags.h, etc.\n\n#  LIBGFLAGS_LIBRARY     - List of libraries when using libgflags.\n\n#  LIBGFLAGS_FOUND       - True if libgflags found.\n\n#\n\n# We need to be able to locate gflags both from an installed\n\n# cmake config file and just from the raw headers and libs, so\n\n# test for the former and then the latter, and then stick\n\n# the results together and export them into the variables\n\n# listed above.\n\n#\n\n# For forwards compatibility, we export the following variables:\n\n#\n\n#  gflags_INCLUDE_DIR - where to find gflags/gflags.h, etc.\n\n#  gflags_TARGET / GFLAGS_TARGET / gflags_LIBRARIES\n\n#                     - List of libraries when using libgflags.\n\n#  gflags_FOUND       - True if libgflags found.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Re-export the config-specified libs with our local names\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# cmake module compat\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBGFLAGS_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# cmake module compat\n",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# compat with some existing FindGflags consumers\n",
+        "Line" : 63,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Compat with the gflags CONFIG based detection\n",
+        "Line" : 66,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Compat with the gflags CONFIG based detection\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "build/fbcode_builder/CMake/FindGlog.cmake" : {
+      "ObjectId" : "a589b2e37d31af883b59096005474a4e01416833",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# - Try to find Glog\n\n# Once done, this will define\n\n#\n\n# GLOG_FOUND - system has Glog\n\n# GLOG_INCLUDE_DIRS - the Glog include directories\n\n# GLOG_LIBRARIES - link these to use Glog\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "build/fbcode_builder/CMake/FindLibEvent.cmake" : {
+      "ObjectId" : "dd11ebd8435d7d475d78855d2baa2e2009299ea4",
+      "LastModified" : "2019-04-08T18:01:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# - Find LibEvent (a cross event library)\n\n# This module defines\n\n# LIBEVENT_INCLUDE_DIR, where to find LibEvent headers\n\n# LIBEVENT_LIB, LibEvent libraries\n\n# LibEvent_FOUND, If false, do not try to use libevent\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Re-export the config under our own names\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Somewhat gross, but some vcpkg installed libevents have a relative\n\n# `include` path exported into LIBEVENT_INCLUDE_DIRS, which triggers\n\n# a cmake error because it resolves to the `include` dir within the\n\n# folly repo, which is not something cmake allows to be in the\n\n# INTERFACE_INCLUDE_DIRECTORIES.  Thankfully on such a system the\n\n# actual include directory is already part of the global include\n\n# directories, so we can just skip it.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Unfortunately, with a bare target name `event`, downstream consumers\n\n# of the package that depends on `Libevent` located via CONFIG end\n\n# up exporting just a bare `event` in their libraries.  This is problematic\n\n# because this in interpreted as just `-levent` with no library path.\n\n# When libevent is not installed in the default installation prefix\n\n# this results in linker errors.\n\n# To resolve this, we ask cmake to lookup the full path to the library\n\n# and use that instead.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Allow reading the LOCATION property\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "build/fbcode_builder/CMake/FindPCRE.cmake" : {
+      "ObjectId" : "32ccb372536f92a3b983baf2f8b4641823a19ea4",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "build/fbcode_builder/CMake/ThriftCppLibrary.cmake" : {
+      "ObjectId" : "2613e888a4f36da9b37aa006dad6e8d2187f3c96",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# NOTE: If you change this file, fbcode/fboss/github/ThriftCppLibrary.cmake also\n\n# needs to be changed.  TODO: this should be handled via shipit.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Parse the arguments\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# CMake 3.12 is finally getting a list(JOIN) function, but until then\n\n# treating the list as a string and replacing the semicolons is good enough.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Compute the list of generated files\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Emit the rule to run the thrift compiler\n",
+        "Line" : 73,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Now emit the library rule to compile the sources\n",
+        "Line" : 96,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "common/CMakeLists.txt" : {
+      "ObjectId" : "7efed96d4b5bcf528235ba336d346b5d07e855bb",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "java/pom.xml" : {
+      "ObjectId" : "ca15429ea089f1f018c6bc611dbfd2e322cc325b",
+      "LastModified" : "2019-04-02T16:50:54Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 8,
+    "MAVEN" : 1
+  },
+  "ElapsedTime" : 3052
+}

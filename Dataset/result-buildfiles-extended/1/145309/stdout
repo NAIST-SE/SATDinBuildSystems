@@ -1,0 +1,76 @@
+{
+  "Repository" : "145309",
+  "Revision" : "HEAD",
+  "ObjectId" : "31159f4bc13e74079d934a47809651d251c32030",
+  "CommitTime" : "2019-04-16T15:02:51Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "788449408d18683a9db78b369986dcce768d6a75",
+      "LastModified" : "2018-08-17T17:53:49Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# build tools\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#JSDOC2=nodejs ./node_modules/.bin/jsdoc\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#JSTESTDRIVER=java -jar ./node_modules/jstestdriver/lib/jstestdriver.jar\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# general tools\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# directories\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#JSDOC2TPL=./node_modules/ink-docstrap/template\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# flags\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#JSDOC2FLAGS=--verbose -p --template $(JSDOC2TPL) --destination $(TMP)/docs\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# filelists - required for docs, linters, and to build the readers\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9,
+      "Errorlog" : "line 46:48 token recognition error at: '\"baseFiles\\s'\nline 46:62 token recognition error at: '\\s'\nline 46:68 token recognition error at: '\\w'\nline 46:76 token recognition error at: '\" | awk -F \\' '{ print $$2 }' | sed 's/,/.js src\\//g')\\n\\n# Lintlist - jessiecode.js is developed externally (github:jsxgraph/jessiecode) and won't be linted in here\\nLINTLIST=$(shell echo $(FILELIST) | sed 's/src\\/parser\\/jessiecode\\.js//')\\nLINTFLAGS=--bitwise true --white true\\n\\nREADERSOUT=build/bin/readers/geonext.min.js build/bin/readers/geogebra.min.js build/bin/readers/intergeo.min.js build/bin/readers/sketch.min.js\\n\\n# rules\\nall: core core-min readers docs moodle\\n\\ncore:\\n\\t$(MKDIR) $(MKDIRFLAGS) $(BUILDBIN)\\n\\t$(REQUIREJS) -o $(BUILD)/core.build.json\\n\\n\\ncore-min:\\n\\t$(MKDIR) $(MKDIRFLAGS) $(BUILDBIN)\\n\\t$(REQUIREJS) -o $(BUILD)/core.build.json optimize=uglify2 out=$(BUILDBIN)/jsxgraphcore-min.js;\\n\\t{ $(CAT) COPYRIGHT; $(CAT) $(BUILDBIN)/jsxgraphcore-min.js; } > $(BUILDBIN)/jsxgraphcore.min.js\\n\\t$(CP) $(BUILDBIN)/jsxgraphcore.min.js $(OUTPUT)/jsxgraphcore.js\\n\\nrelease: core-min docs\\n\\t$(MKDIR) $(MKDIRFLAGS) $(TMP)\\n\\t$(MKDIR) $(MKDIRFLAGS) $(OUTPUT)\\n\\t$(CP) $(BUILDBIN)/jsxgraphcore.min.js $(TMP)/jsxgraphcore.js\\n\\t$(CP) $(BUILDBIN)/jsxgraphcore.js $(TMP)/jsxgraphsrc.js\\n\\t$(CP) $(OUTPUT)/docs.zip $(TMP)/docs.zip\\n\\t$(CP) $(OUTPUT)/jsxgraph.css $(TMP)/jsxgraph.css\\n\\t$(CP) -r src/themes $(TMP)/themes\\n\\t$(CP) README.md LICENSE.MIT LICENSE.LGPL $(TMP)/\\n\\t$(CD) $(TMP) && $(ZIP) $(ZIPFLAGS) jsxgraph.zip jsxgraph* themes/ docs.zip README.md LICENSE.*\\n\\t$(CP) $(TMP)/jsxgraph.zip $(OUTPUT)/jsxgraph.zip\\n\\n\\t$(RM) $(RMFLAGS) tmp\\n\\ndocs: core core-min\\n\\t# set up tmp dir\\n\\t$(MKDIR) $(MKDIRFLAGS) $(TMP)\\n\\t$(MKDIR) $(MKDIRFLAGS) $(OUTPUT)\\n\\n\\t# update template related files\\n\\t$(CP) $(OUTPUT)/jquery.min.js $(JSDOC2TPLSTAT)/jquery.min.js\\n\\t$(CP) $(BUILDBIN)/jsxgraphcore.min.js $(JSDOC2TPLSTAT)/jsxgraphcore.js\\n\\t$(CP) $(OUTPUT)/jsxgraph.css $(JSDOC2TPLSTAT)/jsxgraph.css\\n\\n\\t# update the plugin\\n\\t$(CP) $(JSDOC2PLG)/*.js ./node_modules/jsdoc2/app/plugins/\\n\\n\\t# run node-jsdoc2\\n\\t$(JSDOC2) $(JSDOC2FLAGS) src/loadjsxgraph.js src/$(FILELIST).js\\n\\n\\t# zip -r tmp/docs.zip tmp/docs/\\n\\t$(CD) $(TMP) && $(ZIP) $(ZIPFLAGS) docs.zip docs/\\n\\t$(CP) $(TMP)/docs.zip $(OUTPUT)/docs.zip\\n\\n\\t$(RM) $(RMFLAGS) tmp\\n\\n\\t# Test\\n\\t$(CD) $(OUTPUT) && $(UNZIP) -o docs.zip\\n\\nmoodle: core core-min $(READERSOUT)\\n\\t$(MKDIR) $(MKDIRFLAGS) $(TMP)\\n\\t$(MKDIR) $(MKDIRFLAGS) $(TMP)/jsxgraph\\n\\t$(CP) $(BUILDBIN)/jsxgraphcore.min.js $(TMP)/jsxgraph/jsxgraphcore.js\\n\\t$(CP) $(OUTPUT)/jsxgraph.css $(TMP)/jsxgraph/jsxgraph.css\\n\\t$(CP) ../moodle-jsxgraph-plugin/moodle2/*.php $(TMP)/jsxgraph/\\n\\t$(CP) ../moodle-jsxgraph-plugin/moodle2/styles.css $(TMP)/jsxgraph/\\n\\t$(CP) ../moodle-jsxgraph-plugin/README.md $(TMP)/jsxgraph/\\n\\t$(CP) -r ../moodle-jsxgraph-plugin/moodle2/lang $(TMP)/jsxgraph/\\n\\t$(CP) $(BUILDREADERS)/* $(TMP)/jsxgraph/\\n\\n\\t# zip -r tmp/jsxgraph.zip tmp/jsxgraph\\n\\t$(CD) $(TMP) && $(ZIP) $(ZIPFLAGS) jsxgraph_moodle.zip jsxgraph/\\n\\t$(CP) $(TMP)/jsxgraph_moodle.zip $(OUTPUT)/jsxgraph_moodle.zip\\n\\n\\t$(RM) $(RMFLAGS) tmp\\n\\nreaders: $(READERSOUT)\\n\\t$(MKDIR) $(MKDIRFLAGS) $(OUTPUT)\\n\\t$(CP) $(BUILDREADERS)/* $(OUTPUT)\\n\\nbuild/bin/readers/%.min.js: src/reader/%.js\\n\\t$(MKDIR) $(MKDIRFLAGS) $(BUILDREADERS)\\n\\t{ $(CAT) COPYRIGHT; $(UGLIFYJS) $^; } > $@\\n\\ncompressor: core\\n\\t$(REQUIREJS) -o build/compressor.build.json\\n\\t{ $(CAT) JSXCompressor/COPYING; $(CAT) $(BUILDBIN)/jsxcompressor.js; } > JSXCompressor/jsxcompressor.min.js\\n\\t$(CP) $(BUILDBIN)/jsxgraphcore.js JSXCompressor/jsxgraphcore.js\\n\\t$(CP) $(OUTPUT)/jsxgraph.css JSXCompressor/jsxgraph.css\\n\\nplot:\\n\\t$(MKDIR) $(MKDIRFLAGS) $(BUILDBIN)\\n\\t$(REQUIREJS) -o build/plot.build.json\\n\\nhint:\\n\\t$(HINT) src/$(LINTLIST).js\\n\\nlint:\\n\\t$(LINT) $(LINTFLAGS) src/$(LINTLIST).js\\n\\n#test-server:\\n#\\t$(JSTESTDRIVER) --port $(JSTESTPORT)\\n\\n#test: core\\n#\\t$(JSTESTDRIVER) $(JSTESTSERVER) $(JSTESTFLAGS) --basePath ./ --config test/jsTestDriver.conf\\n\\ntests:\\n\\t$(INTERN) config=tests/intern\\n\u0000'\n"
+    },
+    "doc/Makefile" : {
+      "ObjectId" : "b96fa3be1e17136c832ceb673d32f53c263cbd7d",
+      "LastModified" : "2011-01-19T15:59:30Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "examples/ggb/Makefile" : {
+      "ObjectId" : "edf662d9c9893f7b0553262a1c700201eabc3b92",
+      "LastModified" : "2013-02-08T12:50:31Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 3
+  },
+  "ElapsedTime" : 3429
+}

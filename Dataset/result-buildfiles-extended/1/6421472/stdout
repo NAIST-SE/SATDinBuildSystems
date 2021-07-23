@@ -1,0 +1,480 @@
+{
+  "Repository" : "6421472",
+  "Revision" : "HEAD",
+  "ObjectId" : "efa948741cd744030911b3669680bc38f4df1032",
+  "CommitTime" : "2019-04-19T05:39:34Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "132d3b04e965e336a4a945446f2d8bed48c316de",
+      "LastModified" : "2019-03-26T23:45:31Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Prerequisites for Windows:\n\n#     This cmake build is for Windows 64-bit only.\n\n#\n\n# Prerequisites:\n\n#     You must have at least Visual Studio 2015 Update 3. Start the Developer Command Prompt window that is a part of Visual Studio installation.\n\n#     Run the build commands from within the Developer Command Prompt window to have paths to the compiler and runtime libraries set.\n\n#     You must have git.exe in your %PATH% environment variable.\n\n#\n\n# To build Rocksdb for Windows is as easy as 1-2-3-4-5:\n\n#\n\n# 1. Update paths to third-party libraries in thirdparty.inc file\n\n# 2. Create a new directory for build artifacts\n\n#        mkdir build\n\n#        cd build\n\n# 3. Run cmake to generate project files for Windows, add more options to enable required third-party libraries.\n\n#    See thirdparty.inc for more information.\n\n#        sample command: cmake -G \"Visual Studio 15 Win64\" -DWITH_GFLAGS=1 -DWITH_SNAPPY=1 -DWITH_JEMALLOC=1 -DWITH_JNI=1 ..\n\n# 4. Then build the project in debug mode (you may want to add /m[:<N>] flag to run msbuild in <N> parallel threads\n\n#                                          or simply /m to use all avail cores)\n\n#        msbuild rocksdb.sln\n\n#\n\n#        rocksdb.sln build features exclusions of test only code in Release. If you build ALL_BUILD then everything\n\n#        will be attempted but test only code does not build in Release mode.\n\n#\n\n# 5. And release mode (/m[:<N>] is also supported)\n\n#        msbuild rocksdb.sln /p:Configuration=Release\n\n#\n\n# Linux:\n\n#\n\n# 1. Install a recent toolchain such as devtoolset-3 if you're on a older distro. C++11 required.\n\n# 2. mkdir build; cd build\n\n# 3. cmake ..\n\n# 4. make -j\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Defaults currently different for GFLAGS.\n\n#  We will address find_package work a little later\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# FreeBSD has jemalloc as default malloc\n\n# but it does not have all the jemalloc files in include/...\n",
+        "Line" : 64,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# No config file for this\n",
+        "Line" : 76,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# CMake 3\n",
+        "Line" : 98,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# CMake 2\n",
+        "Line" : 101,
+        "CharPositionInLine" : 6
+      },
+      "6" : {
+        "Text" : "# Read rocksdb version from version.h header file.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# MSVC does not need a separate compiler flag to enable SSE4.2; if nmmintrin.h\n\n# is available, it is available by default.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# assume GCC\n",
+        "Line" : 262,
+        "CharPositionInLine" : 9
+      },
+      "9" : {
+        "Text" : "# Stall notifications eat some performance from inserts\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Used to run CI build and tests so we can run faster\n",
+        "Line" : 347,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# no debug info for IOS, that will make our library big\n",
+        "Line" : 384,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Main library source code\n",
+        "Line" : 466,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Installation and packaging\n",
+        "Line" : 780,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Change default installation prefix on Linux to /usr\n",
+        "Line" : 787,
+        "CharPositionInLine" : 6
+      },
+      "15" : {
+        "Text" : "# For test util library that is build only in DEBUG mode\n\n# and linked to tests. Add test only code that is not #ifdefed for Release here.\n",
+        "Line" : 1004,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# test utilities are only build in debug\n",
+        "Line" : 1013,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Tests are excluded from Release builds\n",
+        "Line" : 1027,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# C executables must link to a shared object\n",
+        "Line" : 1047,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 19
+    },
+    "Makefile" : {
+      "ObjectId" : "eee0f9fba02ceb0b61f1aaa05972745ab4b54514",
+      "LastModified" : "2019-03-26T23:45:31Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2011 The LevelDB Authors. All rights reserved.\n\n# Use of this source code is governed by a BSD-style license that can be\n\n# found in the LICENSE file. See the AUTHORS file for names of contributors.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Inherit some settings from environment variables, if available\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# deliberately empty, so we can append below.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 14
+      },
+      "4" : {
+        "Text" : "# Transform parallel LOG output into something more readable.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# DEBUG_LEVEL can have three values:\n\n# * DEBUG_LEVEL=2; this is the ultimate debug mode. It will compile rocksdb\n\n# without any optimizations. To compile with level 2, issue `make dbg`\n\n# * DEBUG_LEVEL=1; debug level 1 enables all assertions and debug code, but\n\n# compiles rocksdb with -O2 optimizations. this is the default debug level.\n\n# `make all` or `make <binary_target>` compile RocksDB with debug level 1.\n\n# We use this debug level when developing RocksDB.\n\n# * DEBUG_LEVEL=0; this is the debug level we use for release. If you're\n\n# running rocksdb in production you most definitely want to compile RocksDB\n\n# with debug level 0. To compile with level 0, run `make shared_lib`,\n\n# `make install-shared`, `make static_lib`, `make install-static` or\n\n# `make install`\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Set the default DEBUG_LEVEL to 1\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Lite build flag.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Be backward compatible and support older format where OPT=-DROCKSDB_LITE is\n\n# specified instead of LITE=1 on the command line.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Figure out optimize level.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# compile with -O2 if debug level is not 2\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Skip for archs that don't support -momit-leaf-frame-pointer\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# if we're compiling for release, compile without debug code (-DNDEBUG)\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#-----------------------------------------------\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# detect what platform we're building on\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# this file is generated by the previous line to set build flags and sources\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# TODO: add back forward_iterator_bench, after making it build in all environemnts.\n",
+        "Line" : 600,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# if user didn't config LIBNAME, set the default\n",
+        "Line" : 603,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# we should only run rocksdb in production with DEBUG_LEVEL 0\n",
+        "Line" : 605,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#-----------------------------------------------\n\n# Create platform independent shared libraries.\n\n#-----------------------------------------------\n",
+        "Line" : 621,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# PLATFORM_SHARED_EXT\n",
+        "Line" : 686,
+        "CharPositionInLine" : 7
+      },
+      "21" : {
+        "Text" : "# creates static library and programs\n",
+        "Line" : 711,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Delete intermediate files\n",
+        "Line" : 720,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# Use /dev/shm if it has the sticky bit set (otherwise, /tmp),\n\n# and create a randomly-named rocksdb.XXXX directory therein.\n\n# We'll use that directory in the \"make check\" rules.\n",
+        "Line" : 724,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#\"-introduced comments, and expands to\n",
+        "Line" : 744,
+        "CharPositionInLine" : 27
+      },
+      "25" : {
+        "Text" : "# fully-qualified names by changing input like this:\n\n#\n\n#   DBTest.\n\n#     Empty\n\n#     WriteEmptyBatch\n\n#   MultiThreaded/MultiThreadedDBTest.\n\n#     MultiThreaded/0  # GetParam() = 0\n\n#     MultiThreaded/1  # GetParam() = 1\n\n#\n\n# into this:\n\n#\n\n#   DBTest.Empty\n\n#   DBTest.WriteEmptyBatch\n\n#   MultiThreaded/MultiThreadedDBTest.MultiThreaded/0\n\n#   MultiThreaded/MultiThreadedDBTest.MultiThreaded/1\n\n#\n",
+        "Line" : 745,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Reorder input lines (which are one per test) so that the\n\n# longest-running tests appear first in the output.\n\n# Do this by prefixing each selected name with its duration,\n\n# sort the resulting names, and remove the leading numbers.\n\n# FIXME: the \"100\" we prepend is a fake time, for now.\n\n# FIXME: squirrel away timings from each run and use them\n\n# (when present) on subsequent runs to order these tests.\n\n#\n\n# Without this reordering, these two tests would happen to start only\n\n# after almost all other tests had completed, thus adding 100 seconds\n\n# to the duration of parallel \"make check\".  That's the difference\n\n# between 4 minutes (old) and 2m20s (new).\n\n#\n\n# 152.120 PASS t/DBTest.FileCreationRandomFailure\n\n# 107.816 PASS t/DBTest.EncodeDecompressedBlockSizeTest\n\n#\n",
+        "Line" : 789,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# \"make check\" uses\n\n# Run with \"make J=1 check\" to disable parallelism in \"make check\".\n\n# Run with \"make J=200% check\" to run two parallel jobs per core.\n\n# The default is to run one job per core (J=100%).\n\n# See \"man parallel\" for its \"-j ...\" option.\n",
+        "Line" : 812,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Use this regexp to select the subset of tests whose names match.\n",
+        "Line" : 819,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# When running parallel \"make check\", you can monitor its progress\n\n# from another window.\n\n# Run \"make watch_LOG\" to show the duration,PASS/FAIL,name of parallel\n\n# tests as they are being run.  We sort them so that longer-running ones\n\n# appear at the top of the list and any failing tests remain at the top\n\n# regardless of their duration. As with any use of \"watch\", hit ^C to\n\n# interrupt.\n",
+        "Line" : 859,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# If J != 1 and GNU parallel is installed, run the tests in parallel,\n\n# via the check_0 rule above.  Otherwise, run them sequentially.\n",
+        "Line" : 869,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# TODO add ldb_tests\n",
+        "Line" : 890,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# try compiling db_test with unity\n",
+        "Line" : 1042,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# ---------------------------------------------------------------------------\n\n# \tUnit tests and tools\n\n# ---------------------------------------------------------------------------\n",
+        "Line" : 1076,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#-------------------------------------------------\n\n# make install related stuff\n",
+        "Line" : 1579,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# install static by default + install shared if it exists\n",
+        "Line" : 1609,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "#-------------------------------------------------\n",
+        "Line" : 1613,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# ---------------------------------------------------------------------------\n\n# Jni stuff\n\n# ---------------------------------------------------------------------------\n",
+        "Line" : 1616,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# A version of each $(LIBOBJECTS) compiled with -fPIC and a fixed set of static compression libraries\n",
+        "Line" : 1765,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# A version of each $(LIBOBJECTS) compiled with -fPIC\n",
+        "Line" : 1859,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# ---------------------------------------------------------------------------\n\n#  \tPlatform-specific compilation\n\n# ---------------------------------------------------------------------------\n",
+        "Line" : 1917,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# For iOS, create universal object files to be used on both the simulator and\n\n# a device.\n",
+        "Line" : 1922,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# ---------------------------------------------------------------------------\n\n#  \tSource files dependencies detection\n\n# ---------------------------------------------------------------------------\n",
+        "Line" : 1958,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Add proper dependency support so changing a .h file forces a .cc file to\n\n# rebuild.\n",
+        "Line" : 1965,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# The .d file indicates .cc file's dependencies on .h files. We generate such\n\n# dependency by g++'s -MM option, whose output is a make dependency rule.\n",
+        "Line" : 1968,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# if the make goal is either \"clean\" or \"format\", we shouldn't\n\n# try to import the *.d files.\n\n# TODO(kailiu) The unfamiliarity of Make's conditions leads to the ugly\n\n# working solution.\n",
+        "Line" : 1994,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 46,
+      "Errorlog" : "line 23:18 token recognition error at: '\\s'\nline 23:24 token recognition error at: '\\s'\nline 23:26 token recognition error at: '\"(.*?\\.[\\w'\nline 26:38 token recognition error at: '\\w'\nline 201:6 token recognition error at: '\"\\./\\S'\nline 201:16 token recognition error at: '\\S'\nline 371:57 token recognition error at: '\" to find\\n# the version of the source that we used to build the executable file.\\nFORCE:\\nutil/build_version.cc: FORCE\\n\\t$(AM_V_GEN)rm -f $@-t\\n\\t$(AM_V_at)$(gen_build_version) > $@-t\\n\\t$(AM_V_at)if test -f $@; then\\t\\t\\t\\t\\t\\\\n\\t  cmp -s $@-t $@ && rm -f $@-t || mv -f $@-t $@;\\t\\t\\\\n\\telse mv -f $@-t $@; fi\\nendif\\n\\nLIBOBJECTS = $(LIB_SOURCES:.cc=.o)\\nifeq ($(HAVE_POWER8),1)\\nLIB_CC_OBJECTS = $(LIB_SOURCES:.cc=.o)\\nLIBOBJECTS += $(LIB_SOURCES_C:.c=.o)\\nLIBOBJECTS += $(LIB_SOURCES_ASM:.S=.o)\\nelse\\nLIB_CC_OBJECTS = $(LIB_SOURCES:.cc=.o)\\nendif\\n\\nLIBOBJECTS += $(TOOL_LIB_SOURCES:.cc=.o)\\nMOCKOBJECTS = $(MOCK_LIB_SOURCES:.cc=.o)\\n\\nGTEST = $(GTEST_DIR)/gtest/gtest-all.o\\nTESTUTIL = ./util/testutil.o\\nTESTHARNESS = ./util/testharness.o $(TESTUTIL) $(MOCKOBJECTS) $(GTEST)\\nVALGRIND_ERROR = 2\\nVALGRIND_VER := $(join $(VALGRIND_VER),valgrind)\\n\\nVALGRIND_OPTS = --error-exitcode=$(VALGRIND_ERROR) --leak-check=full\\n\\nBENCHTOOLOBJECTS = $(BENCH_LIB_SOURCES:.cc=.o) $(LIBOBJECTS) $(TESTUTIL)\\n\\nANALYZETOOLOBJECTS = $(ANALYZER_LIB_SOURCES:.cc=.o)\\n\\nEXPOBJECTS = $(LIBOBJECTS) $(TESTUTIL)\\n\\nTESTS = \\\\n\\tdb_basic_test \\\\n\\tdb_encryption_test \\\\n\\tdb_test2 \\\\n\\texternal_sst_file_basic_test \\\\n\\tauto_roll_logger_test \\\\n\\tbloom_test \\\\n\\tdynamic_bloom_test \\\\n\\tc_test \\\\n\\tcheckpoint_test \\\\n\\tcrc32c_test \\\\n\\tcoding_test \\\\n\\tinlineskiplist_test \\\\n\\tenv_basic_test \\\\n\\tenv_test \\\\n\\thash_test \\\\n\\tthread_local_test \\\\n\\trate_limiter_test \\\\n\\tperf_context_test \\\\n\\tiostats_context_test \\\\n\\tdb_wal_test \\\\n\\tdb_block_cache_test \\\\n\\tdb_test \\\\n\\tdb_blob_index_test \\\\n\\tdb_bloom_filter_test \\\\n\\tdb_iter_test \\\\n\\tdb_iter_stress_test \\\\n\\tdb_log_iter_test \\\\n\\tdb_compaction_filter_test \\\\n\\tdb_compaction_test \\\\n\\tdb_dynamic_level_test \\\\n\\tdb_flush_test \\\\n\\tdb_inplace_update_test \\\\n\\tdb_iterator_test \\\\n\\tdb_memtable_test \\\\n\\tdb_merge_operator_test \\\\n\\tdb_options_test \\\\n\\tdb_range_del_test \\\\n\\tdb_secondary_test \\\\n\\tdb_sst_test \\\\n\\tdb_tailing_iter_test \\\\n\\tdb_io_failure_test \\\\n\\tdb_properties_test \\\\n\\tdb_table_properties_test \\\\n\\tdb_statistics_test \\\\n\\tdb_write_test \\\\n\\terror_handler_test \\\\n\\tautovector_test \\\\n\\tblob_db_test \\\\n\\tcleanable_test \\\\n\\tcolumn_family_test \\\\n\\ttable_properties_collector_test \\\\n\\tarena_test \\\\n\\tblock_test \\\\n\\tdata_block_hash_index_test \\\\n\\tcache_test \\\\n\\tcorruption_test \\\\n\\tslice_transform_test \\\\n\\tdbformat_test \\\\n\\tfault_injection_test \\\\n\\tfilelock_test \\\\n\\tfilename_test \\\\n\\tfile_reader_writer_test \\\\n\\tblock_based_filter_block_test \\\\n\\tfull_filter_block_test \\\\n\\tpartitioned_filter_block_test \\\\n\\thash_table_test \\\\n\\thistogram_test \\\\n\\tlog_test \\\\n\\tmanual_compaction_test \\\\n\\tmock_env_test \\\\n\\tmemtable_list_test \\\\n\\tmerge_helper_test \\\\n\\tmemory_test \\\\n\\tmerge_test \\\\n\\tmerger_test \\\\n\\tutil_merge_operators_test \\\\n\\toptions_file_test \\\\n\\treduce_levels_test \\\\n\\tplain_table_db_test \\\\n\\tcomparator_db_test \\\\n\\texternal_sst_file_test \\\\n\\tprefix_test \\\\n\\tskiplist_test \\\\n\\twrite_buffer_manager_test \\\\n\\tstringappend_test \\\\n\\tcassandra_format_test \\\\n\\tcassandra_functional_test \\\\n\\tcassandra_row_merge_test \\\\n\\tcassandra_serialize_test \\\\n\\tttl_test \\\\n\\tbackupable_db_test \\\\n\\tsim_cache_test \\\\n\\tversion_edit_test \\\\n\\tversion_set_test \\\\n\\tcompaction_picker_test \\\\n\\tversion_builder_test \\\\n\\tfile_indexer_test \\\\n\\twrite_batch_test \\\\n\\twrite_batch_with_index_test \\\\n\\twrite_controller_test\\\\n\\tdeletefile_test \\\\n\\tobsolete_files_test \\\\n\\ttable_test \\\\n\\tdelete_scheduler_test \\\\n\\toptions_test \\\\n\\toptions_settable_test \\\\n\\toptions_util_test \\\\n\\tevent_logger_test \\\\n\\ttimer_queue_test \\\\n\\tcuckoo_table_builder_test \\\\n\\tcuckoo_table_reader_test \\\\n\\tcuckoo_table_db_test \\\\n\\tflush_job_test \\\\n\\twal_manager_test \\\\n\\tlistener_test \\\\n\\tcompaction_iterator_test \\\\n\\tcompaction_job_test \\\\n\\tthread_list_test \\\\n\\tsst_dump_test \\\\n\\tcompact_files_test \\\\n\\toptimistic_transaction_test \\\\n\\twrite_callback_test \\\\n\\theap_test \\\\n\\tcompact_on_deletion_collector_test \\\\n\\tcompaction_job_stats_test \\\\n\\toption_change_migration_test \\\\n\\ttransaction_test \\\\n\\tldb_cmd_test \\\\n\\tpersistent_cache_test \\\\n\\tstatistics_test \\\\n\\tlru_cache_test \\\\n\\tobject_registry_test \\\\n\\trepair_test \\\\n\\tenv_timed_test \\\\n\\twrite_prepared_transaction_test \\\\n\\twrite_unprepared_transaction_test \\\\n\\tdb_universal_compaction_test \\\\n\\ttrace_analyzer_test \\\\n\\trepeatable_thread_test \\\\n\\trange_tombstone_fragmenter_test \\\\n\\trange_del_aggregator_test \\\\n\\tsst_file_reader_test \\\\n\\tdb_secondary_test \\\\n\\nPARALLEL_TEST = \\\\n\\tbackupable_db_test \\\\n\\tdb_compaction_filter_test \\\\n\\tdb_compaction_test \\\\n\\tdb_merge_operator_test \\\\n\\tdb_sst_test \\\\n\\tdb_test \\\\n\\tdb_universal_compaction_test \\\\n\\tdb_wal_test \\\\n\\texternal_sst_file_test \\\\n\\tfault_injection_test \\\\n\\tinlineskiplist_test \\\\n\\tmanual_compaction_test \\\\n\\tpersistent_cache_test \\\\n\\ttable_test \\\\n\\ttransaction_test \\\\n\\twrite_prepared_transaction_test \\\\n\\twrite_unprepared_transaction_test \\\\n\\n# options_settable_test doesn't pass with UBSAN as we use hack in the test\\nifdef COMPILE_WITH_UBSAN\\n        TESTS := $(shell echo $(TESTS) | sed 's/\\b'\nline 574:71 token recognition error at: '\\b'\nline 770:13 token recognition error at: '\\s'\nline 770:18 token recognition error at: '\\S'\nline 1000:13 token recognition error at: '\\s'\nline 1000:18 token recognition error at: '\\S'\n"
+    },
+    "cmake/modules/FindJeMalloc.cmake" : {
+      "ObjectId" : "7911f77c4c35b5cf0fa47ff98282986eef974832",
+      "LastModified" : "2017-04-06T21:09:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find JeMalloc library\n\n# Find the native JeMalloc includes and library\n\n#\n\n# JEMALLOC_INCLUDE_DIR - where to find jemalloc.h, etc.\n\n# JEMALLOC_LIBRARIES - List of libraries when using jemalloc.\n\n# JEMALLOC_FOUND - True if jemalloc found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/FindNUMA.cmake" : {
+      "ObjectId" : "02760344c68e4fc8b0cfdabc97259b99425e11d8",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find NUMA\n\n# Find the NUMA library and includes\n\n#\n\n# NUMA_INCLUDE_DIR - where to find numa.h, etc.\n\n# NUMA_LIBRARIES - List of libraries when using NUMA.\n\n# NUMA_FOUND - True if NUMA found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/FindTBB.cmake" : {
+      "ObjectId" : "556ce872b177770d60dff020dce032a4072982ff",
+      "LastModified" : "2018-05-07T21:28:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find TBB\n\n# Find the Thread Building Blocks library and includes\n\n#\n\n# TBB_INCLUDE_DIR - where to find tbb.h, etc.\n\n# TBB_LIBRARIES - List of libraries when using TBB.\n\n# TBB_FOUND - True if TBB found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/Findbzip2.cmake" : {
+      "ObjectId" : "87abbe941e08326cc2bcfe8588bf801afd3a5309",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find Bzip2\n\n# Find the bzip2 compression library and includes\n\n#\n\n# BZIP2_INCLUDE_DIR - where to find bzlib.h, etc.\n\n# BZIP2_LIBRARIES - List of libraries when using bzip2.\n\n# BZIP2_FOUND - True if bzip2 found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/Findlz4.cmake" : {
+      "ObjectId" : "c34acef5e39d629e5a2bff5bb092dea35466ad44",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find Lz4\n\n# Find the lz4 compression library and includes\n\n#\n\n# LZ4_INCLUDE_DIR - where to find lz4.h, etc.\n\n# LZ4_LIBRARIES - List of libraries when using lz4.\n\n# LZ4_FOUND - True if lz4 found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/Findsnappy.cmake" : {
+      "ObjectId" : "6ed5fda3d57dd83a806781b3d4d0c075d3e59e01",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find Snappy\n\n# Find the snappy compression library and includes\n\n#\n\n# SNAPPY_INCLUDE_DIR - where to find snappy.h, etc.\n\n# SNAPPY_LIBRARIES - List of libraries when using snappy.\n\n# SNAPPY_FOUND - True if snappy found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/modules/Findzstd.cmake" : {
+      "ObjectId" : "a2964aa9f80f6216bef7a96a0d8ce65fe726775d",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find zstd\n\n# Find the zstd compression library and includes\n\n#\n\n# ZSTD_INCLUDE_DIR - where to find zstd.h, etc.\n\n# ZSTD_LIBRARIES - List of libraries when using zstd.\n\n# ZSTD_FOUND - True if zstd found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "defs.bzl" : {
+      "ObjectId" : "f3e8339783e480419c1743f674dfbfa1bc0e29cd",
+      "LastModified" : "2019-04-18T17:55:01Z",
+      "FileType" : "BAZEL",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "examples/Makefile" : {
+      "ObjectId" : "27a6f0f421a60dbcf8a4734b97815047a37ec36f",
+      "LastModified" : "2019-03-26T23:45:31Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "java/CMakeLists.txt" : {
+      "ObjectId" : "360951834a724c693402609cefcafe4de4d0b5ca",
+      "LastModified" : "2019-03-26T23:45:31Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "java/Makefile" : {
+      "ObjectId" : "efc9d2b4e11898335f2948ddb34826e16dce6919",
+      "LastModified" : "2019-03-26T23:45:31Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set the default JAVA_ARGS to \"\" for DEBUG_LEVEL=0\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# When debugging add -Xcheck:jni to the java args\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "third-party/gtest-1.7.0/fused-src/gtest/CMakeLists.txt" : {
+      "ObjectId" : "90cff088070d33982a0cc55c5e4eb2603d3413fa",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/CMakeLists.txt" : {
+      "ObjectId" : "6c4733a717bd8b1b7a915f0a2f75837ffff5e300",
+      "LastModified" : "2017-12-01T06:57:00Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 11,
+    "MAKEFILE" : 3,
+    "BAZEL" : 1
+  },
+  "ElapsedTime" : 4955
+}

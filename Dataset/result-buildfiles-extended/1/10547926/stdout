@@ -1,0 +1,2221 @@
+{
+  "Repository" : "10547926",
+  "Revision" : "HEAD",
+  "ObjectId" : "dd25d81245e711f9da07f294d45d384e54db6432",
+  "CommitTime" : "2015-08-12T20:56:58Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "3565357d8a9a30d3bf22500f885187ccd4d18cea",
+      "LastModified" : "2013-08-10T13:00:24Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This Makefile has two purposes:\n\n# 1. Starting the compilation of Vim for Unix.\n\n# 2. Creating the various distribution files.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########################################################################\n\n# 1. Starting the compilation of Vim for Unix.\n\n#\n\n# Using this Makefile without an argument will compile Vim for Unix.\n\n# \"make install\" is also possible.\n\n#\n\n# NOTE: If this doesn't work properly, first change directory to \"src\" and use\n\n# the Makefile there:\n\n#\tcd src\n\n#\tmake [arguments]\n\n# Noticed on AIX systems when using this Makefile: Trying to run \"cproto\" or\n\n# something else after Vim has been compiled.  Don't know why...\n\n# Noticed on OS/390 Unix: Restarts configure.\n\n#\n\n# The first (default) target is \"first\".  This will result in running\n\n# \"make first\", so that the target from \"src/auto/config.mk\" is picked\n\n# up properly when config didn't run yet.  Doing \"make all\" before configure\n\n# has run can result in compiling with $(CC) empty.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Some make programs use the last target for the $@ default; put the other\n\n# targets separately to always let $@ expand to \"first\" by default.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#########################################################################\n\n# 2. Creating the various distribution files.\n\n#\n\n# TARGET\tPRODUCES\t\tCONTAINS\n\n# unixall\tvim-#.#.tar.bz2\t\tAll runtime files and sources, for Unix\n\n#\n\n# html\t\tvim##html.zip\t\tHTML docs\n\n#\n\n# dossrc\tvim##src.zip\t\tsources for MS-DOS\n\n# dosrt\t\tvim##rt.zip\t\truntime for MS-DOS\n\n# dosbin\tvim##d16.zip\t\tbinary for MS-DOS 16 bits\n\n#\t\tvim##d32.zip\t\tbinary for MS-DOS 32 bits\n\n#\t\tvim##w32.zip\t\tbinary for Win32\n\n#\t\tgvim##.zip\t\tbinary for GUI Win32\n\n#\t\tgvim##ole.zip\t\tOLE exe for Win32 GUI\n\n#\t\tgvim##_s.zip\t\texe for Win32s GUI\n\n#\n\n# OBSOLETE\n\n# amisrc\tvim##src.tgz\t\tsources for Amiga\n\n# amirt\t\tvim##rt.tgz\t\truntime for Amiga\n\n# amibin\tvim##bin.tgz\t\tbinary for Amiga\n\n#\n\n# os2bin\tvim##os2.zip\t\tbinary for OS/2\n\n#\t\t\t\t\t(use RT from dosrt)\n\n#\n\n# farsi\t\tfarsi##.zip\t\tFarsi fonts\n\n#\n\n#    All output files are created in the \"dist\" directory.  Existing files are\n\n#    overwritten!\n\n#    To do all this you need the Unix archive and compiled binaries.\n\n#    Before creating an archive first delete all backup files, *.orig, etc.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Uncomment this line if the Win32s version is to be included.\n\n# DOSBIN_S =  dosbin_s\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Uncomment this line if the 16 bit DOS version is to be included.\n\n# DOSBIN_D16 = dosbin_d16\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Uncomment this line if the 32 bit DOS version is to be included.\n\n# DOSBIN_D32 = dosbin_d32\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# CHECKLIST for creating a new version:\n\n#\n\n# - Update Vim version number.  For a test version in: src/version.h, Contents,\n\n#   MAJOR/MINOR above, VIMMAJOR and VIMMINOR in src/Makefile, README*.txt,\n\n#   runtime/doc/*.txt and nsis/gvim.nsi. Other things in README_os2.txt.  For a\n\n#   minor/major version: src/GvimExt/GvimExt.reg, src/vim.def, src/vim16.def,\n\n#   src/gvim.exe.mnf.\n\n# - Compile Vim with GTK, Perl, Python, Python3, TCL, Ruby, MZscheme, Lua (if\n\n#   you can make it all work), Cscope and \"huge\" features.  Exclude workshop\n\n#   and SNiFF.\n\n# - With these features: \"make proto\" (requires cproto and Motif installed;\n\n#   ignore warnings for missing include files, fix problems for syntax errors).\n\n# - With these features: \"make depend\" (works best with gcc).\n\n# - If you have a lint program: \"make lint\" and check the output (ignore GTK\n\n#   warnings).\n\n# - If you have valgrind, enable it in src/testdir/Makefile and run \"make\n\n#   test\".  Enable EXITFREE, disable GUI, scheme and tcl to avoid false alarms.\n\n#   Check the valgrind output.\n\n# - If you have the efence library, enable it in \"src/Makefile\" and run \"make\n\n#   test\".  Disable Python and Ruby to avoid trouble with threads (efence is\n\n#   not threadsafe).\n\n# - Adjust the date and other info in src/version.h.\n\n# - Correct included_patches[] in src/version.c.\n\n# - Check for missing entries in runtime/makemenu.vim (with checkmenu script).\n\n# - Check for missing options in runtime/optwin.vim et al. (with check.vim).\n\n# - Do \"make menu\" to update the runtime/synmenu.vim file.\n\n# - Add remarks for changes to runtime/doc/version7.txt.\n\n# - Check that runtime/doc/help.txt doesn't contain entries in \"LOCAL\n\n#   ADDITIONS\".\n\n# - In runtime/doc run \"make\" and \"make html\" to check for errors.\n\n# - Check if src/Makefile, src/testdir/Makefile and src/feature.h don't contain\n\n#   any personal preferences or the changes mentioned above.\n\n# - Check file protections to be \"644\" for text and \"755\" for executables (run\n\n#   the \"check\" script).\n\n# - Check compiling on Amiga, MS-DOS and MS-Windows.\n\n# - Delete all *~, *.sw?, *.orig, *.rej files\n\n# - \"make unixall\", \"make html\"\n\n# - Make diff files against the previous release: \"makediff7 7.1 7.2\"\n\n#\n\n# Amiga: (OBSOLETE, Amiga files are no longer distributed)\n\n# - \"make amisrc\", move the archive to the Amiga and compile:\n\n#   \"make -f Make_manx.mak\" (will use \"big\" features by default).\n\n# - Run the tests: \"make -f Make_manx.mak test\"\n\n# - Place the executables Vim and Xxd in this directory (set the executable\n\n#   flag).\n\n# - \"make amirt\", \"make amibin\".\n\n#\n\n# PC:\n\n# - Run make on Unix to update the \".mo\" files.\n\n# - \"make dossrc\" and \"make dosrt\".  Unpack the archives on a PC.\n\n# Win32 console version:\n\n# - Set environment for Visual C++ 2008, e.g.: \"msvc2008.bat\"  Or:\n\n#   \"C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\bin\\vcvars32.bat\".\n\n#   Or, when using the Visual C++ Toolkit 2003: \"msvcsetup.bat\" (adjust the\n\n#   paths when necessary).\n\n#   For Windows 98/ME the 2003 version is required, but then the executable\n\n#   won't work on Windows 7 and 64 bit systems.\n\n# - \"nmake -f Make_mvc.mak\"  (use the same path as for vcvars32.bat)\n\n# - \"rm testdir/*.out\", \"nmake -f Make_mvc.mak test\" and check the output.\n\n# - Rename vim.exe to vimw32.exe, xxd/xxd.exe to xxdw32.exe.\n\n# - Rename vim.pdb to vimw32.pdb.\n\n# - Rename install.exe to installw32.exe and uninstal.exe to uninstalw32.exe.\n\n# Win32 GUI version:\n\n# - \"nmake -f Make_mvc.mak GUI=yes\"\n\n# - move \"gvim.exe\" to here (otherwise the OLE version will overwrite it).\n\n# - Move gvim.pdb to here.\n\n# - Delete vimrun.exe, install.exe and uninstal.exe.\n\n# - Copy \"GvimExt/gvimext.dll\" to here.\n\n# Win32 GUI version with OLE, PERL, TCL, PYTHON and dynamic IME:\n\n# - Run src/bigvim.bat (\"nmake -f Make_mvc.mak GUI=yes OLE=yes IME=yes ...)\n\n# - Rename \"gvim.exe\" to \"gvim_ole.exe\".\n\n# - Rename gvim.pdb to \"gvim_ole.pdb\".\n\n# - Delete install.exe and uninstal.exe.\n\n# Create the archives:\n\n# - Copy all the \"*.exe\" files to where this Makefile is.\n\n# - Copy all the \"*.pdb\" files to where this Makefile is.\n\n# - \"make dosbin\".\n\n# NSIS self installing exe:\n\n# - To get NSIS see http://nsis.sourceforge.net\n\n# - Make sure gvim_ole.exe, vimw32.exe, installw32.exe,\n\n#   uninstalw32.exe and xxdw32.exe have been build as mentioned above.\n\n# - copy these files (get them from a binary archive or build them):\n\n#\tgvimext.dll in src/GvimExt\n\n#\tgvimext64.dll in src/GvimExt\n\n#\tVisVim.dll in src/VisVim\n\n#   Note: VisVim needs to be build with MSVC 5, newer versions don't work.\n\n#   gvimext64.dll can be obtained from http://code.google.com/p/vim-win3264/\n\n#\tIt is part of vim72.zip as vim72/gvimext.dll.\n\n# - make sure there is a diff.exe two levels up\n\n# - go to ../nsis and do \"makensis gvim.nsi\" (takes a few minutes).\n\n# - Copy gvim##.exe to the dist directory.\n\n#\n\n# 64 bit builds (these are not in the normal distribution, the 32 bit build\n\n# works just fine on 64 bit systems).\n\n# Like the console and GUI version, but first run vcvars64.bat or\n\n#   \"..\\VC\\vcvarsall.bat x86_amd64\".\n\n# - \"nmake -f Make_mvc.mak\"\n\n# - \"nmake -f Make_mvc.mak GUI=yes\"\n\n# Or run src/bigvim64.bat for an OLE version.\n\n#\n\n# OBSOLETE systems: You can build this if you have an appropriate system.\n\n#\n\n# 16 bit DOS version: (doesn't build anywhere)\n\n# - Set environment for compiling with Borland C++ 3.1.\n\n# - \"bmake -f Make_bc3.mak BOR=E:\\borlandc\" (compiling xxd might fail, in that\n\n#   case set environment for compiling with Borland C++ 4.0 and do\n\n#   \"make -f make_bc3.mak BOR=E:\\BC4 xxd/xxd.exe\").\n\n#   NOTE: this currently fails because Vim is too big.\n\n# - \"make test\" and check the output.\n\n# - Rename the executables to \"vimd16.exe\", \"xxdd16.exe\", \"installd16.exe\" and\n\n#   \"uninstald16.exe\".\n\n#\n\n# 32 bit DOS version: (requires Windows XP or earlier)\n\n# - Set environment for compiling with DJGPP; \"gmake -f Make_djg.mak\".\n\n# - \"rm testdir/*.out\", \"gmake -f Make_djg.mak test\" and check the output for\n\n#   \"ALL DONE\".\n\n# - Rename the executables to \"vimd32.exe\", \"xxdd32.exe\", \"installd32.exe\" and\n\n#   \"uninstald32.exe\".\n\n#\n\n# Win32s GUI version: (requires very old compiler)\n\n# - Set environment for Visual C++ 4.1 (requires a new console window):\n\n#   \"vcvars32.bat\" (use the path for VC 4.1 e:\\msdev\\bin)\n\n# - \"nmake -f Make_mvc.mak GUI=yes INTL=no clean\" (use the path for VC 4.1)\n\n# - \"nmake -f Make_mvc.mak GUI=yes INTL=no\" (use the path for VC 4.1)\n\n# - Rename \"gvim.exe\" to \"gvim_w32s.exe\".\n\n# - Rename \"install.exe\" to \"installw32.exe\"\n\n# - Rename \"uninstal.exe\" to \"uninstalw32.exe\"\n\n# - The produced uninstalw32.exe and vimrun.exe are used.\n\n#\n\n# OS/2: (requires an OS/2 system)\n\n# - Unpack the Unix archive.\n\n# - \"make -f Make_os2.mak\".\n\n# - Rename the executables to vimos2.exe, xxdos2.exe and teeos2.exe and copy\n\n#   them to here.\n\n# - \"make os2bin\".\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Vim used for conversion from \"unix\" to \"dos\"\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# How to include Filelist depends on the version of \"make\" you have.\n\n# If the current choice doesn't work, try the other one.\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#.include \"Filelist\"\n",
+        "Line" : 236,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# All output is put in the \"dist\" directory.\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Clean up some files to avoid they are included.\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# For the zip files we need to create a file with the comment line\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Need to use a \"distclean\" config.mk file\n\n# Note: this file is not included in the repository to avoid problems, but it's\n\n# OK to put it in the archive.\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Create an empty config.h file, make dependencies require it\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Make sure configure is newer than config.mk to force it to be generated\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Make sure ja.sjis.po is newer than ja.po to avoid it being regenerated.\n\n# Same for cs.cp1250.po, pl.cp1250.po and sk.cp1250.po.\n",
+        "Line" : 323,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Create the archive.\n",
+        "Line" : 332,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Amiga runtime - OBSOLETE\n",
+        "Line" : 336,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Amiga binaries - OBSOLETE\n",
+        "Line" : 359,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Amiga sources - OBSOLETE\n",
+        "Line" : 377,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# MS-DOS sources\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Split in two parts to avoid an \"argument list too long\" error.\n",
+        "Line" : 426,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Add the message translations.  Trick: skip ja.mo and use ja.sjis.mo instead.\n\n# Same for cs.mo / cs.cp1250.mo, pl.mo / pl.cp1250.mo, sk.mo / sk.cp1250.mo,\n\n# zh_CN.mo / zh_CN.cp936.mo, uk.mo / uk.cp1251.mo and ru.mo / ru.cp1251.mo.\n",
+        "Line" : 452,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 25,
+      "Errorlog" : "line 457:23 token recognition error at: '\"s+src/po/\\([-a-zA-Z0-9_]*\\(.UTF-8\\)*\\)\\(.sjis\\)*\\(.cp1250\\)*\\(.cp1251\\)*\\(.cp936\\)*.mo+\\1'\nline 591:84 token recognition error at: '\" {} \\;\\n\\tcp vimos2.exe dist/vim/$(VIMRTDIR)/vim.exe\\n\\tcp xxdos2.exe dist/vim/$(VIMRTDIR)/xxd.exe\\n\\tcp teeos2.exe dist/vim/$(VIMRTDIR)/tee.exe\\n\\tcp emx.dll emxlibcs.dll dist/vim/$(VIMRTDIR)\\n\\tcd dist && zip -9 -rD -z vim$(VERSION)os2.zip vim <$(COMMENT_OS2)\\n\\nhtml: dist dist/$(COMMENT_HTML)\\n\\t-rm -rf dist/vim$(VERSION)html.zip\\n\\tcd runtime/doc && zip -9 -z ../../dist/vim$(VERSION)html.zip *.html <../../dist/$(COMMENT_HTML)\\n\\nfarsi: dist dist/$(COMMENT_FARSI)\\n\\t-rm -f dist/farsi$(VERSION).zip\\n\\tzip -9 -rD -z dist/farsi$(VERSION).zip farsi < dist/$(COMMENT_FARSI)\\n\u0000'\n"
+    },
+    "runtime/doc/Makefile" : {
+      "ObjectId" : "dc49bb7e76348d2042029f200477d45931cacc3a",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Makefile for the Vim documentation on Unix\n\n#\n\n# If you get \"don't know how to make scratch\", first run make in the source\n\n# directory.  Or remove the include below.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set to $(VIMTARGET) when executed from src/Makefile.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# include the config.mk from the source directory.  It's only needed to set\n\n# AWK, used for \"make html\".  Comment this out if the include gives problems.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Use Vim to generate the tags file.  Can only be used when Vim has been\n\n# compiled and installed.  Supports multiple languages.\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Use \"doctags\" to generate the tags file.  Only works for English!\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Awk version of .txt to .html conversion.\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# index.html is the starting point for HTML, but for the help files it is\n\n# help.txt.  Therefore use vimindex.html for index.txt.\n",
+        "Line" : 355,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Perl version of .txt to .html conversion.\n\n# There can't be two rules to produce a .html from a .txt file.\n\n# Just run over all .txt files each time one changes.  It's fast anyway.\n",
+        "Line" : 366,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# These files are in the extra archive, skip if not present\n",
+        "Line" : 375,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Note that $< works with GNU make while $> works for BSD make.\n\n# Is there a solution that works for both??\n",
+        "Line" : 431,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "runtime/macros/maze/Makefile" : {
+      "ObjectId" : "c34e115d90f3b412b7431a34225e20c96c0d9043",
+      "LastModified" : "2004-06-13T20:20:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# It's simple...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "runtime/tutor/Makefile" : {
+      "ObjectId" : "35fe8216755c222c06e08e7f4770524ae10daac3",
+      "LastModified" : "2013-05-06T03:58:55Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for the Vim tutor.\n\n#\n\n# The Japanese tutor exists in three encodings.  Use the UTF-8 version as the\n\n# original and create the others with conversion.\n\n#\n\n# Similarly for Russian and Korean\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# nb is an alias for no\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/GvimExt/Makefile" : {
+      "ObjectId" : "16b17345d8f19a7aa0c7e99bb97cc8270826ce3e",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for GvimExt, using MSVC\n\n# Options:\n\n#   DEBUG=yes\t\tBuild debug version (for VC7 and maybe later)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# $(implib) /NOLOGO -machine:$(CPU) -def:gvimext.def $** -out:gvimext.lib\n\n# $(link) $(dlllflags) -base:0x1C000000 -out:$*.dll $** $(olelibsdll) shell32.lib gvimext.lib comctl32.lib gvimext.exp\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2,
+      "Errorlog" : "line 16:27 token recognition error at: '\\W'\n"
+    },
+    "src/Makefile" : {
+      "ObjectId" : "0082a3bc12a7efd000eb38dbaeef9a26d882999c",
+      "LastModified" : "2015-06-21T11:44:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Vim on Unix and Unix-like systems\tvim:ts=8:sw=8:tw=78\n\n#\n\n# This Makefile is loosely based on the GNU Makefile conventions found in\n\n# standards.info.\n\n#\n\n# Compiling Vim, summary:\n\n#\n\n#\t3. make\n\n#\t5. make install\n\n#\n\n# Compiling Vim, details:\n\n#\n\n# Edit this file for adjusting to your system. You should not need to edit any\n\n# other file for machine specific things!\n\n# The name of this file MUST be Makefile (note the uppercase 'M').\n\n#\n\n# 1. Edit this Makefile  {{{1\n\n#\tThe defaults for Vim should work on most machines, but you may want to\n\n#\tuncomment some lines or make other changes below to tune it to your\n\n#\tsystem, compiler or preferences.  Uncommenting means that the '#' in\n\n#\tthe first column of a line is removed.\n\n#\t- If you want a version of Vim that is small and starts up quickly,\n\n#\t  you might want to disable the GUI, X11, Perl, Python and Tcl.\n\n#\t- Uncomment the line with --disable-gui if you have Motif, GTK and/or\n\n#\t  Athena but don't want to make gvim (the GUI version of Vim with nice\n\n#\t  menus and scrollbars, but makes Vim bigger and startup slower).\n\n#\t- Uncomment --disable-darwin if on Mac OS X but you want to compile a\n\n#\t  Unix version.\n\n#\t- Uncomment the line \"CONF_OPT_X = --without-x\" if you have X11 but\n\n#\t  want to disable using X11 libraries.\tThis speeds up starting Vim,\n\n#\t  but the window title will not be set and the X11 selection can not\n\n#\t  be used.\n\n#\t- Uncomment the line \"CONF_OPT_XSMP = --disable-xsmp\" if you have the\n\n#\t  X11 Session Management Protocol (XSMP) library (libSM) but do not\n\n#\t  want to use it.\n\n#\t  This can speedup Vim startup but Vim loses the ability to catch the\n\n#\t  user logging out from session-managers like GNOME and work\n\n#\t  could be lost.\n\n#\t- Uncomment one or more of these lines to include an interface;\n\n#\t  each makes Vim quite a bit bigger:\n\n#\t\t--enable-luainterp\tfor Lua interpreter\n\n#\t\t--enable-mzschemeinterp\tfor MzScheme interpreter\n\n#\t\t--enable-perlinterp\tfor Perl interpreter\n\n#\t\t--enable-python3interp\tfor Python3 interpreter\n\n#\t\t--enable-pythoninterp\tfor Python interpreter\n\n#\t\t--enable-rubyinterp\tfor Ruby interpreter\n\n#\t\t--enable-tclinterp\tfor Tcl interpreter\n\n#\t\t--enable-cscope\t\tfor Cscope interface\n\n#\t- Uncomment one of the lines with --with-features= to enable a set of\n\n#\t  features (but not the interfaces just mentioned).\n\n#\t- Uncomment the line with --disable-acl to disable ACL support even\n\n#\t  though your system supports it.\n\n#\t- Uncomment the line with --disable-gpm to disable gpm support\n\n#\t  even though you have gpm libraries and includes.\n\n#\t- Uncomment the line with --disable-sysmouse to disable sysmouse\n\n#\t  support even though you have /dev/sysmouse and includes.\n\n#\t- Uncomment one of the lines with CFLAGS and/or CC if you have\n\n#\t  something very special or want to tune the optimizer.\n\n#\t- Search for the name of your system to see if it needs anything\n\n#\t  special.\n\n#\t- A few versions of make use '.include \"file\"' instead of 'include\n\n#\t  file'.  Adjust the include line below if yours does.\n\n#\n\n# 2. Edit feature.h  {{{1\n\n#\tOnly if you do not agree with the default compile features, e.g.:\n\n#\t- you want Vim to be as vi compatible as it can be\n\n#\t- you want to use Emacs tags files\n\n#\t- you want right-to-left editing (Hebrew)\n\n#\t- you want 'langmap' support (Greek)\n\n#\t- you want to remove features to make Vim smaller\n\n#\n\n# 3. \"make\"  {{{1\n\n#\tWill first run ./configure with the options in this file. Then it will\n\n#\tstart make again on this Makefile to do the compiling. You can also do\n\n#\tthis in two steps with:\n\n#\t\tmake config\n\n#\t\tmake\n\n#\tThe configuration phase creates/overwrites auto/config.h and\n\n#\tauto/config.mk.\n\n#\tThe configure script is created with \"make autoconf\".  It can detect\n\n#\tdifferent features of your system and act accordingly.  However, it is\n\n#\tnot correct for all systems.  Check this:\n\n#\t- If you have X windows, but configure could not find it or reported\n\n#\t  another include/library directory then you wanted to use, you have\n\n#\t  to set CONF_OPT_X below.  You might also check the installation of\n\n#\t  xmkmf.\n\n#\t- If you have --enable-gui=motif and have Motif on your system, but\n\n#\t  configure reports \"checking for location of gui... <not found>\", you\n\n#\t  have to set GUI_INC_LOC and GUI_LIB_LOC below.\n\n#\tIf you changed something, do this to run configure again:\n\n#\t\tmake reconfig\n\n#\n\n#\t- If you do not trust the automatic configuration code, then inspect\n\n#\t  auto/config.h and auto/config.mk, before starting the actual build\n\n#\t  phase. If possible edit this Makefile, rather than auto/config.mk --\n\n#\t  especially look at the definition of VIMLOC below. Note that the\n\n#\t  configure phase overwrites auto/config.mk and auto/config.h again.\n\n#\t- If you get error messages, find out what is wrong and try to correct\n\n#\t  it in this Makefile. You may need to do \"make reconfig\" when you\n\n#\t  change anything that configure uses (e.g. switching from an old C\n\n#\t  compiler to an ANSI C compiler). Only when auto/configure does\n\n#\t  something wrong you may need to change one of the other files. If\n\n#\t  you find a clean way to fix the problem, consider sending a note to\n\n#\t  the author of autoconf (bug-gnu-utils@prep.ai.mit.edu) or Vim\n\n#\t  (Bram@vim.org). Don't bother to do that when you made a hack\n\n#\t  solution for a non-standard system.\n\n#\n\n# 4. \"make test\"  {{{1\n\n#\tThis is optional.  This will run Vim scripts on a number of test\n\n#\tfiles, and compare the produced output with the expected output.\n\n#\tIf all is well, you will get the \"ALL DONE\" message in the end.  If a\n\n#\ttest fails you get \"TEST FAILURE\".  See below (search for \"/^test\").\n\n#\n\n# 5. \"make install\"  {{{1\n\n#\tIf the new Vim seems to be working OK you can install it and the\n\n#\tdocumentation in the appropriate location. The default is\n\n#\t\"/usr/local\".  Change \"prefix\" below to change the location.\n\n#\t\"auto/pathdef.c\" will be compiled again after changing this to make\n\n#\tthe executable know where the help files are located.\n\n#\tNote that any existing executable is removed or overwritten.  If you\n\n#\twant to keep it you will have to make a backup copy first.\n\n#\tThe runtime files are in a different directory for each version.  You\n\n#\tmight want to delete an older version.\n\n#\tIf you don't want to install everything, there are other targets:\n\n#\t\tmake installvim\t\tonly installs Vim, not the tools\n\n#\t\tmake installvimbin\tonly installs the Vim executable\n\n#\t\tmake installruntime\tinstalls most of the runtime files\n\n#\t\tmake installrtbase\tonly installs the Vim help and\n\n#\t\t\t\t\t\t\truntime files\n\n#\t\tmake installlinks\tonly installs the Vim binary links\n\n#\t\tmake installmanlinks\tonly installs the Vim manpage links\n\n#\t\tmake installmacros\tonly installs the Vim macros\n\n#\t\tmake installtutorbin\tonly installs the Vim tutor program\n\n#\t\tmake installtutor\tonly installs the Vim tutor files\n\n#\t\tmake installspell\tonly installs the spell files\n\n#\t\tmake installtools\tonly installs xxd\n\n#\tIf you install Vim, not to install for real but to prepare a package\n\n#\tor RPM, set DESTDIR to the root of the tree.\n\n#\n\n# 6. Use Vim until a new version comes out.  {{{1\n\n#\n\n# 7. \"make uninstall_runtime\"  {{{1\n\n#\tWill remove the runtime files for the current version.\tThis is safe\n\n#\tto use while another version is being used, only version-specific\n\n#\tfiles will be deleted.\n\n#\tTo remove the runtime files of another version:\n\n#\t\tmake uninstall_runtime VIMRTDIR=/vim54\n\n#\tIf you want to delete all installed files, use:\n\n#\t\tmake uninstall\n\n#\tNote that this will delete files that have the same name for any\n\n#\tversion, thus you might need to do a \"make install\" soon after this.\n\n#\tBe careful not to remove a version of Vim that is still being used!\n\n#\tTo find out which files and directories will be deleted, use:\n\n#\t\tmake -n uninstall\n\n# }}}\n\n#\n\n### This Makefile has been successfully tested on many systems. {{{\n\n### Only the ones that require special options are mentioned here.\n\n### Check the (*) column for remarks, listed below.\n\n### Later code changes may cause small problems, otherwise Vim is supposed to\n\n### compile and run without problems.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#system:\t      configurations:\t\t     version (*) tested by:\n\n#-------------\t      ------------------------\t     -------  -  ----------\n\n#AIX 3.2.5\t      cc (not gcc)   -\t\t\t4.5  (M) Will Fiveash\n\n#AIX 4\t\t      cc\t     +X11 -GUI\t\t3.27 (4) Axel Kielhorn\n\n#AIX 4.1.4\t      cc\t     +X11 +GUI\t\t4.5  (5) Nico Bakker\n\n#AIX 4.2.1\t      cc\t\t\t\t5.2k (C) Will Fiveash\n\n#AIX 4.3.3.12\t      xic 3.6.6\t\t\t\t5.6  (5) David R. Favor\n\n#A/UX 3.1.1\t      gcc\t     +X11\t\t4.0  (6) Jim Jagielski\n\n#BeOS PR\t      mwcc DR3\t\t\t\t5.0n (T) Olaf Seibert\n\n#BSDI 2.1 (x86)       shlicc2 gcc-2.6.3 -X11 X11R6\t4.5  (1) Jos Backus\n\n#BSD/OS 3.0 (x86)     gcc gcc-2.7.2.1 -X11 X11R6\t4.6c (1) Jos Backus\n\n#CX/UX 6.2\t      cc\t     +X11 +GUI_Mofif\t5.4  (V) Kipp E. Howard\n\n#DG/UX 5.4*\t      gcc 2.5.8      GUI\t\t5.0e (H) Jonas Schlein\n\n#DG/UX 5.4R4.20       gcc 2.7.2      GUI\t\t5.0s (H) Rocky Olive\n\n#HP-UX (most)\t      c89 cc\t\t\t\t5.1  (2) Bram Moolenaar\n\n#HP-UX_9.04\t      cc\t     +X11 +Motif\t5.0  (2) Carton Lao\n\n#Irix 6.3 (O2)\t      cc\t     ?\t\t\t4.5  (L) Edouard Poor\n\n#Irix 6.4\t      cc\t     ?\t\t\t5.0m (S) Rick Sayre\n\n#Irix 6.5\t      cc\t     ?\t\t\t6.0  (S) David Harrison\n\n#Irix 64 bit\t\t\t\t\t\t4.5  (K) Jon Wright\n\n#Linux 2.0\t      gcc-2.7.2      Infomagic Motif\t4.3  (3) Ronald Rietman\n\n#Linux 2.0.31\t      gcc\t     +X11 +GUI Athena\t5.0w (U) Darren Hiebert\n\n#LynxOS 3.0.1\t      2.9-gnupro-98r2 +X11 +GUI Athena  5.7.1(O) Lorenz Hahn\n\n#LynxOS 3.1.0\t      2.9-gnupro-98r2 +X11 +GUI Athena  5.7.1(O) Lorenz Hahn\n\n#NEC UP4800 UNIX_SV 4.2MP  cc\t     +X11R6 Motif,Athena4.6b (Q) Lennart Schultz\n\n#NetBSD 1.0A\t      gcc-2.4.5      -X11 -GUI\t\t3.21 (X) Juergen Weigert\n\n#QNX 4.2\t      wcc386-10.6    -X11\t\t4.2  (D) G.F. Desrochers\n\n#QNX 4.23\t      Watcom\t     -X11\t\t4.2  (F) John Oleynick\n\n#SCO Unix v3.2.5      cc\t     +X11 Motif\t\t3.27 (C) M. Kuperblum\n\n#SCO Open Server 5    gcc 2.7.2.3    +X11 +GUI Motif\t5.3  (A) Glauber Ribeiro\n\n#SINIX-N 5.43 RM400 R4000   cc\t     +X11 +GUI\t\t5.0l (I) Martin Furter\n\n#SINIX-Z 5.42 i386    gcc 2.7.2.3    +X11 +GUI Motif\t5.1  (I) Joachim Fehn\n\n#SINIX-Y 5.43 RM600 R4000  gcc 2.7.2.3 +X11 +GUI Motif\t5.1  (I) Joachim Fehn\n\n#Reliant/SINIX 5.44   cc\t     +X11 +GUI\t\t5.5a (I) B. Pruemmer\n\n#SNI Targon31 TOS 4.1.11 gcc-2.4.5   +X11 -GUI\t\t4.6c (B) Paul Slootman\n\n#Solaris 2.4 (Sparc)  cc\t     +X11 +GUI\t\t3.29 (9) Glauber\n\n#Solaris 2.4/2.5      clcc\t     +X11 -GUI openwin\t3.20 (7) Robert Colon\n\n#Solaris 2.5 (sun4m)  cc (SC4.0)     +X11R6 +GUI (CDE)\t4.6b (E) Andrew Large\n\n#Solaris 2.5\t      cc\t     +X11 +GUI Athena\t4.2  (9) Sonia Heimann\n\n#Solaris 2.5\t      gcc 2.5.6      +X11 Motif\t\t5.0m (R) Ant. Colombo\n\n#Solaris 2.6\t      gcc 2.8.1      ncurses\t\t5.3  (G) Larry W. Virden\n\n#Solaris with -lthread\t\t\t\t\t5.5  (W) K. Nagano\n\n#Solaris\t      gcc\t\t\t\t     (b) Riccardo\n\n#SunOS 4.1.x\t\t\t     +X11 -GUI\t\t5.1b (J) Bram Moolenaar\n\n#SunOS 4.1.3_U1 (sun4c) gcc\t     +X11 +GUI Athena\t5.0w (J) Darren Hiebert\n\n#SUPER-UX 6.2 (NEC SX-4) cc\t     +X11R6 Motif,Athena4.6b (P) Lennart Schultz\n\n#Tandem/NSK                                                  (c) Matthew Woehlke\n\n#Unisys 6035\t      cc\t     +X11 Motif\t\t5.3  (8) Glauber Ribeiro\n\n#ESIX V4.2\t      cc\t     +X11\t\t6.0  (a) Reinhard Wobst\n\n#Mac OS X 10.[23]     gcc\t     Carbon\t\t6.2  (x) Bram Moolenaar\n\n# }}}\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# (*)  Remarks: {{{\n\n#\n\n# (1)  Uncomment line below for shlicc2\n\n# (2)  HPUX with compile problems or wrong digraphs, uncomment line below\n\n# (3)  Infomagic Motif needs GUI_LIB_LOC and GUI_INC_LOC set, see below.\n\n#      And add \"-lXpm\" to MOTIF_LIBS2.\n\n# (4)  For cc the optimizer must be disabled (use CFLAGS= after running\n\n#      configure) (symptom: \":set termcap\" output looks weird).\n\n# (5)  Compiler may need extra argument, see below.\n\n# (6)  See below for a few lines to uncomment\n\n# (7)  See below for lines which enable the use of clcc\n\n# (8)  Needs some EXTRA_LIBS, search for Unisys below\n\n# (9)  Needs an extra compiler flag to compile gui_at_sb.c, see below.\n\n# (A)  May need EXTRA_LIBS, see below\n\n# (B)  Can't compile GUI because there is no waitpid()...  Disable GUI below.\n\n# (C)  Force the use of curses instead of termcap, see below.\n\n# (D)  Uncomment lines below for QNX\n\n# (E)  You might want to use termlib instead of termcap, see below.\n\n# (F)  See below for instructions.\n\n# (G)  Using ncurses version 4.2 has reported to cause a crash.  Use the\n\n#      Sun curses library instead.\n\n# (H)  See line for EXTRA_LIBS below.\n\n# (I)  SINIX-N 5.42 and 5.43 need some EXTRA_LIBS.  Also for Reliant-Unix.\n\n# (J)  If you get undefined symbols, see below for a solution.\n\n# (K)  See lines to uncomment below for machines with 64 bit pointers.\n\n# (L)  For Silicon Graphics O2 workstations remove \"-lnsl\" from auto/config.mk\n\n# (M)  gcc version cygnus-2.0.1 does NOT work (symptom: \"dl\" deletes two\n\n#      characters instead of one).\n\n# (N)  SCO with decmouse.\n\n# (O)  LynxOS needs EXTRA_LIBS, see below.\n\n# (P)  For SuperUX 6.2 on NEC SX-4 see a few lines below to uncomment.\n\n# (Q)  For UNIXSVR 4.2MP on NEC UP4800 see below for lines to uncomment.\n\n# (R)  For Solaris 2.5 (or 2.5.1) with gcc > 2.5.6, uncomment line below.\n\n# (S)  For Irix 6.x with MipsPro compiler, use -OPT:Olimit.  See line below.\n\n# (T)  See ../doc/os_beos.txt.\n\n# (U)  Must uncomment CONF_OPT_PYTHON option below to disable Python\n\n#      detection, since the configure script runs into an error when it\n\n#      detects Python (probably because of the bash shell).\n\n# (V)  See lines to uncomment below.\n\n# (X)  Need to use the .include \"auto/config.mk\" line below\n\n# (Y)  See line with c89 below\n\n# (Z)  See lines with cc or c89 below\n\n# (a)  See line with EXTRA_LIBS below.\n\n# (b)  When using gcc with the Solaris linker, make sure you don't use GNU\n\n#      strip, otherwise the binary may not run: \"Cannot find ELF\".\n\n# (c)  Add -lfloss to EXTRA_LIBS, see below.\n\n# (x)  When you get warnings for precompiled header files, run\n\n#      \"sudo fixPrecomps\".  Also see CONF_OPT_DARWIN below.\n\n# }}}\n",
+        "Line" : 215,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#DO NOT CHANGE the next line, we need it for configure to find the compiler\n\n#instead of using the default from the \"make\" program.\n\n#Use a line further down to change the value for CC.\n",
+        "Line" : 266,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Change and use these defines if configure cannot find your Motif stuff.\n\n# Unfortunately there is no \"standard\" location for Motif. {{{\n\n# These defines can contain a single directory (recommended) or a list of\n\n# directories (for when you are working with several systems). The LAST\n\n# directory that exists is used.\n\n# When changed, run \"make reconfig\" next!\n\n#GUI_INC_LOC = -I/usr/include/Motif2.0 -I/usr/include/Motif1.2\n\n#GUI_LIB_LOC = -L/usr/lib/Motif2.0 -L/usr/lib/Motif1.2\n\n### Use these two lines for Infomagic Motif (3)\n\n#GUI_INC_LOC = -I/usr/X11R6/include\n\n#GUI_LIB_LOC = -L/usr/X11R6/lib\n\n# }}}\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "######################## auto/config.mk ######################## {{{1\n\n# At this position auto/config.mk is included. When starting from the\n\n# toplevel Makefile it is almost empty. After running auto/configure it\n\n# contains settings that have been discovered for your system. Settings below\n\n# this include override settings in auto/config.mk!\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Note: If make fails because auto/config.mk does not exist (it is not\n\n# included in the repository), do:\n\n#    cp config.mk.dist auto/config.mk\n",
+        "Line" : 290,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# (X) How to include auto/config.mk depends on the version of \"make\" you have,\n\n#     if the current choice doesn't work, try the other one.\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#.include \"auto/config.mk\"\n",
+        "Line" : 298,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#}}}\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Include the configuration choices first, so we can override everything\n\n# below. As shipped, this file contains a target that causes to run\n\n# configure. Once configure was run, this file contains a list of\n\n# make variables with predefined values instead. Thus any second invocation\n\n# of make, will build Vim.\n",
+        "Line" : 303,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# CONFIGURE - configure arguments {{{1\n\n# You can give a lot of options to configure.\n\n# Change this to your desire and do 'make config' afterwards\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# examples (can only use one!):\n\n#CONF_ARGS = --exec-prefix=/usr\n\n#CONF_ARGS = --with-vim-name=vim7 --with-ex-name=ex7 --with-view-name=view7\n\n#CONF_ARGS = --with-global-runtime=/etc/vim\n\n#CONF_ARGS = --with-local-dir=/usr/share\n\n#CONF_ARGS = --without-local-dir\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Use this one if you distribute a modified version of Vim.\n\n#CONF_ARGS = --with-modified-by=\"John Doe\"\n",
+        "Line" : 320,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# GUI - For creating Vim with GUI (gvim) (B)\n\n# Uncomment this line when you don't want to get the GUI version, although you\n\n# have GTK, Motif and/or Athena.  Also use --without-x if you don't want X11\n\n# at all.\n\n#CONF_OPT_GUI = --disable-gui\n",
+        "Line" : 323,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Uncomment one of these lines if you have that GUI but don't want to use it.\n\n# The automatic check will use another one that can be found.\n\n# Gnome is disabled by default, it may cause trouble.\n\n#CONF_OPT_GUI = --disable-gtk2-check\n\n#CONF_OPT_GUI = --enable-gnome2-check\n\n#CONF_OPT_GUI = --disable-motif-check\n\n#CONF_OPT_GUI = --disable-athena-check\n\n#CONF_OPT_GUI = --disable-nextaw-check\n",
+        "Line" : 329,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Uncomment one of these lines to select a specific GUI to use.\n\n# When using \"yes\" or nothing, configure will use the first one found: GTK+,\n\n# Motif or Athena.\n\n#\n\n# GTK versions that are known not to work 100% are rejected.\n\n# Use \"--disable-gtktest\" to accept them anyway.\n\n# Only GTK 2 is supported, for GTK 1 use Vim 7.2.\n\n#\n\n# GNOME means GTK with Gnome support.  If using GTK and --enable-gnome-check\n\n# is used then GNOME will automatically be used if it is found.  If you have\n\n# GNOME, but do not want to use it (e.g., want a GTK-only version), then use\n\n# --enable-gui=gtk or leave out --enable-gnome-check.\n\n#\n\n# If the selected GUI isn't found, the GUI is disabled automatically\n\n#CONF_OPT_GUI = --enable-gui=gtk2\n\n#CONF_OPT_GUI = --enable-gui=gtk2 --disable-gtktest\n\n#CONF_OPT_GUI = --enable-gui=gnome2\n\n#CONF_OPT_GUI = --enable-gui=gnome2 --disable-gtktest\n\n#CONF_OPT_GUI = --enable-gui=motif\n\n#CONF_OPT_GUI = --enable-gui=motif --with-motif-lib=\"-static -lXm -shared\"\n\n#CONF_OPT_GUI = --enable-gui=athena\n\n#CONF_OPT_GUI = --enable-gui=nextaw\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Carbon GUI for Mac OS X\n\n#CONF_OPT_GUI = --enable-gui=carbon\n",
+        "Line" : 361,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# DARWIN - detecting Mac OS X\n\n# Uncomment this line when you want to compile a Unix version of Vim on\n\n# Darwin.  None of the Mac specific options or files will be used.\n\n#CONF_OPT_DARWIN = --disable-darwin\n",
+        "Line" : 364,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Select the architecture supported.  Default is to build for the current\n\n# platform.  Use \"both\" for a universal binary.  That probably doesn't work\n\n# when including Perl, Python, etc.\n\n#CONF_OPT_DARWIN = --with-mac-arch=i386\n\n#CONF_OPT_DARWIN = --with-mac-arch=ppc\n\n#CONF_OPT_DARWIN = --with-mac-arch=both\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Uncomment the next line to fail if one of the requested language interfaces\n\n# cannot be configured.  Without this Vim will be build anyway, without\n\n# the failing interfaces.\n\n#CONF_OPT_FAIL = --enable-fail-if-missing\n",
+        "Line" : 376,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# LUA\n\n# Uncomment one of these when you want to include the Lua interface.\n\n# First one is for static linking, second one for dynamic loading.\n\n# Use --with-luajit if you want to use LuaJIT instead of Lua.\n\n# Set PATH environment variable to find lua or luajit executable.\n\n#CONF_OPT_LUA = --enable-luainterp\n\n#CONF_OPT_LUA = --enable-luainterp=dynamic\n\n#CONF_OPT_LUA = --enable-luainterp --with-luajit\n\n#CONF_OPT_LUA = --enable-luainterp=dynamic --with-luajit\n\n# Lua installation dir (when not set uses $LUA_PREFIX or defaults to /usr)\n\n#CONF_OPT_LUA_PREFIX = --with-lua-prefix=/usr/local\n",
+        "Line" : 381,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# MZSCHEME\n\n# Uncomment this when you want to include the MzScheme interface.\n\n#CONF_OPT_MZSCHEME = --enable-mzschemeinterp\n\n# PLT/mrscheme/drscheme Home dir; the PLTHOME environment variable also works\n\n#CONF_OPT_PLTHOME  = --with-plthome=/usr/local/plt\n\n#CONF_OPT_PLTHOME  = --with-plthome=/usr/local/drscheme\n\n#CONF_OPT_PLTHOME  = --with-plthome=/home/me/mz\n",
+        "Line" : 393,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# PERL\n\n# Uncomment one of these when you want to include the Perl interface.\n\n# First one is for static linking, second one for dynamic loading.\n\n# The Perl option sometimes causes problems, because it adds extra flags\n\n#\n\n# to the command line.\tIf you see strange flags during compilation, check in\n\n# auto/config.mk where they come from.  If it's PERL_CFLAGS, try commenting\n\n# the next line.\n\n# When you get an error for a missing \"perl.exp\" file, try creating an empty\n\n# one: \"touch perl.exp\".\n\n# This requires at least \"small\" features, \"tiny\" doesn't work.\n\n#CONF_OPT_PERL = --enable-perlinterp\n\n#CONF_OPT_PERL = --enable-perlinterp=dynamic\n",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# PYTHON\n\n# Uncomment this when you want to include the Python interface.\n\n# Requires small features or better, fails with tiny features.\n\n# NOTE: This may cause threading to be enabled, which has side effects (such\n\n# as using different libraries and debugging becomes more difficult).\n\n# NOTE: Using this together with Perl may cause a crash in initialization.\n\n# For Python3 support make a symbolic link in /usr/local/bin: \n\n#\tln -s python3 python3.1\n\n# If both python2.x and python3.x are enabled then the linking will be via\n\n# dlopen(), dlsym(), dlclose(), i.e. pythonX.Y.so must be available\n\n# However, this may still cause problems, such as \"import termios\" failing.\n\n# Build two separate versions of Vim in that case.\n\n#CONF_OPT_PYTHON = --enable-pythoninterp\n\n#CONF_OPT_PYTHON = --enable-pythoninterp=dynamic\n\n#CONF_OPT_PYTHON3 = --enable-python3interp\n\n#CONF_OPT_PYTHON3 = --enable-python3interp=dynamic\n",
+        "Line" : 415,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# RUBY\n\n# Uncomment this when you want to include the Ruby interface.\n\n# First one for static linking, second one for loading when used.\n\n# Note: you need the development package (e.g., ruby1.9.1-dev on Ubuntu).\n\n#CONF_OPT_RUBY = --enable-rubyinterp\n\n#CONF_OPT_RUBY = --enable-rubyinterp=dynamic\n\n#CONF_OPT_RUBY = --enable-rubyinterp --with-ruby-command=ruby1.9.1\n",
+        "Line" : 432,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# TCL\n\n# Uncomment this when you want to include the Tcl interface.\n\n#CONF_OPT_TCL = --enable-tclinterp\n\n#CONF_OPT_TCL = --enable-tclinterp --with-tclsh=tclsh8.4\n",
+        "Line" : 440,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# CSCOPE\n\n# Uncomment this when you want to include the Cscope interface.\n\n#CONF_OPT_CSCOPE = --enable-cscope\n",
+        "Line" : 445,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# WORKSHOP - Sun Visual Workshop interface.  Only works with Motif!\n\n#CONF_OPT_WORKSHOP = --enable-workshop\n",
+        "Line" : 449,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# NETBEANS - NetBeans interface. Only works with Motif, GTK, and gnome.\n\n# Motif version must have XPM libraries (see |workshop-xpm|).\n\n# Uncomment this when you do not want the netbeans interface.\n\n#CONF_OPT_NETBEANS = --disable-netbeans\n",
+        "Line" : 452,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# SNIFF - Include support for SNiFF+.\n\n#CONF_OPT_SNIFF = --enable-sniff\n",
+        "Line" : 457,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# MULTIBYTE - To edit multi-byte characters.\n\n# Uncomment this when you want to edit a multibyte language.\n\n# It's automatically enabled with normal features, GTK or IME support.\n\n# Note: Compile on a machine where setlocale() actually works, otherwise the\n\n# configure tests may fail.\n\n#CONF_OPT_MULTIBYTE = --enable-multibyte\n",
+        "Line" : 460,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# NLS - National Language Support\n\n# Uncomment this when you do not want to support translated messages, even\n\n# though configure can find support for it.\n\n#CONF_OPT_NLS = --disable-nls\n",
+        "Line" : 467,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# XIM - X Input Method.  Special character input support for X11 (Chinese,\n\n# Japanese, special symbols, etc).  Also needed for dead-key support.\n\n# When omitted it's automatically enabled for the X-windows GUI.\n\n# HANGUL - Input Hangul (Korean) language using internal routines.\n\n# Uncomment one of these when you want to input a multibyte language.\n\n#CONF_OPT_INPUT = --enable-xim\n\n#CONF_OPT_INPUT = --disable-xim\n\n#CONF_OPT_INPUT = --enable-hangulinput\n",
+        "Line" : 472,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# FONTSET - X fontset support for output of languages with many characters.\n\n# Uncomment this when you want to output a multibyte language.\n\n#CONF_OPT_OUTPUT = --enable-fontset\n",
+        "Line" : 481,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# ACL - Uncomment this when you do not want to include ACL support, even\n\n# though your system does support it.  E.g., when it's buggy.\n\n#CONF_OPT_ACL = --disable-acl\n",
+        "Line" : 485,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# gpm - For mouse support on Linux console via gpm\n\n# Uncomment this when you do not want to include gpm support, even\n\n# though you have gpm libraries and includes.\n\n#CONF_OPT_GPM = --disable-gpm\n",
+        "Line" : 489,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# sysmouse - For mouse support on FreeBSD and DragonFly console via sysmouse\n\n# Uncomment this when you do not want do include sysmouse support, even\n\n# though you have /dev/sysmouse and includes.\n\n#CONF_OPT_SYSMOUSE = --disable-sysmouse\n",
+        "Line" : 494,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# FEATURES - For creating Vim with more or less features\n\n# Uncomment one of these lines when you want to include few to many features.\n\n# The default is \"normal\".\n\n#CONF_OPT_FEAT = --with-features=tiny\n\n#CONF_OPT_FEAT = --with-features=small\n\n#CONF_OPT_FEAT = --with-features=normal\n\n#CONF_OPT_FEAT = --with-features=big\n\n#CONF_OPT_FEAT = --with-features=huge\n",
+        "Line" : 499,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# COMPILED BY - For including a specific e-mail address for \":version\".\n\n#CONF_OPT_COMPBY = \"--with-compiledby=John Doe <JohnDoe@yahoo.com>\"\n",
+        "Line" : 508,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# X WINDOWS DISABLE - For creating a plain Vim without any X11 related fancies\n\n# (otherwise Vim configure will try to include xterm titlebar access)\n\n# Also disable the GUI above, otherwise it will be included anyway.\n\n# When both GUI and X11 have been disabled this may save about 15% of the\n\n# code and make Vim startup quicker.\n\n#CONF_OPT_X = --without-x\n",
+        "Line" : 511,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# X WINDOWS DIRECTORY - specify X directories\n\n# If configure can't find you X stuff, or if you have multiple X11 derivatives\n\n# installed, you may wish to specify which one to use.\n\n# Select nothing to let configure choose.\n\n# This here selects openwin (as found on sun).\n\n#XROOT = /usr/openwin\n\n#CONF_OPT_X = --x-include=$(XROOT)/include --x-libraries=$(XROOT)/lib\n",
+        "Line" : 518,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# X11 Session Management Protocol support\n\n# Vim will try to use XSMP to catch the user logging out if there are unsaved\n\n# files.  Uncomment this line to disable that (it prevents vim trying to open\n\n# communications with the session manager).\n\n#CONF_OPT_XSMP = --disable-xsmp\n",
+        "Line" : 526,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# You may wish to include xsmp but use exclude xsmp-interact if the logout\n\n# XSMP functionality does not work well with your session-manager (at time of\n\n# writing, this would be early GNOME-1 gnome-session: it 'freezes' other\n\n# applications after Vim has cancelled a logout (until Vim quits).  This\n\n# *might* be the Vim code, but is more likely a bug in early GNOME-1.\n\n# This disables the dialog that asks you if you want to save files or not.\n\n#CONF_OPT_XSMP = --disable-xsmp-interact\n",
+        "Line" : 532,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# COMPILER - Name of the compiler {{{1\n\n# The default from configure will mostly be fine, no need to change this, just\n\n# an example. If a compiler is defined here, configure will use it rather than\n\n# probing for one. It is dangerous to change this after configure was run.\n\n# Make will use your choice then -- but beware: Many things may change with\n\n# another compiler.  It is wise to run 'make reconfig' to start all over\n\n# again.\n\n#CC = cc\n\n#CC = gcc\n\n#CC = clang\n",
+        "Line" : 540,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# COMPILER FLAGS - change as you please. Either before running {{{1\n\n# configure or afterwards. For examples see below.\n\n# When using -g with some older versions of Linux you might get a\n\n# statically linked executable.\n\n# When not defined, configure will try to use -O2 -g for gcc and -O for cc.\n\n#CFLAGS = -g\n\n#CFLAGS = -O\n",
+        "Line" : 551,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Optimization limits - depends on the compiler.  Automatic check in configure\n\n# doesn't work very well, because many compilers only give a warning for\n\n# unrecognized arguments.\n\n#CFLAGS = -O -OPT:Olimit=2600\n\n#CFLAGS = -O -Olimit 2000\n\n#CFLAGS = -O -FOlimit,2000\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Often used for GCC: mixed optimizing, lot of optimizing, debugging\n\n#CFLAGS = -g -O2 -fno-strength-reduce -Wall -Wshadow -Wmissing-prototypes\n\n#CFLAGS = -g -O2 -fno-strength-reduce -Wall -Wmissing-prototypes\n\n#CFLAGS = -g -Wall -Wmissing-prototypes\n\n#CFLAGS = -O6 -fno-strength-reduce -Wall -Wshadow -Wmissing-prototypes\n\n#CFLAGS = -g -DDEBUG -Wall -Wshadow -Wmissing-prototypes\n\n#CFLAGS = -g -O2 '-DSTARTUPTIME=\"vimstartup\"' -fno-strength-reduce -Wall -Wmissing-prototypes\n",
+        "Line" : 566,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Use this with GCC to check for mistakes, unused arguments, etc.\n\n#CFLAGS = -g -Wall -Wextra -Wmissing-prototypes -Wunreachable-code -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1\n\n#CFLAGS = -g -O2 -Wall -Wextra -Wmissing-prototypes -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1 -DU_DEBUG\n\n#PYTHON_CFLAGS_EXTRA = -Wno-missing-field-initializers\n\n#MZSCHEME_CFLAGS_EXTRA = -Wno-unreachable-code -Wno-unused-parameter\n",
+        "Line" : 574,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# EFENCE - Electric-Fence malloc debugging: catches memory accesses beyond\n\n# allocated memory (and makes every malloc()/free() very slow).\n\n# Electric Fence is free (search ftp sites).\n\n# You may want to set the EF_PROTECT_BELOW environment variable to check the\n\n# other side of allocated memory.\n\n# On FreeBSD you might need to enlarge the number of mmaps allowed.  Do this\n\n# as root: sysctl -w vm.max_proc_mmap=30000\n\n#EXTRA_LIBS = /usr/local/lib/libefence.a\n",
+        "Line" : 580,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Autoconf binary.\n",
+        "Line" : 589,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# PURIFY - remove the # to use the \"purify\" program (hoi Nia++!)\n\n#PURIFY = purify\n",
+        "Line" : 592,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# NBDEBUG - debugging the netbeans interface.\n\n#EXTRA_DEFS = -DNBDEBUG\n",
+        "Line" : 595,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# }}}\n",
+        "Line" : 598,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# LINT - for running lint\n\n#  For standard Unix lint\n",
+        "Line" : 600,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "#  For splint\n\n#  It doesn't work well, crashes on include files and non-ascii characters.\n\n#LINT = splint\n\n#LINT_OPTIONS = +unixlib -weak -macrovarprefixexclude -showfunc -linelen 9999\n",
+        "Line" : 604,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# PROFILING - Uncomment the next two lines to do profiling with gcc and gprof.\n\n# Might not work with GUI or Perl.\n\n# For unknown reasons adding \"-lc\" fixes a linking problem with some versions\n\n# of GCC.  That's probably a bug in the \"-pg\" implementation.\n\n# After running Vim see the profile result with: gprof vim gmon.out | vim -\n\n# Need to recompile everything after changing this: \"make clean\" \"make\".\n\n#PROFILE_CFLAGS = -pg -g -DWE_ARE_PROFILING\n\n#PROFILE_LIBS = -pg\n\n#PROFILE_LIBS = -pg -lc\n",
+        "Line" : 609,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# Uncomment one of the next two lines to compile Vim with the\n\n# address sanitizer or with the undefined sanitizer.  Works with gcc and\n\n# clang.  May make Vim twice as slow.  Errors reported on stderr.\n\n# More at: https://code.google.com/p/address-sanitizer/\n\n#SANITIZER_CFLAGS = -g -O0 -fsanitize=address -fno-omit-frame-pointer\n\n#SANITIZER_CFLAGS = -g -O0 -fsanitize=undefined -fno-omit-frame-pointer\n",
+        "Line" : 619,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# MEMORY LEAK DETECTION\n\n# Requires installing the ccmalloc library.\n\n# Configuration is in the .ccmalloc or ~/.ccmalloc file.\n\n# Doesn't work very well, since memory linked to from global variables\n\n# (in libraries) is also marked as leaked memory.\n\n#LEAK_CFLAGS = -DEXITFREE\n\n#LEAK_LIBS = -lccmalloc\n",
+        "Line" : 627,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "#####################################################\n\n###  Specific systems, check if yours is listed!  ### {{{\n\n#####################################################\n",
+        "Line" : 635,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "### Uncomment things here only if the values chosen by configure are wrong.\n\n### It's better to adjust configure.in and \"make autoconf\", if you can!\n\n### Then send the required changes to configure.in to the bugs list.\n",
+        "Line" : 639,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "### (1) BSD/OS 2.0.1, 2.1 or 3.0 using shared libraries\n\n###\n\n#CC = shlicc2\n\n#CFLAGS = -O2 -g -m486 -Wall -Wshadow -Wmissing-prototypes -fno-builtin\n",
+        "Line" : 643,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "### (2) HP-UX with a non-ANSI cc, use the c89 ANSI compiler\n\n###\tThe first probably works on all systems\n\n###\tThe second should work a bit better on newer systems\n\n###\tThe third should work a bit better on HPUX 11.11\n\n###\tInformation provided by: Richard Allen <ra@rhi.hi.is>\n\n#CC = c89 -D_HPUX_SOURCE\n\n#CC = c89 -O +Onolimit +ESlit -D_HPUX_SOURCE\n\n#CC = c89 -O +Onolimit +ESlit +e -D_HPUX_SOURCE\n",
+        "Line" : 648,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "### (2) For HP-UX: Enable the use of a different set of digraphs.  Use this\n\n###\twhen the default (ISO) digraphs look completely wrong.\n\n###\tAfter changing this do \"touch digraph.c; make\".\n\n#EXTRA_DEFS = -DHPUX_DIGRAPHS\n",
+        "Line" : 657,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "### (2) For HP-UX: 9.04 cpp default macro definition table of 128000 bytes\n\n###\tis too small to compile many routines.\tIt produces too much defining\n\n###\tand no space errors.\n\n###\tUncomment the following to specify a larger macro definition table.\n\n#CFLAGS = -Wp,-H256000\n",
+        "Line" : 662,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "### (2) For HP-UX 10.20 using the HP cc, with X11R6 and Motif 1.2, with\n\n###\tlibraries in /usr/lib instead of /lib (avoiding transition links).\n\n###\tInformation provided by: David Green\n\n#XROOT = /usr\n\n#CONF_OPT_X = --x-include=$(XROOT)/include/X11R6 --x-libraries=$(XROOT)/lib/X11R6\n\n#GUI_INC_LOC = -I/usr/include/Motif1.2\n\n#GUI_LIB_LOC = -L/usr/lib/Motif1.2_R6\n",
+        "Line" : 668,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "### (5) AIX 4.1.4 with cc\n\n#CFLAGS = -O -qmaxmem=8192\n",
+        "Line" : 676,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "###     AIX with c89 (Walter Briscoe)\n\n#CC = c89\n\n#CPPFLAGS = -D_ALL_SOURCE\n",
+        "Line" : 679,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "###     AIX 4.3.3.12 with xic 3.6.6 (David R. Favor)\n\n#       needed to avoid a problem where strings.h gets included\n\n#CFLAGS = -qsrcmsg -O2 -qmaxmem=8192 -D__STR31__\n",
+        "Line" : 683,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "### (W) Solaris with multi-threaded libraries (-lthread):\n\n###\tIf suspending doesn't work properly, try using this line:\n\n#EXTRA_DEFS = -D_REENTRANT\n",
+        "Line" : 687,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "### (7) Solaris 2.4/2.5 with Centerline compiler\n\n#CC = clcc\n\n#X_LIBS_DIR = -L/usr/openwin/lib -R/usr/openwin/lib\n\n#CFLAGS = -O\n",
+        "Line" : 691,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "### (9) Solaris 2.x with cc (SunPro), using Athena.\n\n###\tOnly required for compiling gui_at_sb.c.\n\n###\tSymptom: \"identifier redeclared: vim_XawScrollbarSetThumb\"\n\n###\tUse one of the lines (either Full ANSI or no ANSI at all)\n\n#CFLAGS = $(CFLAGS) -Xc\n\n#CFLAGS = $(CFLAGS) -Xs\n",
+        "Line" : 696,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "### Solaris 2.3 with X11 and specific cc\n\n#CC=/opt/SUNWspro/bin/cc -O -Xa -v -R/usr/openwin/lib\n",
+        "Line" : 703,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "### Solaris with /usr/ucb/cc (it is rejected by autoconf as \"cc\")\n\n#CC\t    = /usr/ucb/cc\n\n#EXTRA_LIBS = -R/usr/ucblib\n",
+        "Line" : 706,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "### Solaris with Forte Developer and FEAT_SUN_WORKSHOP\n\n# The Xpm library is available from http://koala.ilog.fr/ftp/pub/xpm.\n\n#CC\t\t= cc\n\n#XPM_DIR\t\t= /usr/local/xpm/xpm-3.4k-solaris\n\n#XPM_LIB\t\t= -L$(XPM_DIR)/lib -R$(XPM_DIR)/lib -lXpm\n\n#XPM_IPATH\t= -I$(XPM_DIR)/include\n\n#EXTRA_LIBS\t= $(XPM_LIB)\n\n#EXTRA_IPATHS\t= $(XPM_IPATH)\n\n#EXTRA_DEFS\t= -xCC -DHAVE_X11_XPM_H\n",
+        "Line" : 710,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "### Solaris with workshop compilers: Vim is unstable when compiled with\n\n# \"-fast\".  Use this instead. (Shea Martin)\n\n#CFLAGS = -x02 -xtarget=ultra\n",
+        "Line" : 720,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "### (R) for Solaris 2.5 (or 2.5.1) with gcc > 2.5.6 you might need this:\n\n#LDFLAGS = -lw -ldl -lXmu\n\n#GUI_LIB_LOC = -L/usr/local/lib\n",
+        "Line" : 724,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "### (8) Unisys 6035 (Glauber Ribeiro)\n\n#EXTRA_LIBS = -lnsl -lsocket -lgen\n",
+        "Line" : 728,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "### When builtin functions cause problems with gcc (for Sun 4.1.x)\n\n#CFLAGS = -O2 -Wall -traditional -Wno-implicit\n",
+        "Line" : 731,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "### Apollo DOMAIN (with SYSTYPE = bsd4.3) (TESTED for version 3.0)\n\n#EXTRA_DEFS = -DDOMAIN\n\n#CFLAGS= -O -A systype,bsd4.3\n",
+        "Line" : 734,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "### Coherent 4.2.10 on Intel 386 platform\n\n#EXTRA_DEFS = -Dvoid=int\n\n#EXTRA_LIBS = -lterm -lsocket\n",
+        "Line" : 738,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "### SCO 3.2, with different library name for terminfo\n\n#EXTRA_LIBS = -ltinfo\n",
+        "Line" : 742,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "### UTS2 for Amdahl UTS 2.1.x\n\n#EXTRA_DEFS = -DUTS2\n\n#EXTRA_LIBS = -lsocket\n",
+        "Line" : 745,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "### UTS4 for Amdahl UTS 4.x\n\n#EXTRA_DEFS = -DUTS4 -Xa\n",
+        "Line" : 749,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "### USL for Unix Systems Laboratories (SYSV 4.2)\n\n#EXTRA_DEFS = -DUSL\n",
+        "Line" : 752,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "### (6)  A/UX 3.1.1 with gcc (Jim Jagielski)\n\n#CC= gcc -D_POSIX_SOURCE\n\n#CFLAGS= -O2\n\n#EXTRA_LIBS = -lposix -lbsd -ltermcap -lX11\n",
+        "Line" : 755,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "### (A)  Some versions of SCO Open Server 5 (Jan Christiaan van Winkel)\n\n###\t Also use the CONF_TERM_LIB below!\n\n#EXTRA_LIBS = -lgen\n",
+        "Line" : 760,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "### (D)  QNX (by G.F. Desrochers)\n\n#CFLAGS = -g -O -mf -4\n",
+        "Line" : 764,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "### (F)  QNX (by John Oleynick)\n\n# 1. If you don't have an X server: Comment out CONF_OPT_GUI and uncomment\n\n#    CONF_OPT_X = --without-x.\n\n# 2. make config\n\n# 3. edit auto/config.mk and remove -ldir and -ltermcap from LIBS.  It doesn't\n\n#\thave -ldir (does config find it somewhere?) and -ltermcap has at\n\n#\tleast one problem so I use termlib.o instead.  The problem with\n\n#\ttermcap is that it segfaults if you call it with the name of\n\n#\ta non-existent terminal type.\n\n# 4. edit auto/config.h and add #define USE_TMPNAM\n\n# 5. add termlib.o to OBJ\n\n# 6. make\n",
+        "Line" : 767,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "### (H)  for Data general DG/UX 5.4.2 and 5.4R3.10 (Jonas J. Schlein)\n\n#EXTRA_LIBS = -lgen\n",
+        "Line" : 780,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "### (I) SINIX-N 5.42 or 5.43 RM400 R4000 (also SINIX-Y and SINIX-Z)\n\n#EXTRA_LIBS = -lgen -lnsl\n\n###   For SINIX-Y this is needed for the right prototype of gettimeofday()\n\n#EXTRA_DEFS = -D_XPG_IV\n",
+        "Line" : 783,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "### (I) Reliant-Unix (aka SINIX) 5.44 with standard cc\n\n#\tUse both \"-F O3\" lines for optimization or the \"-g\" line for debugging\n\n#EXTRA_LIBS = -lgen -lsocket -lnsl -lSM -lICE\n\n#CFLAGS = -F O3 -DSINIXN\n\n#LDFLAGS = -F O3\n\n#CFLAGS = -g -DSINIXN\n",
+        "Line" : 788,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "### (P)  SCO 3.2.42, with different termcap names for some useful keys DJB\n\n#EXTRA_DEFS = -DSCOKEYS -DNETTERM_MOUSE -DDEC_MOUSE -DXTERM_MOUSE -DHAVE_GETTIMEOFDAY\n\n#EXTRA_LIBS = -lsocket -ltermcap -lmalloc -lc_s\n",
+        "Line" : 795,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "### (P)  SuperUX 6.2 on NEC SX-4 (Lennart Schultz)\n\n#GUI_INC_LOC = -I/usr/include\n\n#GUI_LIB_LOC = -L/usr/lib\n\n#EXTRA_LIBS = -lgen\n",
+        "Line" : 799,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "### (Q) UNIXSVR 4.2MP on NEC UP4800 (Lennart Schultz)\n\n#GUI_INC_LOC = -I/usr/necccs/include\n\n#GUI_LIB_LOC = -L/usr/necccs/lib/X11R6\n\n#XROOT = /usr/necccs\n\n#CONF_OPT_X = --x-include=$(XROOT)/include --x-libraries=$(XROOT)/lib/X11R6\n\n#EXTRA_LIBS = -lsocket -lgen\n",
+        "Line" : 804,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "### Irix 4.0 & 5.2 (Silicon Graphics Machines, __sgi will be defined)\n\n# Not needed for Irix 5.3, Ives Aerts reported\n\n#EXTRA_LIBS = -lmalloc -lc_s\n\n# Irix 4.0, when regexp and regcmp cannot be found when linking:\n\n#EXTRA_LIBS = -lmalloc -lc_s -lPW\n",
+        "Line" : 811,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "### (S) Irix 6.x (MipsPro compiler): Uses different Olimit flag:\n\n# Note:\tThis newer option style is used with the MipsPro compilers ONLY if\n\n#\tyou are compiling an \"n32\" or \"64\" ABI binary (use either a -n32\n\n#\tflag or a -64 flag for CFLAGS).  If you explicitly use a -o32 flag,\n\n#\tthen the CFLAGS option format will be the typical style (i.e.\n\n#\t-Olimit 3000).\n\n#CFLAGS = -OPT:Olimit=3000 -O\n",
+        "Line" : 817,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "### (S) Irix 6.5 with MipsPro C compiler.  Try this as a test to see new\n\n#\tcompiler features!  Beware, the optimization is EXTREMELY thorough\n\n#\tand takes quite a long time.\n\n# Note: See the note above.  Here, the -mips3 option automatically\n\n#\tenables either the \"n32\" or \"64\" ABI, depending on what machine you\n\n#\tare compiling on (n32 is explicitly enabled here, just to make sure).\n\n#CFLAGS = -OPT:Olimit=3500 -O -n32 -mips3 -IPA:aggr_cprop=ON -INLINE:dfe=ON:list=ON:must=screen_char,out_char,ui_write,out_flush\n\n#LDFLAGS= -OPT:Olimit=3500 -O -n32 -mips3 -IPA:aggr_cprop=ON -INLINE:dfe=ON:list=ON:must=screen_char,out_char,ui_write,out_flush\n",
+        "Line" : 825,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "### (K) for SGI Irix machines with 64 bit pointers (\"uname -s\" says IRIX64)\n\n###\tSuggested by Jon Wright <jon@gate.sinica.edu.tw>.\n\n###\tTested on R8000 IRIX6.1 Power Indigo2.\n\n###\tCheck /etc/compiler.defaults for your compiler settings.\n\n# either (for 64 bit pointers) uncomment the following line\n\n#GUI_LIB_LOC = -L/usr/lib64\n\n# then\n\n# 1) make config\n\n# 2) edit auto/config.mk and delete the -lelf entry in the LIBS line\n\n# 3) make\n\n#\n\n# or (for 32bit pointers) uncomment the following line\n\n#EXTRA_DEFS = -n32\n\n#GUI_LIB_LOC = -L/usr/lib32\n\n# then\n\n# 1) make config\n\n# 2) edit auto/config.mk, add -n32 to LDFLAGS\n\n# 3) make\n\n#\n\n#Alternatively: use -o32 instead of -n32.\n\n###\n",
+        "Line" : 834,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "### (C)  On SCO Unix v3.2.5 (and probably other versions) the termcap library,\n\n###\t which is found by configure, doesn't work correctly.  Symptom is the\n\n###\t error message \"Termcap entry too long\".  Uncomment the next line.\n\n###\t On AIX 4.2.1 (and other versions probably), libtermcap is reported\n\n###\t not to display properly.\n\n### after changing this, you need to do \"make reconfig\".\n\n#CONF_TERM_LIB = --with-tlib=curses\n",
+        "Line" : 856,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "### (E)  If you want to use termlib library instead of the automatically found\n\n###\t one.  After changing this, you need to do \"make reconfig\".\n\n#CONF_TERM_LIB = --with-tlib=termlib\n",
+        "Line" : 864,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "### (a)  ESIX V4.2 (Reinhard Wobst)\n\n#EXTRA_LIBS = -lnsl -lsocket -lgen -lXIM -lXmu -lXext\n",
+        "Line" : 868,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "### (c)  Tandem/NSK (Matthew Woehlke)\n\n#EXTRA_LIBS = -lfloss\n",
+        "Line" : 871,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "### If you want to use ncurses library instead of the automatically found one\n\n### after changing this, you need to do \"make reconfig\".\n\n#CONF_TERM_LIB = --with-tlib=ncurses\n",
+        "Line" : 874,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "### For GCC on MSDOS, the \".exe\" suffix will be added.\n\n#EXEEXT = .exe\n\n#LNKEXT = .exe\n",
+        "Line" : 878,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "### (O)  For LynxOS 2.5.0, tested on PC.\n\n#EXTRA_LIBS = -lXext -lSM -lICE -lbsd\n\n###\t For LynxOS 3.0.1, tested on PPC\n\n#EXTRA_LIBS= -lXext -lSM -lICE -lnetinet -lXmu -liberty -lX11\n\n###\t For LynxOS 3.1.0, tested on PC\n\n#EXTRA_LIBS= -lXext -lSM -lICE -lnetinet -lXmu\n",
+        "Line" : 882,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "### (V)  For CX/UX 6.2\t(on Harris/Concurrent NightHawk 4800, 5800). Remove\n\n###\t -Qtarget if only in a 5800 environment.  (Kipp E. Howard)\n\n#CFLAGS = -O -Qtarget=m88110compat\n\n#EXTRA_LIBS = -lgen\n",
+        "Line" : 890,
+        "CharPositionInLine" : 0
+      },
+      "107" : {
+        "Text" : "# The value of QUOTESED comes from auto/config.mk.\n\n# Uncomment the next line to use the default value.\n\n# QUOTESED = sed -e 's/[\\\\\"]/\\\\&/g' -e 's/\\\\\"/\"/' -e 's/\\\\\";$$/\";/'\n",
+        "Line" : 895,
+        "CharPositionInLine" : 0
+      },
+      "108" : {
+        "Text" : "##################### end of system specific lines ################### }}}\n",
+        "Line" : 899,
+        "CharPositionInLine" : 0
+      },
+      "109" : {
+        "Text" : "### Names of the programs and targets  {{{1\n",
+        "Line" : 901,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "### Names of the tools that are also made  {{{1\n",
+        "Line" : 926,
+        "CharPositionInLine" : 0
+      },
+      "111" : {
+        "Text" : "### Installation directories.  The defaults come from configure. {{{1\n\n#\n\n### prefix\tthe top directory for the data (default \"/usr/local\")\n\n#\n\n# Uncomment the next line to install Vim in your home directory.\n\n#prefix = $(HOME)\n",
+        "Line" : 929,
+        "CharPositionInLine" : 0
+      },
+      "112" : {
+        "Text" : "### exec_prefix\tis the top directory for the executable (default $(prefix))\n\n#\n\n# Uncomment the next line to install the Vim executable in \"/usr/machine/bin\"\n\n#exec_prefix = /usr/machine\n",
+        "Line" : 936,
+        "CharPositionInLine" : 0
+      },
+      "113" : {
+        "Text" : "### BINDIR\tdir for the executable\t (default \"$(exec_prefix)/bin\")\n\n### MANDIR\tdir for the manual pages (default \"$(prefix)/man\")\n\n### DATADIR\tdir for the other files  (default \"$(prefix)/lib\" or\n\n#\t\t\t\t\t\t  \"$(prefix)/share\")\n\n# They may be different when using different architectures for the\n\n# executable and a common directory for the other files.\n\n#\n\n# Uncomment the next line to install Vim in \"/usr/bin\"\n\n#BINDIR   = /usr/bin\n\n# Uncomment the next line to install Vim manuals in \"/usr/share/man/man1\"\n\n#MANDIR   = /usr/share/man\n\n# Uncomment the next line to install Vim help files in \"/usr/share/vim\"\n\n#DATADIR  = /usr/share\n",
+        "Line" : 941,
+        "CharPositionInLine" : 0
+      },
+      "114" : {
+        "Text" : "### DESTDIR\troot of the installation tree.  This is prepended to the other\n\n#\t\tdirectories.  This directory must exist.\n\n#DESTDIR  = ~/pkg/vim\n",
+        "Line" : 955,
+        "CharPositionInLine" : 0
+      },
+      "115" : {
+        "Text" : "### Directory of the man pages\n",
+        "Line" : 959,
+        "CharPositionInLine" : 0
+      },
+      "116" : {
+        "Text" : "### Vim version (adjusted by a script)\n",
+        "Line" : 962,
+        "CharPositionInLine" : 0
+      },
+      "117" : {
+        "Text" : "### Location of Vim files (should not need to be changed, and  {{{1\n\n### some things might not work when they are changed!)\n",
+        "Line" : 966,
+        "CharPositionInLine" : 0
+      },
+      "118" : {
+        "Text" : "### VIMLOC\tcommon root of the Vim files (all versions)\n\n### VIMRTLOC\tcommon root of the runtime Vim files (this version)\n\n### VIMRCLOC\tcompiled-in location for global [g]vimrc files (all versions)\n\n### VIMRUNTIMEDIR  compiled-in location for runtime files (optional)\n\n### HELPSUBLOC\tlocation for help files\n\n### COLSUBLOC\tlocation for colorscheme files\n\n### SYNSUBLOC\tlocation for syntax files\n\n### INDSUBLOC\tlocation for indent files\n\n### AUTOSUBLOC\tlocation for standard autoload files\n\n### PLUGSUBLOC\tlocation for standard plugin files\n\n### FTPLUGSUBLOC  location for ftplugin files\n\n### LANGSUBLOC\tlocation for language files\n\n### COMPSUBLOC\tlocation for compiler files\n\n### KMAPSUBLOC\tlocation for keymap files\n\n### MACROSUBLOC\tlocation for macro files\n\n### TOOLSSUBLOC\tlocation for tools files\n\n### TUTORSUBLOC\tlocation for tutor files\n\n### SPELLSUBLOC\tlocation for spell files\n\n### PRINTSUBLOC\tlocation for PostScript files (prolog, latin1, ..)\n\n### SCRIPTLOC\tlocation for script files (menu.vim, bugreport.vim, ..)\n\n### You can override these if you want to install them somewhere else.\n\n### Edit feature.h for compile-time settings.\n",
+        "Line" : 987,
+        "CharPositionInLine" : 0
+      },
+      "119" : {
+        "Text" : "### Only set VIMRUNTIMEDIR when VIMRTLOC is set to a different location and\n\n### the runtime directory is not below it.\n\n#VIMRUNTIMEDIR = $(VIMRTLOC)\n",
+        "Line" : 1029,
+        "CharPositionInLine" : 0
+      },
+      "120" : {
+        "Text" : "### Name of the evim file target.\n",
+        "Line" : 1033,
+        "CharPositionInLine" : 0
+      },
+      "121" : {
+        "Text" : "### Name of the menu file target.\n",
+        "Line" : 1037,
+        "CharPositionInLine" : 0
+      },
+      "122" : {
+        "Text" : "### Name of the bugreport file target.\n",
+        "Line" : 1042,
+        "CharPositionInLine" : 0
+      },
+      "123" : {
+        "Text" : "### Name of the file type detection file target.\n",
+        "Line" : 1045,
+        "CharPositionInLine" : 0
+      },
+      "124" : {
+        "Text" : "### Name of the file type detection file target.\n",
+        "Line" : 1048,
+        "CharPositionInLine" : 0
+      },
+      "125" : {
+        "Text" : "### Name of the file type detection script file target.\n",
+        "Line" : 1051,
+        "CharPositionInLine" : 0
+      },
+      "126" : {
+        "Text" : "### Name of the ftplugin-on file target.\n",
+        "Line" : 1054,
+        "CharPositionInLine" : 0
+      },
+      "127" : {
+        "Text" : "### Name of the ftplugin-off file target.\n",
+        "Line" : 1057,
+        "CharPositionInLine" : 0
+      },
+      "128" : {
+        "Text" : "### Name of the indent-on file target.\n",
+        "Line" : 1060,
+        "CharPositionInLine" : 0
+      },
+      "129" : {
+        "Text" : "### Name of the indent-off file target.\n",
+        "Line" : 1063,
+        "CharPositionInLine" : 0
+      },
+      "130" : {
+        "Text" : "### Name of the option window script file target.\n",
+        "Line" : 1066,
+        "CharPositionInLine" : 0
+      },
+      "131" : {
+        "Text" : "# Program to install the program in the target directory.  Could also be \"mv\".\n",
+        "Line" : 1069,
+        "CharPositionInLine" : 0
+      },
+      "132" : {
+        "Text" : "# Program to install the data in the target directory.\tCannot be \"mv\"!\n",
+        "Line" : 1072,
+        "CharPositionInLine" : 0
+      },
+      "133" : {
+        "Text" : "### Program to run on installed binary.  Use the second one to disable strip.\n\n#STRIP = strip\n\n#STRIP = /bin/true\n",
+        "Line" : 1076,
+        "CharPositionInLine" : 0
+      },
+      "134" : {
+        "Text" : "### Permissions for binaries  {{{1\n",
+        "Line" : 1080,
+        "CharPositionInLine" : 0
+      },
+      "135" : {
+        "Text" : "### Permissions for man page\n",
+        "Line" : 1083,
+        "CharPositionInLine" : 0
+      },
+      "136" : {
+        "Text" : "### Permissions for help files\n",
+        "Line" : 1086,
+        "CharPositionInLine" : 0
+      },
+      "137" : {
+        "Text" : "### Permissions for Perl and shell scripts\n",
+        "Line" : 1089,
+        "CharPositionInLine" : 0
+      },
+      "138" : {
+        "Text" : "### Permission for Vim script files (menu.vim, bugreport.vim, ..)\n",
+        "Line" : 1092,
+        "CharPositionInLine" : 0
+      },
+      "139" : {
+        "Text" : "### Permissions for all directories that are created\n",
+        "Line" : 1095,
+        "CharPositionInLine" : 0
+      },
+      "140" : {
+        "Text" : "### Permissions for all other files that are created\n",
+        "Line" : 1098,
+        "CharPositionInLine" : 0
+      },
+      "141" : {
+        "Text" : "# Where to copy the man and help files from\n",
+        "Line" : 1101,
+        "CharPositionInLine" : 0
+      },
+      "142" : {
+        "Text" : "# Where to copy the script files from (menu, bugreport)\n",
+        "Line" : 1104,
+        "CharPositionInLine" : 0
+      },
+      "143" : {
+        "Text" : "# Where to copy the colorscheme files from\n",
+        "Line" : 1107,
+        "CharPositionInLine" : 0
+      },
+      "144" : {
+        "Text" : "# Where to copy the syntax files from\n",
+        "Line" : 1110,
+        "CharPositionInLine" : 0
+      },
+      "145" : {
+        "Text" : "# Where to copy the indent files from\n",
+        "Line" : 1113,
+        "CharPositionInLine" : 0
+      },
+      "146" : {
+        "Text" : "# Where to copy the standard plugin files from\n",
+        "Line" : 1116,
+        "CharPositionInLine" : 0
+      },
+      "147" : {
+        "Text" : "# Where to copy the standard plugin files from\n",
+        "Line" : 1119,
+        "CharPositionInLine" : 0
+      },
+      "148" : {
+        "Text" : "# Where to copy the ftplugin files from\n",
+        "Line" : 1122,
+        "CharPositionInLine" : 0
+      },
+      "149" : {
+        "Text" : "# Where to copy the macro files from\n",
+        "Line" : 1125,
+        "CharPositionInLine" : 0
+      },
+      "150" : {
+        "Text" : "# Where to copy the tools files from\n",
+        "Line" : 1128,
+        "CharPositionInLine" : 0
+      },
+      "151" : {
+        "Text" : "# Where to copy the tutor files from\n",
+        "Line" : 1131,
+        "CharPositionInLine" : 0
+      },
+      "152" : {
+        "Text" : "# Where to copy the spell files from\n",
+        "Line" : 1134,
+        "CharPositionInLine" : 0
+      },
+      "153" : {
+        "Text" : "# Where to look for language specific files\n",
+        "Line" : 1137,
+        "CharPositionInLine" : 0
+      },
+      "154" : {
+        "Text" : "# Where to look for compiler files\n",
+        "Line" : 1140,
+        "CharPositionInLine" : 0
+      },
+      "155" : {
+        "Text" : "# Where to look for keymap files\n",
+        "Line" : 1143,
+        "CharPositionInLine" : 0
+      },
+      "156" : {
+        "Text" : "# Where to look for print resource files\n",
+        "Line" : 1146,
+        "CharPositionInLine" : 0
+      },
+      "157" : {
+        "Text" : "# If you are using Linux, you might want to use this to make vim the\n\n# default vi editor, it will create a link from vi to Vim when doing\n\n# \"make install\".  An existing file will be overwritten!\n\n# When not using it, some make programs can't handle an undefined $(LINKIT).\n\n#LINKIT = ln -f -s $(DEST_BIN)/$(VIMTARGET) $(DESTDIR)/usr/bin/vi\n",
+        "Line" : 1149,
+        "CharPositionInLine" : 0
+      },
+      "158" : {
+        "Text" : "###\n\n### GRAPHICAL USER INTERFACE (GUI).  {{{1\n\n### 'configure --enable-gui' can enable one of these for you if you did set\n\n### a corresponding CONF_OPT_GUI above and have X11.\n\n### Override configures choice by uncommenting all the following lines.\n\n### As they are, the GUI is disabled.  Replace \"NONE\" with \"ATHENA\" or \"MOTIF\"\n\n### for enabling the Athena or Motif GUI.\n\n#GUI_SRC\t= $(NONE_SRC)\n\n#GUI_OBJ\t= $(NONE_OBJ)\n\n#GUI_DEFS\t= $(NONE_DEFS)\n\n#GUI_IPATH\t= $(NONE_IPATH)\n\n#GUI_LIBS_DIR\t= $(NONE_LIBS_DIR)\n\n#GUI_LIBS1\t= $(NONE_LIBS1)\n\n#GUI_LIBS2\t= $(NONE_LIBS2)\n\n#GUI_INSTALL    = $(NONE_INSTALL)\n\n#GUI_TARGETS\t= $(NONE_TARGETS)\n\n#GUI_MAN_TARGETS= $(NONE_MAN_TARGETS)\n\n#GUI_TESTTARGET = $(NONE_TESTTARGET)\n\n#GUI_BUNDLE\t= $(NONE_BUNDLE)\n",
+        "Line" : 1156,
+        "CharPositionInLine" : 0
+      },
+      "159" : {
+        "Text" : "# Without a GUI install the normal way.\n",
+        "Line" : 1176,
+        "CharPositionInLine" : 0
+      },
+      "160" : {
+        "Text" : "### GTK GUI\n",
+        "Line" : 1179,
+        "CharPositionInLine" : 0
+      },
+      "161" : {
+        "Text" : "### Motif GUI\n",
+        "Line" : 1196,
+        "CharPositionInLine" : 0
+      },
+      "162" : {
+        "Text" : "### Athena GUI\n\n### Use Xaw3d to make the menus look a little bit nicer\n\n#XAW_LIB = -lXaw3d\n",
+        "Line" : 1213,
+        "CharPositionInLine" : 0
+      },
+      "163" : {
+        "Text" : "### When using Xaw3d, uncomment/comment the following lines to also get the\n\n### scrollbars from Xaw3d.\n\n#ATHENA_SRC\t= gui.c gui_athena.c gui_x11.c pty.c gui_beval.c gui_at_fs.c\n\n#ATHENA_OBJ\t= objects/gui.o objects/gui_athena.o objects/gui_x11.o \\\n#\t\t\tobjects/pty.o objects/gui_beval.o objects/gui_at_fs.o\n",
+        "Line" : 1218,
+        "CharPositionInLine" : 0
+      },
+      "164" : {
+        "Text" : "#ATHENA_DEFS\t= -DFEAT_GUI_ATHENA $(NARROW_PROTO) \\\n#\t\t    -Dvim_scrollbarWidgetClass=scrollbarWidgetClass \\\n#\t\t    -Dvim_XawScrollbarSetThumb=XawScrollbarSetThumb\n",
+        "Line" : 1223,
+        "CharPositionInLine" : 0
+      },
+      "165" : {
+        "Text" : "### neXtaw GUI\n",
+        "Line" : 1243,
+        "CharPositionInLine" : 0
+      },
+      "166" : {
+        "Text" : "### (J)  Sun OpenWindows 3.2 (SunOS 4.1.x) or earlier that produce these ld\n\n#\t errors:  ld: Undefined symbol\n\n#\t\t      _get_wmShellWidgetClass\n\n#\t\t      _get_applicationShellWidgetClass\n\n# then you need to get patches 100512-02 and 100573-03 from Sun.  In the\n\n# meantime, uncomment the following GUI_X_LIBS definition as a workaround:\n\n#GUI_X_LIBS = -Bstatic -lXmu -Bdynamic -lXext\n\n# If you also get cos, sin etc. as undefined symbols, try uncommenting this\n\n# too:\n\n#EXTRA_LIBS = /usr/openwin/lib/libXmu.sa -lm\n",
+        "Line" : 1261,
+        "CharPositionInLine" : 0
+      },
+      "167" : {
+        "Text" : "# PHOTON GUI\n",
+        "Line" : 1272,
+        "CharPositionInLine" : 0
+      },
+      "168" : {
+        "Text" : "# CARBON GUI\n",
+        "Line" : 1286,
+        "CharPositionInLine" : 0
+      },
+      "169" : {
+        "Text" : "# All GUI files\n",
+        "Line" : 1304,
+        "CharPositionInLine" : 0
+      },
+      "170" : {
+        "Text" : "# }}}\n",
+        "Line" : 1308,
+        "CharPositionInLine" : 0
+      },
+      "171" : {
+        "Text" : "### Command to create dependencies based on #include \"...\"\n\n### prototype headers are ignored due to -DPROTO, system\n\n### headers #include <...> are ignored if we use the -MM option, as\n\n### e.g. provided by gcc-cpp.\n\n### Include FEAT_GUI to get dependency on gui.h\n\n### Need to change \"-I /<path>\" to \"-isystem /<path>\" for GCC 3.x.\n",
+        "Line" : 1310,
+        "CharPositionInLine" : 0
+      },
+      "172" : {
+        "Text" : "# flags for cproto\n\n#     This is for cproto 3 patchlevel 8 or below\n\n#     __inline, __attribute__ and __extension__ are not recognized by cproto\n\n#     G_IMPLEMENT_INLINES is to avoid functions defined in glib/gutils.h.\n\n#NO_ATTR = -D__inline= -D__inline__= -DG_IMPLEMENT_INLINES \\\n#\t  -D\"__attribute__\\\\(x\\\\)=\" -D\"__asm__\\\\(x\\\\)=\" \\\n#\t  -D__extension__= -D__restrict=\"\" \\\n#\t  -D__gnuc_va_list=char -D__builtin_va_list=char\n",
+        "Line" : 1319,
+        "CharPositionInLine" : 0
+      },
+      "173" : {
+        "Text" : "#\n\n#     This is for cproto 3 patchlevel 9 or above (currently 4.6, 4.7g)\n\n#     __inline and __attribute__ are now recognized by cproto\n\n#     -D\"foo()=\" is not supported by all compilers so do not use it\n",
+        "Line" : 1328,
+        "CharPositionInLine" : 0
+      },
+      "174" : {
+        "Text" : "#\n\n# Use this for cproto 3 patchlevel 6 or below (use \"cproto -V\" to check):\n\n# PROTO_FLAGS = -f4 -m__ARGS -d -E\"$(CPP)\" $(NO_ATTR)\n\n#\n\n# Use this for cproto 3 patchlevel 7 or above (use \"cproto -V\" to check):\n",
+        "Line" : 1333,
+        "CharPositionInLine" : 0
+      },
+      "175" : {
+        "Text" : "################################################\n\n##   no changes required below this line      ##\n\n################################################\n",
+        "Line" : 1341,
+        "CharPositionInLine" : 0
+      },
+      "176" : {
+        "Text" : "# Exclude $CFLAGS for osdef.sh, for Mac 10.4 some flags don't work together\n\n# with \"-E\".\n",
+        "Line" : 1355,
+        "CharPositionInLine" : 0
+      },
+      "177" : {
+        "Text" : "# Note: MZSCHEME_LIBS must come before LIBS, because LIBS adds -lm which is\n\n# needed by racket.\n",
+        "Line" : 1365,
+        "CharPositionInLine" : 0
+      },
+      "178" : {
+        "Text" : "# abbreviations\n",
+        "Line" : 1388,
+        "CharPositionInLine" : 0
+      },
+      "179" : {
+        "Text" : "# We assume that the \".../man/xx/man1/\" directory is for latin1 manual pages.\n\n# Some systems use UTF-8, but these should find the \".../man/xx.UTF-8/man1/\"\n\n# directory first.\n\n# FreeBSD uses \".../man/xx.ISO8859-1/man1\" for latin1, use that one too.\n",
+        "Line" : 1410,
+        "CharPositionInLine" : 0
+      },
+      "180" : {
+        "Text" : "#\t     BASIC_SRC: files that are always used\n\n#\t       GUI_SRC: extra GUI files for current configuration\n\n#\t   ALL_GUI_SRC: all GUI files for Unix\n\n#\n\n#\t\t   SRC: files used for current configuration\n\n#\t      TAGS_SRC: source files used for make tags\n\n#\t     TAGS_INCL: include files used for make tags\n\n#\t       ALL_SRC: source files used for make depend and make lint\n",
+        "Line" : 1428,
+        "CharPositionInLine" : 0
+      },
+      "181" : {
+        "Text" : "# Unittest files\n",
+        "Line" : 1511,
+        "CharPositionInLine" : 0
+      },
+      "182" : {
+        "Text" : "# All sources, also the ones that are not configured\n",
+        "Line" : 1518,
+        "CharPositionInLine" : 0
+      },
+      "183" : {
+        "Text" : "# Which files to check with lint.  Select one of these three lines.  ALL_SRC\n\n# checks more, but may not work well for checking a GUI that wasn't configured.\n\n# The perl sources also don't work well with lint.\n",
+        "Line" : 1521,
+        "CharPositionInLine" : 0
+      },
+      "184" : {
+        "Text" : "#LINT_SRC = $(SRC)\n\n#LINT_SRC = $(ALL_SRC)\n\n#LINT_SRC = $(BASIC_SRC)\n",
+        "Line" : 1526,
+        "CharPositionInLine" : 0
+      },
+      "185" : {
+        "Text" : "# Resources used for the Mac are in one directory.\n",
+        "Line" : 1662,
+        "CharPositionInLine" : 0
+      },
+      "186" : {
+        "Text" : "# Default target is making the executable and tools\n",
+        "Line" : 1668,
+        "CharPositionInLine" : 0
+      },
+      "187" : {
+        "Text" : "# Run configure with all the setting from above.\n\n#\n\n# Note: auto/config.h doesn't depend on configure, because running configure\n\n# doesn't always update auto/config.h.  The timestamp isn't changed if the\n\n# file contents didn't change (to avoid recompiling everything).  Including a\n\n# dependency on auto/config.h would cause running configure each time when\n\n# auto/config.h isn't updated.  The dependency on auto/config.mk should make\n\n# sure configure is run when it's needed.\n\n#\n\n# Remove the config.cache every time, once in a while it causes problems that\n\n# are very hard to figure out.\n\n#\n",
+        "Line" : 1673,
+        "CharPositionInLine" : 0
+      },
+      "188" : {
+        "Text" : "# Use \"make reconfig\" to rerun configure without cached values.\n\n# When config.h changes, most things will be recompiled automatically.\n\n# Invoke $(MAKE) to run config with the empty auto/config.mk.\n\n# Invoke $(MAKE) to build all with the filled auto/config.mk.\n",
+        "Line" : 1707,
+        "CharPositionInLine" : 0
+      },
+      "189" : {
+        "Text" : "# Run autoconf to produce auto/configure.\n\n# Note:\n\n# - DO NOT RUN autoconf MANUALLY!  It will overwrite ./configure instead of\n\n#   producing auto/configure.\n\n# - autoconf is not run automatically, because a patch usually changes both\n\n#   configure.in and auto/configure but can't update the timestamps.  People\n\n#   who do not have (the correct version of) autoconf would run into trouble.\n\n#\n\n# Two tricks are required to make autoconf put its output in the \"auto\" dir:\n\n# - Temporarily move the ./configure script to ./configure.save.  Don't\n\n#   overwrite it, it's probably the result of an aborted autoconf.\n\n# - Use sed to change ./config.log to auto/config.log in the configure script.\n\n# Autoconf 2.5x (2.59 at least) produces a few more files that we need to take\n\n# care of:\n\n# - configure.lineno: has the line numbers replaced with $LINENO.  That\n\n#   improves patches a LOT, thus use it instead (until someone says it doesn't\n\n#   work on some system).\n\n# - autom4te.cache directory is created and not cleaned up.  Delete it.\n\n# - Uses \">config.log\" instead of \"./config.log\".\n",
+        "Line" : 1715,
+        "CharPositionInLine" : 0
+      },
+      "190" : {
+        "Text" : "# Re-execute this Makefile to include the new auto/config.mk produced by\n\n# configure Only used when typing \"make\" with a fresh auto/config.mk.\n",
+        "Line" : 1743,
+        "CharPositionInLine" : 0
+      },
+      "191" : {
+        "Text" : "# The normal command to compile a .c file to its .o file.\n",
+        "Line" : 1749,
+        "CharPositionInLine" : 0
+      },
+      "192" : {
+        "Text" : "# Link the target for normal use or debugging.\n\n# A shell script is used to try linking without unnecessary libraries.\n",
+        "Line" : 1753,
+        "CharPositionInLine" : 0
+      },
+      "193" : {
+        "Text" : "# Build the language specific files if they were unpacked.\n\n# Generate the converted .mo files separately, it's no problem if this fails.\n",
+        "Line" : 1766,
+        "CharPositionInLine" : 0
+      },
+      "194" : {
+        "Text" : "# Update the *.po files for changes in the sources.  Only run manually.\n",
+        "Line" : 1778,
+        "CharPositionInLine" : 0
+      },
+      "195" : {
+        "Text" : "# Generate function prototypes.  This is not needed to compile vim, but if\n\n# you want to use it, cproto is out there on the net somewhere -- Webb\n\n#\n\n# When generating os_amiga.pro, os_msdos.pro and os_win32.pro there will be a\n\n# few include files that can not be found, that's OK.\n",
+        "Line" : 1782,
+        "CharPositionInLine" : 0
+      },
+      "196" : {
+        "Text" : "# Filter out arguments that cproto doesn't support.\n\n# Don't pass \"-pthread\", \"-fwrapv\" and similar arguments to cproto, it sees\n\n# them as a list of individual flags.\n\n# The -E\"gcc -E\" argument must be separate to avoid problems with shell\n\n# quoting.\n",
+        "Line" : 1790,
+        "CharPositionInLine" : 0
+      },
+      "197" : {
+        "Text" : "### Would be nice if this would work for \"normal\" make.\n\n### Currently it only works for (Free)BSD make.\n\n#$(PRO_AUTO): $$(*F).c\n\n#\t$(CPROTO) -DFEAT_GUI $(*F).c > $@\n",
+        "Line" : 1798,
+        "CharPositionInLine" : 0
+      },
+      "198" : {
+        "Text" : "# Always define FEAT_GUI.  This may generate a few warnings if it's also\n\n# defined in auto/config.h, you can ignore that.\n",
+        "Line" : 1803,
+        "CharPositionInLine" : 0
+      },
+      "199" : {
+        "Text" : "# must use os_vms_conf.h for auto/config.h\n",
+        "Line" : 1838,
+        "CharPositionInLine" : 0
+      },
+      "200" : {
+        "Text" : "# if_perl.pro is special: Use the generated if_perl.c for input and remove\n\n# prototypes for local functions.\n",
+        "Line" : 1846,
+        "CharPositionInLine" : 0
+      },
+      "201" : {
+        "Text" : "# Note: tags is made for the currently configured version, can't include both\n\n#\tMotif and Athena GUI\n\n# You can ignore error messages for missing files.\n",
+        "Line" : 1855,
+        "CharPositionInLine" : 0
+      },
+      "202" : {
+        "Text" : "# Make a highlight file for types.  Requires Exuberant ctags and awk\n",
+        "Line" : 1861,
+        "CharPositionInLine" : 0
+      },
+      "203" : {
+        "Text" : "# Execute the test scripts.  Run these after compiling Vim, before installing.\n\n# This doesn't depend on $(VIMTARGET), because that won't work when configure\n\n# wasn't run yet.  Restart make to build it instead.\n\n#\n\n# This will produce a lot of garbage on your screen, including a few error\n\n# messages.  Don't worry about that.\n\n# If there is a real error, there will be a difference between \"testXX.out\" and\n\n# a \"testXX.ok\" file.\n\n# If everything is alright, the final message will be \"ALL DONE\".  If not you\n\n# get \"TEST FAILURE\".\n\n#\n",
+        "Line" : 1868,
+        "CharPositionInLine" : 0
+      },
+      "204" : {
+        "Text" : "# Run individual test, assuming that Vim was already compiled.\n",
+        "Line" : 1901,
+        "CharPositionInLine" : 0
+      },
+      "205" : {
+        "Text" : "# Unittests\n\n# It's build just like Vim to satisfy all dependencies.\n",
+        "Line" : 1947,
+        "CharPositionInLine" : 0
+      },
+      "206" : {
+        "Text" : "# install targets\n",
+        "Line" : 1956,
+        "CharPositionInLine" : 0
+      },
+      "207" : {
+        "Text" : "#\n\n# Avoid overwriting an existing executable, somebody might be running it and\n\n# overwriting it could cause it to crash.  Deleting it is OK, it won't be\n\n# really deleted until all running processes for it have exited.  It is\n\n# renamed first, in case the deleting doesn't work.\n\n#\n\n# If you want to keep an older version, rename it before running \"make\n\n# install\".\n\n#\n",
+        "Line" : 1967,
+        "CharPositionInLine" : 0
+      },
+      "208" : {
+        "Text" : "# may create a link to the new executable from /usr/bin/vi\n",
+        "Line" : 1984,
+        "CharPositionInLine" : 0
+      },
+      "209" : {
+        "Text" : "# Long list of arguments for the shell script that installs the manual pages\n\n# for one language.\n",
+        "Line" : 1987,
+        "CharPositionInLine" : 0
+      },
+      "210" : {
+        "Text" : "# Install most of the runtime files\n",
+        "Line" : 1992,
+        "CharPositionInLine" : 0
+      },
+      "211" : {
+        "Text" : "# install the help files; first adjust the contents for the final location\n",
+        "Line" : 1995,
+        "CharPositionInLine" : 0
+      },
+      "212" : {
+        "Text" : "# Generate the help tags with \":helptags\" to handle all languages.\n",
+        "Line" : 2002,
+        "CharPositionInLine" : 0
+      },
+      "213" : {
+        "Text" : "# install the menu files\n",
+        "Line" : 2012,
+        "CharPositionInLine" : 0
+      },
+      "214" : {
+        "Text" : "# install the evim file\n",
+        "Line" : 2019,
+        "CharPositionInLine" : 0
+      },
+      "215" : {
+        "Text" : "# install the bugreport file\n",
+        "Line" : 2024,
+        "CharPositionInLine" : 0
+      },
+      "216" : {
+        "Text" : "# install the example vimrc files\n",
+        "Line" : 2027,
+        "CharPositionInLine" : 0
+      },
+      "217" : {
+        "Text" : "# install the file type detection files\n",
+        "Line" : 2032,
+        "CharPositionInLine" : 0
+      },
+      "218" : {
+        "Text" : "# install the print resource files\n",
+        "Line" : 2049,
+        "CharPositionInLine" : 0
+      },
+      "219" : {
+        "Text" : "# install the colorscheme files\n",
+        "Line" : 2052,
+        "CharPositionInLine" : 0
+      },
+      "220" : {
+        "Text" : "# install the syntax files\n",
+        "Line" : 2055,
+        "CharPositionInLine" : 0
+      },
+      "221" : {
+        "Text" : "# install the indent files\n",
+        "Line" : 2058,
+        "CharPositionInLine" : 0
+      },
+      "222" : {
+        "Text" : "# install the standard autoload files\n",
+        "Line" : 2061,
+        "CharPositionInLine" : 0
+      },
+      "223" : {
+        "Text" : "# install the standard plugin files\n",
+        "Line" : 2066,
+        "CharPositionInLine" : 0
+      },
+      "224" : {
+        "Text" : "# install the ftplugin files\n",
+        "Line" : 2069,
+        "CharPositionInLine" : 0
+      },
+      "225" : {
+        "Text" : "# install the compiler files\n",
+        "Line" : 2072,
+        "CharPositionInLine" : 0
+      },
+      "226" : {
+        "Text" : "# When using CVS some CVS directories might have been copied.\n\n# Also delete AAPDIR and *.info files.\n",
+        "Line" : 2081,
+        "CharPositionInLine" : 0
+      },
+      "227" : {
+        "Text" : "# install the tutor files\n",
+        "Line" : 2088,
+        "CharPositionInLine" : 0
+      },
+      "228" : {
+        "Text" : "# Install the spell files, if they exist.  This assumes at least the English\n\n# spell file is there.\n",
+        "Line" : 2102,
+        "CharPositionInLine" : 0
+      },
+      "229" : {
+        "Text" : "# install helper program xxd\n",
+        "Line" : 2110,
+        "CharPositionInLine" : 0
+      },
+      "230" : {
+        "Text" : "# install the runtime tools\n",
+        "Line" : 2123,
+        "CharPositionInLine" : 0
+      },
+      "231" : {
+        "Text" : "# When using CVS some CVS directories might have been copied.\n",
+        "Line" : 2125,
+        "CharPositionInLine" : 0
+      },
+      "232" : {
+        "Text" : "# replace the path in some tools\n",
+        "Line" : 2131,
+        "CharPositionInLine" : 0
+      },
+      "233" : {
+        "Text" : "# install the language specific files for tools, if they were unpacked\n",
+        "Line" : 2138,
+        "CharPositionInLine" : 0
+      },
+      "234" : {
+        "Text" : "# install the language specific files, if they were unpacked\n",
+        "Line" : 2153,
+        "CharPositionInLine" : 0
+      },
+      "235" : {
+        "Text" : "# install the icons for KDE, if the directory exists and the icon doesn't.\n",
+        "Line" : 2204,
+        "CharPositionInLine" : 0
+      },
+      "236" : {
+        "Text" : "# create links from various names to vim.  This is only done when the links\n\n# (or executables with the same name) don't exist yet.\n",
+        "Line" : 2238,
+        "CharPositionInLine" : 0
+      },
+      "237" : {
+        "Text" : "# Create links for the manual pages with various names to vim.\tThis is only\n\n# done when the links (or manpages with the same name) don't exist yet.\n",
+        "Line" : 2294,
+        "CharPositionInLine" : 0
+      },
+      "238" : {
+        "Text" : "# Note: the \"rmdir\" will fail if any files were added after \"make install\"\n",
+        "Line" : 2318,
+        "CharPositionInLine" : 0
+      },
+      "239" : {
+        "Text" : "#\tThis will fail when other Vim versions are installed, no worries.\n",
+        "Line" : 2390,
+        "CharPositionInLine" : 0
+      },
+      "240" : {
+        "Text" : "# Clean up all the files that have been produced, except configure's.\n\n# We support common typing mistakes for Juergen! :-)\n",
+        "Line" : 2393,
+        "CharPositionInLine" : 0
+      },
+      "241" : {
+        "Text" : "# Make a shadow directory for compilation on another system or with different\n\n# features.\n",
+        "Line" : 2407,
+        "CharPositionInLine" : 0
+      },
+      "242" : {
+        "Text" : "# Link needed for doing \"make install\" in a shadow directory.\n",
+        "Line" : 2440,
+        "CharPositionInLine" : 0
+      },
+      "243" : {
+        "Text" : "# Link needed for doing \"make\" using GTK in a shadow directory.\n",
+        "Line" : 2444,
+        "CharPositionInLine" : 0
+      },
+      "244" : {
+        "Text" : "# Update the synmenu.vim file with the latest Syntax menu.\n\n# This is only needed when runtime/makemenu.vim was changed.\n",
+        "Line" : 2448,
+        "CharPositionInLine" : 0
+      },
+      "245" : {
+        "Text" : "# Start configure from scratch\n",
+        "Line" : 2453,
+        "CharPositionInLine" : 0
+      },
+      "246" : {
+        "Text" : "# Run lint.  Clean up the *.ln files that are sometimes left behind.\n",
+        "Line" : 2491,
+        "CharPositionInLine" : 0
+      },
+      "247" : {
+        "Text" : "# Check dosinst.c with lint.\n",
+        "Line" : 2496,
+        "CharPositionInLine" : 0
+      },
+      "248" : {
+        "Text" : "###########################################################################\n",
+        "Line" : 2501,
+        "CharPositionInLine" : 0
+      },
+      "249" : {
+        "Text" : "# All the object files are put in the \"objects\" directory.  Since not all make\n\n# commands understand putting object files in another directory, it must be\n\n# specified for each file separately.\n",
+        "Line" : 2534,
+        "CharPositionInLine" : 0
+      },
+      "250" : {
+        "Text" : "###############################################################################\n\n### MacOS X installation\n\n###\n\n### This installs a runnable Vim.app in $(prefix)\n",
+        "Line" : 2807,
+        "CharPositionInLine" : 0
+      },
+      "251" : {
+        "Text" : "### Common flags\n",
+        "Line" : 2816,
+        "CharPositionInLine" : 0
+      },
+      "252" : {
+        "Text" : "# Remove the link to the runtime dir, don't want to copy all of that.\n",
+        "Line" : 2821,
+        "CharPositionInLine" : 0
+      },
+      "253" : {
+        "Text" : "# Generate the help tags file now, it won't work with \"make installruntime\".\n",
+        "Line" : 2824,
+        "CharPositionInLine" : 0
+      },
+      "254" : {
+        "Text" : "# Install the runtime files.  Recursive!\n",
+        "Line" : 2826,
+        "CharPositionInLine" : 0
+      },
+      "255" : {
+        "Text" : "#\t-mkdir $(DESTDIR)$(prefix)/$(APPDIR)/bin\n",
+        "Line" : 2828,
+        "CharPositionInLine" : 0
+      },
+      "256" : {
+        "Text" : "# Put the link back.\n",
+        "Line" : 2836,
+        "CharPositionInLine" : 0
+      },
+      "257" : {
+        "Text" : "# Copy rgb.txt, Mac doesn't always have X11\n",
+        "Line" : 2838,
+        "CharPositionInLine" : 0
+      },
+      "258" : {
+        "Text" : "# TODO: Create the vimtutor and/or gvimtutor application.\n",
+        "Line" : 2840,
+        "CharPositionInLine" : 0
+      },
+      "259" : {
+        "Text" : "# Make a link to the runtime directory, so that we can try out the executable\n\n# without installing it.\n",
+        "Line" : 2849,
+        "CharPositionInLine" : 0
+      },
+      "260" : {
+        "Text" : "### Classic resources\n\n# Resource fork (in the form of a .rsrc file) for Classic Vim (Mac OS 9)\n\n# This file is also required for OS X Vim.\n",
+        "Line" : 2867,
+        "CharPositionInLine" : 0
+      },
+      "261" : {
+        "Text" : "# po/Make_osx.pl says something about generating a Mac message file\n\n# for Ukrainian.  Would somebody using Mac OS X in Ukrainian\n\n# *really* be upset that Carbon Vim was not localised in\n\n# Ukrainian?\n\n#\n\n#bundle-language: bundle-dir po/Make_osx.pl\n\n#\tcd po && perl Make_osx.pl --outdir ../$(RESDIR) $(MULTILANG)\n",
+        "Line" : 2876,
+        "CharPositionInLine" : 0
+      },
+      "262" : {
+        "Text" : "###############################################################################\n\n### (automatically generated by 'make depend')\n\n### Dependencies:\n",
+        "Line" : 2890,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 263,
+      "Errorlog" : "line 2473:52 token recognition error at: '\\1'\nline 2477:28 token recognition error at: '\".*/\\1'\nline 2488:34 token recognition error at: '\\1'\n"
+    },
+    "src/po/Makefile" : {
+      "ObjectId" : "d9aa8345741ce4ffc32858b527b8f8449a0ddfb1",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for the Vim message translations.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include stuff found by configure.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# TODO make this configurable\n\n# Note: ja.sjis, *.cp1250 and zh_CN.cp936 are only for MS-Windows, they are\n\n# not installed on Unix\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The OLD_PO_FILE_INPUT and OLD_PO_FILE_OUTPUT are for the new GNU gettext\n\n# tools 0.10.37, which use a slightly different .po file format that is not\n\n# compatible with Solaris (and old gettext implementations) unless these are\n\n# set.  gettext 0.10.36 will not work!\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# nl.po was added later, if it does not exist use a file with just a # in it\n\n# (an empty file doesn't work with old msgfmt).\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Norwegian/Bokmal: \"nb\" is an alias for \"no\".\n\n# Copying the file is not efficient, but I don't know of another way to make\n\n# this work.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Convert ja.po to create ja.sjis.po.  Requires doubling backslashes in the\n\n# second byte.  Don't depend on sjiscorr, it should only be compiled when\n\n# ja.sjis.po is outdated.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Convert cs.po to create cs.cp1250.po.\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Convert pl.po to create pl.cp1250.po.\n",
+        "Line" : 217,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Convert pl.po to create pl.UTF-8.po.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Convert sk.po to create sk.cp1250.po.\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Convert zh_CN.po to create zh_CN.cp936.po.\n\n# set 'charset' to gbk to avoid that msfmt generates a warning\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Convert ko.UTF-8.po to create ko.po.\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Convert ru.po to create ru.cp1251.po.\n",
+        "Line" : 250,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Convert uk.po to create uk.cp1251.po.\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Don't add a dependency here, we only want to update the .po files manually\n",
+        "Line" : 286,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "src/proto/blowfish.pro" : {
+      "ObjectId" : "66d029cd89990988e7b555fc5555e6c16ec4d9b5",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/buffer.pro" : {
+      "ObjectId" : "9e97f67e444b8acac58f0be6665e6b9bfe1a7d5d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/charset.pro" : {
+      "ObjectId" : "dd3b6f2a05532c3d5ab21bb5918c7c4338470822",
+      "LastModified" : "2015-07-17T11:03:48Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/crypt.pro" : {
+      "ObjectId" : "7b29026a1d0f34493ed12af9ab5b71750fc78292",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/crypt_zip.pro" : {
+      "ObjectId" : "5f4e137713cb93d411e3f58a7700d5a26fb67c3b",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/diff.pro" : {
+      "ObjectId" : "3234fde1a6144df961f1137dbd7353b1822efccc",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/digraph.pro" : {
+      "ObjectId" : "5573b8c36df60a7c654be633ed9b3907fe8dc9a9",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/edit.pro" : {
+      "ObjectId" : "1eed378706a804735029cd8fabab32745e1241a7",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/eval.pro" : {
+      "ObjectId" : "b807baf4c4f652e75b490850b0bd48d3086032d9",
+      "LastModified" : "2015-07-17T15:38:22Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ex_cmds.pro" : {
+      "ObjectId" : "8757637c0abf90d8ef3306e3f6ff99a1f8a6d13f",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ex_cmds2.pro" : {
+      "ObjectId" : "0ac3e149245c3d032fe2b4637f2fb0f64d7f76ad",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ex_docmd.pro" : {
+      "ObjectId" : "a998480eaff5c3898d67d36f928536d01bcd7efc",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ex_eval.pro" : {
+      "ObjectId" : "6c63f67240156161cd270c8d0b932d96b46aa6a7",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ex_getln.pro" : {
+      "ObjectId" : "86e01b58c61339b702235cbec0f0b8b0b3f28cb9",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/fileio.pro" : {
+      "ObjectId" : "32d7bce3182ac752a82308c05b6ae1a06826395b",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/fold.pro" : {
+      "ObjectId" : "10f72012a2a4a090e2edbdcd5b63bd7047d94d38",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/getchar.pro" : {
+      "ObjectId" : "e90b50527b7edae8ba8280b0713f1d6aa74206a3",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui.pro" : {
+      "ObjectId" : "29f87ef65d2b113af6fb243b60cec0f6a4b50ebf",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_athena.pro" : {
+      "ObjectId" : "efc8e40d3c039e6a2b9a2d24018fdc64ae5d5fc0",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_beval.pro" : {
+      "ObjectId" : "33c1738d3f082dcd95dcade6055ccb8c928f11b6",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_gtk.pro" : {
+      "ObjectId" : "2bff89be72520cad1764759ba3fa98b920f49f8d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_gtk_x11.pro" : {
+      "ObjectId" : "e4b21113cce7042c2c7ca9a5927254cb420bc8b4",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_mac.pro" : {
+      "ObjectId" : "2010f978c62face8b5fa63c7c46f39da3d9fa60c",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_motif.pro" : {
+      "ObjectId" : "e455f0161b5a9bec74417a4ec5067ace4f9f0cea",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_photon.pro" : {
+      "ObjectId" : "0a5041e50631f4519ddf6a9f0aa067ba90a38dbc",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_w16.pro" : {
+      "ObjectId" : "a7802a9692ac2878ad42f954e8afadc25f65b912",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_w32.pro" : {
+      "ObjectId" : "88fbf67c6237c6c7d5f766c775c03836136c1e09",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_x11.pro" : {
+      "ObjectId" : "d0aec94d60ff1c63d1c4783d2c2e9b2ed439fc2e",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/gui_xmdlg.pro" : {
+      "ObjectId" : "4f88c2ff17136d259a046302d7613ed170a15ce5",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/hangulin.pro" : {
+      "ObjectId" : "adfde142ffeceac41b1054b5c30d8f67d31ca583",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/hardcopy.pro" : {
+      "ObjectId" : "ff9d3201832d0f41692a9d3cbccff6456be3b88b",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/hashtab.pro" : {
+      "ObjectId" : "e3c22b726a9304717cd179cbd5e487616694c6f2",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_cscope.pro" : {
+      "ObjectId" : "af2c076a335e0b102f2e4b35dc821f26b29dc75d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_lua.pro" : {
+      "ObjectId" : "10395d577789a869566a2dd5ec7cd9644a65d6cb",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_mzsch.pro" : {
+      "ObjectId" : "d1180bfa1e4125755a2fee0171bf9873467f9d7e",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_ole.pro" : {
+      "ObjectId" : "36edcb0d27628d0412284560841ad635a41dec58",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_perl.pro" : {
+      "ObjectId" : "fe0301b0b0fd1bfc338e89d9252afbdab38eeb48",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_perlsfio.pro" : {
+      "ObjectId" : "bb9046809f198e8f1728ec38792b7288005bb9c0",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_python.pro" : {
+      "ObjectId" : "be206e4f30f0027863448c61ab4e9e4ec3ebe0ba",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_python3.pro" : {
+      "ObjectId" : "8d0489c1f79fcb2597d21fed7fdc08d9997fa19d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_ruby.pro" : {
+      "ObjectId" : "3e03b1f09170c800363136fd539f366a2ad5140c",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_tcl.pro" : {
+      "ObjectId" : "0679ed41a672372b0b38f2dd4bc925811d414c43",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/if_xcmdsrv.pro" : {
+      "ObjectId" : "dd6a12084dd932e62930487bf24a46a1ef01e8d0",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/main.pro" : {
+      "ObjectId" : "62e80b87fd3d913badd6d866a5713e46169236ba",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/mark.pro" : {
+      "ObjectId" : "e8cef9dd26f721cfd3b9ae0afb63bf34d0102a18",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/mbyte.pro" : {
+      "ObjectId" : "c599dacec9432f141cd89a517ba41977d0b39dcc",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/memfile.pro" : {
+      "ObjectId" : "3983b4799c300ff1f6adc1a62a9edac8ebf6907d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/memline.pro" : {
+      "ObjectId" : "ff5d24a7c71474ecaf7ac1b32923e9d4b98e85a7",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/menu.pro" : {
+      "ObjectId" : "a816bc58ba7721ca9ac4909971351b4711070138",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/message.pro" : {
+      "ObjectId" : "f67b8e0313e8c40b6c85dada99f64574dd4a0fad",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/misc1.pro" : {
+      "ObjectId" : "96b05723a5543778b119fcb4ace6b9df2aa309ad",
+      "LastModified" : "2015-07-21T15:53:25Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/misc2.pro" : {
+      "ObjectId" : "f09ff33ac3c64c1de51f74698f564b69b7e35d8d",
+      "LastModified" : "2015-07-21T15:53:25Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/move.pro" : {
+      "ObjectId" : "595e3b8dd75c4ee0130cddcbc7ced79573f0203c",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/netbeans.pro" : {
+      "ObjectId" : "a6e5f5f5f85c62e345e25771d3a9e5d9f3f5342c",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/normal.pro" : {
+      "ObjectId" : "55e81635e820a415516f184152c339509b3f3f54",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ops.pro" : {
+      "ObjectId" : "f9b53c08fe2f8331b7511562784233869e24b100",
+      "LastModified" : "2015-07-21T15:53:25Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/option.pro" : {
+      "ObjectId" : "2fe05aa048f7d0fe62d2491233af8042f16ee55e",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_amiga.pro" : {
+      "ObjectId" : "24c1f7248bacf25201c1f466aba3a382135d6043",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_beos.pro" : {
+      "ObjectId" : "c5371012629741175d8400804105c8ffbfa03b77",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_mac_conv.pro" : {
+      "ObjectId" : "e9417889afd107ceb7b249b9f5ec7d54b100a4c8",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_msdos.pro" : {
+      "ObjectId" : "e035b9509ebf28401bf89e3bd0eab9796144f035",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_mswin.pro" : {
+      "ObjectId" : "b56ee565681b7e1637ddf5ae981dacf7f8f6242f",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_qnx.pro" : {
+      "ObjectId" : "54a63149a48e02daceae0f3ad7be06ef34f0822d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_unix.pro" : {
+      "ObjectId" : "23434ba9fd6556683ca002347724d98e7b7560d9",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_vms.pro" : {
+      "ObjectId" : "cc0f1d91302001e5d9cfdb7305fda5b60f945a03",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_win16.pro" : {
+      "ObjectId" : "31fa72c05b22c4cf048a05ee1962122cd7042ef1",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/os_win32.pro" : {
+      "ObjectId" : "cbabe3a9f153244806ced79d7f3d34c6412465c3",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/popupmnu.pro" : {
+      "ObjectId" : "74a53e2f0e32b44e40f49ed8fc45fb3bee21dd43",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/pty.pro" : {
+      "ObjectId" : "f2424a5096a80547ae7fec7705aeb9c1e14a9316",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/quickfix.pro" : {
+      "ObjectId" : "a5c690f646b9cab8b86fbbfb0cc17929c46d1eaa",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/regexp.pro" : {
+      "ObjectId" : "099121eaefebb566fbaf0c1b694e65096a3ef6c3",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/screen.pro" : {
+      "ObjectId" : "a4df6269f2367dfc45b4fba4d3e4345937a806de",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/search.pro" : {
+      "ObjectId" : "27d2016aecec945b3a06b20c4bedb60f2bc6775d",
+      "LastModified" : "2015-08-11T12:26:19Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/sha256.pro" : {
+      "ObjectId" : "464b35434d2fcf533aea2d574977977456077d0a",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/spell.pro" : {
+      "ObjectId" : "5c399b37096d8b9dd431e0124fadfc0eb29a6bbc",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/syntax.pro" : {
+      "ObjectId" : "af81ac68e03f340aa266e7f0b594f140875739bb",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/tag.pro" : {
+      "ObjectId" : "01388f65b8c56c4a3e0f74ab4c983d38a122a174",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/term.pro" : {
+      "ObjectId" : "f0c2a01f484cc7d1b952de2f405839d59698ef3c",
+      "LastModified" : "2015-08-11T12:26:19Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/termlib.pro" : {
+      "ObjectId" : "4369ecfc632f822179fdc89ef8d8cb05e5337c2d",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/ui.pro" : {
+      "ObjectId" : "4100aa7303588223c015e92180a0d78934b67b74",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/undo.pro" : {
+      "ObjectId" : "f6741c6bc1f5c57c40c7951fa72683f9d90894df",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/version.pro" : {
+      "ObjectId" : "e6fb78f069593818e9c65706c8856e4b93ec4055",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/winclip.pro" : {
+      "ObjectId" : "5eee35d32e2f9b881402305ac440afe59506dd29",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/window.pro" : {
+      "ObjectId" : "0d719f0cc54b1a04a06d95acce6a965d1af4eb85",
+      "LastModified" : "2015-08-11T12:26:19Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/proto/workshop.pro" : {
+      "ObjectId" : "426fded0b483c2ed37e2bba6e013f30d23120e79",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/tee/Makefile" : {
+      "ObjectId" : "951a1cc3631051448bdf8991ef62b66ed42ffce1",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A very (if not the most) simplistic Makefile for OS/2\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/testdir/Makefile" : {
+      "ObjectId" : "7edebbe4eaad73a7fa6db47a2f1b23ca01897d1a",
+      "LastModified" : "2015-08-11T12:26:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Makefile to run all tests for Vim\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Uncomment this line to use valgrind for memory leaks and extra warnings.\n\n#   The output goes into a file \"valgrind.testN\"\n\n#   Vim should be compiled with EXITFREE to avoid false warnings.\n\n#   This will make testing about 10 times as slow.\n\n# VALGRIND = valgrind --tool=memcheck --leak-check=yes --num-callers=15 --log-file=valgrind.$*\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Sleep a moment to avoid that the xterm title is messed up.\n\n# 200 msec is sufficient, but only modern sleep supports a fraction of\n\n# a second, fall back to a second if it fails.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# For flaky tests retry one time.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# Check if the test.out file matches test.ok.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# Sleep a moment to avoid that the xterm title is messed up.\n\n# 200 msec is sufficient, but only modern sleep supports a fraction of\n\n# a second, fall back to a second if it fails.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 6
+    },
+    "src/xxd/Makefile" : {
+      "ObjectId" : "97bbcc77bc70574bb192ba4cfb223f1a8648bc3a",
+      "LastModified" : "2015-06-19T16:48:41Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The most simplistic Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "QMAKE" : 85,
+    "MAKEFILE" : 10
+  },
+  "ElapsedTime" : 4889
+}

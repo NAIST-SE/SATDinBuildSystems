@@ -1,0 +1,445 @@
+{
+  "Repository" : "17555174",
+  "Revision" : "HEAD",
+  "ObjectId" : "e7c67e5f4d102e6e71084fca065309569e5e1dfc",
+  "CommitTime" : "2017-04-02T14:59:11Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "544f60b9c37a08577123f6ebafa7980bfca4edb0",
+      "LastModified" : "2017-03-27T08:18:31Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for buildroot\n\n#\n\n# Copyright (C) 1999-2005 by Erik Andersen <andersen@codepoet.org>\n\n# Copyright (C) 2006-2014 by the Buildroot developers <buildroot@uclibc.org>\n\n# Copyright (C) 2014-2015 by the Buildroot developers <buildroot@buildroot.org>\n\n#\n\n# This program is free software; you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation; either version 2 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program; if not, write to the Free Software\n\n# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#--------------------------------------------------------------\n\n# Just run 'make menuconfig', configure stuff, then run 'make'.\n\n# You shouldn't need to mess with anything beyond this point...\n\n#--------------------------------------------------------------\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# we want bash as shell\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Set O variable if not already done on the command line;\n\n# or avoid confusing packages that can use the O=<dir> syntax for out-of-tree\n\n# build by preventing it from being forwarded to sub-make calls.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Check if the current Buildroot execution meets all the pre-requisites.\n\n# If they are not met, Buildroot will actually do its job in a sub-make meeting\n\n# its pre-requisites, which are:\n\n#  1- Permissive enough umask:\n\n#       Wrong or too restrictive umask will prevent Buildroot and packages from\n\n#       creating files and directories.\n\n#  2- Absolute canonical CWD (i.e. $(CURDIR)):\n\n#       Otherwise, some packages will use CWD as-is, others will compute its\n\n#       absolute canonical path. This makes harder tracking and fixing host\n\n#       machine path leaks.\n\n#  3- Absolute canonical output location (i.e. $(O)):\n\n#       For the same reason as the one for CWD.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Remove the trailing '/.' from $(O) as it can be added by the makefile wrapper\n\n# installed in the $(O) directory.\n\n# Also remove the trailing '/' the user can set when on the command line.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Make sure $(O) actually exists before calling realpath on it; this is to\n\n# avoid empty CANONICAL_O in case on non-existing entry.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Make sure O= is passed (with its absolute canonical path) everywhere the\n\n# toplevel makefile is called back.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Check Buildroot execution pre-requisites here.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# umask / $(CURDIR) / $(O)\n",
+        "Line" : 80,
+        "CharPositionInLine" : 5
+      },
+      "10" : {
+        "Text" : "# This is our default rule, so must come first\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Set and export the version string\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Save running make version since it's clobbered by the make package\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Check for minimal make version (note: this check will break at make 10.x)\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Parallel execution of this Makefile is disabled because it changes\n\n# the packages building order, that can be a problem for two reasons:\n\n# - If a package has an unspecified optional dependency and that\n\n#   dependency is present when the package is built, it is used,\n\n#   otherwise it isn't (but compilation happily proceeds) so the end\n\n#   result will differ if the order is swapped due to parallel\n\n#   building.\n\n# - Also changing the building order can be a problem if two packages\n\n#   manipulate the same file in the target directory.\n\n#\n\n# Taking into account the above considerations, if you still want to execute\n\n# this top-level Makefile in parallel comment the \".NOTPARALLEL\" line and\n\n# use the -j<jobs> option when building, e.g:\n\n#      make -j$((`getconf _NPROCESSORS_ONLN`+1))\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# absolute path\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Compute the full local version string so packages can use it as-is\n\n# Need to export it, so it can be got from environment in children (eg. mconf)\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Some global targets do not trigger a build, but are used to collect\n\n# metadata, or do various checks. When such targets are triggered,\n\n# some packages should not do their configuration sanity\n\n# checks. Provide them a BR_BUILDING variable set to 'y' when we're\n\n# actually building and they should do their sanity checks.\n\n#\n\n# We're building in two situations: when MAKECMDGOALS is empty\n\n# (default target is to build), or when MAKECMDGOALS contains\n\n# something else than one of the nobuild_targets.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# We call make recursively to build packages. The command-line overrides that\n\n# are passed to Buildroot don't apply to those package build systems. In\n\n# particular, we don't want to pass down the O=<dir> option for out-of-tree\n\n# builds, because the value specified on the command line will not be correct\n\n# for packages.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Include some helper macros and variables\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Set variables related to in-tree or out-of-tree build.\n\n# Here, both $(O) and $(CURDIR) are absolute canonical paths.\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# bash prints the name of the directory on 'cd <dir>' if CDPATH is\n\n# set, so unset it here to not cause problems. Notice that the export\n\n# line doesn't affect the environment of $(shell ..) calls, so\n\n# explictly throw away any output from 'cd' here.\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Handling of BR2_EXTERNAL.\n\n#\n\n# The value of BR2_EXTERNAL is stored in .br-external in the output directory.\n\n# The location of the external.mk makefile fragments is computed in that file.\n\n# On subsequent invocations of make, this file is read in. BR2_EXTERNAL can\n\n# still be overridden on the command line, therefore the file is re-created\n\n# every time make is run.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# To make sure that the environment variable overrides the .config option,\n\n# set this before including .config.\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Need that early, before we scan packages\n\n# Avoids doing the $(or...) everytime\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# initial definition so that 'make clean' works for most users, even without\n\n# .config. HOST_DIR will be overwritten later when .config is included.\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "################################################################################\n\n#\n\n# staging and target directories do NOT list these as\n\n# dependencies anywhere else\n\n#\n\n################################################################################\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Pull in the user's configuration file\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# timezone and locale may affect build output\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# To put more focus on warnings, be less verbose as default\n\n# Use 'make V=1' to see the full commands\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# kconfig uses CONFIG_SHELL\n",
+        "Line" : 272,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Determine the userland we are running on.\n\n#\n\n# Note that, despite its name, we are not interested in the actual\n\n# architecture name. This is mostly used to determine whether some\n\n# of the binary tools (e.g. pre-built external toolchains) can run\n\n# on the current host. So we need to know if the userland we're\n\n# running on can actually run those toolchains.\n\n#\n\n# For example, a 64-bit prebuilt toolchain will not run on a 64-bit\n\n# kernel if the userland is 32-bit (e.g. in a chroot for example).\n\n#\n\n# So, we extract the first part of the tuple the host gcc was\n\n# configured to generate code for; we assume this is our userland.\n\n#\n",
+        "Line" : 324,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# For gcc >= 5.x, we only need the major version.\n",
+        "Line" : 353,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Make sure pkg-config doesn't look outside the buildroot tree\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Having DESTDIR set in the environment confuses the installation\n\n# steps of some packages.\n",
+        "Line" : 364,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Causes breakage with packages that needs host-ruby\n",
+        "Line" : 368,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "################################################################################\n\n#\n\n# Hide troublesome environment variables from sub processes\n\n#\n\n################################################################################\n",
+        "Line" : 376,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# silent mode requested?\n",
+        "Line" : 404,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Strip off the annoying quoting\n",
+        "Line" : 407,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# packages compiled for the host go here\n",
+        "Line" : 429,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Quotes are needed for spaces and all in the original PATH content.\n",
+        "Line" : 432,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Location of a file giving a big fat warning that output/target\n\n# should not be used as the root filesystem.\n",
+        "Line" : 435,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Scripts in support/ or post-build scripts may need to reference\n\n# these locations, so export them so it is easier to use\n",
+        "Line" : 449,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "################################################################################\n\n#\n\n# You should probably leave this stuff alone unless you know\n\n# what you are doing.\n\n#\n\n################################################################################\n",
+        "Line" : 458,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Include legacy before the other things, because package .mk files\n\n# may rely on it.\n",
+        "Line" : 467,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# arch/arch.mk.* must be after package/Makefile.in because it may need to\n\n# complement variables defined therein, like BR_NO_CHECK_HASH_FOR.\n",
+        "Line" : 472,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Include the package override file if one has been provided in the\n\n# configuration.\n",
+        "Line" : 480,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# If using a br2-external tree, the BR2_EXTERNAL_$(NAME)_PATH variables\n\n# are also present in the .config file. Since .config is included after\n\n# we defined them in the Makefile, the values for those variables are\n\n# quoted. We just include the generated Makefile fragment .br2-external.mk\n\n# a third time, which will set those variables to the un-quoted values.\n",
+        "Line" : 493,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Nothing to include if no BR2_EXTERNAL tree in use\n",
+        "Line" : 500,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Now we are sure we have all the packages scanned and defined. We now\n\n# check for each package in the list of enabled packages, that all its\n\n# dependencies are indeed enabled.\n\n#\n\n# Only trigger the check for default builds. If the user forces building\n\n# a package, even if not enabled in the configuration, we want to accept\n\n# it.\n\n#\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Populating the staging with the base directories is handled by the skeleton package\n",
+        "Line" : 545,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# file exclusions:\n\n# - libpthread.so: a non-stripped libpthread shared library is needed for\n\n#   proper debugging of pthread programs using gdb.\n\n# - ld.so: a non-stripped dynamic linker library is needed for valgrind\n\n# - kernel modules (*.ko): do not function properly when stripped like normal\n\n#   applications and libraries. Normally kernel modules are already excluded\n\n#   by the executable permission check above, so the explicit exclusion is only\n\n#   done for kernel modules with incorrect permissions.\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Generate locale data. Basically, we call the localedef program\n\n# (built by the host-localedef package) for each locale. The input\n\n# data comes preferably from the toolchain, or if the toolchain does\n\n# not have them (Linaro toolchains), we use the ones available on the\n\n# host machine.\n",
+        "Line" : 577,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# This piece of junk does the following:\n\n# First collect the whitelist in a file.\n\n# Then go over all the locale dirs and for each subdir, check if it exists\n\n# in the whitelist file. If it doesn't, kill it.\n\n# Finally, specifically for X11, regenerate locale.dir from the whitelist.\n",
+        "Line" : 612,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Copy for persistent storage\n",
+        "Line" : 653,
+        "CharPositionInLine" : 1
+      },
+      "55" : {
+        "Text" : "# See http://sourceware.org/gdb/wiki/FAQ, \"GDB does not see any threads\n\n# besides the one in which crash occurred; or SIGTRAP kills my program when\n\n# I set a breakpoint\"\n",
+        "Line" : 700,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Valgrind needs ld.so with enough information, so only strip\n\n# debugging symbols.\n",
+        "Line" : 708,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# check if download URLs are outdated\n",
+        "Line" : 743,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# ifeq ($(BR2_HAVE_DOT_CONFIG),y)\n",
+        "Line" : 804,
+        "CharPositionInLine" : 5
+      },
+      "59" : {
+        "Text" : "# ifeq ($(BR2_HAVE_DOT_CONFIG),y)\n",
+        "Line" : 808,
+        "CharPositionInLine" : 6
+      },
+      "60" : {
+        "Text" : "# configuration\n\n# ---------------------------------------------------------------------------\n",
+        "Line" : 810,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# We don't want to fully expand BR2_DEFCONFIG here, so Kconfig will\n\n# recognize that if it's still at its default $(CONFIG_DIR)/defconfig\n",
+        "Line" : 826,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "################################################################################\n\n#\n\n# Cleanup and misc junk\n\n#\n\n################################################################################\n",
+        "Line" : 922,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# outputmakefile generates a Makefile in the output directory, if using a\n\n# separate output directory. This allows convenient use of make in the\n\n# output directory.\n",
+        "Line" : 928,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# Even though the target is a real file, we mark it as PHONY as we\n\n# want it to be re-generated each time make is invoked, in case the\n\n# value of BR2_EXTERNAL is changed.\n",
+        "Line" : 936,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# printvars prints all the variables currently defined in our\n\n# Makefiles. Alternatively, if a non-empty VARS variable is passed,\n\n# only the variables matching the make pattern passed in VARS are\n\n# displayed.\n",
+        "Line" : 943,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# List the defconfig files\n\n# $(1): base directory\n\n# $(2): br2-external name, empty for bundled\n",
+        "Line" : 1046,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# We iterate over BR2_EXTERNAL_NAMES rather than BR2_EXTERNAL_DIRS,\n\n# because we want to display the name of the br2-external tree.\n",
+        "Line" : 1067,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# Create release tarballs. We need to fiddle a bit to add the generated\n\n# documentation to the git output\n",
+        "Line" : 1077,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "#umask / $(CURDIR) / $(O)\n",
+        "Line" : 1093,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 70,
+      "Errorlog" : "line 340:12 token recognition error at: '\\1'\nline 351:53 token recognition error at: '\\1'\nline 351:56 token recognition error at: '\\2'\n"
+    },
+    "support/kconfig/Makefile" : {
+      "ObjectId" : "7eb4071b4efd054440660a520dd1a3410a67b24a",
+      "LastModified" : "2015-03-16T12:53:15Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# ===========================================================================\n\n# Kernel configuration targets\n\n# These targets are used from top-level makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We need this, in case the user has it in its environment\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Create new linux.pot file\n\n# Adjust charset to UTF-8 in .po file to accept UTF-8 in Kconfig files\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# oldnoconfig is an alias of olddefconfig, because people already are dependent\n\n# on its behavior(sets new symbols to their default value but not 'n') with the\n\n# counter-intuitive name.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Help text used by make help\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# lxdialog stuff\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Use recursively expanded variables so we do not call gcc unless\n\n# we really need to do so. (Do not call gcc as part of make mrproper)\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ===========================================================================\n\n# Shared Makefile for the various kconfig executables:\n\n# conf:\t  Used for defconfig, oldconfig and related targets\n\n# nconf:  Used for the nconfig target.\n\n#         Utilizes ncurses\n\n# mconf:  Used for the menuconfig target\n\n#         Utilizes the lxdialog package\n\n# qconf:  Used for the xconfig target\n\n#         Based on QT which needs to be installed to compile it\n\n# gconf:  Used for the gconfig target\n\n#         Based on GTK which needs to be installed to compile it\n\n# object files used by all kconfig flavours\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Check that we have the required ncurses stuff installed for lxdialog (menuconfig)\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Add environment specific flags\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# generated files seem to need this to find local include files\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# QT needs some extra effort...\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# GTK needs some extra effort, too...\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Extract gconf menu items for I18N support\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 1231
+}

@@ -1,0 +1,764 @@
+{
+  "Repository" : "5545833",
+  "Revision" : "HEAD",
+  "ObjectId" : "e3e0e61e2e1214a8dbc2a41f53ac9f8d1ea51d78",
+  "CommitTime" : "2019-04-15T06:53:22Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "896fb2949299b84d1188f97d4beb550e3f9dc247",
+      "LastModified" : "2019-03-22T12:17:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Project name and basic prerequisities\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# DEBUG or RELEASE build ?\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# TRACES: To remove LM_T\n\n#           [ and 15 log macros more, of which only LM_T is used by the broker.\n\n#             The important ones: LM_W, LM_E, LM_X, LM_I are all kept as is ]\n\n#         comment the following line\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Baseline compiler flags, any change here will affect all build types\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# FIXME P4: https://github.com/telefonicaid/fiware-orion/issues/2979\n\n#   'template class std::auto_ptr' is deprecated in gcc 6.3.0 of Ubuntu 17.04, so -Werror cannot be used alone, at least not for now.\n\n#\n\n#   The *real* fix would be to rewrite the part of the code producing these warnings, but for now,\n\n#   disabling the -Werror flag makes the problem go away (warnings will still be found and give errors in other distros).\n\n#\n\n#   One example of this warning (there are many warnings, but as in header files, just a few places):\n\n#\n\n#   mongoBackend/safeMongo.h:\n\n#   ----------------------------------------------------------------\n\n#     extern bool nextSafeOrError\n\n#     (\n\n#       const std::auto_ptr<mongo::DBClientCursor>&  cursor,\n\n#       ...\n\n#   ----------------------------------------------------------------\n\n#\n\n# A grep of 'std::auto_ptr<' in the header files show 7 hits, and 13 hits in cpp files\n\n#\n\n# In PR https://github.com/telefonicaid/fiware-orion/pull/3069, a workaround for Ubuntu is implemented.\n\n# This workaround consists of putting back the -Werror flag and instead solving the problem by\n\n# adding another flag: -Wno-deprecated-declarations\n\n#\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Platform checks\n\n# \n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# OLD:\n\n#   Note that stack protection is activated only in debug compilation.\n\n#   This is due that this directive makes the compiler introduce code at the beginning/end of each functions,\n\n#   so it has a pretty big impact on performance\n\n#\n\n#   Our unit tests don't pass the compilation with \"stack protection\", so we turn it off using\n\n#   remove_definitions().\n\n#\n\n#add_definitions(-fstack-check -fstack-protector)\n",
+        "Line" : 107,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "#\n\n# NEW:\n\n#   The option -fstack-check makes valgrind report false positives (millions) in CentOS 6.\n\n#   This makes the output impossible to use and we have decided to remove these two options (both of them).\n\n#   The cause seems to be a bug in the compiler (gcc 4.4.7), fixed in some moment between that version \n\n#   and gcc 4.7.2 (see https://stackoverflow.com/questions/44758939/unexpected-valgrind-invalid-write-when-fstack-check-is-used\n\n#   for more detail). However, we don't want to use a compiler that is not meant for CentOS 6,\n\n#   which is the official distro for the context broker, so, we simply remove this option.\n\n#   They may be reinstated once Orion context broker updates the official distro to be CentOS 7 (which uses gcc 4.8.5)\n\n#  \n",
+        "Line" : 118,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# LM_T macros introduce condition branchs which are not never traversed. Removing LM_T macros doesn't have \n\n# any impact in line coverage but removes \"noise\" in condition coverage, thus making coverage reports more useful\n",
+        "Line" : 131,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Removing LM_T macros make that some variables get unused, thus -Wno-unused-variable have to be used\n",
+        "Line" : 134,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# -Wunused-but-set-variable is available from gcc 4.6.0 but can be set in 4.5.x\n\n# OS X comes with gcc 4.2.1 (10.7) and does not accept this flag\n\n# \n\n# no-unused-but-set-variable (commented, not active):\n\n#   if the following piece of 'compiler directives' is uncommented, we no longer get warnings for\n\n#   variables that are defined but not used.\n\n#   For now we want these warnings as we desire as strict compilaton as possible.\n\n#\n\n#if (${CMAKE_SYSTEM_NAME} MATCHES \"Linux\")\n\n#    set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable\")\n\n#endif (${CMAKE_SYSTEM_NAME} MATCHES \"Linux\")\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#\n\n# Libraries\n\n#\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# verbName(Verb) from setExtendedHttpInfo@MongoCommonSubscription.cpp.o; jsonRequestTreat from payloadParse@RestService.cpp.o;\n",
+        "Line" : 175,
+        "CharPositionInLine" : 18
+      },
+      "14" : {
+        "Text" : "# this is repeated for linking str2Verb from parseSubscription@parseSubscription.cpp.o;\n\n# verbName(Verb) from setExtendedHttpInfo@MongoCommonSubscription.cpp.o\n",
+        "Line" : 178,
+        "CharPositionInLine" : 18
+      },
+      "15" : {
+        "Text" : "# Static libs common to contextBroker and unitTest binaries\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#\n\n# Enabling testing\n\n#\n",
+        "Line" : 228,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#\n\n# Common include\n\n#\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#\n\n# Library directories\n\n#\n",
+        "Line" : 245,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# Enabling test harness\n\n#\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#ADD_SUBDIRECTORY(test/harness)\n",
+        "Line" : 263,
+        "CharPositionInLine" : 3
+      },
+      "21" : {
+        "Text" : "#\n\n# Continuing if OK\n\n#\n",
+        "Line" : 266,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 22
+    },
+    "archive/proxyCoap/src/app/CMakeLists.txt" : {
+      "ObjectId" : "00d6d28b07b7df329ece37d4815cff9cff933206",
+      "LastModified" : "2015-10-29T10:14:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2014 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Lib directories\n\n# ------------------------------------------------------------\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME P4: Issue #476: remove or keep?\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Executable declaration\n\n# ------------------------------------------------------------\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# FIXME P4: Issue #476: remove or keep?\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# FIXME P4: Issue #476: remove or keep?\n",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# ADDED FOR UBUNTU 14.10\n",
+        "Line" : 79,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# target_link_libraries (proxyCoap cantcoap curl)\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "src/app/contextBroker/CMakeLists.txt" : {
+      "ObjectId" : "574b44a7a9bfd35cf528eaab23d37fc0ff1e6cbc",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# ------------------------------------------------------------\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Lib directories\n\n# ------------------------------------------------------------\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Executable declaration\n\n# ------------------------------------------------------------\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The following ones are distros that we have checked are built correctly\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The following ones are distros that haven't been checked since the refactoring in\n\n# PR #2062. They should be \"promoted\" as soon as we have positive feedback about\n\n# them or fixed (maybe based in the version of this file previous to\n\n# the aforementioned PR)\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Finally this is a \"best effort\" option to try to build on distros that don't have a\n\n# specify switch\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/lib/alarmMgr/CMakeLists.txt" : {
+      "ObjectId" : "b75130768b01275fa691575a0075a115f202fa17",
+      "LastModified" : "2015-12-11T15:14:19Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2015 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/apiTypesV2/CMakeLists.txt" : {
+      "ObjectId" : "89a9c1b671c87eca98938d6b1fd459a7e5bed582",
+      "LastModified" : "2018-04-04T18:40:55Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2015 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/cache/CMakeLists.txt" : {
+      "ObjectId" : "dc708c0ab9dc49d5f0a0abcc5dea021fcf8abc0d",
+      "LastModified" : "2015-12-11T15:14:19Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2015 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/common/CMakeLists.txt" : {
+      "ObjectId" : "5950024201516689c147bf047b39874bde4a30f2",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/convenience/CMakeLists.txt" : {
+      "ObjectId" : "65f74232f0f07d2b3332ac2ed36a868848b306a7",
+      "LastModified" : "2015-12-11T15:14:19Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/jsonParse/CMakeLists.txt" : {
+      "ObjectId" : "34507d467801b60d9335a06ff114957cff7a9985",
+      "LastModified" : "2015-12-11T15:14:19Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/jsonParseV2/CMakeLists.txt" : {
+      "ObjectId" : "a10c810884891503c79c8b9c24272dc595afd4ec",
+      "LastModified" : "2018-06-22T07:17:17Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2015 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/logMsg/CMakeLists.txt" : {
+      "ObjectId" : "3567c3444ca1ec9b8b6e2f280a0ed5bbcfc05220",
+      "LastModified" : "2015-12-11T15:14:19Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/logSummary/CMakeLists.txt" : {
+      "ObjectId" : "6413d6cb29fe9582cc7bad78d19ed994ca3f58bb",
+      "LastModified" : "2016-01-20T18:14:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2016 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/metricsMgr/CMakeLists.txt" : {
+      "ObjectId" : "5ccc5ef47c15550178386e34a82ac0dd4967d65b",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2016 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/mongoBackend/CMakeLists.txt" : {
+      "ObjectId" : "4a62f9da58d8c9e8ae92439d3c11f2e13db5cbfa",
+      "LastModified" : "2018-06-22T07:17:17Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/ngsi/CMakeLists.txt" : {
+      "ObjectId" : "a8e50634af401ce1dc555af7373ca4972ef8dfa1",
+      "LastModified" : "2018-10-09T07:54:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/ngsi10/CMakeLists.txt" : {
+      "ObjectId" : "36e4aee8aaf15590554b5deada08635caa32c8c3",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/ngsi9/CMakeLists.txt" : {
+      "ObjectId" : "04d4694dfdea44f15ff5f7287adb4a399651f228",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/ngsiNotify/CMakeLists.txt" : {
+      "ObjectId" : "f26e6b601bbee68c66178018420b8839df0945ed",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/orionTypes/CMakeLists.txt" : {
+      "ObjectId" : "7a7e67d93f0aa0bdee76088067970cb2e33088b8",
+      "LastModified" : "2018-06-22T07:17:17Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2014 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/parse/CMakeLists.txt" : {
+      "ObjectId" : "b609f9b5bf56481611fdb094b4dc675031a1f21f",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2014 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/parseArgs/CMakeLists.txt" : {
+      "ObjectId" : "9c9de2dc5ebdb059c748abdca727b28564af531f",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/rest/CMakeLists.txt" : {
+      "ObjectId" : "81e675f2aaf59a2870502a919962a5d007d4afa1",
+      "LastModified" : "2018-08-06T12:21:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/serviceRoutines/CMakeLists.txt" : {
+      "ObjectId" : "5f29bfab2bfc884cf51abe2a7fe7dfaf1798702a",
+      "LastModified" : "2019-02-21T07:20:06Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/serviceRoutinesV2/CMakeLists.txt" : {
+      "ObjectId" : "c0cfaf7d384dcc1e274bcffd308f20c03e7a6917",
+      "LastModified" : "2019-02-21T07:20:06Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2015 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include directories\n\n# -----------------------------------------------------------------\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Library declaration\n\n# -----------------------------------------------------------------\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "2699726564eaf7bb540575977add55100100eaca",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/functionalTest/cases/CMakeLists.txt" : {
+      "ObjectId" : "be721e3cf3837d845163fffd5fbd935758a0a3b8",
+      "LastModified" : "2018-03-17T18:00:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Fetch a list of tests\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Get a list of all .test files under the test directory\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "test/unittests/CMakeLists.txt" : {
+      "ObjectId" : "fcc19e34b56ae3546fff10bb30bd9f14a43cb60f",
+      "LastModified" : "2019-02-21T07:20:06Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright 2013 Telefonica Investigacion y Desarrollo, S.A.U\n\n#\n\n# This file is part of Orion Context Broker.\n\n#\n\n# Orion Context Broker is free software: you can redistribute it and/or\n\n# modify it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# Orion Context Broker is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero\n\n# General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with Orion Context Broker. If not, see http://www.gnu.org/licenses/.\n\n#\n\n# For those usages not covered by this license please contact with\n\n# iot_support at tid dot es\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ---------------------------------------------------------\n\n# External dependency checks\n\n# ---------------------------------------------------------\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Stack protection is activated only in debug compilation.\n\n# However, our unit tests don't pass the compilation with \"stack protection\", so we turn it off using\n\n# remove_definitions().\n\n#\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Include directories\n\n# ------------------------------------------------------------\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Lib directories\n\n# ------------------------------------------------------------\n",
+        "Line" : 227,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# flags\n\n# ------------------------------------------------------------\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Executable declaration\n\n# ------------------------------------------------------------\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# The following ones are distros that we have checked are built correctly\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# It seems that Debian 8.x doesn't like -mt libraries for unit tests... not sure about other Debian versions\n",
+        "Line" : 253,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# The following ones are distros that haven't been checked since the refactoring in\n\n# PR #2062. They should be \"promoted\" as soon as we have positive feedback about\n\n# them or fixed (maybe based in the version of this file previous to\n\n# the aforementioned PR)\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Pending to check after the refactor\n",
+        "Line" : 264,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Finally this is a \"best effort\" option to try to build on distros that don't have a\n\n# specify switch\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Pending to check after the refactor\n",
+        "Line" : 282,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 13
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 27
+  },
+  "ElapsedTime" : 3374
+}

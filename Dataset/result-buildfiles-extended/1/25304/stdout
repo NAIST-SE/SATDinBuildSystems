@@ -1,0 +1,2581 @@
+{
+  "Repository" : "25304",
+  "Revision" : "HEAD",
+  "ObjectId" : "c1bcb788f9af01f1a87d62103709f46b7e4dc536",
+  "CommitTime" : "2019-04-17T23:36:23Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "92e933204569921ebf6ac0230f186db457f5ada2",
+      "LastModified" : "2019-04-17T14:16:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ---------------------------------------------------------------------------\n\n# Author:      Dave Register DEB \n\n# config from: antonm - Anton Martchukov <anton@martchukov.com> \n\n# Update:      sethdart (Jean-Eudes Onfray) \n\n#                 with parts from balp (Anders Arnholm)\n\n# ***************************************************************************\n\n# - Copyright (C) 2010 by David S. Register                               *\n\n# - This program is free software; you can redistribute it and/or modify  *\n\n# - it under the terms of the GNU General Public License as published by  *\n\n# - the Free Software Foundation; either version 2 of the License, or     *\n\n# - (at your option) any later version.                                   *\n\n# - *\n\n# - This program is distributed in the hope that it will be useful,       *\n\n# - but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n\n# - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n\n# - GNU General Public License for more details.                          *\n\n# - *\n\n# - You should have received a copy of the GNU General Public License     *\n\n# - along with this program; if not, write to the                         *\n\n# - Free Software Foundation, Inc.,                                       *\n\n# - 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *\n\n# ***************************************************************************\n\n#[[\n\nConfiguring opencpn\n===================\n\nHelp:\n    Opencpn configuration options can be listed using\n        cmake -LH  | grep -B1 OCPN_\n\nRenamed options:\n    From version TBD all OpenCPN configuration options have a OCPN_ prefix\n    Many older options are renamed, some examples:\n\n        ENABLE_SYSTEM_CMD_SOUND -> OCPN_ENABLE_SYSTEM_CMD_SOUND\n        USE_BUNDLED_LIBS -> OCPN_USE_BUNDLED_LIBS\n        BUNDLE_DOCS ->  OCPN_BUNDLE_DOCS\n        BUNDLE_TCDATA -> OCPN_BUNDLE_TCDATA\n        BUNDLE_GSHHS ->OCPN_BUNDLE_GSHHS\n        ENABLE_PORTAUDIO -> OCPN_ENABLE_PORTAUDIO\n        USE_GARMINHOST -> OCPN_USE_GARMINHOST\n        ENABLE_CPPCHECK -> OCPN_ENABLE_CPPCHECK\n\n\nInstallation paths:\n  - Since TBD OpenCPN supports the GNU install paths, see\n    https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html\n  - Use CMAKE_INSTALL_LIBDIR to change the base directory for plugins;\n    defaults to library location on most platforms, but is 'lib' on\n    Debian.\n\nSound:\n  - Without options, defaults to MswSound on Windows, PortAudioSound\n    on Linux and WxSound on OSX.\n  - With OCPN_ENABLE_SYSTEM_CMD_SOUND enabled SystemCmdSound will be the\n    backend used on all platforms.\n  - With OCPN_ENABLE_PORTAUDIO activated PortAudioSound can be used on all\n    platforms if the necessary headers and libraries are available.\n  - OCPN_ENABLE_SNDFILE adds libsndfile support to portaudio. libsndfile\n    supports a wide range of audio formats instead of .wav only.\n\nBundled libraries:\n  - OCPN_USE_BUNDLED_LIBS forces use of external/bundled libraries including\n    wxsvg and liblz4. It's either:\n      - ON => use all bundled libraries.\n      - OFF => Always use external (system) libraries if available.\n      - A comma-separated list of libraries where the bundled variant\n        should be used. For other libraries, system libs is preferred.\n  - If found, the system tinyxml library is used unconditionally.\n\nDocumentation:\n  - OCPN_BUNDLE_DOCS governs inclusion of docs in the package.\n  - Note that documentation is available in a separate download from\n    opencpn website.\n\n\nTidal/current and GSHHS wallpaper\n  - OCPN_BUNDLE_TCDATA (boolean) includes tide/current harmonics data in\n    package.\n  - BUNDLE_GSHHS (NONE,MIN,[CRUDE],LOW,INTERMEDIATE,HIGH,FULL) governs the\n    wallpaper map used as last resort and world overview.\n\nTo build for android, use something like:\n    $cmake -DUSE_GARMINHOST=OFF\n        -D_wx_selected_config=androideabi-qt\n        -DCMAKE_TOOLCHAIN_FILE=../buildandroid/build_android.cmake\n        -DwxQt_Build=build_android_53\n       \t-DwxQt_Base=/home/dsr/Projects/wxqt/wxWidgets\n        -DQt_Base /home/dsr/Qt/5.3)\n        ..\n\nSilent/Verbose builds:\n    cmake's handling of these issues is underwhelming. On most platforms the\n    builds are by default verbose. Use 'cmake OCPN_VERBOSE=OFF' to make \n    a silent build. The OCPN_VERBOSE value can be overridden using\n    'make VERBOSE=1' or 'make -s'\n#]]",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#[[\nTODO:\n- Profiling opt\n- test with Win & OSX\nUSE_GLU_TESS\nUSE_GLU_DLL\nI also find it deficient in some areas. For instance, I cannot make it\noutput a VS project with certain compile switches set as desired,\nnamely /MT vs /MD. This means I must manually set this and other compiler\noptions after the CMake step. Sometimes I forget. Grrr...\nset /MT for Release build, and /MTd for debug.\nIs this still problem? If so, generator expressions seem to be the solution.\n#]]",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Prefer libGL.so to libOpenGL.so, see CMP0072\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Locations where cmake looks for cmake modules.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Per default, use CMAKE_INSTALL_LIBDIR=lib on Debian (and derivatives)\n\n# to avoid multilib plugin paths. After all, we do not install any\n\n# \"real\" libraries.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# Options\n\n#\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If on Windows or Apple, build the monolithic package, to override use a non-\n\n# sense values from the commandline (due to cmake inability to distinguish\n\n# between not set and set to FALSE): cmake -DOCPN_BUNDLE_DOCS=BLAH\n\n# -DOCPN_BUNDLE_TCDATA=BLAH -DOCPN_BUNDLE_GSHHS=BLAH ..\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set the possible values of build type for cmake-gui\n",
+        "Line" : 255,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Check if a given library should use the bundled source\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n# Language, compiler and static checkers setup\n\n#\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# For more, see http://clang.llvm.org/extra/clang-tidy/\n\n# set(CLANG_TIDY_CHECKS \"-*,modernize-*\")\n",
+        "Line" : 332,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# delete it\n",
+        "Line" : 343,
+        "CharPositionInLine" : 57
+      },
+      "12" : {
+        "Text" : "# Add support for address etc sanitizers, part 1/2 (other half after\n\n# ADD_EXECUTABLE)\n",
+        "Line" : 349,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# ADD_COMPILE_OPTIONS( \"-Wall\" \"-ansi\" \"-pedantic\" \"-Wno-variadic-macros\" )\n\n# TODO: Should we use  -fno-stack-protector IF NOT DEBUGGING CFLAGS=\"-O2\n\n# -march=native\"\n",
+        "Line" : 381,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# TODO: Enable deprecation warnings again after the 5.0.0 cycle\n",
+        "Line" : 396,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# profiling with gprof ADD_COMPILE_OPTIONS( -pg ) SET(CMAKE_EXE_LINKER_FLAGS\n\n# -pg) profiling with gcov ADD_COMPILE_OPTIONS( \"-fprofile-arcs -ftest-\n\n# coverage\" ) SET(EXTRA_LIBS ${EXTRA_LIBS} \"gcov\")\n",
+        "Line" : 399,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "#\n\n# Version handling\n\n#\n",
+        "Line" : 497,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Detect the Apple Version of the build machine\n",
+        "Line" : 515,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#\n\n# Bundled data: docs, tcdata, gshhs\n\n#\n",
+        "Line" : 533,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# Linux: set up GTK\n\n#\n",
+        "Line" : 547,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# set a build flag for arm architecture, to catch any rPI runtime changes\n\n# required\n",
+        "Line" : 569,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We need to remove GLU from the OPENGL_LIBRARIES list\n",
+        "Line" : 617,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# MESSAGE (STATUS \"    Lib File: \" ${_currentLibFile})\n",
+        "Line" : 619,
+        "CharPositionInLine" : 6
+      },
+      "23" : {
+        "Text" : "# Find wxWidgets here, and the setting get inherited by all plugins. These\n\n# options can be used to set the linux widgets build type\n",
+        "Line" : 640,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Exclude wxexpat.lib, since we use our own version. Other things are\n\n# excluded as well, but we don't need them\n",
+        "Line" : 652,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# Convert msys to windows paths, and handle the missing /usr\n",
+        "Line" : 674,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# As of cmake 3.11.2, these libraries are missing in list despite that we\n\n# looked for them. This is a nasty fix which might fail miserably. Assumption:\n\n# All builds using GTK uses unicode and wxWidgets 3.0\n",
+        "Line" : 686,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# We need to remove GLU from the wxWidgets_LIBRARIES list It only appears to\n\n# get on the list for MSW...\n",
+        "Line" : 700,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# -> config.h\n",
+        "Line" : 944,
+        "CharPositionInLine" : 24
+      },
+      "29" : {
+        "Text" : "# plugin link target.\n",
+        "Line" : 972,
+        "CharPositionInLine" : 32
+      },
+      "30" : {
+        "Text" : "# IF(NOT WIN32) include(OcpnFindGpsd) if (TARGET ocpn::gpsd)\n\n# target_link_libraries(${PACKAGE_NAME} ocpn::gpsd) endif () ENDIF (NOT WIN32)\n",
+        "Line" : 1003,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "#\n\n# Linux: set up GTK\n\n#\n",
+        "Line" : 1011,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Search for opengles, short of running a program to test the speed of\n\n# acceleration, I simply use gles on \"native linux\" arm systems\n",
+        "Line" : 1019,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# ocpnUSE_GLES is in config.h\n",
+        "Line" : 1047,
+        "CharPositionInLine" : 34
+      },
+      "34" : {
+        "Text" : "# this should be detected by the grib plugin\n",
+        "Line" : 1116,
+        "CharPositionInLine" : 22
+      },
+      "35" : {
+        "Text" : "# => config.h\n",
+        "Line" : 1126,
+        "CharPositionInLine" : 30
+      },
+      "36" : {
+        "Text" : "# TinyXML from Homebrew is not good enough for our GpxDocument needs We\n\n# should probably replace it with pugixml completely anyway...\n",
+        "Line" : 1129,
+        "CharPositionInLine" : 6
+      },
+      "37" : {
+        "Text" : "# check for lzma support for reading compressed charts\n",
+        "Line" : 1136,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# On Windows, we have our own expat and cairo\n",
+        "Line" : 1218,
+        "CharPositionInLine" : 6
+      },
+      "39" : {
+        "Text" : "# Include(OcpnFindFmpeg)  -- FFMPEG is not enabled currently.\n\n# target_link_libraries(${PACKAGE_NAME} ocpn::ffmpeg)\n",
+        "Line" : 1229,
+        "CharPositionInLine" : 6
+      },
+      "40" : {
+        "Text" : "# Goes into config.h, leave as global\n",
+        "Line" : 1240,
+        "CharPositionInLine" : 35
+      },
+      "41" : {
+        "Text" : "# Search for opengles, short of running a program to test the speed of\n\n# acceleration, I simply use gles on \"native linux\" arm systems\n",
+        "Line" : 1263,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# SET(wxWidgets_FIND_COMPONENTS ${wxWidgets_FIND_COMPONENTS} gl )\n",
+        "Line" : 1275,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "# Building for QT_ANDROID involves a cross-building environment, So the include\n\n# directories, flags, etc must be stated explicitly without trying to locate\n\n# them on the host build system.\n",
+        "Line" : 1299,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# SET(wxWidgets_FIND_COMPONENTS ${wxWidgets_FIND_COMPONENTS} gl )\n",
+        "Line" : 1311,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# -> config.h\n",
+        "Line" : 1344,
+        "CharPositionInLine" : 21
+      },
+      "46" : {
+        "Text" : "# Chart Symbols library\n",
+        "Line" : 1413,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Compile texcompression support library\n",
+        "Line" : 1422,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# TODO dnl dnl Use OpenGL tesselator or Internal tesselator dnl\n\n# tess_internal=false tess_glu=true AC_ARG_WITH(tess_internal, [  --with-tess-\n\n# internal    use Internal Polygon Tesselator], [tess_internal=true] )\n\n#\n\n# if [ \"$tess_internal\" = \"false\" ] ; then dnl  Look for and qualify an external\n\n# GLU library echo \"checking for useable OpenGLU Library\" AC_CHECK_LIB(GLU,\n\n# gluNewTess, true, dnl here true is just a nop AC_MSG_ERROR([*** libGLU not\n\n# found.  Run configure using --with-tess-internal.]))\n\n#\n\n# GL_LIBS=\"-lGL -lGLU\" AC_SUBST(GL_LIBS)\n\n#\n\n# GL_CFLAGS=\"-DUSE_GLU_TESS\" AC_SUBST(GL_CFLAGS) fi\n",
+        "Line" : 1451,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# => config.h\n",
+        "Line" : 1473,
+        "CharPositionInLine" : 25
+      },
+      "50" : {
+        "Text" : "# glu32.lib\n",
+        "Line" : 1494,
+        "CharPositionInLine" : 6
+      },
+      "51" : {
+        "Text" : "# use gdi plus only on MSVC, it is not a free library\n",
+        "Line" : 1498,
+        "CharPositionInLine" : 2
+      },
+      "52" : {
+        "Text" : "# If we build for windows systems, we also include the resource file containing\n\n# the manifest, icon and other resources\n",
+        "Line" : 1522,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Various data files\n",
+        "Line" : 1569,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Mac has trouble finding libgobject-2.0.dylib We look for it explicitely\n",
+        "Line" : 1643,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Assume pkg-config is available.\n",
+        "Line" : 1645,
+        "CharPositionInLine" : 2
+      },
+      "56" : {
+        "Text" : "# MESSAGE (STATUS \"    GOBJECT: \" ${GOBJECT_LDFLAGS})\n",
+        "Line" : 1647,
+        "CharPositionInLine" : 2
+      },
+      "57" : {
+        "Text" : "# Traditional theme SVG icons\n",
+        "Line" : 1740,
+        "CharPositionInLine" : 4
+      },
+      "58" : {
+        "Text" : "# Journeyman theme SVG icons\n",
+        "Line" : 1753,
+        "CharPositionInLine" : 4
+      },
+      "59" : {
+        "Text" : "# Journeyman_flat theme SVG icons\n",
+        "Line" : 1764,
+        "CharPositionInLine" : 4
+      },
+      "60" : {
+        "Text" : "# MUI_flat theme SVG icons\n",
+        "Line" : 1779,
+        "CharPositionInLine" : 4
+      },
+      "61" : {
+        "Text" : "# Default SVG Icons\n",
+        "Line" : 1790,
+        "CharPositionInLine" : 4
+      },
+      "62" : {
+        "Text" : "# Output variable\n",
+        "Line" : 1833,
+        "CharPositionInLine" : 26
+      },
+      "63" : {
+        "Text" : "# Base directory\n",
+        "Line" : 1834,
+        "CharPositionInLine" : 42
+      },
+      "64" : {
+        "Text" : "# Absolute path to the file\n",
+        "Line" : 1835,
+        "CharPositionInLine" : 33
+      },
+      "65" : {
+        "Text" : "# MESSAGE (STATUS \"    Adding Wiki Doc File : \" ${_currentWikiDocFile}  \"\n\n# Destination: \"  ${_location})\n",
+        "Line" : 1840,
+        "CharPositionInLine" : 6
+      },
+      "66" : {
+        "Text" : "# These variables get substituted into the Info.plist template file at build\n\n# time\n",
+        "Line" : 1866,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# Sanitizers, part 2/2\n",
+        "Line" : 1929,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# Certain older Cmake FindGTK2 modules ( e.g. cmake-2.8.0-2) do not yield all of\n\n# the required link libraries So, add them manually.  These declarations may be\n\n# redundant in some architectures, but do no harm.\n",
+        "Line" : 1940,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "#\n\n# Install\n\n#\n",
+        "Line" : 1947,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# Traditional theme SVG icons\n",
+        "Line" : 1978,
+        "CharPositionInLine" : 4
+      },
+      "71" : {
+        "Text" : "# Fix up time_t definition Checks for 32-bit version. And always use 32-bit\n\n# time_t for compatibility\n",
+        "Line" : 2053,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# uninstall-local: rm -fr $(DESTDIR)$(pkgdatadir)/wvsdata/* rm -fr\n\n# $(DESTDIR)$(pkgdatadir)/gshhs/* rm -fr $(DESTDIR) $(pkgdatadir)/s57data/* rm\n\n# -fr $(DESTDIR)$(pkgdatadir)/tcdata/* rmdir $(DESTDIR)$(pkgdatadir)/wvsdata\n\n# rmdir $(DESTDIR)$(pkgdatadir)/gshhs rmdir $(DESTDIR)$(pkgdatadir)/s57data\n\n# rmdir $(DESTDIR)$(pkgdatadir)/tcdata rmdir $(DESTDIR)$(pkgdatadir)\n\n#\n",
+        "Line" : 2056,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "#\n\n# Gettext languages setup.\n\n#\n",
+        "Line" : 2063,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "#\n\n# Install wxstd.mo in Windows and Mac\n\n#\n",
+        "Line" : 2285,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "#\n\n# On Windows builds, copy the wxWidgets dlls and helpers to the executable\n\n# directory\n\n#\n",
+        "Line" : 2323,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "#\n\n# Prepare CPACK configuration (MINGW)\n\n#\n",
+        "Line" : 2388,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "#\n\n# Build a CPack driven installer package\n\n#\n\n# include (InstallRequiredSystemLibraries)\n",
+        "Line" : 2409,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# Gunther\n",
+        "Line" : 2426,
+        "CharPositionInLine" : 64
+      },
+      "79" : {
+        "Text" : "# Gunther\n",
+        "Line" : 2427,
+        "CharPositionInLine" : 55
+      },
+      "80" : {
+        "Text" : "# The following components are regex's to match anywhere (unless anchored) in\n\n# absolute path + filename to find files or directories to be excluded from\n\n# source tarball.\n",
+        "Line" : 2436,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "#\n\n# Windows NSIS package setup.\n\n#\n",
+        "Line" : 2446,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "# There is a bug in NSI that does not handle full unix paths properly. Make\n\n# sure there is at least one set of four (4) backlasshes.\n",
+        "Line" : 2450,
+        "CharPositionInLine" : 2
+      },
+      "83" : {
+        "Text" : "# These lines set the name of the Windows Start Menu shortcut and the icon\n\n# that goes with it\n",
+        "Line" : 2456,
+        "CharPositionInLine" : 2
+      },
+      "84" : {
+        "Text" : "# Possible values: NONE (default), MIN (=Only crude polygons, no\n\n# borders/rivers), CRUDE, LOW, INTERMEDIATE, HIGH, FULL\n",
+        "Line" : 2485,
+        "CharPositionInLine" : 2
+      },
+      "85" : {
+        "Text" : "#\n\n# Debian package setup\n\n#\n",
+        "Line" : 2502,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "# autogenerate additional dependency information\n",
+        "Line" : 2510,
+        "CharPositionInLine" : 2
+      },
+      "87" : {
+        "Text" : "#\n\n# Apple application bundle\n\n#\n",
+        "Line" : 2527,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# -- Run the BundleUtilities cmake code\n",
+        "Line" : 2531,
+        "CharPositionInLine" : 2
+      },
+      "89" : {
+        "Text" : "# INSTALL(DIRECTORY DESTINATION \"bin/OpenCPN.app/Contents/PlugIns\")\n",
+        "Line" : 2537,
+        "CharPositionInLine" : 2
+      },
+      "90" : {
+        "Text" : "# Dummy target necessary to make sure the ADDITIONAL_MAKE_CLEAN_FILES directive\n\n# is executed. Apparently, the base CMakeLists.txt file must have \"some\" target\n\n# to activate all the clean steps.\n",
+        "Line" : 2593,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 91
+    },
+    "VERSION.cmake" : {
+      "ObjectId" : "501cc2b43c9a48a0724ebb9d06c881e3ef075b71",
+      "LastModified" : "2019-03-23T01:25:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "buildandroid/cross_build_android.cmake" : {
+      "ObjectId" : "2f09dd40350d9bd7a7069828adeca8b269229c30",
+      "LastModified" : "2015-08-17T14:53:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#Toolchain and options definition file for OPenCPN Android build\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#  Locations of the cross-compiler tools\n\n# this one is important\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#this one not so much\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# specify the cross compiler\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#Location of the root of the Android NDK\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Location of the generic wxWidgets base\n\n#SET(wxQt_Base /home/dsr/Projects/wxqt/wxWidgets)\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#Location of the specific wxWidgets build (for Qt_Android)\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#  This one for static build\n\n#SET(wxQt_Build build_android_53)\n\n#SET(wxQt_Build build_android_55)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Location of the root of the Qt installation\n\n#SET(Qt_Base /home/dsr/Qt/5.3)\n\n#SET(Qt_Base /home/dsr/Qt5.5.0/5.5)\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "buildandroid/opencpn.pro" : {
+      "ObjectId" : "fa2289397df3da5145497642bd1de9f05d23499a",
+      "LastModified" : "2015-09-09T21:48:00Z",
+      "FileType" : "QMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------\n\n#\n\n# Project created by QtCreator 2014-03-27T23:08:24\n\n#\n\n#-------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#  THese definitions now made in Projects selector\n\n# Qt target\n\n#wxQt_Base=/home/dsr/Projects/wxqt/wxWidgets\n\n#wxQt_Build=build_android_55\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# OCPN target\n\n#OCPN_Base=/home/dsr/Projects/opencpn_sf/opencpn\n\n#OCPN_Build=build_android_55\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#LIBS += $${OCPN_Base}/$${OCPN_Build}/lib/libGLU.a\n\n#LIBS += $${OCPN_Base}/$${OCPN_Build}/lib/libGLUES.a\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#  I dunno why this does not work right....\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#LIBS += $${OCPN_Base}/$${OCPN_Build}/lib/libGLUES.a\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# To execute the assetbridge runtime code, we make a custom modification to the android Activity method.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# The built-in PlugIns\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Chart Downloader-------------------------------------------------------------------\n\n#data\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#library\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#------------------------------------------------------------------------------------\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# World Magnetic Model---------------------------------------------------------------\n\n#library\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#data\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#------------------------------------------------------------------------------------\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#ANDROID_EXTRA_LIBS += /home/dsr/Projects/opencpn_sf/opencpn/build_android_53/plugins/dashboard_pi/libdashboard_pi.so\n\n#ANDROID_EXTRA_LIBS += /home/dsr/Projects/opencpn_sf/opencpn/build_android_53/plugins/grib_pi/libgrib_pi.so\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "buildwin/Toolchain-mingw32.cmake" : {
+      "ObjectId" : "e85f37836197d9759aebb298fcba977cf8d17d53",
+      "LastModified" : "2015-09-20T13:24:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# the name of the target operating system\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# which compilers to use for C and C++\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# here is the target environment located\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# adjust the default behaviour of the FIND_XXX() commands:\n\n# search headers and libraries in the target environment, search \n\n# programs in the host environment\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Curl.cmake" : {
+      "ObjectId" : "94a76bc3c1f21f7f9efcb9d18214b592c5060e9c",
+      "LastModified" : "2019-04-09T19:25:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian, Sean D'Epagnier\n\n## Copyright:   \n\n## License:     GPLv3+\n\n## \n\n## Invoke with windows libs available in ${PROJECT_SOURCE_DIR}/buildwin/ \n\n## After invocation defines:\n\n##    CURL_INCLUDE_DIRS   - headers location\n\n##    CURL_LIBRARIES      - libraries, full path(s).\n\n##    CURL_FOUND          - reflects found or not.\n\n##\n\n## As a side-effect, windows dlls are installed in main build directory.\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# configure curl library\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#INSTALL(FILES \"buildwin/libeay32.dll\" DESTINATION \".\")\n\n#INSTALL(FILES \"buildwin/ssleay32.dll\" DESTINATION \".\")\n\n#INSTALL(FILES \"buildwin/curl-ca-bundle.crt\" DESTINATION \".\")\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# mingw\n",
+        "Line" : 43,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "cmake/FindEXIF.cmake" : {
+      "ObjectId" : "7509ac55dae451c0fb070fc5a812e08e983d88ab",
+      "LastModified" : "2019-01-29T16:52:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find libexif\n\n# Find the native EXIF includes and library.\n\n# Once done this will define:\n\n#\n\n#  EXIF_ROOT_DIR       - The base directory of EXIF library.\n\n#  EXIF_INCLUDE_DIRS   - Where to find exif-*.h header files.\n\n#  EXIF_LIBRARIES      - Libraries to be linked with executable.\n\n#  EXIF_FOUND          - True if EXIF library is found.\n\n#\n\n#  EXIF_VERSION_STRING - The version of EXIF library found (x.y.z)\n\n#  EXIF_VERSION_MAJOR  - The major version of EXIF library\n\n#  EXIF_VERSION_MINOR  - The minor version of EXIF library\n\n#  EXIF_VERSION_PATCH  - The patch version of EXIF library\n\n#\n\n# Optional input variables:\n\n#\n\n#  EXIF_USE_STATIC_LIB - This can be set to ON to use the static version of\n\n#      the library. If it does not exist in the system, a warning is printed\n\n#      and the shared library is used.\n\n#\n\n# If libexif is installed in a custom folder (this usually happens on Windows)\n\n# the environment variable EXIF_ROOT_DIR can be set to the base folder of\n\n# the library.\n\n#\n\n#=============================================================================\n\n# Copyright (C) 2011 Simone Rossetto <simros85@gmail.com>\n\n# \n\n# This program is free software: you can redistribute it and/or modify\n\n# it under the terms of the GNU General Public License as published by\n\n# the Free Software Foundation, either version 3 of the License, or\n\n# (at your option) any later version.\n\n#\n\n# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\n#=============================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "### FIND section ###\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "### OPTIONS and COMPONENTS section ###\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "### final check ###\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/FindFFmpeg.cmake" : {
+      "ObjectId" : "74584bf318806619abc98ff66bfbca7bc5776711",
+      "LastModified" : "2019-01-29T16:52:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# vim: ts=2 sw=2\n\n# - Try to find the required ffmpeg components(default: AVFORMAT, AVUTIL, AVCODEC)\n\n#\n\n# Once done this will define\n\n#  FFMPEG_FOUND         - System has the all required components.\n\n#  FFMPEG_INCLUDE_DIRS  - Include directory necessary for using the required components headers.\n\n#  FFMPEG_LIBRARIES     - Link these to use the required ffmpeg components.\n\n#  FFMPEG_DEFINITIONS   - Compiler switches required for using the required ffmpeg components.\n\n#\n\n# For each of the components it will additionaly set.\n\n#   - AVCODEC\n\n#   - AVDEVICE\n\n#   - AVFORMAT\n\n#   - AVUTIL\n\n#   - POSTPROCESS\n\n#   - SWSCALE\n\n#   - SWRESAMPLE\n\n# the following variables will be defined\n\n#  <component>_FOUND        - System has <component>\n\n#  <component>_INCLUDE_DIRS - Include directory necessary for using the <component> headers\n\n#  <component>_LIBRARIES    - Link these to use <component>\n\n#  <component>_DEFINITIONS  - Compiler switches required for using <component>\n\n#  <component>_VERSION      - The components version\n\n#\n\n# Copyright (c) 2006, Matthias Kretz, <kretz@kde.org>\n\n# Copyright (c) 2008, Alexander Neundorf, <neundorf@kde.org>\n\n# Copyright (c) 2011, Michael Jansen, <kde@michael-jansen.biz>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The default components were taken from a survey over other FindFFMPEG.cmake files\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n### Macro: set_component_found\n\n#\n\n# Marks the given component as found if both *_LIBRARIES AND *_INCLUDE_DIRS is present.\n\n#\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# message(STATUS \"  - ${_component} found.\")\n",
+        "Line" : 46,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# message(STATUS \"  - ${_component} not found.\")\n",
+        "Line" : 49,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "#\n\n### Macro: find_component\n\n#\n\n# Checks for the given component by invoking pkgconfig and then looking up the libraries and\n\n# include directories.\n\n#\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 62,
+        "CharPositionInLine" : 5
+      },
+      "7" : {
+        "Text" : "# Check for cached results. If there are skip the costly part.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Check for all possible component.\n",
+        "Line" : 109,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Check if the required components were found and add their stuff to the FFMPEG_* vars.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# message(STATUS \"Required component ${_component} present.\")\n",
+        "Line" : 122,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# message(STATUS \"Required component ${_component} missing.\")\n",
+        "Line" : 127,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# Build the include path with duplicates removed.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# cache the vars.\n",
+        "Line" : 136,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Now set the noncached _FOUND vars for the components.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Compile the list of required vars\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Give a nice error message if some of the required vars are missing.\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "cmake/FindGTK3.cmake" : {
+      "ObjectId" : "bbf3425ba25a6c5608c46ee4858606f0124abe89",
+      "LastModified" : "2019-01-29T16:52:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find GTK+ 3\n\n# Once done, this will define\n\n#\n\n#  GTK3_FOUND - system has GTK+ 3.\n\n#  GTK3_INCLUDE_DIRS - the GTK+ 3. include directories\n\n#  GTK3_LIBRARIES - link these to use GTK+ 3.\n\n#\n\n# Copyright (C) 2012 Raphael Kubo da Costa <rakuco@webkit.org>\n\n# Copyright (C) 2013 Igalia S.L.\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n# 1.  Redistributions of source code must retain the above copyright\n\n#     notice, this list of conditions and the following disclaimer.\n\n# 2.  Redistributions in binary form must reproduce the above copyright\n\n#     notice, this list of conditions and the following disclaimer in the\n\n#     documentation and/or other materials provided with the distribution.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND ITS CONTRIBUTORS ``AS\n\n# IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n\n# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n\n# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR ITS\n\n# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n\n# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n\n# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;\n\n# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,\n\n# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR\n\n# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF\n\n# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindLibSndfile.cmake" : {
+      "ObjectId" : "5e3649d3a438b1c3ca8f2d462ff8f3d163397e92",
+      "LastModified" : "2019-03-30T13:36:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# \n\n# - Try to find libsndfile\n\n# Once done, this will define\n\n#\n\n#  LIBSNDFILE_FOUND - system has libsndfile\n\n#  LIBSNDFILE_INCLUDE_DIRS - the libsndfile include directories\n\n#  LIBSNDFILE_LIBRARIES - link these to use libsndfile\n\n#\n\n#  Copied from: \n\n#  https://github.com/neXyon/audaspace/blob/master/cmake/FindLibSndFile.cmake\n\n#\n\n#  Copyright (c) 2009-2015 Jörg Müller. All rights reserved.\n\n#  License: Apache 2.0 (not distributed in binary packages).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use pkg-config to get hints about paths\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include dir\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Library\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/FindPortaudio.cmake" : {
+      "ObjectId" : "544f2cbdc209620e2d087661f7e11d1436d7a09b",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Portaudio\n\n# Once done this will define\n\n#\n\n# PORTAUDIO_FOUND - system has Portaudio\n\n# PORTAUDIO_INCLUDE_DIRS - the Portaudio include directory\n\n# PORTAUDIO_LIBRARIES - Link these to use Portaudio\n\n# PORTAUDIO_DEFINITIONS - Compiler switches required for using Portaudio\n\n#\n\n# Copyright (c) 2006 Andreas Schneider <mail@cynapses.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the New BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n\n#\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#Redistribution and use in source and binary forms, with or without\n\n#modification, are permitted provided that the following conditions are met:\n\n#\n\n#* Redistributions of source code must retain the above copyright notice, this\n\n#list of conditions and the following disclaimer.\n\n#\n\n#* Redistributions in binary form must reproduce the above copyright notice,\n\n#this list of conditions and the following disclaimer in the\n\n#documentation and/or other materials provided with the distribution.\n\n#\n\n#* Neither the name of the CMake-Modules Project nor the names of its\n\n#contributors may be used to endorse or promote products derived from this\n\n#software without specific prior written permission.\n\n#\n\n#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n#ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n#WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n#DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR\n\n#ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n#(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n#LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n#ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n#(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n#SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#FIXME: Needs indentation...\n\n#FIXME: Seem to provoke bugs if invoked on Windows after -DOCPN_ENABLE_PORTAUDIO=ON\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# in cache already\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# show the PORTAUDIO_INCLUDE_DIRS and PORTAUDIO_LIBRARIES variables only in the advanced view\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/FindSqlite.cmake" : {
+      "ObjectId" : "f04b4dabd6fd0fe049c5e93dcf3c9c7fc83445f5",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Sqlite\n\n# Once done this will define\n\n#\n\n#  SQLITE_FOUND - system has Sqlite\n\n#  SQLITE_INCLUDE_DIR - the Sqlite include directory\n\n#  SQLITE_LIBRARIES - Link these to use Sqlite\n\n#  SQLITE_DEFINITIONS - Compiler switches required for using Sqlite\n\n#\n\n# Copyright (c) 2008, Gilles Caulier, <caulier.gilles@gmail.com>\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n#\n\n# 1. Redistributions of source code must retain the copyright\n\n#    notice, this list of conditions and the following disclaimer.\n\n# 2. Redistributions in binary form must reproduce the copyright\n\n#    notice, this list of conditions and the following disclaimer in the\n\n#    documentation and/or other materials provided with the distribution.\n\n# 3. The name of the author may not be used to endorse or promote products\n\n#    derived from this software without specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR\n\n# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES\n\n# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n\n# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,\n\n# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT\n\n# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF\n\n# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in cache already\n",
+        "Line" : 35,
+        "CharPositionInLine" : 34
+      },
+      "CommentCount" : 2
+    },
+    "cmake/FindTinyXML.cmake" : {
+      "ObjectId" : "2f3bc3c6bb22baefda37762eb58ed0e642e47d90",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find TinyXML\n\n# Find the native TinyXML includes and library\n\n#\n\n#   TINYXML_FOUND       - True if TinyXML found.\n\n#   TINYXML_INCLUDE_DIR - where to find tinyxml.h, etc.\n\n#   TINYXML_LIBRARIES   - List of libraries when using TinyXML.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 10,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set TINYXML_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Findgps.cmake" : {
+      "ObjectId" : "cae22cca13e1824dccc7e954efe09b2341421b08",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find gps library\n\n# Once done this will define\n\n#\n\n#  GPS_FOUND - system has gps\n\n#  GPS_INCLUDE_DIR - the gps include directory\n\n#  GPS_LIBRARY - Link this to use gps\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2000-2009 Kitware, Inc., Insight Software Consortium\n\n# Copyright 2006-2009 Kitware, Inc.\n\n# Copyright 2006 Alexander Neundorf <neundorf@kde.org>\n\n# Copyright 2010 David Register \n\n#\n\n#\n\n# All rights reserved.\n\n#\n\n#Redistribution and use in source and binary forms, with or without\n\n#modification, are permitted provided that the following conditions\n\n#are met:\n\n#\n\n#* Redistributions of source code must retain the above copyright\n\n#  notice, this list of conditions and the following disclaimer.\n\n#\n\n#* Redistributions in binary form must reproduce the above copyright\n\n#  notice, this list of conditions and the following disclaimer in the\n\n#  documentation and/or other materials provided with the distribution.\n\n#\n\n#* Neither the names of Kitware, Inc., the Insight Software Consortium,\n\n#  nor the names of their contributors may be used to endorse or promote\n\n#  products derived from this software without specific prior written\n\n#  permission.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\n#\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n\n#LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n\n#A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n\n#HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n\n#SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n\n#LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n#DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n#THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n#(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\n#OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The above copyright and license notice applies to distributions of\n\n#CMake in source and binary form.  Some source files contain additional\n\n#notices of original copyright by their contributors; see each source\n\n#for details.  Third-party software packages supplied with CMake under\n\n#compatible licenses provide their own copyright notices documented in\n\n#corresponding subdirectories.\n\n#\n\n#------------------------------------------------------------------------------\n\n#\n\n#CMake was initially developed by Kitware with the following sponsorship:\n\n#\n\n# * National Library of Medicine at the National Institutes of Health\n\n#   as part of the Insight Segmentation and Registration Toolkit (ITK).\n\n#\n\n# * US National Labs (Los Alamos, Livermore, Sandia) ASC Parallel\n\n#   Visualization Initiative.\n\n#\n\n# * National Alliance for Medical Image Computing (NAMIC) is funded by the\n\n#   National Institutes of Health through the NIH Roadmap for Medical Research,\n\n#   Grant U54 EB005149.\n\n#\n\n# * Kitware, Inc.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/GetArch.cmake" : {
+      "ObjectId" : "6c722a2354c5c2cb2305ce2e7775fa675eee8613",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set ARCH and LIB_INSTALL_DIR  and PACKAGE_RECS in parent \n\n# using cmake probes and various heuristics.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#Red Hat:   /etc/redhat-release\n\n#Slackware: /etc/slackware-version\n\n#Slamd64:   /etc/slamd64-version\n\n#Gentoo: /etc/gentoo-release\n\n#Ubuntu: /etc/debian_version\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Based on code from nohal\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# default\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# In recent openSUSE versions (as of 2016), lib64 is mostly \n\n# used when there are both 32-bit and 64-bit versions, although \n\n# not limited to that. This CMake variable only affects the location\n\n# of OpenCPN plugins at installation time, and nothing more than that.\n\n# At run time, the plugin directory is determined by \n\n# wxStandardPaths::GetPluginsDir(), which returns \"lib\", so this can \n\n# be considered canonical.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 10
+      },
+      "5" : {
+        "Text" : "# On WIN32 probably CMAKE_SIZEOF_VOID_P EQUAL 8, but we don't use it at all now...\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "cmake/OcpnFindCairo.cmake" : {
+      "ObjectId" : "ec7c4c90f268a13d26270595d3db9a095cb52e7e",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Find the cairo libraries. On exit sets linkable library ocpn::cairo\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 6,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set CAIRO_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 44,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Some systems (e.g ARMHF RPI2) require some extra libraries\n\n# This is not exactly a general solution, but probably harmless where\n\n# not needed.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/OcpnFindExpat.cmake" : {
+      "ObjectId" : "3a03e1c13556f5a1012540eb5a6784b851e5306b",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# After inclusion, export the target ocpn::expat \n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/OcpnFindFfmpeg.cmake" : {
+      "ObjectId" : "454aa6a3f5efb1982fe79259a1725a338014c96e",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find FFMPEG - we have it disabled in our wxSVG\n\n#\n\n# This code is UNTESTED snd UNUSED\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/OcpnFindGpsd.cmake" : {
+      "ObjectId" : "f512909956ba6f0b6d78d37ffef5bba89fe56803",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#  Locates gpsd library and headers, returns linkable ocpn::gpsd if found\n\n#\n\n#  UNTESTED and UNUSED!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/OcpnFindGtk.cmake" : {
+      "ObjectId" : "bc2f046399eded251110ff0531aabf4abaaf3c61",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/SimpleWxConfig.cmake" : {
+      "ObjectId" : "24f9061d400abb4f196e0839bac54f42615799ba",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Exclude wxexpat.lib, since we use our own version.\n\n# Other things are excluded as well, but we don't need them\n",
+        "Line" : 10,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 1
+    },
+    "cmake/SoundConfig.cmake" : {
+      "ObjectId" : "9090efab61bd8569460dc342aa97a0797507cf89",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n#  Using options OCPN_ENABLE_SYSTEM_CMD_SOUND, OCPN_ENABLE_PORTAUDIO and\n\n#  OCPN_ENABLE_SNDFILE sets:\n\n#\n\n#     HAVE_SYSTEM_CMD_SOUND - build SystemCmdSound backend\n\n#     SYSTEM_SOUND_CMD      - CLI command used by SystemCmdSound.\n\n#     HAVE_PORTAUDIO        - build portaudio backend.\n\n#     HAVE_SNDFILE          - build libsndfile support for portaudio.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Utils.cmake" : {
+      "ObjectId" : "2a4c1bda8197162bbf21adb68e8d92c1c7e90adf",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Get the latest abbreviated commit hash of the working branch\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "libs/SQLiteCpp/CMakeLists.txt" : {
+      "ObjectId" : "b3c67e48f6f85949ef7d212ffb9dfab629a4a8e4",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# SQLite3 support required for MBTiles.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libs/garmin/CMakeLists.txt" : {
+      "ObjectId" : "b1df75adcd8531ac1cee624146238d6281ca19e8",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build the garmin lib, once upon a time copied from gpslib. Needs\n\n# a -DwxWidgets_INCLUDE_DIRS if built  separately.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libs/gdal/CMakeLists.txt" : {
+      "ObjectId" : "d7e46029abcb7608fc1c7b9d32de6d4725e994ef",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/glshim/CMakeLists.txt" : {
+      "ObjectId" : "7c78a1c2c5ae84363b96feec318f124c1f252967",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Raspberry PI\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libs/glshim/src/CMakeLists.txt" : {
+      "ObjectId" : "1b77311299845af6ace1fde55c8c949e6804a5d7",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#add_library(GL SHARED ${GL_SOURCES})\n\n#target_link_libraries(GL EGL)\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#add_library(GL2 SHARED EXCLUDE_FROM_ALL ${GL_SOURCES})\n\n#target_link_libraries(GL2 EGL)\n\n#set_target_properties(GL2 PROPERTIES COMPILE_FLAGS -DUSE_ES2)\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#    target_link_libraries(GL X11)\n\n#    target_link_libraries(GL2 X11)\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#    set_target_properties(GL PROPERTIES SUFFIX \".so.1\")\n\n#    set_target_properties(GL2 PROPERTIES SUFFIX \".so.1\")\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#aux_source_directory(preload PRELOAD_SOURCES)\n\n#add_library(preload SHARED ${PRELOAD_SOURCES})\n\n#if(${CMAKE_SYSTEM_NAME} MATCHES \"Linux\")\n\n#    target_link_libraries(preload X11)\n\n#endif()\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#add_subdirectory(proxy)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "libs/glshim/src/proxy/CMakeLists.txt" : {
+      "ObjectId" : "ddc3738c97db4acf711c1c742395acac9c9169af",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/glshim/src/proxy/client/CMakeLists.txt" : {
+      "ObjectId" : "fdcee1f386b3cae04a602814f68299924f1d2344",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/glu/CMakeLists.txt" : {
+      "ObjectId" : "edc6cb39ac59488dc73bfdf376dcbd6ce59ae971",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#add_definitions(-g -O2 )\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#    libutil/quad.c\n\n#    libutil/mipmap.c\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "libs/iso8211/CMakeLists.txt" : {
+      "ObjectId" : "7346e64ec41e8a0f18f1e86f479cbf6f1c65b2a8",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libtess2/CMakeLists.txt" : {
+      "ObjectId" : "0e2f03d17079fc9933f2c404f9be9e1a18b26146",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#  ADD_COMPILE_OPTIONS( \"-Wall\" \"-Wno-unused\" \"-fexceptions\" \"-rdynamic\" )\n\n#  ADD_COMPILE_OPTIONS( \" -g\" \"-fno-strict-aliasing\" \"-O2\")\n",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "libs/lz4/CMakeLists.txt" : {
+      "ObjectId" : "f18c5ab1d6e2ff3c6eb1945665a86e112db99610",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/mipmap/CMakeLists.txt" : {
+      "ObjectId" : "b68e2a481e6fa68e3a216c3aab18c0c6126221d3",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# always use optimizations for the texture compression which is much faster\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# require at least gcc 4.8\n",
+        "Line" : 46,
+        "CharPositionInLine" : 16
+      },
+      "2" : {
+        "Text" : "# try to use sse on x86 based systems\n",
+        "Line" : 58,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "libs/nmea0183/CMakeLists.txt" : {
+      "ObjectId" : "ea9dfa05bd581093f17d66b32c90466dedcc6203",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/serial/CMakeLists.txt" : {
+      "ObjectId" : "3b8b6a8d8cc3c2907b8fe991387377d48be4b774",
+      "LastModified" : "2019-04-16T16:41:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#    DESCRIPTION \"Cross-platform, Serial Port library written in C++\"\n\n#    HOMEPAGE_URL \"http://wjwwood.io/serial/\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test does not work as of current.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Find catkin, required for tests\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If Linux, add rt and pthread\n",
+        "Line" : 30,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Otherwise normal call\n",
+        "Line" : 39,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "## Sources\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# windows\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Build, link and install main library\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Other targets: test program, pkg-config and tests.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "libs/serial/Makefile" : {
+      "ObjectId" : "e172072238a6f751ced29a080231009bb5d0871e",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "libs/serial/tests/CMakeLists.txt" : {
+      "ObjectId" : "e52a4d31eeca08dd127e2584c593e109f87e9f54",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# these tests are unreliable on macOS\n",
+        "Line" : 8,
+        "CharPositionInLine" : 19
+      },
+      "CommentCount" : 1
+    },
+    "libs/sound/CMakeLists.txt" : {
+      "ObjectId" : "bdf9bb34c38e1c4979a67f8a5ea8cbaedb281128",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#if (NOT wxWidgets_INCLUDE_DIRS)\n\n#    include(SimpleWxConfig)\n\n#    SimpleWxConfig()\n\n#endif ()\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libs/sqlite/CMakeLists.txt" : {
+      "ObjectId" : "5ff8a8f6d7718945adc94a180237cf0584ae0950",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/ssl_sha1/CMakeLists.txt" : {
+      "ObjectId" : "a047a7ff4d04b8fe51d466350f824d2587c736c4",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/texcmp/CMakeLists.txt" : {
+      "ObjectId" : "9bb7a901f12afa11e126f2a83f95166f1572272c",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# always use optimizations for the texture compression which is much faster\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# try to use sse on x86 based systems\n",
+        "Line" : 80,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# using sse which makes the compression run about 50% faster\n",
+        "Line" : 82,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# use standard optimizations for other architectures\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# try to use sse on x86 based systems\n",
+        "Line" : 90,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# using sse which makes the compression run about 50% faster\n",
+        "Line" : 92,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "libs/tinyxml/CMakeLists.txt" : {
+      "ObjectId" : "c9b7316d783810fde131ebbdb998304df4ee31de",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/wxJSON/CMakeLists.txt" : {
+      "ObjectId" : "f0c0603dbb79962e9c2483fb61675ad26a075e02",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Library is used also in the plugins, so:\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libs/wxcurl/CMakeLists.txt" : {
+      "ObjectId" : "9422fd9002dd5ba574892a31f7cf1731a84769e4",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/wxcurl/src/include/curl/curlbuild.h.cmake" : {
+      "ObjectId" : "60bc7a70ec547e2dd7a950657f6bc31c901742ad",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKESOURCE",
+      "0" : {
+        "Text" : "/***************************************************************************\n *                                  _   _ ____  _\n *  Project                     ___| | | |  _ \\| |\n *                             / __| | | | |_) | |\n *                            | (__| |_| |  _ <| |___\n *                             \\___|\\___/|_| \\_\\_____|\n *\n * Copyright (C) 1998 - 2008, Daniel Stenberg, <daniel@haxx.se>, et al.\n *\n * This software is licensed as described in the file COPYING, which\n * you should have received as part of this distribution. The terms\n * are also available at http://curl.haxx.se/docs/copyright.html.\n *\n * You may opt to use, copy, modify, merge, publish, distribute and/or sell\n * copies of the Software, and permit persons to whom the Software is\n * furnished to do so, under the terms of the COPYING file.\n *\n * This software is distributed on an \"AS IS\" basis, WITHOUT WARRANTY OF ANY\n * KIND, either express or implied.\n *\n ***************************************************************************/",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "/* ================================================================ */\n/*               NOTES FOR CONFIGURE CAPABLE SYSTEMS                */\n/* ================================================================ */",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "/*\n * NOTE 1:\n * -------\n *\n * Nothing in this file is intended to be modified or adjusted by the\n * curl library user nor by the curl library builder.\n *\n * If you think that something actually needs to be changed, adjusted\n * or fixed in this file, then, report it on the libcurl development\n * mailing list: http://cool.haxx.se/mailman/listinfo/curl-library/\n *\n * This header file shall only export symbols which are 'curl' or 'CURL'\n * prefixed, otherwise public name space would be polluted.\n *\n * NOTE 2:\n * -------\n *\n * Right now you might be staring at file include/curl/curlbuild.h.in or\n * at file include/curl/curlbuild.h, this is due to the following reason:\n *\n * On systems capable of running the configure script, the configure process\n * will overwrite the distributed include/curl/curlbuild.h file with one that\n * is suitable and specific to the library being configured and built, which\n * is generated from the include/curl/curlbuild.h.in template file.\n *\n */",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "/* ================================================================ */\n/*  DEFINITION OF THESE SYMBOLS SHALL NOT TAKE PLACE ANYWHERE ELSE  */\n/* ================================================================ */",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "/* ================================================================ */\n/*  EXTERNAL INTERFACE SETTINGS FOR CONFIGURE CAPABLE SYSTEMS ONLY  */\n/* ================================================================ */",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "/* Configure process defines this to 1 when it finds out that system  */\n/* header file ws2tcpip.h must be included by the external interface. */",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "/* Configure process defines this to 1 when it finds out that system   */\n/* header file sys/types.h must be included by the external interface. */",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "/* Configure process defines this to 1 when it finds out that system */\n/* header file stdint.h must be included by the external interface.  */",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "/* Configure process defines this to 1 when it finds out that system  */\n/* header file inttypes.h must be included by the external interface. */",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "/* Configure process defines this to 1 when it finds out that system    */\n/* header file sys/socket.h must be included by the external interface. */",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "/* Configure process defines this to 1 when it finds out that system  */\n/* header file sys/poll.h must be included by the external interface. */",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "/* The size of `long', as computed by sizeof. */",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "/* Integral data type used for curl_socklen_t. */",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "/* The size of `curl_socklen_t', as computed by sizeof. */",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "/* Data type definition of curl_socklen_t. */",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "/* Signed integral data type used for curl_off_t. */",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "/* Data type definition of curl_off_t. */",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "/* curl_off_t formatting string directive without \"%\" conversion specifier. */",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "/* unsigned curl_off_t formatting string without \"%\" conversion specifier. */",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "/* curl_off_t formatting string directive with \"%\" conversion specifier. */",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "/* The size of `curl_off_t', as computed by sizeof. */",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "/* curl_off_t constant suffix. */",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "/* unsigned curl_off_t constant suffix. */",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "libs/wxsvg/CMakeLists.txt" : {
+      "ObjectId" : "c00ede6f336962478a21a916d184d2d70dd4d15a",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Build wxsvg library. Primarely intended to be invoked fror the main\n\n# CMakeLists. The alternative uses a simplified configuration\n\n# requiring proper pkg-config setup and just using standard wxWidgets\n\n# options. It has only been tested on linux.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#   src/mediadec_ffmpeg.cpp\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "mingw/fedora/toolchain.cmake" : {
+      "ObjectId" : "25fad714265aa288a85720a50a50ca5258b575af",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# the name of the target operating system\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# which compilers to use for C and C++\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# here is the target environment located\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# adjust the default behaviour of the FIND_XXX() commands:\n\n# search headers and libraries in the target environment, search\n\n# programs in the host environment\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "plugins/CMakeLists.txt" : {
+      "ObjectId" : "3fa4b232183d3ef99f08323bb850f715f4b87873",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Dave Register\n\n## DEB config from: antonm - Anton Martchukov <anton@martchukov.com>\n\n##***************************************************************************\n\n## *   Copyright (C) 2010 by David S. Register                               *\n\n## *   This program is free software; you can redistribute it and/or modify  *\n\n## *   it under the terms of the GNU General Public License as published by  *\n\n## *   the Free Software Foundation; either version 2 of the License, or     *\n\n## *   (at your option) any later version.                                   *\n\n## *                                                                         *\n\n## *   This program is distributed in the hope that it will be useful,       *\n\n## *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n\n## *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n\n## *   GNU General Public License for more details.                          *\n\n## *                                                                         *\n\n## *   You should have received a copy of the GNU General Public License     *\n\n## *   along with this program; if not, write to the                         *\n\n## *   Free Software Foundation, Inc.,                                       *\n\n## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.             *\n\n## ***************************************************************************\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define minimum cmake version\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# These variables are inherited by all plugins\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "plugins/PluginLocalization.cmake" : {
+      "ObjectId" : "3c2f579f3d51e6207144f6f55dfb4b46fb7e3ca9",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "plugins/chartdldr_pi/CMakeLists.txt" : {
+      "ObjectId" : "0529474b8de22194ab6c1474d0bad150b2c82ec0",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian\n\n## Copyright:   2014\n\n## License:     GPLv2 License\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define minimum cmake version\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#Homebrew does not link libarchive to /usr/local by default to avoid conflict with the system-wide one (which in turn does not provide includes...)\n\n#We do not want the systemwide vrsion as it is too old and misses support for many archive formats\n",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#Unset the unrar sources as we will not need them\n",
+        "Line" : 123,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# FIXME: This is to broad, needs better handling after 5.0.0\n",
+        "Line" : 157,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "#We do not have libarchive, try to make unarr more powerful...\n\n#ADD_DEFINITIONS(-DHAVE_7Z) #TODO if we decide it is needed, quite a bit more work here\n",
+        "Line" : 170,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 7
+    },
+    "plugins/chartdldr_pi/cmake/FindTinyXML.cmake" : {
+      "ObjectId" : "2f3bc3c6bb22baefda37762eb58ed0e642e47d90",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find TinyXML\n\n# Find the native TinyXML includes and library\n\n#\n\n#   TINYXML_FOUND       - True if TinyXML found.\n\n#   TINYXML_INCLUDE_DIR - where to find tinyxml.h, etc.\n\n#   TINYXML_LIBRARIES   - List of libraries when using TinyXML.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 10,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set TINYXML_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "plugins/chartdldr_pi/cmake/PluginConfigure.cmake" : {
+      "ObjectId" : "59213c6226149c27612580105fa27a39539a26a5",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This should be 2.8.0 to have FindGTK2 module\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#configure_file(cmake/version.h.in ${PROJECT_SOURCE_DIR}/src/version.h)\n\n#  Do the version.h configuration into the build output directory,\n\n#  thereby allowing building from a read-only source tree.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SET(PROFILING 1)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#  IF NOT DEBUGGING CFLAGS=\"-O2 -march=native\"\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#  ADD_DEFINITIONS( \"-Wall -g -fexceptions\" )\n",
+        "Line" : 39,
+        "CharPositionInLine" : 3
+      },
+      "7" : {
+        "Text" : "# Add some definitions to satisfy MS\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(wxWidgets...) and wxWidgets_USE_FILE is not useful.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# this is just a hack. I think the bug is in FindwxWidgets.cmake\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(OpenGL) is not useful.\n\n#\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# On Android, PlugIns need a specific linkage set....\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# These libraries are needed to create PlugIns on Android.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Presently, Android Plugins are built in the core tree, so the variables {wxQT_BASE}, etc.\n\n# flow to this module from above.  If we want to build Android plugins out-of-core, this will need improvement.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# TODO This is pretty ugly, but there seems no way to avoid specifying a full path in a cross build....\n",
+        "Line" : 106,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "#${NDK_Base}/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/libgnustl_shared.so\n",
+        "Line" : 124,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 16
+    },
+    "plugins/chartdldr_pi/cmake/PluginInstall.cmake" : {
+      "ObjectId" : "18930414aa86465f3a44934f42950e946cf3390d",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#    TARGET_LINK_LIBRARIES(${PACKAGE_NAME}\n\n#\tgdiplus.lib\n\n#\tglu32.lib)\n",
+        "Line" : 16,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# assuming wxwidgets is compiled with unicode, needed for mingw headers\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "plugins/chartdldr_pi/cmake/PluginLocalization.cmake" : {
+      "ObjectId" : "061c6ffe8b41d8dfc60cf279bbf8d61c988d5e00",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian / Sean D'Epagnier\n\n## Copyright:   \n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "plugins/chartdldr_pi/cmake/PluginPackage.cmake" : {
+      "ObjectId" : "0828edf021ed6ba83ac8099c9794c2bbb2d55efb",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# build a CPack driven installer package\n\n#include (InstallRequiredSystemLibraries)\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# to protect against confusable windows users, let us _not_ generate zip packages\n\n#  SET(CPACK_GENERATOR \"NSIS;ZIP\")\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# override install directory to put package files in the opencpn directory\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# CPACK_NSIS_DIR ??\n\n# CPACK_BUILDWIN_DIR ??\n\n# CPACK_PACKAGE_ICON ??\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Let cmake find NSIS.template.in\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "#  These lines set the name of the Windows Start Menu shortcut and the icon that goes with it\n\n#  SET(CPACK_NSIS_INSTALLED_ICON_NAME \"${PACKAGE_NAME}\")\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#  SET(CPACK_PACKAGE_FILE_NAME \"${PACKAGE_NAME}_${VERSION_MAJOR}.${VERSION_MINOR}_setup\" )\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Gunther\n",
+        "Line" : 42,
+        "CharPositionInLine" : 69
+      },
+      "9" : {
+        "Text" : "#Gunther\n",
+        "Line" : 43,
+        "CharPositionInLine" : 60
+      },
+      "10" : {
+        "Text" : "#    MESSAGE(STATUS \"Using generic cpack package description file.\")\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#SET(CPACK_SOURCE_GENERATOR \"TGZ\")\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# The following components are regex's to match anywhere (unless anchored)\n\n# in absolute path + filename to find files or directories to be excluded\n\n# from source tarball.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# need apt-get install rpm, for rpmbuild\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# don't bother with rpm on armhf\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# note: in a chroot must use \"setarch i686 make package\"\n",
+        "Line" : 89,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# requires my patches to cmake\n",
+        "Line" : 97,
+        "CharPositionInLine" : 44
+      },
+      "17" : {
+        "Text" : "#    SET(CPACK_SET_DESTDIR ON)\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# configure_file(${PROJECT_SOURCE_DIR}/src/opencpn.rc.in ${PROJECT_SOURCE_DIR}/src/opencpn.rc)\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# this dummy target is necessary to make sure the ADDITIONAL_MAKE_CLEAN_FILES directive is executed.\n\n# apparently, the base CMakeLists.txt file must have \"some\" target to activate all the clean steps.\n\n#ADD_CUSTOM_TARGET(dummy COMMENT \"dummy: Done.\" DEPENDS ${PACKAGE_NAME})\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#  Copy a bunch of files so the Packages installer builder can find them\n\n#  relative to ${CMAKE_CURRENT_BINARY_DIR}\n\n#  This avoids absolute paths in the chartdldr_pi.pkgproj file\n",
+        "Line" : 142,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "# Patch the pkgproj.in file to make the output package name conform to Xxx-Plugin_x.x.pkg format\n\n#  Key is:\n\n#  <key>NAME</key>\n\n#  <string>${VERBOSE_NAME}-Plugin_${VERSION_MAJOR}.${VERSION_MINOR}</string>\n",
+        "Line" : 152,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 22
+    },
+    "plugins/chartdldr_pi/src/unarr/Makefile" : {
+      "ObjectId" : "60fd622f0315179ccf9cac3f189698a8bff91ebf",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# GNU Makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# --- Configuration ---\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# --- Commands ---\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# --- Third party libraries ---\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# TODO: build zlib, bzip2 and 7z when available\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# --- unarr files ---\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# TODO: add header dependencies\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# --- Clean and Default ---\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "plugins/dashboard_pi/CMakeLists.txt" : {
+      "ObjectId" : "3d5697a67bf20a92a2381275b81be5fece0b9b26",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Dave Register\n\n## ***************************************************************************\n\n## *   Copyright (C) 2010 by David S. Register                               *\n\n## *   This program is free software; you can redistribute it and/or modify  *\n\n## *   it under the terms of the GNU General Public License as published by  *\n\n## *   the Free Software Foundation; either version 2 of the License, or     *\n\n## *   (at your option) any later version.                                   *\n\n## *                                                                         *\n\n## *   This program is distributed in the hope that it will be useful,       *\n\n## *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n\n## *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n\n## *   GNU General Public License for more details.                          *\n\n## *                                                                         *\n\n## *   You should have received a copy of the GNU General Public License     *\n\n## *   along with this program; if not, write to the                         *\n\n## *   Free Software Foundation, Inc.,                                       *\n\n## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *\n\n## ***************************************************************************\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define minimum cmake version\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# require proper c++\n\n#ADD_DEFINITIONS( \"-Wall -ansi -pedantic -Wno-variadic-macros\" )\n\n#TODO: Should we use  -fno-stack-protector\n\n#  IF NOT DEBUGGING CFLAGS=\"-O2 -march=native\"\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Add some definitions to satisfy MSVC\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(wxWidgets...) and wxWidgets_USE_FILE is not useful.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# For convenience we define the sources as a variable. You can add\n\n# header files and cpp/c files and CMake will sort them out\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "##INCLUDE_DIRECTORIES(src/nmea0183)\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# On Android, PlugIns need a specific linkage set....\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# These libraries are needed to create PlugIns on Android.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Presently, Android Plugins are built in the core tree, so the variables {wxQT_BASE}, etc.\n\n# flow to this module from above.  If we want to build Android plugins out-of-core, this will need improvement.\n",
+        "Line" : 209,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# TODO This is pretty ugly, but there seems no way to avoid specifying a full path in a cross build....\n",
+        "Line" : 212,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 12
+    },
+    "plugins/demo_pi_sample/CMakeLists.txt" : {
+      "ObjectId" : "dfd35bb7ffb3a8083a2b2e379f5d1ca34541aa28",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\r\n\n## Author:      Dave Register\r\n\n##***************************************************************************\r\n\n## *   Copyright (C) 2010 by David S. Register                               *\r\n\n## *   This program is free software; you can redistribute it and/or modify  *\r\n\n## *   it under the terms of the GNU General Public License as published by  *\r\n\n## *   the Free Software Foundation; either version 2 of the License, or     *\r\n\n## *   (at your option) any later version.                                   *\r\n\n## *                                                                         *\r\n\n## *   This program is distributed in the hope that it will be useful,       *\r\n\n## *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\r\n\n## *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\r\n\n## *   GNU General Public License for more details.                          *\r\n\n## *                                                                         *\r\n\n## *   You should have received a copy of the GNU General Public License     *\r\n\n## *   along with this program; if not, write to the                         *\r\n\n## *   Free Software Foundation, Inc.,                                       *\r\n\n## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.             *\r\n\n## ***************************************************************************\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define minimum cmake version\r\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# require proper c++\r\n\n#ADD_DEFINITIONS( \"-Wall -ansi -pedantic -Wno-variadic-macros\" )\r\n\n#TODO: Should we use  -fno-stack-protector\r\n\n#  IF NOT DEBUGGING CFLAGS=\"-O2 -march=native\"\r\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add some definitions to satisfy MS\r\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# For convenience we define the sources as a variable. You can add \r\n\n# header files and cpp/c files and CMake will sort them out\r\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "plugins/demo_pi_sample/cmake/PluginConfigure.cmake" : {
+      "ObjectId" : "c9ab3aa7a671caea2b06651d0f9f9406b78909ad",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This should be 2.8.0 to have FindGTK2 module\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#configure_file(cmake/version.h.in ${PROJECT_SOURCE_DIR}/src/version.h)\n\n#  Do the version.h configuration into the build output directory,\n\n#  thereby allowing building from a read-only source tree.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n\n#SET(CMAKE_VERBOSE_MAKEFILE ON)\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SET(PROFILING 1)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#  IF NOT DEBUGGING CFLAGS=\"-O2 -march=native\"\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#  ADD_DEFINITIONS( \"-Wall -g -fexceptions\" )\n",
+        "Line" : 49,
+        "CharPositionInLine" : 3
+      },
+      "7" : {
+        "Text" : "# Add some definitions to satisfy MS\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(wxWidgets...) and wxWidgets_USE_FILE is not useful.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# this is just a hack. I think the bug is in FindwxWidgets.cmake\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(OpenGL) is not useful.\n\n#\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#  Building for QT_ANDROID involves a cross-building environment,\n\n#  So the OpenGL include directories, flags, etc must be stated explicitly\n\n#  without trying to locate them on the host build system.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#    SET(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl )\n\n#    add_subdirectory(src/glshim)\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#    add_subdirectory(src/glu)\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# On Android, PlugIns need a specific linkage set....\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# These libraries are needed to create PlugIns on Android.\n",
+        "Line" : 143,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Presently, Android Plugins are built in the core tree, so the variables {wxQT_BASE}, etc.\n\n# flow to this module from above.  If we want to build Android plugins out-of-core, this will need improvement.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 8
+      },
+      "17" : {
+        "Text" : "# TODO This is pretty ugly, but there seems no way to avoid specifying a full path in a cross build....\n",
+        "Line" : 149,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 18
+    },
+    "plugins/demo_pi_sample/cmake/PluginInstall.cmake" : {
+      "ObjectId" : "0a95bdaad048c51c984b968f2c30224e7332bbd2",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#    TARGET_LINK_LIBRARIES(${PACKAGE_NAME}\n\n#\tgdiplus.lib\n\n#\tglu32.lib)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# assuming wxwidgets is compiled with unicode, this is needed for mingw headers\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/demo_pi_sample/cmake/PluginLocalization.cmake" : {
+      "ObjectId" : "65b44897461f326dc4cae9e8ad35a85159184774",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian / Sean D'Epagnier\n\n## Copyright:   \n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convert crlf to lf for consistency and make copy_if_different work correctly\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "plugins/demo_pi_sample/cmake/PluginPackage.cmake" : {
+      "ObjectId" : "70339ddffd2dcdc8b8331336b5870f681ee0de19",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# build a CPack driven installer package\n\n#include (InstallRequiredSystemLibraries)\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# to protect against confusable windows users, let us _not_ generate zip packages\n\n#  SET(CPACK_GENERATOR \"NSIS;ZIP\")\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# override install directory to put package files in the opencpn directory\n",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# CPACK_NSIS_DIR ??\n\n# CPACK_BUILDWIN_DIR ??\n\n# CPACK_PACKAGE_ICON ??\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Let cmake find NSIS.template.in\n",
+        "Line" : 37,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "#  These lines set the name of the Windows Start Menu shortcut and the icon that goes with it\n\n#  SET(CPACK_NSIS_INSTALLED_ICON_NAME \"${PACKAGE_NAME}\")\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#  SET(CPACK_PACKAGE_FILE_NAME \"${PACKAGE_NAME}_${VERSION_MAJOR}.${VERSION_MINOR}_setup\" )\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Gunther\n",
+        "Line" : 46,
+        "CharPositionInLine" : 69
+      },
+      "9" : {
+        "Text" : "#Gunther\n",
+        "Line" : 47,
+        "CharPositionInLine" : 60
+      },
+      "10" : {
+        "Text" : "#    MESSAGE(STATUS \"Using generic cpack package description file.\")\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#SET(CPACK_SOURCE_GENERATOR \"TGZ\")\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# The following components are regex's to match anywhere (unless anchored)\n\n# in absolute path + filename to find files or directories to be excluded\n\n# from source tarball.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# need apt-get install rpm, for rpmbuild\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# don't bother with rpm on armhf\n",
+        "Line" : 84,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# note: in a chroot must use \"setarch i686 make package\"\n",
+        "Line" : 93,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# requires my patches to cmake\n",
+        "Line" : 101,
+        "CharPositionInLine" : 44
+      },
+      "17" : {
+        "Text" : "#    SET(CPACK_SET_DESTDIR ON)\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# configure_file(${PROJECT_SOURCE_DIR}/src/opencpn.rc.in ${PROJECT_SOURCE_DIR}/src/opencpn.rc)\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# this dummy target is necessary to make sure the ADDITIONAL_MAKE_CLEAN_FILES directive is executed.\n\n# apparently, the base CMakeLists.txt file must have \"some\" target to activate all the clean steps.\n\n#ADD_CUSTOM_TARGET(dummy COMMENT \"dummy: Done.\" DEPENDS ${PACKAGE_NAME})\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#  Copy a bunch of files so the Packages installer builder can find them\n\n#  relative to ${CMAKE_CURRENT_BINARY_DIR}\n\n#  This avoids absolute paths in the chartdldr_pi.pkgproj file\n",
+        "Line" : 146,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "# Patch the pkgproj.in file to make the output package name conform to Xxx-Plugin_x.x.pkg format\n\n#  Key is:\n\n#  <key>NAME</key>\n\n#  <string>${VERBOSE_NAME}-Plugin_${VERSION_MAJOR}.${VERSION_MINOR}</string>\n",
+        "Line" : 156,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 22
+    },
+    "plugins/grib_pi/CMakeLists.txt" : {
+      "ObjectId" : "a7266765c504610fc77733c71e808a9987ba9e63",
+      "LastModified" : "2019-04-17T11:50:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Dave Register\n\n##***************************************************************************\n\n## *   Copyright (C) 2010 by David S. Register                               *\n\n## *   This program is free software; you can redistribute it and/or modify  *\n\n## *   it under the terms of the GNU General Public License as published by  *\n\n## *   the Free Software Foundation; either version 2 of the License, or     *\n\n## *   (at your option) any later version.                                   *\n\n## *                                                                         *\n\n## *   This program is distributed in the hope that it will be useful,       *\n\n## *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *\n\n## *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *\n\n## *   GNU General Public License for more details.                          *\n\n## *                                                                         *\n\n## *   You should have received a copy of the GNU General Public License     *\n\n## *   along with this program; if not, write to the                         *\n\n## *   Free Software Foundation, Inc.,                                       *\n\n## *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.             *\n\n## ***************************************************************************\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define minimum cmake version\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n\n#SET(CMAKE_VERBOSE_MAKEFILE ON)\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# require proper c++\n\n#ADD_DEFINITIONS( \"-Wall -ansi -pedantic -Wno-variadic-macros\" )\n\n#TODO: Should we use  -fno-stack-protector\n\n#  IF NOT DEBUGGING CFLAGS=\"-O2 -march=native\"\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Add some definitions to satisfy MS\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(wxWidgets...) and wxWidgets_USE_FILE are not useful.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# For convenience we define the sources as a variable. You can add\n\n# header files and cpp/c files and CMake will sort them out\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# On Android, PlugIns need a specific linkage set....\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# These libraries are needed to create PlugIns on Android.\n",
+        "Line" : 166,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Presently, Android Plugins are built in the core tree, so the variables {wxQT_BASE}, etc.\n\n# flow to this module from above.  If we want to build Android plugins out-of-core, this will need improvement.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# TODO This is pretty ugly, but there seems no way to avoid specifying a full path in a cross build....\n",
+        "Line" : 172,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# FIXME: Need better handling after 5.0.0\n",
+        "Line" : 211,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "#      \"-L${wxWidgets_ROOT_DIR}/lib -lwxzlib-3.1-i686-w64-mingw32\")\n\n#      \"-L${wxWidgets_ROOT_DIR}/lib -lwxzlib-2.8\"\n",
+        "Line" : 225,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "plugins/grib_pi/libs/jasper/CMakeLists.txt" : {
+      "ObjectId" : "f8bb823e286e6c5bd18bf846a6f5c9b2674842f2",
+      "LastModified" : "2019-04-17T11:50:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# FIXME: this hides some nasty warnings, some of which fixed upstream.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "plugins/wmm_pi/CMakeLists.txt" : {
+      "ObjectId" : "2a7e0973d9ebe4c569c3a687b20bbbcb6d3bda46",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      nohal aka. Pavel Kalian\n\n## Copyright:   \n\n## License:     wxWidgets License\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define minimum cmake version\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "plugins/wmm_pi/cmake/PluginConfigure.cmake" : {
+      "ObjectId" : "e92df6d7a11aff91c9c1e4d47cc9d90b2da5353e",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This should be 2.8.0 to have FindGTK2 module\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#  CMAKE_POLICY(SET CMP0003 OLD)\n\n#  CMAKE_POLICY(SET CMP0005 OLD)\n\n#  CMAKE_POLICY(SET CMP0011 OLD)\n",
+        "Line" : 11,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "#configure_file(cmake/version.h.in ${PROJECT_SOURCE_DIR}/src/version.h)\n\n#  Do the version.h configuration into the build output directory,\n\n#  thereby allowing building from a read-only source tree.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#SET(CMAKE_BUILD_TYPE Debug)\n\n#SET(CMAKE_VERBOSE_MAKEFILE ON)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# SET(PROFILING 1)\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#  IF NOT DEBUGGING CFLAGS=\"-O2 -march=native\"\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#  ADD_DEFINITIONS( \"-Wall -g -fexceptions\" )\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Add some definitions to satisfy MS\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(wxWidgets...) and wxWidgets_USE_FILE is not useful.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# this is just a hack. I think the bug is in FindwxWidgets.cmake\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(OpenGL) is not useful.\n\n#\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#  Building for QT_ANDROID involves a cross-building environment,\n\n#  So the OpenGL include directories, flags, etc must be stated explicitly\n\n#  without trying to locate them on the host build system.\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#    SET(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl )\n\n#    add_subdirectory(src/glshim)\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#    add_subdirectory(src/glu)\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# On Android, PlugIns need a specific linkage set....\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# These libraries are needed to create PlugIns on Android.\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Presently, Android Plugins are built in the core tree, so the variables {wxQT_BASE}, etc.\n\n# flow to this module from above.  If we want to build Android plugins out-of-core, this will need improvement.\n",
+        "Line" : 141,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# TODO This is pretty ugly, but there seems no way to avoid specifying a full path in a cross build....\n",
+        "Line" : 144,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 19
+    },
+    "plugins/wmm_pi/cmake/PluginInstall.cmake" : {
+      "ObjectId" : "a74030d53e88672baf872c6897f28b5162a40f4d",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#    TARGET_LINK_LIBRARIES(${PACKAGE_NAME}\n\n#\tgdiplus.lib\n\n#\tglu32.lib)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# assuming wxwidgets is compiled with unicode, needed for mingw headers\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/wmm_pi/cmake/PluginLocalization.cmake" : {
+      "ObjectId" : "061c6ffe8b41d8dfc60cf279bbf8d61c988d5e00",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian / Sean D'Epagnier\n\n## Copyright:   \n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "plugins/wmm_pi/cmake/PluginPackage.cmake" : {
+      "ObjectId" : "bf01553e1a7784fda8cbe78618778f6d0d03a2f9",
+      "LastModified" : "2019-04-15T19:58:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##---------------------------------------------------------------------------\n\n## Author:      Pavel Kalian (Based on the work of Sean D'Epagnier)\n\n## Copyright:   2014\n\n## License:     GPLv3+\n\n##---------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# build a CPack driven installer package\n\n#include (InstallRequiredSystemLibraries)\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# to protect against confusable windows users, let us _not_ generate zip packages\n\n#  SET(CPACK_GENERATOR \"NSIS;ZIP\")\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# override install directory to put package files in the opencpn directory\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# CPACK_NSIS_DIR ??\n\n# CPACK_BUILDWIN_DIR ??\n\n# CPACK_PACKAGE_ICON ??\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Let cmake find NSIS.template.in\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "#  These lines set the name of the Windows Start Menu shortcut and the icon that goes with it\n\n#  SET(CPACK_NSIS_INSTALLED_ICON_NAME \"${PACKAGE_NAME}\")\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#  SET(CPACK_PACKAGE_FILE_NAME \"${PACKAGE_NAME}_${VERSION_MAJOR}.${VERSION_MINOR}_setup\" )\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Gunther\n",
+        "Line" : 42,
+        "CharPositionInLine" : 69
+      },
+      "9" : {
+        "Text" : "#Gunther\n",
+        "Line" : 43,
+        "CharPositionInLine" : 60
+      },
+      "10" : {
+        "Text" : "#    MESSAGE(STATUS \"Using generic cpack package description file.\")\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#SET(CPACK_SOURCE_GENERATOR \"TGZ\")\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# The following components are regex's to match anywhere (unless anchored)\n\n# in absolute path + filename to find files or directories to be excluded\n\n# from source tarball.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# need apt-get install rpm, for rpmbuild\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# don't bother with rpm on armhf\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# note: in a chroot must use \"setarch i686 make package\"\n",
+        "Line" : 88,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# requires my patches to cmake\n",
+        "Line" : 96,
+        "CharPositionInLine" : 44
+      },
+      "17" : {
+        "Text" : "#    SET(CPACK_SET_DESTDIR ON)\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# configure_file(${PROJECT_SOURCE_DIR}/src/opencpn.rc.in ${PROJECT_SOURCE_DIR}/src/opencpn.rc)\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# this dummy target is necessary to make sure the ADDITIONAL_MAKE_CLEAN_FILES directive is executed.\n\n# apparently, the base CMakeLists.txt file must have \"some\" target to activate all the clean steps.\n\n#ADD_CUSTOM_TARGET(dummy COMMENT \"dummy: Done.\" DEPENDS ${PACKAGE_NAME})\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#  Copy a bunch of files so the Packages installer builder can find them\n\n#  relative to ${CMAKE_CURRENT_BINARY_DIR}\n\n#  This avoids absolute paths in the chartdldr_pi.pkgproj file\n",
+        "Line" : 142,
+        "CharPositionInLine" : 1
+      },
+      "21" : {
+        "Text" : "# Patch the pkgproj.in file to make the output package name conform to Xxx-Plugin_x.x.pkg format\n\n#  Key is:\n\n#  <key>NAME</key>\n\n#  <string>${VERBOSE_NAME}-Plugin_${VERSION_MAJOR}.${VERSION_MINOR}</string>\n",
+        "Line" : 152,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 22
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 67,
+    "CMAKESOURCE" : 1,
+    "QMAKE" : 1,
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 9951
+}

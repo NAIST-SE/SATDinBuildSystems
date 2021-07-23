@@ -1,0 +1,216 @@
+{
+  "Repository" : "331875",
+  "Revision" : "HEAD",
+  "ObjectId" : "b0c1483f706b83785506d508244fefe06012ba66",
+  "CommitTime" : "2018-12-26T13:38:03Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "2d7dcced23ac30a68ea2535e27829513ccb5cd02",
+      "LastModified" : "2018-10-20T14:50:08Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# VS2013 doesn't have magic statics\n",
+        "Line" : 161,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# enum warnings are too noisy on MSVC2013\n",
+        "Line" : 164,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Note on MSVC compiler flags.\n\n# The code base selective disables warnings as necessary when the compiler is complaining too much\n\n# about something that is perfectly valid, or there is simply no technical way around it\n\n# This particular warning, C4503 is in regards to the decorated names that MSVC generates internally.\n\n# The error did not come up until the move to C++11, but the compiler doesn't give enough information\n\n# to determine where the error is coming from, and the internet provides no real information for\n\n# how to workaround or fix the error. So I'm disabling it globally.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# limitations in MinGW require us to make an optimized build\n\n# for the sake of object sizes or something\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Catch.cmake" : {
+      "ObjectId" : "486e323318cb16a7a65bcf4e26244086d8497617",
+      "LastModified" : "2018-02-19T18:34:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#[=======================================================================[.rst:\nCatch\n-----\n\nThis module defines a function to help use the Catch test framework.\n\nThe :command:`catch_discover_tests` discovers tests by asking the compiled test\nexecutable to enumerate its tests.  This does not require CMake to be re-run\nwhen tests change.  However, it may not work in a cross-compiling environment,\nand setting test properties is less convenient.\n\nThis command is intended to replace use of :command:`add_test` to register\ntests, and will create a separate CTest test for each Catch test case.  Note\nthat this is in some cases less efficient, as common set-up and tear-down logic\ncannot be shared by multiple test cases executing in the same instance.\nHowever, it provides more fine-grained pass/fail information to CTest, which is\nusually considered as more beneficial.  By default, the CTest test name is the\nsame as the Catch name; see also ``TEST_PREFIX`` and ``TEST_SUFFIX``.\n\n.. command:: catch_discover_tests\n\n  Automatically add tests with CTest by querying the compiled test executable\n  for available tests::\n\n    catch_discover_tests(target\n                         [TEST_SPEC arg1...]\n                         [EXTRA_ARGS arg1...]\n                         [WORKING_DIRECTORY dir]\n                         [TEST_PREFIX prefix]\n                         [TEST_SUFFIX suffix]\n                         [PROPERTIES name1 value1...]\n                         [TEST_LIST var]\n    )\n\n  ``catch_discover_tests`` sets up a post-build command on the test executable\n  that generates the list of tests by parsing the output from running the test\n  with the ``--list-test-names-only`` argument.  This ensures that the full\n  list of tests is obtained.  Since test discovery occurs at build time, it is\n  not necessary to re-run CMake when the list of tests changes.\n  However, it requires that :prop_tgt:`CROSSCOMPILING_EMULATOR` is properly set\n  in order to function in a cross-compiling environment.\n\n  Additionally, setting properties on tests is somewhat less convenient, since\n  the tests are not available at CMake time.  Additional test properties may be\n  assigned to the set of tests as a whole using the ``PROPERTIES`` option.  If\n  more fine-grained test control is needed, custom content may be provided\n  through an external CTest script using the :prop_dir:`TEST_INCLUDE_FILES`\n  directory property.  The set of discovered tests is made accessible to such a\n  script via the ``<target>_TESTS`` variable.\n\n  The options are:\n\n  ``target``\n    Specifies the Catch executable, which must be a known CMake executable\n    target.  CMake will substitute the location of the built executable when\n    running the test.\n\n  ``TEST_SPEC arg1...``\n    Specifies test cases, wildcarded test cases, tags and tag expressions to\n    pass to the Catch executable with the ``--list-test-names-only`` argument.\n\n  ``EXTRA_ARGS arg1...``\n    Any extra arguments to pass on the command line to each test case.\n\n  ``WORKING_DIRECTORY dir``\n    Specifies the directory in which to run the discovered test cases.  If this\n    option is not provided, the current binary directory is used.\n\n  ``TEST_PREFIX prefix``\n    Specifies a ``prefix`` to be prepended to the name of each discovered test\n    case.  This can be useful when the same test executable is being used in\n    multiple calls to ``catch_discover_tests()`` but with different\n    ``TEST_SPEC`` or ``EXTRA_ARGS``.\n\n  ``TEST_SUFFIX suffix``\n    Similar to ``TEST_PREFIX`` except the ``suffix`` is appended to the name of\n    every discovered test case.  Both ``TEST_PREFIX`` and ``TEST_SUFFIX`` may\n    be specified.\n\n  ``PROPERTIES name1 value1...``\n    Specifies additional properties to be set on all tests discovered by this\n    invocation of ``catch_discover_tests``.\n\n  ``TEST_LIST var``\n    Make the list of tests available in the variable ``var``, rather than the\n    default ``<target>_TESTS``.  This can be useful when the same test\n    executable is being used in multiple calls to ``catch_discover_tests()``.\n    Note that this variable is only available in CTest.\n\n#]=======================================================================]",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#------------------------------------------------------------------------------\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## Generate a unique name based on the extra arguments\n",
+        "Line" : 112,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Define rule to generate test list for aforementioned test executable\n",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Add discovered tests to directory TEST_INCLUDE_FILES\n",
+        "Line" : 151,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Add discovered tests as directory TEST_INCLUDE_FILE if possible\n",
+        "Line" : 156,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "###############################################################################\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake/CatchAddTests.cmake" : {
+      "ObjectId" : "3575a35c6e3aa9d0dfdad4a4db20d29ec15b4d55",
+      "LastModified" : "2018-05-26T15:26:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# form a bracket_argument\n",
+        "Line" : 17,
+        "CharPositionInLine" : 44
+      },
+      "2" : {
+        "Text" : "# Run test executable to get list of available tests\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Catch --list-test-names-only reports the number of tests, so 0 is... surprising\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Parse output\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ...and add to script\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Create a list of all discovered tests, which users may use to e.g. set\n\n# properties on the tests\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Write CTest script\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake/ParseAndAddCatchTests.cmake" : {
+      "ObjectId" : "cb2846d0a36afb8fd31d736e258c0162484b5b28",
+      "LastModified" : "2018-02-19T18:34:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#==================================================================================================#\n\n#  supported macros                                                                                #\n\n#    - TEST_CASE,                                                                                  #\n\n#    - SCENARIO,                                                                                   #\n\n#    - TEST_CASE_METHOD,                                                                           #\n\n#    - CATCH_TEST_CASE,                                                                            #\n\n#    - CATCH_SCENARIO,                                                                             #\n\n#    - CATCH_TEST_CASE_METHOD.                                                                     #\n\n#                                                                                                  #\n\n#  Usage                                                                                           #\n\n# 1. make sure this module is in the path or add this otherwise:                                   #\n\n#    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} \"${CMAKE_SOURCE_DIR}/cmake.modules/\")              #\n\n# 2. make sure that you've enabled testing option for the project by the call:                     #\n\n#    enable_testing()                                                                              #\n\n# 3. add the lines to the script for testing target (sample CMakeLists.txt):                       #\n\n#        project(testing_target)                                                                   #\n\n#        set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} \"${CMAKE_SOURCE_DIR}/cmake.modules/\")          #\n\n#        enable_testing()                                                                          #\n\n#                                                                                                  #\n\n#        find_path(CATCH_INCLUDE_DIR \"catch.hpp\")                                                  #\n\n#        include_directories(${INCLUDE_DIRECTORIES} ${CATCH_INCLUDE_DIR})                          #\n\n#                                                                                                  #\n\n#        file(GLOB SOURCE_FILES \"*.cpp\")                                                           #\n\n#        add_executable(${PROJECT_NAME} ${SOURCE_FILES})                                           #\n\n#                                                                                                  #\n\n#        include(ParseAndAddCatchTests)                                                            #\n\n#        ParseAndAddCatchTests(${PROJECT_NAME})                                                    #\n\n#                                                                                                  #\n\n# The following variables affect the behavior of the script:                                       #\n\n#                                                                                                  #\n\n#    PARSE_CATCH_TESTS_VERBOSE (Default OFF)                                                       #\n\n#    -- enables debug messages                                                                     #\n\n#    PARSE_CATCH_TESTS_NO_HIDDEN_TESTS (Default OFF)                                               #\n\n#    -- excludes tests marked with [!hide], [.] or [.foo] tags                                     #\n\n#    PARSE_CATCH_TESTS_ADD_FIXTURE_IN_TEST_NAME (Default ON)                                       #\n\n#    -- adds fixture class name to the test name                                                   #\n\n#    PARSE_CATCH_TESTS_ADD_TARGET_IN_TEST_NAME (Default ON)                                        #\n\n#    -- adds cmake target name to the test name                                                    #\n\n#    PARSE_CATCH_TESTS_ADD_TO_CONFIGURE_DEPENDS (Default OFF)                                      #\n\n#    -- causes CMake to rerun when file with tests changes so that new tests will be discovered    #\n\n#                                                                                                  #\n\n#==================================================================================================#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This removes the contents between\n\n#  - block comments (i.e. /* ... */)\n\n#  - full line comments (i.e. // ... )\n\n# contents have been read into '${CppCode}'.\n\n# !keep partial line comments\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Worker function\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# According to CMake docs EXISTS behavior is well-defined only for full paths.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Remove block and fullline comments\n",
+        "Line" : 85,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Find definition of test names\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Strip newlines\n",
+        "Line" : 101,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Get test type and fixture if applicable\n",
+        "Line" : 104,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Get string parts of test definition\n",
+        "Line" : 109,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Strip wrapping quotation marks\n",
+        "Line" : 112,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Validate that a test name and tags have been provided\n",
+        "Line" : 116,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# Assign name and tags\n",
+        "Line" : 122,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# add target to labels to enable running all tests added from this target\n",
+        "Line" : 135,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# remove target from labels if the test is hidden\n",
+        "Line" : 140,
+        "CharPositionInLine" : 12
+      },
+      "14" : {
+        "Text" : "# Add the test and set its properties\n",
+        "Line" : 167,
+        "CharPositionInLine" : 12
+      },
+      "15" : {
+        "Text" : "# entry point\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 4
+  },
+  "ElapsedTime" : 2168
+}

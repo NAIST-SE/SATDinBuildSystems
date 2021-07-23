@@ -1,0 +1,970 @@
+{
+  "Repository" : "54608524",
+  "Revision" : "HEAD",
+  "ObjectId" : "b22bf6da38557e12393315627e2d01509738f3e5",
+  "CommitTime" : "2019-04-18T15:54:50Z",
+  "Files" : {
+    "janusgraph-all/pom.xml" : {
+      "ObjectId" : "b2aeef61ae13ffe5f79ce78af76ea79bb8f2ada0",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n      This project depends on the rest of JanusGraph, so Maven users and\n      users of tools that can parse Maven pom.xml dependencies can\n      depend on this artifact and have the rest of the JanusGraph artifacts\n      pulled in automatically.  The JAR doesn't contain anything\n      besides some redundant properties files.\n    ",
+        "Line" : 19,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : " Override Jackson versions in our transitive dependencies.\n             Without these dependencies, janusgraph-all users can end up with\n             1.9 + 1.8 jars together, and this leads to linkage errors.\n             It might be a better idea to dependencyManagement imports if your Maven version supports it:\n             https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Importing_Dependencies ",
+        "Line" : 97,
+        "CharPositionInLine" : 127
+      },
+      "2" : {
+        "Text" : " Jackson 1.x ",
+        "Line" : 98,
+        "CharPositionInLine" : 29
+      },
+      "3" : {
+        "Text" : " Jackson 2.x ",
+        "Line" : 120,
+        "CharPositionInLine" : 29
+      },
+      "4" : {
+        "Text" : " Disable unused plugins ",
+        "Line" : 153,
+        "CharPositionInLine" : 44
+      },
+      "5" : {
+        "Text" : " Done disabling unnecessary plugins ",
+        "Line" : 172,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 6
+    },
+    "janusgraph-berkeleyje/pom.xml" : {
+      "ObjectId" : "25ea8c6c297bd3395b0a1bdc12faafe38c19b019",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Redeclare gpg-plugin after jar-plugin to force the test jar to be signed.\n                         gpg-plugin runs in the package phase, same as jar-plugin, so the only\n                         constraint that guarantees the jar will exist when gpg-plugin is\n                         invoked is declaration order in the pom. ",
+        "Line" : 85,
+        "CharPositionInLine" : 70
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-bigtable/pom.xml" : {
+      "ObjectId" : "5d6caf4ebb8eadf7ba2c6f5179b1dcd3aea679e1",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "janusgraph-cassandra/pom.xml" : {
+      "ObjectId" : "163b79d8a0cc42df6ccba717012a9266423a0828",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Libraries ",
+        "Line" : 21,
+        "CharPositionInLine" : 23
+      },
+      "1" : {
+        "Text" : " Logging backends.\n             Cassandra 2.1+ moved to Logback.  JanusGraph is logging-backend-agnostic,\n             but still uses Log4j in testing.  The slf4j binding for logback is,\n             inconveniently, packed into the logback-classic artifact.  This means\n             the binding can't easily be removed from the classpath without losing\n             logback-classic or inserting some hack to mess with the jar contents.\n             We can't lose logback-classic because StorageProxy contains hardcoded\n             references to some of its classes (it contains some methods to change\n             logback loglevels at runtime).  Hence, to stick with Log4j, the\n             least-worst approach is to enforce a classpath ordering constraint: as\n             long as the slf4j-log4j12 binding appears on the classpath before\n             logback-classic, log4j will be used instead of logback.  I don't have\n             any special love for log4j, but JanusGraph should use a single logging\n             backend throughout all its tests.   I don't want to maintain a mixture\n             of logback.xml and log4j.properties files scattered randomly through\n             the janusgraph-* submodules.  Maven populates the classpath elements for\n             tests in pom appearance order.  That's why these dependencies are \n             explicitly declared below: to make slf4j-log4j12 preced logback-classic\n             on the test classpath. ",
+        "Line" : 62,
+        "CharPositionInLine" : 40
+      },
+      "2" : {
+        "Text" : " End logging backends. ",
+        "Line" : 72,
+        "CharPositionInLine" : 39
+      },
+      "3" : {
+        "Text" : "\n            JNA is not required to run Cassandra, but it improves\n            efficiency of certain of Cassandra's filesystem and memory\n            operations.  DataStax describes JNA as \"required for\n            production installations\":\n\n            https://www.datastax.com/docs/1.2/install/install_jre\n        ",
+        "Line" : 85,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : " The version is controlled in <dependencyManagement> in the parent pom ",
+        "Line" : 95,
+        "CharPositionInLine" : 91
+      },
+      "5" : {
+        "Text" : " Use more recent version of jbcrypt from gremlin-groovy ",
+        "Line" : 97,
+        "CharPositionInLine" : 80
+      },
+      "6" : {
+        "Text" : " We already use slf4j-log4j12, having both on the class path leads to cyclic dependency:  https://www.slf4j.org/codes.html#log4jDelegationLoop ",
+        "Line" : 118,
+        "CharPositionInLine" : 167
+      },
+      "7" : {
+        "Text" : " Need this to avoid corrupting the test keystore with nonsensical macro replacements ",
+        "Line" : 244,
+        "CharPositionInLine" : 117
+      },
+      "8" : {
+        "Text" : " Run by \"mvn test\" ",
+        "Line" : 266,
+        "CharPositionInLine" : 51
+      },
+      "9" : {
+        "Text" : " Run by \"mvn org.apache.maven.plugins:maven-surefire-plugin:test\"\n                \n                            Sonar does this when running JaCoCo and\n                            provides no configuration option to\n                            change its behavior. Define a safe\n                            configuration for JaCoCo to use when run\n                            by Sonar. This doesn't have to be fast,\n                            since it's only used for dynamic\n                            analysis, but it does have to cover all\n                            the tests.\n                        ",
+        "Line" : 281,
+        "CharPositionInLine" : 28
+      },
+      "10" : {
+        "Text" : " The TP3 JUnit Suite/Runner ignores groups/@Category and I'm not sure why.  Redundant excludes to keep TP3 tests from using non-SSL configs on SSL ",
+        "Line" : 348,
+        "CharPositionInLine" : 183
+      },
+      "11" : {
+        "Text" : " Provide Java Memory Meter for Cassandra. Cassandra logs warnings if JAMM \n                      is not available. Also, production Cassandra deployments will probably use JAMM, \n                      so we might as well include it in our test configuration. ",
+        "Line" : 391,
+        "CharPositionInLine" : 84
+      },
+      "12" : {
+        "Text" : " prepare-package instead of package forces it to get signed ",
+        "Line" : 416,
+        "CharPositionInLine" : 92
+      },
+      "13" : {
+        "Text" : " Run Thrift tests with ScyllaDB (requires Docker) ",
+        "Line" : 438,
+        "CharPositionInLine" : 70
+      },
+      "14" : {
+        "Text" : " Tests are run under failsafe so skip them under surefire ",
+        "Line" : 441,
+        "CharPositionInLine" : 82
+      },
+      "15" : {
+        "Text" : " Exclude default (performance/memory) tests. Also exclude SSL tests (fail under Scylla) ",
+        "Line" : 457,
+        "CharPositionInLine" : 124
+      },
+      "16" : {
+        "Text" : " Run tests against the containerized Scylla test server ",
+        "Line" : 460,
+        "CharPositionInLine" : 96
+      },
+      "17" : {
+        "Text" : " Limit to two CPUs ",
+        "Line" : 486,
+        "CharPositionInLine" : 67
+      },
+      "18" : {
+        "Text" : " Expose Thrift and CQL ports ",
+        "Line" : 488,
+        "CharPositionInLine" : 77
+      },
+      "CommentCount" : 19
+    },
+    "janusgraph-codepipelines-ci/pom.xml" : {
+      "ObjectId" : "87ba8b616075de794d64d5770d06f058d4782a81",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " This profile forces gpg-plugin to run after shade-plugin.\n             Otherwise, Maven will sign the unshaded jar, then shade the jar\n             (giving it completely different contents and breaking the sig) ",
+        "Line" : 136,
+        "CharPositionInLine" : 80
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-core/pom.xml" : {
+      "ObjectId" : "c663b59fdf7b3851c73503f55ed162a80bf2c6eb",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " TinkerPop ",
+        "Line" : 18,
+        "CharPositionInLine" : 27
+      },
+      "1" : {
+        "Text" : " Utility ",
+        "Line" : 42,
+        "CharPositionInLine" : 25
+      },
+      "2" : {
+        "Text" : " LGPL licensed - users will need to install this jar manually ",
+        "Line" : 56,
+        "CharPositionInLine" : 86
+      },
+      "3" : {
+        "Text" : " The Noggit JSON parsing library is needed for GeoJSON parsing ",
+        "Line" : 111,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : " We keep the gremlin version of org.apache.commons commons-lang3 ",
+        "Line" : 117,
+        "CharPositionInLine" : 80
+      },
+      "5" : {
+        "Text" : " Quiet mode still shows warnings and errors ",
+        "Line" : 186,
+        "CharPositionInLine" : 80
+      },
+      "6" : {
+        "Text" : " false below means the shade plugin overwrites the main project artifact (the one with no classifier).\n                                 false does *not* actually detach the main artifact, despite what the option name suggests. ",
+        "Line" : 239,
+        "CharPositionInLine" : 128
+      },
+      "7" : {
+        "Text" : " This profile forces gpg-plugin to run after shade-plugin.\n             Otherwise, Maven will sign the unshaded jar, then shade the jar\n             (giving it completely different contents and breaking the sig) ",
+        "Line" : 253,
+        "CharPositionInLine" : 80
+      },
+      "CommentCount" : 8
+    },
+    "janusgraph-cql/pom.xml" : {
+      "ObjectId" : "0c264fb143149f829d5fd31155fb8acd8e6d94b2",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Compile Dependencies ",
+        "Line" : 27,
+        "CharPositionInLine" : 38
+      },
+      "1" : {
+        "Text" : " Test Dependencies ",
+        "Line" : 53,
+        "CharPositionInLine" : 35
+      },
+      "2" : {
+        "Text" : " JNA is needed by Cassandra, but janusgraph-cassandra only defines it as an optional dependency. ",
+        "Line" : 72,
+        "CharPositionInLine" : 113
+      },
+      "3" : {
+        "Text" : " Run Thrift tests with ScyllaDB (requires Docker) ",
+        "Line" : 326,
+        "CharPositionInLine" : 70
+      },
+      "4" : {
+        "Text" : " Tests are run under failsafe so skip them under surefire ",
+        "Line" : 329,
+        "CharPositionInLine" : 82
+      },
+      "5" : {
+        "Text" : " Exclude default (performance/memory) tests. Also exclude SSL tests (fail under Scylla) ",
+        "Line" : 345,
+        "CharPositionInLine" : 124
+      },
+      "6" : {
+        "Text" : " Run tests against the containerized Scylla test server ",
+        "Line" : 348,
+        "CharPositionInLine" : 96
+      },
+      "7" : {
+        "Text" : " Limit to two CPUs ",
+        "Line" : 374,
+        "CharPositionInLine" : 67
+      },
+      "8" : {
+        "Text" : " Expose Thrift and CQL ports ",
+        "Line" : 376,
+        "CharPositionInLine" : 77
+      },
+      "CommentCount" : 9
+    },
+    "janusgraph-dist/janusgraph-dist-hadoop-2/pom.xml" : {
+      "ObjectId" : "824c0de4dac43f494869192843c04fdc9a8f57c2",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Need the -server artifact for hbase.mapreduce.TableInputFormat (Faunus) ",
+        "Line" : 68,
+        "CharPositionInLine" : 101
+      },
+      "1" : {
+        "Text" : " Need this artifact for hbase.mapreduce.TableInputFormat (Faunus) ",
+        "Line" : 84,
+        "CharPositionInLine" : 94
+      },
+      "CommentCount" : 2
+    },
+    "janusgraph-dist/pom.xml" : {
+      "ObjectId" : "2459bd737370f2d666d6fd5801e2b74db1d33edb",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Zipfile/Tarfile assembly source paths ",
+        "Line" : 17,
+        "CharPositionInLine" : 55
+      },
+      "1" : {
+        "Text" : " Variables for integration testing on release-candidate archive files ",
+        "Line" : 24,
+        "CharPositionInLine" : 86
+      },
+      "2" : {
+        "Text" : " AsciiDoc ",
+        "Line" : 28,
+        "CharPositionInLine" : 26
+      },
+      "3" : {
+        "Text" : " RPM/DEB packaging ",
+        "Line" : 37,
+        "CharPositionInLine" : 35
+      },
+      "4" : {
+        "Text" : " C*2.1 uses airline for command line parsing (incl. nodetool).\n             This dep is not provided through cassandra-all/janusgraph-cassandra. ",
+        "Line" : 61,
+        "CharPositionInLine" : 86
+      },
+      "5" : {
+        "Text" : " Test dependencies ",
+        "Line" : 100,
+        "CharPositionInLine" : 35
+      },
+      "6" : {
+        "Text" : "\n                Filter the files in src/release during the\n                process-resources phase. Disable default resource goal\n                bindings because we have no main or test resources.\n            ",
+        "Line" : 198,
+        "CharPositionInLine" : 16
+      },
+      "7" : {
+        "Text" : " Classpath ",
+        "Line" : 296,
+        "CharPositionInLine" : 51
+      },
+      "8" : {
+        "Text" : " Main Classname ",
+        "Line" : 299,
+        "CharPositionInLine" : 56
+      },
+      "9" : {
+        "Text" : " Input directory (processed recursively) ",
+        "Line" : 301,
+        "CharPositionInLine" : 81
+      },
+      "10" : {
+        "Text" : " Output directory prefix ",
+        "Line" : 303,
+        "CharPositionInLine" : 65
+      },
+      "11" : {
+        "Text" : "\n                                            We set attached=true so that the gpg plugin will\n                                            sign all of our assembly artifacts. We handle\n                                            deployment of the artifacts manually because\n                                            maven-deploy-plugin can't upload files to a flat\n                                            S3 directory; it insists on creating a\n                                            long/packagename/and/artifactid/and/version/\n                                            path at the destination before uploading, and we\n                                            don't want that for our files S3. codehaus's\n                                            wagon:upload plugin comes to our rescue.\n                                        ",
+        "Line" : 610,
+        "CharPositionInLine" : 44
+      },
+      "12" : {
+        "Text" : "\n                                            archive filenames are of the form\n                                            ${finalName}-${<id /> from assembly descriptor}.${archive\n                                            format extension}\n                                        ",
+        "Line" : 616,
+        "CharPositionInLine" : 44
+      },
+      "13" : {
+        "Text" : " Commented until the first 0.9/1.0 release\n                                <execution>\n                                    <id>version-compat-integration-test</id>\n                                    <phase>integration-test</phase>\n                                    <goals>\n                                        <goal>integration-test</goal>\n                                    </goals>\n                                    <configuration>\n                                        <reportNameSuffix>compat</reportNameSuffix>\n                                        <failIfNoTests>false</failIfNoTests>\n                                        <skip>${skipCompatITs}</skip>\n                                        <includes>\n                                            <include>**/*CompatIT.java</include>\n                                        </includes>\n                                    </configuration>\n                                </execution>\n                                ",
+        "Line" : 846,
+        "CharPositionInLine" : 36
+      },
+      "14" : {
+        "Text" : "\n                        We use maven-resources-plugin to filter src/release,\n                        but that plugin has an open bug about the fact that it\n                        doesn't copy file permissions during filtering. Make\n                        the script executable with chmod. Not portable.\n\n                        Bug: http://jira.codehaus.org/browse/MRESOURCES-132\n                    ",
+        "Line" : 897,
+        "CharPositionInLine" : 24
+      },
+      "15" : {
+        "Text" : " gpg must follow assembly.\n                         Both plugins run in the package phase, so only <plugin> ordering\n                         ensures that signing happens after assembly file generation.\n                         Hence this vacuous stanza down here. ",
+        "Line" : 952,
+        "CharPositionInLine" : 66
+      },
+      "CommentCount" : 16
+    },
+    "janusgraph-doc/pom.xml" : {
+      "ObjectId" : "bc4eb4f213b4d0954109bfee82b19e9eae5595d0",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " AsciiDoc ",
+        "Line" : 17,
+        "CharPositionInLine" : 26
+      },
+      "1" : {
+        "Text" : "\n                Filter the files in src/release during the\n                process-resources phase. Disable default resource goal\n                bindings because we have no main or test resources.\n            ",
+        "Line" : 53,
+        "CharPositionInLine" : 16
+      },
+      "CommentCount" : 2
+    },
+    "janusgraph-es/pom.xml" : {
+      "ObjectId" : "f9500251b5afe02c1b98eb5a58fd813e95ffb583",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Logging backends.\n             Enforce a classpath ordering constraint to ensure log4j is used for logging.\n             See comment in janusgraph-cassandra POM for more information. ",
+        "Line" : 71,
+        "CharPositionInLine" : 79
+      },
+      "1" : {
+        "Text" : " End logging backends. ",
+        "Line" : 81,
+        "CharPositionInLine" : 39
+      },
+      "2" : {
+        "Text" : " JNA is needed by Cassandra, but janusgraph-cassandra only defines it as an optional dependency. ",
+        "Line" : 88,
+        "CharPositionInLine" : 113
+      },
+      "3" : {
+        "Text" : " Redeclare gpg-plugin at the bottom to ensure it runs after all the other packaging goals ",
+        "Line" : 206,
+        "CharPositionInLine" : 106
+      },
+      "CommentCount" : 4
+    },
+    "janusgraph-examples/example-berkeleyje/pom.xml" : {
+      "ObjectId" : "7c771c63e0ffd49ca92e5ca8686cd09c3ae50bc0",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " These are all runtime dependencies ",
+        "Line" : 15,
+        "CharPositionInLine" : 52
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-examples/example-cassandra/pom.xml" : {
+      "ObjectId" : "6ab4ff4564602c7c67163acdebaa8d0362066a1b",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " These are all runtime dependencies ",
+        "Line" : 15,
+        "CharPositionInLine" : 52
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-examples/example-common/pom.xml" : {
+      "ObjectId" : "005da4f8f5b52cad490a8d592754af80d709ccc2",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "janusgraph-examples/example-cql/pom.xml" : {
+      "ObjectId" : "e54e70449242273d9ec64afff5c36889b7af68c1",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " These are all runtime dependencies ",
+        "Line" : 15,
+        "CharPositionInLine" : 52
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-examples/example-hbase/pom.xml" : {
+      "ObjectId" : "7cfbdac9c94b3287b11f62524677d53d2b58e984",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " These are all runtime dependencies ",
+        "Line" : 15,
+        "CharPositionInLine" : 52
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-examples/example-remotegraph/pom.xml" : {
+      "ObjectId" : "51e90fa08080cc27cbb383d26459f6374e7ab3f8",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "janusgraph-examples/example-tinkergraph/pom.xml" : {
+      "ObjectId" : "85e0ef0231ecc6a4cbdec31d05459f2092afbbe1",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "janusgraph-examples/pom.xml" : {
+      "ObjectId" : "03741e7cb5f2ad47e161cc0f9a90d71460c12af9",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "janusgraph-hadoop-parent/janusgraph-hadoop-2/pom.xml" : {
+      "ObjectId" : "6b44ef95ea2b85237f641ddfa7bcecd1486735d7",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " <scope>test</scope> ",
+        "Line" : 54,
+        "CharPositionInLine" : 41
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-hadoop-parent/janusgraph-hadoop-core/pom.xml" : {
+      "ObjectId" : "6f72896e25d50458206040b8d6ea4745efea6ffa",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " <scope>test</scope> ",
+        "Line" : 36,
+        "CharPositionInLine" : 41
+      },
+      "1" : {
+        "Text" : " TODO this should be scoped test ",
+        "Line" : 42,
+        "CharPositionInLine" : 53
+      },
+      "2" : {
+        "Text" : " TODO this should be scoped test ",
+        "Line" : 54,
+        "CharPositionInLine" : 53
+      },
+      "3" : {
+        "Text" : " JNA is needed by Cassandra, but janusgraph-cassandra only defines it as an optional dependency. ",
+        "Line" : 56,
+        "CharPositionInLine" : 113
+      },
+      "4" : {
+        "Text" : " Writing Groovy tests?  Uncomment these.\n                            <goal>generateTestStubs</goal>\n                            <goal>testCompile</goal>\n                            ",
+        "Line" : 90,
+        "CharPositionInLine" : 32
+      },
+      "5" : {
+        "Text" : " Inherited the Hadoop job jar assembly from the parent, but this is\n                         only useful in the janusgraph-hadoop-1 and -2 modules.  Disable it. ",
+        "Line" : 125,
+        "CharPositionInLine" : 97
+      },
+      "6" : {
+        "Text" : " Tests are executed in the janusgraph-hadoop-1 and -2 modules ",
+        "Line" : 135,
+        "CharPositionInLine" : 90
+      },
+      "7" : {
+        "Text" : " The janusgraph-hadoop-1 and -2 modules use our test classes ",
+        "Line" : 145,
+        "CharPositionInLine" : 89
+      },
+      "8" : {
+        "Text" : " Need this for compile-time imports on\n                     org.apache.hadoop.hbase.mapreduce ",
+        "Line" : 175,
+        "CharPositionInLine" : 59
+      },
+      "9" : {
+        "Text" : " Need this for compile-time imports on\n                     org.apache.hadoop.hbase.mapreduce ",
+        "Line" : 196,
+        "CharPositionInLine" : 59
+      },
+      "10" : {
+        "Text" : " Redeclare gpg-plugin at the bottom to ensure it runs after all the other packaging goals ",
+        "Line" : 206,
+        "CharPositionInLine" : 106
+      },
+      "CommentCount" : 11
+    },
+    "janusgraph-hadoop-parent/janusgraph-hadoop/pom.xml" : {
+      "ObjectId" : "bed0496e9478422fef0d895966cc45d02ac8a27c",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Redeclare gpg-plugin's sign-artifacts execution below the\n                 assembly plugin to guarantee that signing happens after assembly\n                 during the package lifecycle phase ",
+        "Line" : 115,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-hadoop-parent/pom.xml" : {
+      "ObjectId" : "1cdf8c9ad2ca059c39412c5327293bc73d55c42d",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Cassandra-3 testing requires an external Cassandra instance. \n             See TESTING.md for more information. ",
+        "Line" : 18,
+        "CharPositionInLine" : 54
+      },
+      "1" : {
+        "Text" : " JANUSGRAPH ",
+        "Line" : 91,
+        "CharPositionInLine" : 28
+      },
+      "2" : {
+        "Text" : " JNA is needed by Cassandra, but janusgraph-cassandra only defines it as an optional dependency. ",
+        "Line" : 134,
+        "CharPositionInLine" : 113
+      },
+      "3" : {
+        "Text" : " RDF PARSING ",
+        "Line" : 142,
+        "CharPositionInLine" : 29
+      },
+      "4" : {
+        "Text" : " Required for Cassandra-3 connectivity, see issue 172 ",
+        "Line" : 168,
+        "CharPositionInLine" : 70
+      },
+      "5" : {
+        "Text" : " Logging backends.\n             Enforce a classpath ordering constraint to ensure slf4j-log4j12\n             binding appears on the classpath before logback-classic.\n             See comments in janusgraph-cassandra/pom.xml for more information. ",
+        "Line" : 177,
+        "CharPositionInLine" : 84
+      },
+      "6" : {
+        "Text" : " End logging backends. ",
+        "Line" : 187,
+        "CharPositionInLine" : 39
+      },
+      "7" : {
+        "Text" : " Cassandra-3 testing requires an external Cassandra instance. \n                        See TESTING.md for more information. ",
+        "Line" : 338,
+        "CharPositionInLine" : 65
+      },
+      "8" : {
+        "Text" : " ************ ",
+        "Line" : 367,
+        "CharPositionInLine" : 46
+      },
+      "9" : {
+        "Text" : " VERIFICATION ",
+        "Line" : 368,
+        "CharPositionInLine" : 46
+      },
+      "10" : {
+        "Text" : " ************ ",
+        "Line" : 369,
+        "CharPositionInLine" : 46
+      },
+      "11" : {
+        "Text" : "\n                <plugin>\n                    <artifactId>maven-remote-resources-plugin</artifactId>\n                    <executions>\n                        <execution>\n                            <id>unpack-common-test-classes</id>\n                            <phase>process-test-classes</phase>\n                            <goals>\n                                <goal>process</goal>\n                            </goals>\n                            <configuration>\n                                <resourceBundles>\n                                    <resourceBundle>${project.groupId}:shared-resources:${project.version}</resourceBundle>\n                                </resourceBundles>\n                            </configuration>\n                        </execution>\n                    </executions>\n                </plugin>\n                ",
+        "Line" : 415,
+        "CharPositionInLine" : 20
+      },
+      "CommentCount" : 12
+    },
+    "janusgraph-hbase-parent/janusgraph-hbase-10/pom.xml" : {
+      "ObjectId" : "20087a01e110e9d9ba1150f092c64bdac4cfcbed",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Logging.\n\n             Based on these two HBase links, it seems that HBase has\n             hard dependencies on log4j and slf4j-log4j12 (in addition\n             to commons-logging):\n\n             https://hbase.apache.org/book/config.files.html#client_dependencies\n             https://issues.apache.org/jira/browse/HBASE-2608\n\n             Our parent pom declares optional runtime-scoped dependencies\n             on slf4j-log4j12 and log4j.  But according to the links above,\n             these are required compile-scoped dependencies for HBase.\n             We override the parent's dependency declarations below.\n\n             These declarations could go away if HBase ever fully migrates\n             to slf4j and removes its hard dependency on log4j.\n\n             Note, logback-classic is added explicitly to ensure slf4j-log4j12\n             binding appears on the classpath before logback-classic. See\n             comments in janusgraph-cassandra/pom.xml for more information.\n        ",
+        "Line" : 62,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-hbase-parent/janusgraph-hbase-core/pom.xml" : {
+      "ObjectId" : "684f6f900c0a36cfb1c30d51ab39d1ac9d339fee",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Can't run tests without a compatibility shim ",
+        "Line" : 69,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-hbase-parent/janusgraph-hbase-server/pom.xml" : {
+      "ObjectId" : "c34ed643139a4aaf0b7c1f164b234453f987130f",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Avoid being overwritten by the top level pom. Used here only by the HBase server.\n              ",
+        "Line" : 30,
+        "CharPositionInLine" : 18
+      },
+      "1" : {
+        "Text" : " Can't run tests without a compatibility shim ",
+        "Line" : 92,
+        "CharPositionInLine" : 78
+      },
+      "CommentCount" : 2
+    },
+    "janusgraph-hbase-parent/janusgraph-hbase/pom.xml" : {
+      "ObjectId" : "a63f512378e32bae429e1450a57c28cb8e536c1a",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Redeclare gpg-plugin's sign-artifacts execution below the\n                 assembly plugin to guarantee that signing happens after assembly\n                 during the package lifecycle phase ",
+        "Line" : 147,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-hbase-parent/pom.xml" : {
+      "ObjectId" : "05506b905a9ffff96773dfbec4a871be25010ca4",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Using assembly instead of resources because resources breaks filemodes and \n                         permissions: http://jira.codehaus.org/browse/MRESOURCES-132 ",
+        "Line" : 100,
+        "CharPositionInLine" : 89
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-lucene/pom.xml" : {
+      "ObjectId" : "8323cb2a520c2c672d992e8bf89c0c52e1d6f31f",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "janusgraph-server/pom.xml" : {
+      "ObjectId" : "82ce055411ff51ac71418eaaa4ad2ae715935ee7",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " TESTING ",
+        "Line" : 31,
+        "CharPositionInLine" : 25
+      },
+      "CommentCount" : 1
+    },
+    "janusgraph-solr/pom.xml" : {
+      "ObjectId" : "2bdfbbdfc2c97fd601ee22eaf6d8771af958ca5b",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " JNA is needed by Cassandra, but janusgraph-cassandra only defines it as an optional dependency. ",
+        "Line" : 58,
+        "CharPositionInLine" : 113
+      },
+      "1" : {
+        "Text" : " Use jcl-over-slf4j from gremlin-core ",
+        "Line" : 70,
+        "CharPositionInLine" : 62
+      },
+      "2" : {
+        "Text" : " Use noggit from janusgraph-core ",
+        "Line" : 75,
+        "CharPositionInLine" : 57
+      },
+      "3" : {
+        "Text" : " Use asm from solr-test-framework ",
+        "Line" : 121,
+        "CharPositionInLine" : 58
+      },
+      "4" : {
+        "Text" : " This is here for solr testing ",
+        "Line" : 137,
+        "CharPositionInLine" : 47
+      },
+      "5" : {
+        "Text" : " Logging backends.\n             Enforce a classpath ordering constraint to ensure slf4j-log4j12\n             binding appears on the classpath before logback-classic.\n             See comments in janusgraph-cassandra/pom.xml for more information. ",
+        "Line" : 147,
+        "CharPositionInLine" : 84
+      },
+      "6" : {
+        "Text" : " End logging backends. ",
+        "Line" : 157,
+        "CharPositionInLine" : 39
+      },
+      "7" : {
+        "Text" : " Run tests with Solr Docker container ",
+        "Line" : 232,
+        "CharPositionInLine" : 58
+      },
+      "CommentCount" : 8
+    },
+    "janusgraph-test/pom.xml" : {
+      "ObjectId" : "83607b8ab4e3549978c332600a39c04f4cea54ac",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Access Sonatype OSS Snapshots for Furnace artifacts. This can \n            go away when Furnace is released to Central. ",
+        "Line" : 19,
+        "CharPositionInLine" : 61
+      },
+      "1" : {
+        "Text" : " TinkerPop ",
+        "Line" : 38,
+        "CharPositionInLine" : 27
+      },
+      "2" : {
+        "Text" : " Test Dependencies ",
+        "Line" : 63,
+        "CharPositionInLine" : 35
+      },
+      "3" : {
+        "Text" : " Groovy ",
+        "Line" : 121,
+        "CharPositionInLine" : 28
+      },
+      "CommentCount" : 4
+    },
+    "pom.xml" : {
+      "ObjectId" : "f78e84739eb06e0a55c974aa87f48289290d094d",
+      "LastModified" : "2019-04-07T16:46:34Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " align with org.apache.hbase:hbase ",
+        "Line" : 89,
+        "CharPositionInLine" : 51
+      },
+      "1" : {
+        "Text" : " align with org.apache.tinkerpop:tinkerpop ",
+        "Line" : 105,
+        "CharPositionInLine" : 59
+      },
+      "2" : {
+        "Text" : " the repositories below are included here for `mvn project-info-reports:dependencies` ",
+        "Line" : 162,
+        "CharPositionInLine" : 102
+      },
+      "3" : {
+        "Text" : " for com.sleepycat:je:jar ",
+        "Line" : 164,
+        "CharPositionInLine" : 46
+      },
+      "4" : {
+        "Text" : " for org.restlet.jee:org.restlet:jar ",
+        "Line" : 174,
+        "CharPositionInLine" : 57
+      },
+      "5" : {
+        "Text" : "\n                      Only release:perform uses this configuration\n                      setting; release:prepare doesn't care and always\n                      runs \"clean verify\"\n                    ",
+        "Line" : 211,
+        "CharPositionInLine" : 24
+      },
+      "6" : {
+        "Text" : "\n                      Tell the release plugin to never \"git push\".\n                      When releasing, you have to manually issue \"git\n                      push\" between release:prepare and\n                      release:perform.  You'll have to push both the\n                      branch you're releasing and the tag\n                      release:prepare locally created.\n                    ",
+        "Line" : 221,
+        "CharPositionInLine" : 24
+      },
+      "7" : {
+        "Text" : "\n                      @{...} is a special variable interpolation\n                      syntax that uses the target release version\n                      instead of the pom's actual version, which is\n                      usually a -SNAPSHOT version when this setting\n                      gets evaluated.\n                    ",
+        "Line" : 230,
+        "CharPositionInLine" : 24
+      },
+      "8" : {
+        "Text" : "\n                      The release:perform goal activates these\n                      profiles when it invokes maven with the <goals>\n                      listed above.  Release engineering specific to\n                      release:perform and disabled during non-release\n                      operation should be encapsulated with the\n                      profile id listed below.\n                    ",
+        "Line" : 240,
+        "CharPositionInLine" : 24
+      },
+      "9" : {
+        "Text" : " Keep all submodules at same version as parent ",
+        "Line" : 244,
+        "CharPositionInLine" : 75
+      },
+      "10" : {
+        "Text" : " applies to both release:prepare and :perform ",
+        "Line" : 247,
+        "CharPositionInLine" : 74
+      },
+      "11" : {
+        "Text" : " six hours ",
+        "Line" : 325,
+        "CharPositionInLine" : 43
+      },
+      "12" : {
+        "Text" : " Use log4j.properties from module test resources ",
+        "Line" : 339,
+        "CharPositionInLine" : 81
+      },
+      "13" : {
+        "Text" : " Use log4j.properties from module test resources ",
+        "Line" : 382,
+        "CharPositionInLine" : 81
+      },
+      "14" : {
+        "Text" : "\n                          To push changes to gh-pages during\n                          release:perform using this plugin, your\n                          ~/.m2/settings.xml file must contain a\n                          <server> stanza that matches the\n                          <server>github</server> tag below.  Here's\n                          an example settings.xml:\n\n                          <settings>\n                            ...\n                            <servers>\n                              ...\n                              <server>\n                                <id>github</id> << must match <username>dalaro</username>\n                                <password>allmypasswordsareliterallypassword</password>\n                              </server>\n                            </servers>\n                          </settings>\n                        ",
+        "Line" : 509,
+        "CharPositionInLine" : 28
+      },
+      "15" : {
+        "Text" : " Tinkerpop 3.x ",
+        "Line" : 534,
+        "CharPositionInLine" : 35
+      },
+      "16" : {
+        "Text" : " Jackson 2.x ",
+        "Line" : 587,
+        "CharPositionInLine" : 33
+      },
+      "17" : {
+        "Text" : " Jackson 1.x ",
+        "Line" : 654,
+        "CharPositionInLine" : 33
+      },
+      "18" : {
+        "Text" : " align with org.apache.hbase:hbase ",
+        "Line" : 786,
+        "CharPositionInLine" : 59
+      },
+      "19" : {
+        "Text" : " Sesame ",
+        "Line" : 791,
+        "CharPositionInLine" : 28
+      },
+      "20" : {
+        "Text" : " asm 3.x ",
+        "Line" : 868,
+        "CharPositionInLine" : 29
+      },
+      "21" : {
+        "Text" : " The Objenesis version is closely coupled to Kryo and to TP3 versions ",
+        "Line" : 915,
+        "CharPositionInLine" : 90
+      },
+      "22" : {
+        "Text" : " Force newer Snappy-java because 1.4.0.1 is broken on Mac OS X with JDK 7 ",
+        "Line" : 976,
+        "CharPositionInLine" : 94
+      },
+      "23" : {
+        "Text" : " Run the full test suite when changing the Guava version.\n                     The Guava team is deadly serious about their 18 month period from deprecation\n                     to feature deletion, and as a result, at least one of JanusGraph's dependencies is\n                     likely to break whenever the Guava version changes.\n\n                     Example where blithely upgrading Guava introduced a linkage error in the past:\n                     https://issues.apache.org/jira/browse/HBASE-10174\n                ",
+        "Line" : 990,
+        "CharPositionInLine" : 20
+      },
+      "24" : {
+        "Text" : " Spatial4j ",
+        "Line" : 1021,
+        "CharPositionInLine" : 31
+      },
+      "25" : {
+        "Text" : " Java Topology Suite (JTS) ",
+        "Line" : 1028,
+        "CharPositionInLine" : 47
+      },
+      "26" : {
+        "Text" : " Package prefix is org.apache.commons.httpclient ",
+        "Line" : 1035,
+        "CharPositionInLine" : 69
+      },
+      "27" : {
+        "Text" : " Package prefix is org.apache.http ",
+        "Line" : 1042,
+        "CharPositionInLine" : 55
+      },
+      "28" : {
+        "Text" : " align with org.apache.cassandra:cassandra-all ",
+        "Line" : 1141,
+        "CharPositionInLine" : 71
+      },
+      "29" : {
+        "Text" : " Using avro-ipc 1.5.3 caused the following when opening the graphdb:\n                     java.lang.NoSuchMethodError: org.apache.avro.io.DecoderFactory.configureDirectDecoder(Z)Lorg/apache/avro/io/DecoderFactory\n\n                     Stock avro 1.4.0 or 1.4.1 might work, but I'd like to see\n                     what customizations were made in the cassandra copy of avro\n                     before trying to drop it for the stock artifact...\n                <exclusions>\n                    <exclusion>\n                        <groupId>org.apache.cassandra.deps</groupId>\n                        <artifactId>avro</artifactId>\n                    </exclusion>\n                </exclusions>\n                ",
+        "Line" : 1162,
+        "CharPositionInLine" : 20
+      },
+      "30" : {
+        "Text" : " Logging ",
+        "Line" : 1245,
+        "CharPositionInLine" : 25
+      },
+      "31" : {
+        "Text" : "\n              Sign artifacts artifacts only during release:perform\n              when this profile is automatically activated or whenever\n              else it is manually activated.\n    \n              Stolen from: https://blog.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/\n            ",
+        "Line" : 1274,
+        "CharPositionInLine" : 16
+      },
+      "32" : {
+        "Text" : " Quiet mode still shows warnings and errors ",
+        "Line" : 1300,
+        "CharPositionInLine" : 88
+      },
+      "33" : {
+        "Text" : " Unpack all dependency class and source files for use by JaCoCo ",
+        "Line" : 1479,
+        "CharPositionInLine" : 100
+      },
+      "34" : {
+        "Text" : " empty classifier requests the artifact containing classes ",
+        "Line" : 1501,
+        "CharPositionInLine" : 103
+      },
+      "35" : {
+        "Text" : " The Maven JaCoCo plugin doesn't allow\n                             configuration of sourcefiles and destfiles\n                             directories.  The Ant JaCoCo task does.  That's\n                             why we use antrun here for JaCoCo instead of\n                             JaCoCo's Maven plugin. ",
+        "Line" : 1532,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 36
+    }
+  },
+  "FileTypes" : {
+    "MAVEN" : 33
+  },
+  "ElapsedTime" : 2428
+}

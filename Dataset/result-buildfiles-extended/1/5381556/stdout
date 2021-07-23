@@ -1,0 +1,1023 @@
+{
+  "Repository" : "5381556",
+  "Revision" : "HEAD",
+  "ObjectId" : "c8395118cb580f2395cac6c53999feb217fd2c2f",
+  "CommitTime" : "2019-03-26T12:02:33Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "a433074dd7bb46eace3287a531d118b72a1580c6",
+      "LastModified" : "2019-03-17T13:21:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# OSv makefile\n\n#\n\n# Copyright (C) 2015 Cloudius Systems, Ltd.\n\n# This work is open source software, licensed under the terms of the\n\n# BSD license as described in the LICENSE file in the top-level directory.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The nfs=true flag will build in the NFS client filesystem support\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Delete the builtin make rules, as if \"make -r\" was used.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Ask make to not delete \"intermediate\" results, such as the .o in the chain\n\n# .cc -> .o -> .so. Otherwise, during the first build, make considers the .o\n\n# to be intermediate, and deletes it, but the newly-created \".d\" files lists\n\n# the \".o\" as a target - so it needs to be created again on the second make.\n\n# See commit fac05c95 for a longer explanation.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Deleting partially-build targets on error should be the default, but it\n\n# isn't, for historical reasons, so we need to turn it on explicitly...\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "###########################################################################\n\n# Backward-compatibility hack to support the old \"make ... image=...\" image\n\n# building syntax, and pass it into scripts/build. We should eventually drop\n\n# this support and turn the deprecated messages into errors.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#$(error Please use scripts/build to build images)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#$(error Please use scripts/build to build images)\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "###########################################################################\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# The build mode defaults to \"release\" (optimized build), the other option\n\n# is \"debug\" (unoptimized build). In the latter the optimizer interferes\n\n# less with the debugging, but the release build is fully debuggable too.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# By default, detect HOST_CXX's architecture - x64 or aarch64.\n\n# But also allow the user to specify a cross-compiled target architecture\n\n# by setting either \"ARCH\" or \"arch\" in the make command line, or the \"ARCH\"\n\n# environment variable.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# As an alternative to setting ARCH or arch, let's allow the user to\n\n# directly set the CROSS_PREFIX environment variable, and learn its arch:\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# ARCH_STR is like ARCH, but uses the full name x86_64 instead of x64\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Our makefile puts all compilation results in a single directory, $(out),\n\n# instead of mixing them with the source code. This allows us to compile\n\n# different variants of the code - for different mode (release or debug)\n\n# or arch (x86 or aarch64) side by side. It also makes \"make clean\" very\n\n# simple, as all compilation results are in $(out) and can be removed in\n\n# one fell swoop.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "###########################################################################\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# We need some external git modules to have been downloaded, because the\n\n# default \"make\" depends on the following directories:\n\n#   musl/ -  for some of the header files (symbolic links in include/api) and\n\n#            some of the source files ($(musl) below).\n\n#   external/x64/acpica - for the ACPICA library (see $(acpi) below).\n\n#   external/x64/openjdk.bin - for $(java-targets) below.\n\n# Additional submodules are need when certain make parameters are used.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# This makefile wraps all commands with the $(quiet) or $(very-quiet) macros\n\n# so that instead of half-a-screen-long command lines we short summaries\n\n# like \"CC file.cc\". These macros also keep the option of viewing the\n\n# full command lines, if you wish, with \"make V=1\".\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Remember that \"make clean\" needs the same parameters that set $(out) in\n\n# the first place, so to clean the output of \"make mode=debug\" you need to\n\n# do \"make mode=debug clean\".\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Manually listing recompilation dependencies in the Makefile (such as which\n\n# object needs to be recompiled when a header changed) is antediluvian.\n\n# Even \"makedepend\" is old school! The best modern technique for automatic\n\n# dependency generation, which we use here, works like this:\n\n# We note that before the first compilation, we don't need to know these\n\n# dependencies at all, as everything will be compiled anyway. But during\n\n# this compilation, we pass to the compiler a special option (-MD) which\n\n# causes it to also output a file with suffix \".d\" listing the dependencies\n\n# discovered during the compilation of that source file. From then on,\n\n# on every compilation we \"include\" all the \".d\" files generated in the\n\n# previous compilation, and create new \".d\" when a source file changed\n\n# (and therefore got recompiled).\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Before we can try to build anything in $(out), we need to make sure the\n\n# directory exists. Unfortunately, this is not quite enough, as when we\n\n# compile somedir/somefile.c to $(out)/somedir/somefile.o, we also need\n\n# to make sure $(out)/somedir exists. This is why we have $(makedir) below.\n\n# I wonder if there's a better way of doing this with dependencies, so make\n\n# will only call mkdir for each directory once.\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# \"tags\" is the default output file of ctags, \"TAGS\" is that of etags\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "###########################################################################\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# The user can override the build_env variable (or one or more of *_env\n\n# variables below) to decide if to take the host's C/C++ libraries, or\n\n# those from the external/ directory.\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Starting in Gcc 6, the standard C++ header files (which we do not change)\n\n# must precede in the include path the C header files (which we replace).\n\n# This is explained in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70722.\n\n# So we are forced to list here (before include/api) the system's default\n\n# C++ include directories, though they are already in the default search path.\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# must be after include/api, since it includes some libc-style headers:\n",
+        "Line" : 270,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# For acessing machine/ in cpp xen drivers\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# $(call compiler-flag, -ffoo, option, file)\n\n#     returns option if file builds with -ffoo, empty otherwise\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# libc has its own source dialect control\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# This play the same role as \"_KERNEL\", but _KERNEL unfortunately is too\n\n# overloaded. A lot of files will expect it to be set no matter what, specially\n\n# in headers. \"userspace\" inclusion of such headers is valid, and lacking\n\n# _KERNEL will make them fail to compile. That is specially true for the BSD\n\n# imported stuff like ZFS commands.\n\n#\n\n# To add something to the kernel build, you can write for your object:\n\n#\n\n#   mydir/*.o COMMON += <MY_STUFF>\n\n#\n\n# To add something that will *not* be part of the main kernel, you can do:\n\n#\n\n#   mydir/*.o EXTRA_FLAGS = <MY_STUFF>\n",
+        "Line" : 302,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# should be limited to files under libc/ eventually\n",
+        "Line" : 340,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# for machine/\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# note that the bootfs.manifest entry for the uush image\n\n# has no effect on the loader image, only on the usr image.\n\n# The only thing that does have an effect is the\n\n# bootfs.manifest.skel.\n\n#\n\n# Therefore, you need to manually add tests/tst-hello.so\n\n# to the bootfs.manifest.skel atm to get it to work.\n\n#\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# kernel_base is where the kernel will be loaded after uncompression.\n\n# lzkernel_base is where the compressed kernel is loaded from disk.\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# x64\n",
+        "Line" : 478,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "#image-size = $(shell stat --printf %s $(out)/loader-stripped.elf)\n",
+        "Line" : 494,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# aarch64\n",
+        "Line" : 501,
+        "CharPositionInLine" : 6
+      },
+      "36" : {
+        "Text" : "# A lot of the BSD code used to be C code, which commonly bzero()ed or\n\n# memcpy()ed objects. In C++, this should not be done (objects have\n\n# constructors and assignments), and gcc 8 starts to warn about it.\n\n# Instead of fixing all these occurances, let's ask gcc to ignore this\n\n# warning. At least for now.\n",
+        "Line" : 515,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "#zfs += bsd/sys/cddl/contrib/opensolaris/uts/common/fs/zfs/dmu_diff.o\n",
+        "Line" : 689,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "#zfs += bsd/sys/cddl/contrib/opensolaris/uts/common/fs/zfs/dmu_send.o\n",
+        "Line" : 692,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#zfs += bsd/sys/cddl/contrib/opensolaris/uts/common/fs/zfs/vdev_geom.o\n",
+        "Line" : 726,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#zfs += bsd/sys/cddl/contrib/opensolaris/uts/common/fs/zfs/zfs_ctldir.o\n",
+        "Line" : 739,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "#zfs += bsd/sys/cddl/contrib/opensolaris/uts/common/fs/zfs/zfs_onexit.o\n",
+        "Line" : 747,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# x64\n",
+        "Line" : 842,
+        "CharPositionInLine" : 6
+      },
+      "43" : {
+        "Text" : "# aarch64\n",
+        "Line" : 853,
+        "CharPositionInLine" : 6
+      },
+      "44" : {
+        "Text" : "# x64\n",
+        "Line" : 901,
+        "CharPositionInLine" : 6
+      },
+      "45" : {
+        "Text" : "#include $(src)/libc/build.mk:\n",
+        "Line" : 948,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "#musl += math/fma.o\n\n#musl += math/fmaf.o\n\n#musl += math/fmal.o\n",
+        "Line" : 1173,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "#musl += math/llrint.o\n\n#musl += math/llrintf.o\n\n#musl += math/llrintl.o\n",
+        "Line" : 1214,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "#musl += math/lrintf.o\n\n#musl += math/lrintl.o\n",
+        "Line" : 1236,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Issue #867: Gcc 4.8.4 has a bug where it optimizes the trivial round-\n\n# related functions incorrectly - it appears to convert calls to any\n\n# function called round() to calls to a function called lround() -\n\n# and similarly for roundf() and roundl().\n\n# None of the specific \"-fno-*\" options disable this buggy optimization,\n\n# unfortunately. The simplest workaround is to just disable optimization\n\n# for the affected files.\n",
+        "Line" : 1311,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# verbatim copy of the file as in 4b15d9f46a2b@musl\n",
+        "Line" : 1682,
+        "CharPositionInLine" : 21
+      },
+      "51" : {
+        "Text" : "#include $(src)/fs/build.mk:\n",
+        "Line" : 1759,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# link with -mt if present, else the base version (and hope it is multithreaded)\n",
+        "Line" : 1829,
+        "CharPositionInLine" : 4
+      },
+      "53" : {
+        "Text" : "# When boost_env=host, we won't use \"-nostdinc\", so the build machine's\n\n# header files will be used normally. So we don't need to add anything\n\n# special for Boost.\n",
+        "Line" : 1839,
+        "CharPositionInLine" : 4
+      },
+      "54" : {
+        "Text" : "# ld has a known bug (https://sourceware.org/bugzilla/show_bug.cgi?id=6468)\n\n# where if the executable doesn't use shared libraries, its .dynamic section\n\n# is dropped, even when we use the \"--export-dynamic\" (which is silently\n\n# ignored). The workaround is to link loader.elf with a do-nothing library.\n",
+        "Line" : 1861,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Build libosv.so matching this loader.elf. This is not a separate\n\n# rule because that caused bug #545.\n",
+        "Line" : 1881,
+        "CharPositionInLine" : 2
+      },
+      "56" : {
+        "Text" : "# If parameter \"bootfs_manifest\" has been changed since the last make,\n\n# bootfs.bin requires rebuilding\n",
+        "Line" : 1903,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "################################################################################\n\n# The dependencies on header files are automatically generated only after the\n\n# first compilation, as explained above. However, header files generated by\n\n# the Makefile are special, in that they need to be created even *before* the\n\n# first compilation. Moreover, some (namely version.h) need to perhaps be\n\n# re-created on every compilation. \"generated-headers\" is used as an order-\n\n# only dependency on C compilation rules above, so we don't try to compile\n\n# C code before generating these headers.\n",
+        "Line" : 1929,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# While other generated headers only need to be generated once, version.h\n\n# should be recreated on every compilation. To avoid a cascade of\n\n# recompilation, the rule below makes sure not to modify version.h's timestamp\n\n# if the version hasn't changed.\n",
+        "Line" : 1940,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# The generated header ctype-data.h is different in that it is only included\n\n# at one place (runtime.c), so instead of making it a dependency of\n\n# generated-headers, we can just make it a dependency of runtime.o\n",
+        "Line" : 1952,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "################################################################################\n",
+        "Line" : 1964,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "#include $(src)/bsd/cddl/contrib/opensolaris/lib/libuutil/common/build.mk:\n",
+        "Line" : 1969,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# disable the main bsd include search order, we want it before osv but after solaris\n",
+        "Line" : 1986,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "#include $(src)/bsd/cddl/contrib/opensolaris/lib/libzfs/common/build.mk:\n",
+        "Line" : 1997,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# disable the main bsd include search order, we want it before osv but after solaris\n",
+        "Line" : 2035,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# Note: zfs_prop.c and zprop_common.c are also used by the kernel, thus the manual targets.\n",
+        "Line" : 2046,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "#include $(src)/bsd/cddl/contrib/opensolaris/cmd/zpool/build.mk:\n",
+        "Line" : 2059,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "#include $(src)/bsd/cddl/contrib/opensolaris/cmd/zfs/build.mk:\n",
+        "Line" : 2081,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 68
+    },
+    "bsd/cddl/lib/libzfs/Makefile" : {
+      "ObjectId" : "9e68da4c3733986a84e0a7aad9e757e5c5cd5f53",
+      "LastModified" : "2013-10-10T12:10:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $FreeBSD$\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "bsd/cddl/lib/libzpool/Makefile" : {
+      "ObjectId" : "b159d3af73117f374bd37e3658693a96ea2db089",
+      "LastModified" : "2013-10-10T12:10:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# $FreeBSD$\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ZFS_COMMON_SRCS\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ZFS_SHARED_SRCS\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# KERNEL_SRCS\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# LIST_SRCS\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ATOMIC_SRCS\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# UNICODE_SRCS\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# XXX: pthread doesn't have mutex_owned() equivalent, so we need to look\n\n#      into libthr private structures. That's sooo evil, but it's only for\n\n#      ZFS debugging tools needs.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# atomic.S doesn't like profiling.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#DEBUG_FLAGS+=\t-g\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "bsd/sys/xen/interface/foreign/Makefile" : {
+      "ObjectId" : "116f9bb1b52504c8be23640da888895348a072ca",
+      "LastModified" : "2013-11-01T12:15:56Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/ca-certificates/Makefile" : {
+      "ObjectId" : "f91e84cedafffa75538cbf79c4dca441116d5d8a",
+      "LastModified" : "2014-08-28T07:38:03Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/certs/Makefile" : {
+      "ObjectId" : "fc086dd9d69f8d560570b9fe1cba530c299a2c96",
+      "LastModified" : "2014-09-29T11:36:19Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (C) 2014 Cloudius Systems, Ltd.\n\n#\n\n# This work is open source software, licensed under the terms of the\n\n# BSD license as described in the LICENSE file in the top-level directory.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We must get unique serial numbers, which are time-based by default !\n",
+        "Line" : 26,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 2
+    },
+    "modules/cli/Makefile" : {
+      "ObjectId" : "e2abe632a8669c7314750be127d54046cf50967d",
+      "LastModified" : "2014-11-10T08:55:43Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For compiling executable running locally\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/cli/rpmbuild/Makefile" : {
+      "ObjectId" : "be9915d647bfa1a7799909c4ef7814101092a8f1",
+      "LastModified" : "2018-02-15T11:23:02Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/cloud-init/Makefile" : {
+      "ObjectId" : "daee8c38002c2f72fc90d33e25ad09edfa1df46b",
+      "LastModified" : "2018-02-15T11:23:02Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/golang/Makefile" : {
+      "ObjectId" : "3ffe1687ea7b998af8c0dfec644d96443ef8d5b3",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/httpserver-api/Makefile" : {
+      "ObjectId" : "c05ca70c366d02c496778f99218c2ac832a8f425",
+      "LastModified" : "2018-05-02T21:49:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# compiler flags:\n\n#  -g    adds debugging information to the executable file\n\n#  -Wall turns on most, but not all, compiler warnings\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test plain HTTP\n",
+        "Line" : 107,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# Test SSL\n",
+        "Line" : 113,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 4,
+      "Errorlog" : "line 60:89 token recognition error at: '\\1'\nline 60:93 token recognition error at: '\\2'\nline 74:89 token recognition error at: '\\1'\nline 74:93 token recognition error at: '\\2'\n"
+    },
+    "modules/httpserver-html5-gui/Makefile" : {
+      "ObjectId" : "454d27018bd2066a5bf0eab2c8d92dcd2fcfdb46",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Test if HTTP servers serves properly static content\n",
+        "Line" : 23,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 1
+    },
+    "modules/httpserver-jolokia-plugin/Makefile" : {
+      "ObjectId" : "b8936c56b5f9f25c2ce1c4590af4bbb15e19df7b",
+      "LastModified" : "2018-05-02T21:49:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# compiler flags:\n\n#  -g    adds debugging information to the executable file\n\n#  -Wall turns on most, but not all, compiler warnings\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# jolokia.cc depends on autogen/jolokia.json.hh, which needs to be\n\n# auto-generated before jolokia.cc is compiled\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "modules/httpserver-jolokia-plugin/jolokia-agent/pom.xml" : {
+      "ObjectId" : "2671abfc4659146d8b283e3ef9ace6daa3d451ae",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/httpserver-jvm-plugin/Makefile" : {
+      "ObjectId" : "b5d6ba3de53a7bf5c27f910daa3b226ab54b26b1",
+      "LastModified" : "2018-05-02T21:49:52Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# compiler flags:\n\n#  -g    adds debugging information to the executable file\n\n#  -Wall turns on most, but not all, compiler warnings\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/httpserver/Makefile" : {
+      "ObjectId" : "1a8c1769b798aeccb20097b23b01be962a05cbe9",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This \"make clean\" should not be needed because we no longer build anything\n\n# in this directory, but prior to commit c446634 we did create things here,\n\n# and if we forget to delete them, especially usr.manifest, future builds\n\n# may fail (see issue #931).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/java-base/Makefile" : {
+      "ObjectId" : "13c1858c59ad2af760fd0ad8b38216f256144f8d",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/java-base/pom.xml" : {
+      "ObjectId" : "433b9fb3281b8864ad05c5780f74271e0dc75c1e",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-base/runjava-common/pom.xml" : {
+      "ObjectId" : "4a22315962d11b0fd4b29026bf7e7758c511941e",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-base/runjava-isolated/pom.xml" : {
+      "ObjectId" : "5129011b039f0102b3db6f5d40db64a51e6d3f9c",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-base/runjava-non-isolated/pom.xml" : {
+      "ObjectId" : "d7f503ae77694de90a9cfe26374c6d857095bfbb",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-isolated/Makefile" : {
+      "ObjectId" : "a3ac9f442c7bb068118b7ec115b3e71544e77bda",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/java-mgmt/Makefile" : {
+      "ObjectId" : "3bee16a9bc65e108fe5ef27d6f4acccf8c3d89db",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/java-mgmt/cloudius/pom.xml" : {
+      "ObjectId" : "a82ba7b31add9dae2356ae4b398326194e756bf2",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-non-isolated/Makefile" : {
+      "ObjectId" : "519781eb7bc2047ed3305ebdd92daed1e4cae9c5",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/java-tests/Makefile" : {
+      "ObjectId" : "e4f4a9bcb7111c122295c437b0b6ad7144ab60a7",
+      "LastModified" : "2018-07-07T04:09:33Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/java-tests/pom.xml" : {
+      "ObjectId" : "98a9984e4769d412052d687896b5782331aa4e6f",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-tests/tests-isolates/pom.xml" : {
+      "ObjectId" : "191552d5443d92e9084451cbf797287d16671d2c",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-tests/tests-jre-extension/pom.xml" : {
+      "ObjectId" : "3d01deb5f5ecdacbc41272d0cafde6ae2495530c",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/java-tests/tests/pom.xml" : {
+      "ObjectId" : "e2f25d1ca1404a348bd0443100d92c3ceffe889b",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAVEN",
+      "CommentCount" : 0
+    },
+    "modules/josvsym/Makefile" : {
+      "ObjectId" : "4df15bc0c31471503377e13abe2dce1635141083",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# compiler flags:\n\n#  -g    adds debugging information to the executable file\n\n#  -Wall turns on most, but not all, compiler warnings\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#miscbase = $(src)/external/$(ARCH)/misc.bin\n\n#libs-dir = $(miscbase)/usr/lib64\n\n#boost-libs := $(libs-dir)/libboost_system.so \\\n#              $(libs-dir)/libboost_filesystem.so\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/libcdio/Makefile" : {
+      "ObjectId" : "c94ead205f210a379b44fe3a1e0f7ed76f5c6ba3",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A small Makefile \"download and build\" for libcdio\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Directories for downloading and building\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# libcdio\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# libtool would ignore -shared anyway\n\n# We should set LDFLAGS=-shared. But then configure stage fails with \n\n# \"configure: error: C compiler cannot create executables\".\n\n# If we later edit Makefile to set LDFLAGS=-shared, then libtool removes it.\n\n# So, we will capture required cmd from make V=1, and relink the binary.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "modules/libedit/Makefile" : {
+      "ObjectId" : "04979144cbd48963a557c049ef7c5b2fe0233b0a",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A small Makefile \"download and build\" for libedit\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Directories for downloading and building\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# libedit\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "modules/libtools/Makefile" : {
+      "ObjectId" : "70c16b37a631e9e40df5c47a82b68a9a862926d8",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# When made through scripts/build, we get $(ARCH). But we don't really\n\n# need to rely on it - we can also see the link in build/last.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Some header files from OSv are used in this code. Ideally, we would take\n\n# from OSv only the OSv-specific header files and take the rest of the system\n\n# header files from the build machine, but sadly, the OSv header files are\n\n# and also this code is a complete jumble of interdepedent mess, so we\n\n# currently need to include all the OSv stuff *instead* of the system header\n\n# files. We also have to define a couple of bizarre variables so that the\n\n# header files make some of the definitions available. The horror.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/libyaml/Makefile" : {
+      "ObjectId" : "9f5d00c4118f03d6dc1d93dad1c81b4fed3948a9",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Take libyaml-cpp.so from the build machine and put it in the image.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "modules/lua/Makefile" : {
+      "ObjectId" : "620a78f8b1ba7510849277ab8574721b1e7222bf",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Some directories\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Official version\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Archive details\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Lua sources for dependencies\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Out sub-directories\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Lua itself\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Local executable used for LuaRocks\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# List of Lua modules, each module has its own target\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# == LuaRocks ==\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# == LuaSocket ==\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# == LuaJSON ==\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# == Lua_stdlib ==\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# == LuaFileSystem ==\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# == LuaPath ==\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# == LuaSec ==\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Workaround because LuaRocks ignores /lib64\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "##\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "modules/lua/src/Makefile" : {
+      "ObjectId" : "c6ed82bbeb03b8595c3b478969b50c22a75c5101",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# == MODIFIED VERSION OF ORIGINAL LUA MAKEFILE ==\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# list targets that do not create files (but not all makes understand .PHONY)\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# DO NOT DELETE\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "modules/monitoring-agent/Makefile" : {
+      "ObjectId" : "46634c37af4c8b55cf2393ca24d122cbd2046d42",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# compiler flags:\n\n#  -g    adds debugging information to the executable file\n\n#  -Wall turns on most, but not all, compiler warnings\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "modules/ncurses/Makefile" : {
+      "ObjectId" : "be269309a8a1cc3d834f27d4f29e7961945e0dc7",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Directories for downloading and building\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Ncurses\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build flags (./configure)\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "modules/nfs-tests/Makefile" : {
+      "ObjectId" : "852df8bd127e823a4993ce12dcd965a4d7cd902a",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "modules/tests/Makefile" : {
+      "ObjectId" : "5c94e549269c26a188b85a56aaa9c5d77beedbc4",
+      "LastModified" : "2019-01-29T06:59:28Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Paths set by scripts/build\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: consider setting $(out) not to OSV_BUILD_PATH but to ./build/$ARCH.\n\n# TODO: need to set up CXX, etc., for cross compilation, as in the main\n\n# Makefile...\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Ask make to not delete \"intermediate\" results, such as the .o in the chain\n\n# .cc -> .o -> .so. Otherwise, during the first build, make considers the .o\n\n# to be intermediate, and deletes it, but the newly-created \".d\" files lists\n\n# the \".o\" as a target - so it needs to be created again on the second make.\n\n# See commit fac05c95 for a longer explanation.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The following are rules for making a .so from .c or .cc. We could have\n\n# done the compilation from .c to .so directly, in one step without an\n\n# intermediate file (which needs to stay behind, as explained above).\n\n# but this prevents \"ccache\" from working - because it doesn't cache results\n\n# of linking. So with the intermediate step, the (slow) compilation result is\n\n# cached, and just the (fast) linking is redone. This intermediate step\n\n# speeds up \"make clean; scripts/build image=tests\" from 1:40 minutes to\n\n# just 32 seconds.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The rofs test image mounts /tmp as ramfs and 4 tests that exercise file system\n\n# fail due to some unresolved bugs or other shortcomings of the ramfs implementation\n\n# and are temporarily removed from the rofs-only-tests list. The tests tst-readdir.so\n\n# and tst-rename.so would fail until the issue #68 is fixed. Similarly\n\n# tst-fs-link.so do not pass due to lack of hard links support in the ramfs\n\n# implementation. Lastly tst-fallocate.so also does not work with ramfs due to\n\n# the shortcomings in ramfs implementation of statfs that does not report free/used\n\n# blocks adequately.\n\n#\n\n# These 4 tests are compiled from the same source files but passed in READ_ONLY_FS\n\n# to switch relevant logic in those tests to exercise scenarios applicable\n\n# to read-only filesystem\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\tlibstatic-thread-variable.so tst-static-thread-variable.so \\\n\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Tests with special compilation parameters needed...\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# The following tests use special linker trickery which apprarently\n\n# doesn't work as expected with GOLD linker, so we need to choose BFD.\n\n# TODO: figure out why this workaround was needed (the reason may be\n\n# different for each of these tests), and avoid this workaround!\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# FIXME: two of the test below can't compile now because of include path\n\n# (BSD and OSv header files get mixed up, etc.).\n\n#zfs-tests := misc-zfs-disk.so misc-zfs-io.so misc-zfs-arc.so\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Automatically generate usr.manifest which includes all tests.\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "tests/bench/build.xml" : {
+      "ObjectId" : "d67b9074ae7111ebcd6f12a51986ea13cea92c01",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " set global properties for this build ",
+        "Line" : 6,
+        "CharPositionInLine" : 48
+      },
+      "1" : {
+        "Text" : " Create the build directory structure used by compile ",
+        "Line" : 12,
+        "CharPositionInLine" : 66
+      },
+      "2" : {
+        "Text" : " Compile the java code from ${src} into ${build} ",
+        "Line" : 19,
+        "CharPositionInLine" : 61
+      },
+      "3" : {
+        "Text" : " Delete the ${build} and ${dist} directory trees ",
+        "Line" : 38,
+        "CharPositionInLine" : 61
+      },
+      "CommentCount" : 4
+    },
+    "tests/reclaim/build.xml" : {
+      "ObjectId" : "daacfa6e317637305cef44c7f6ffab228310c08b",
+      "LastModified" : "2018-04-24T07:12:20Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " set global properties for this build ",
+        "Line" : 6,
+        "CharPositionInLine" : 48
+      },
+      "1" : {
+        "Text" : " Create the build directory structure used by compile ",
+        "Line" : 12,
+        "CharPositionInLine" : 66
+      },
+      "2" : {
+        "Text" : " Compile the java code from ${src} into ${build} ",
+        "Line" : 19,
+        "CharPositionInLine" : 61
+      },
+      "3" : {
+        "Text" : " Delete the ${build} and ${dist} directory trees ",
+        "Line" : 38,
+        "CharPositionInLine" : 61
+      },
+      "CommentCount" : 4
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 31,
+    "ANT" : 2,
+    "MAVEN" : 10
+  },
+  "ElapsedTime" : 4532
+}

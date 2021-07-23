@@ -1,0 +1,408 @@
+{
+  "Repository" : "8082409",
+  "Revision" : "HEAD",
+  "ObjectId" : "7e206162bc90a0b57fd0c76b934c8d08de88686b",
+  "CommitTime" : "2019-04-19T05:55:45Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "1d3482132ebad2ffeefc9ce2e157b8eeb7be508c",
+      "LastModified" : "2019-01-14T14:50:26Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Thierry Parmentelat - INRIA Sophia Antipolis\n\n#\n\n####################\n\n# invocation:\n\n#\n\n# (*) make stage1=true\n\n#     this extracts all specfiles and computes .mk from specfiles\n\n#     you need to specify PLDISTRO here if relevant - see below\n\n# (*) make help\n\n#     for more info on how to invoke this stuff\n\n#\n\n#################### (fedora) distributions\n\n#\n\n# (*) as of nov. 2007, myplc-devel is deprecated\n\n# (*) instead, we create a fresh vserver that holds required tools (see e.g. planetlab-devel.lst)\n\n# (*) the build uses the current fedora version as a target for the produced images\n\n# (*) so you simply need to create a fedora 8 build image for building fedora-8 images\n\n#\n\n#################### (planetlab) distributions\n\n#\n\n# (*) see README-pldistros.txt\n\n# (*) then you need to run\n\n#     make stage1=true PLDISTRO=onelab\n\n#\n\n####################\n\n# This build deals with 3 kinds of objects\n\n#\n\n# (*) packages are named upon the RPM name; they are mostly lowercase\n\n#     Add a package to ALL if you want it built as part of the default set.\n\n# (*) modules are named after the subversion or git tree; we would wish to keep\n\n#     these names lowercase as far as possible\n\n# (*) rpms are named in the spec files. A package typically defines several rpms;\n\n#     rpms are used for defining LOCAL-DEVEL-RPMS. See also package.rpmnames\n\n#\n\n# in simple cases, one package uses one module (in which case using the same name sounds right)\n\n# but others might need several modules (e.g. image-creation packages like bootstrapfs need\n\n# bootstrapfs and build); in this case the FIRST ONE is used for locating the specfile\n\n#\n\n#################### packages\n\n# basics: how to build a package - you need to define the following variables\n\n#\n\n# (*) package-MODULES\n\n#     a package needs one or several modules to build; the first one is used for\n\n#     some special purposes, like locating the specfile\n\n# (*) package-SPEC\n\n#     the package's specfile; this is relative to the FIRST module in package-MODULES\n\n#\n\n# Optional:\n\n#\n\n# (*) package-DEPEND-PACKAGES\n\n#     a set of (obviously local) *packages* that this package depends on, e.g.\n\n#     bootstrapfs-DEPEND-PACKAGES += kernel\n\n#     this impacts the order of the build\n\n# (*) package-STOCK-DEVEL-RPMS\n\n#     a set of stock rpms that this package needs at build-time\n\n#     this can also be set in config.<distro>/devel.pkgs or config.planetlab/devel.pkgs as appropriate\n\n# (*) package-LOCAL-DEVEL-RPMS\n\n#     a set of *local* rpms that the build will rpm-install before building <package>\n\n#     the build will attempt to uninstall those once the package is built, this is not fatal though\n\n#     this is intended to denote local rpms, i.e. ones that are results of our own build\n\n#     stock rpms should be mentioned in STOCK-DEVEL-RPMS or in devel.pkgs as described above\n\n# (*) package-LOCAL-DEVEL-RPMS-CRUCIAL\n\n#     like package-LOCAL-DEVEL-RPMS but for crucial packages (like autoconf) that only need an update from our build\n\n#     rpms in this area will *not* be uninstalled after the target is made, because that would ruin the build vm for good\n\n# (*) package-DEPEND-FILES\n\n#     a set of files that the package depends on - and that make needs to know about\n\n#     if this contains RPMS/yumgroups.xml, then the toplevel RPMS's index\n\n#     is refreshed with createrepo prior to running rpmbuild\n\n# (*) package-SPECVARS\n\n#     space-separated list of spec variable definitions, where you can reference make variables that\n\n#     belong to packages defined BEFORE the current one\n\n#     note: you should use = to define these (as opposed to :=)\n\n#     e.g. mydriver-SPECVARS = foo=$(kernel-rpm-release)\n\n#     would let you use the %release from the kernel's package when rpmbuild'ing mydriver\n\n#     see automatic below\n\n# (*) package-RPMFLAGS: Miscellaneous RPM flags\n\n#     this is passed to rpmbuild, as well as to spec2make for \"exporting\" various rpm variable\n\n#     to make; beware that some features, like --with=debug or --define 'foo bar' are not\n\n#     well handled by spec2make as of this writing, which can cause issues.\n\n#     hopefully this will be fixed...\n\n# (*) package-BUILD-FROM-SRPM: set this to any non-empty value,\n\n#     if your package is able to produce a source rpm.\n\n#     In this case the build will first invoke 'make srpm', and then rebuild binaries from that\n\n# (*) package-RPMDATE: set this to any non-empty value to get the rpm package's release field hold the current date\n\n#     this is useful for container packages, like e.g. bootstrapfs or vserver, that contains much more than the\n\n#     correspondng module\n\n#\n\n#################### modules\n\n# Required information about the various modules (set this in e.g. planetlab-tags.mk)\n\n#\n\n# (*) module-SVNPATH\n\n#     for svn modules\n\n#     the complete path where this module lies;\n\n#     you can specify the trunk or a given tag with this variable\n\n#\n\n# (*) module-GITPATH\n\n#     for git modules\n\n#     which by analogy with svn revision scheme, is expected to be <url>@<tag>\n\n#\n\n#################### automatic variables\n\n#\n\n# the build defines some make variables that are extracted from spec files\n\n# to inspect those, see for example\n\n# (*)  $ make ulogd-pkginfo\n\n#        to see the list f variables attached to a given package\n\n# (*)  $ make kernel-devel-rpminfo\n\n#        to see the list of variables attached to a given rpm\n\n#\n\n####################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# exported to spec files as plrelease\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Default values\n\n#\n\n# minimal compat with macos, just so this does not complain\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#################### Makefile\n\n# Default target\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "### default values\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "########## envfrompreviousrun.mk holds PLDISTRO and others - it is generated at stage1 (see below)\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# when re-running the nightly build after failure, we need to gather the former values\n\n# do this by running make stage1=skip +PLDISTRO\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#################### include onelab.mk\n\n# describes the set of components\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#################### include <pldistro>-tags.mk\n\n# describes where to fetch components\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# this used to be set in the -tags.mk files, but that turned out to require\n\n# error-prone duplicate changes\n\n# so now the nightly build script sets this to what it is currently using\n\n# in case we run this manually, i.e. if build-GITPATH is not set\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#################### pldistros that are defined remotely\n\n# fetching with svn\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# fetching with git\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# put it together\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "########## stage1 and stage1iter\n\n# extract specs and compute .mk files by running\n\n# make stage1=true\n\n# entering stage1, we compute all the spec files\n\n# then we use stage1iter to compute the .mk iteratively,\n\n# ensuring that the n-1 first makefiles are loaded when creating the n-th one\n\n# when stage1iter is set, it is supposed to be an index (starting at 1) in $(ALL)\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "### stage1iter : need some arithmetic, see\n\n# http://www.cmcrossroads.com/articles/ask-mr.-make/learning-gnu-make-functions-with-arithmetic.html\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# the first n packages\n",
+        "Line" : 217,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# the n-th package\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# the n-1 first packages\n",
+        "Line" : 221,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#\t@echo \"stage1iter : included .mk files : $(previousmks)\"\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "### stage1\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# specs and makes are done sequentially by stage1iter\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "### regular make\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "### once .mks are OK, you can run make normally\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#all : tarballs\n\n#all : sources\n\n#all : modules\n\n#all : rpms\n\n#all : srpms\n\n# mention $(ALL) here rather than rpms\n\n# this is because the inter-package dependencies are expressed like\n\n# util-vserver: util-python\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "### yumgroups.xml : compute from all known .pkgs files\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "####################\n\n# notes:\n\n# * we always use the first module's location (SVNPATH/GITPATH) to extract the spec file\n\n# * no matter what SCM is used, SPEC should hold a relative path from the module's root\n\n#\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# compute all modules\n",
+        "Line" : 288,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# extract revision from -SVNPATH or tag from -GITPATH\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "#\n\n# for each package, compute whether we need to set date\n\n# the heuristic is that we mention the date as part of the rpm release flag if\n\n# (*) the package has requested it by setting package-RPMDATE (container packages should do that)\n\n# (*) or SVNPATH contains 'trunk' or 'branches'\n\n# (*) or GITPATH has no '@' (trunk)\n\n# (*) or GITPATH contains a '@', and the gittag part has no '-' (this is to tell a tag from a branch..)\n\n#\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "### the common header for generated specfiles\n\n# useful when trying new specfiles manually\n\n###\n\n# note for fedora23 (and onwards, probably)\n\n# many rpms wouldn't build as-is and issue an weird error\n\n##\n\n# Processing files: pl_sshd-debuginfo-1.0-11.lxc.x86_64\n\n# error: Empty %files file /longbuildroot/BUILD/pl_sshd-1.0/debugfiles.list\n\n##\n\n# so to work around that we define debug_package as being nil\n\n# only for f23 for now, let's see what this gives us..\n",
+        "Line" : 328,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "### make up spec file - extract module first\n",
+        "Line" : 355,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "####################\n\n# fetch modules\n\n# expected input:\n\n#   $(1) is the name of a git module\n\n#     $($(1).gitrepo) and $(($1).gittag) are used to determine branch or tag name\n\n# expected result\n\n#   $(1)/ in the cwd will hold the result\n",
+        "Line" : 374,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# fetch svn module\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# git_fetch_module\n\n# as far as possible we use git-archive to fetch a git module\n\n# however if that fails we fallback to a git-clone strategy,\n\n# for when git-archive is not supported, e.g. for github\n\n# side effect\n\n#   $(1)/ gets cleaned up if job cannot be done\n",
+        "Line" : 387,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "### module extraction\n",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "### the tests area\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "###\n\n# Base rpmbuild in the current directory\n\n# issues on fedora 8 : see the following posts\n\n# http://forums.fedoraforum.org/showthread.php?t=39625 - and more specifically post#6\n\n# https://www.redhat.com/archives/fedora-devel-list/2007-November/msg00171.html\n",
+        "Line" : 425,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# rpm macros\n\n# build.common (getrpmmacros.sh) defines some utilities we want in place on our images\n\n# in addition to these we set a few others for the build\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "### this utility allows to extract various info from a spec file\n\n### and to define them in makefiles\n\n# use the C code where it works as it's the original one, use the python code otherwise\n\n# TD: Fixed for NorNet builds: use Python code only!\n\n# spec2make: spec2make.c\n\n# \t$(CC) -g -Wall $< -o $@ -lrpm -lrpmbuild -lrpmio -lpopt || ln -s spec2make.py $@\n",
+        "Line" : 452,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "### run spec2make on the spec file and include the result\n\n# usage: spec2make package\n\n# with old rpms (f8&c5) and too recent specfiles (the kernel), we need a patch to spec2make\n\n# so when <package-NEEDSPECK2MAKEHACK is set, we run spec2make with the --hack flag\n",
+        "Line" : 461,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# stores env variables in a file\n\n# this is done at stage1. later run won't get confused\n",
+        "Line" : 473,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# find out names for variables set on the command line\n",
+        "Line" : 476,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# always refresh this\n",
+        "Line" : 494,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "#################### regular make\n",
+        "Line" : 497,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "### devel dependencies\n",
+        "Line" : 500,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "### pack sources into tarballs\n",
+        "Line" : 511,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "##\n",
+        "Line" : 526,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "### the directory SOURCES/<package>-<version> is made\n\n# with a (set of) copy -rl from MODULES/<module>\n\n# the former is $(package.source)\n",
+        "Line" : 533,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# so that make does not use the rule below directly for creating the tarball files\n",
+        "Line" : 537,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# argument is a package\n\n# do things differently if multiple modules are mentioned (sigh..)\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "### code extraction\n",
+        "Line" : 555,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "### source rpms\n",
+        "Line" : 562,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "#################### manage build requirements\n\n# default values\n",
+        "Line" : 568,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# uninstall -- cannot force rpm -e\n\n# need to ignore result, kernel-headers cannot be uninstalled as glibc depends on it\n",
+        "Line" : 572,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "### these macro handles the LOCAL-DEVEL-RPMS and LOCAL-DEVEL-RPMS-CRUCIAL tags for a given package\n\n# before building : rpm-install LOCAL-DEVEL-RPMS\n",
+        "Line" : 576,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# install stock rpms if defined\n",
+        "Line" : 582,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# similar for debians\n\n# gdebi acts like yum localinstall; gdebi-core should be mentioned in develdeb.pkgs\n",
+        "Line" : 591,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "####################\n\n# usage: target_source_rpm package\n",
+        "Line" : 610,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "### binary rpms are made from source rpm\n",
+        "Line" : 638,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# same as above, mention $(ALL) and not $(ALLRPMS)\n",
+        "Line" : 640,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# use tmp dirs when building binary rpm so make remains idempotent\n\n# otherwise SOURCES/ or SPEC gets touched again - which leads to rebuilding\n",
+        "Line" : 645,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# usage: build_binary_rpm package\n\n# xxx hacky - invoke createrepo if DEPEND-FILES mentions RPMS/yumgroups.xml\n",
+        "Line" : 650,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# for manual use only - in case we need to investigate the results of an rpmbuild\n",
+        "Line" : 662,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "### shorthand target\n\n# e.g. make proper -> does propers rpms\n\n# usage shorthand_target package\n",
+        "Line" : 676,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "### file dependencies\n",
+        "Line" : 698,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "### package dependencies\n",
+        "Line" : 710,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "####################\n\n# debian meta-target\n",
+        "Line" : 723,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "####################\n\n# very rough for now (one module per package), targets only sfa for now\n\n# the general idea here is, changing the specfile (for version number and all) is enough, and this\n\n# gets passed to \"make debian\" in the module\n\n# PREFIX: at one point we had passed PREFIX=/usr to this 'make debian'\n\n# however it turned out we could manage this some other way (see manifold)\n\n# so I'm reverting to simplicity\n",
+        "Line" : 728,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "### clean target\n\n# usage: target_clean package\n",
+        "Line" : 747,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "### clean precisely\n",
+        "Line" : 794,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "### brute force clean\n",
+        "Line" : 803,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "####################\n\n# gather build information for the 'About' page\n\n# when run from crontab, INIT_CWD not properly set (says /root ..)\n\n# so, the nightly build passes BASE here\n\n# also store BASE in .base for any post-processing purposes\n",
+        "Line" : 814,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "####################\n\n# for a given module\n",
+        "Line" : 843,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "#################### package info\n",
+        "Line" : 869,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "## rpm info\n",
+        "Line" : 874,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "#################### various lists - designed to run with stage1=true\n",
+        "Line" : 880,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "####################\n",
+        "Line" : 909,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "#################### convenience, for debugging only\n\n# make +foo : prints the value of $(foo)\n\n# make ++foo : idem but verbose, i.e. foo=$(foo)\n",
+        "Line" : 980,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 78
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 1
+  },
+  "ElapsedTime" : 831
+}

@@ -1,0 +1,24 @@
+{
+  "Repository" : "297457",
+  "Revision" : "HEAD",
+  "ObjectId" : "c7231b14167acca2653a12be955bb3cd54847374",
+  "CommitTime" : "2019-04-16T17:44:19Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "c3539b74329b0e9a003df859cbbf2eb70ff4adad",
+      "LastModified" : "2019-02-26T02:50:42Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Sorry. These are depends on *nix way...\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1,
+      "Errorlog" : "line 20:95 token recognition error at: '\"\\0'\nline 20:109 token recognition error at: '\\0'\nline 20:121 token recognition error at: '\", $$1, $$2}'\\n\\t@exit 1\\n\\n\\n# clean\\nclean: clean_dist clean_obj clean_webext_artifacts ## Clean up all generated files.\\n\\nclean_dist:\\n\\t$(NPM_BIN)/del $(DIST_DIR) --force\\n\\nclean_obj:\\n\\t$(NPM_BIN)/del $(OBJ_DIR) --force\\n\\nclean_webext_artifacts:\\n\\t$(NPM_BIN)/del $(ARTIFACT_DIR)\\n\\n\\n# build\\nbuild: ## Build the artifact.\\n\\t$(MAKE) __webext_xpi -C $(CURDIR)\\n\\n__webext_xpi: clean_webext_artifacts \\\\n     lint \\\\n     webextension\\n\\t$(NPM_BIN)/web-ext build -s $(DIST_DIR)\\n\\nicon.png: clean_dist\\n\\t$(NPM_BIN)/cpx $(CURDIR)/$@ $(DIST_DIR) --preserve\\n\\nwebextension: webextension_cp webextension_js webextension_css\\n\\nwebextension_cp: clean_dist\\n\\t$(NPM_BIN)/cpx '$(SRC_DIR)/**/**.{json,html,svg}' $(DIST_DIR) --preserve\\nwebextension_js: $(addprefix __bundle_js_, background popup sidebar options)\\nwebextension_css: $(addprefix __bundle_css_, popup sidebar options)\\n\\n__bundle_js_%: clean_dist __obj __external_dependency\\n\\t$(NPM_BIN)/rollup $(OBJ_SRC_DIR)/$*/index.js --config $(CURDIR)/rollup.config.js --output.file $(DIST_DIR)/$*/bundled.js\\n\\n__bundle_css_%: clean_dist\\n\\t$(NPM_BIN)/postcss $(SRC_DIR)/$*/registry.css --config --output $(DIST_DIR)/$*/$*.css\\n\\n__external_dependency: \\\\n\\t__external_dependency_react \\\\n\\t__external_dependency_react_dom \\\\n\\t__external_dependency_redux_thunk \\\\n\\t__external_dependency_rxjs\\n\\n__external_dependency_react: clean_dist\\n\\t$(NPM_BIN)/cpx '$(NPM_MOD_DIR)/react/umd/react.production.min.js' $(DIST_DIR)/third_party --preserve\\n__external_dependency_react_dom: clean_dist\\n\\t$(NPM_BIN)/cpx '$(NPM_MOD_DIR)/react-dom/umd/react-dom.production.min.js' $(DIST_DIR)/third_party --preserve\\n__external_dependency_redux_thunk: clean_dist\\n#\\t$(NPM_BIN)/cpx '$(NPM_MOD_DIR)/redux-thunk/dist/redux-thunk.js' $(DIST_DIR)/third_party --preserve\\n__external_dependency_rxjs: clean_dist\\n\\t$(NPM_BIN)/cpx '$(NPM_MOD_DIR)/rxjs/bundles/rxjs.umd.min.js' $(DIST_DIR)/third_party --preserve\\n\\n__obj: $(addprefix __obj_, ts js)\\n\\n__obj_js: clean_obj\\n\\t$(NPM_BIN)/cpx '$(SRC_DIR)/**/*.{js,jsx}' $(OBJ_SRC_DIR) --preserve\\n\\n__obj_ts: clean_obj\\n\\t$(NPM_BIN)/tsc -p $(CURDIR)/tsconfig.json --outDir $(OBJ_SRC_DIR)\\n\\n\\n# Test\\ntest: lint ava\\n\\nlint: eslint_js eslint_ts stylelint tscheck\\n\\neslint_js:\\n\\t$(NPM_BIN)/eslint --ext=js,jsx,mjs $(CURDIR)\\n\\neslint_ts:\\n\\t$(NPM_BIN)/eslint --ext=ts,tsx $(CURDIR)\\n\\ntscheck:\\n\\t$(NPM_BIN)/tsc -p $(CURDIR)/tsconfig.json --noEmit\\n\\nstylelint:\\n\\t$(NPM_BIN)/stylelint '$(SRC_DIR)/**/*.css' \\\\n\\t\\t--config=$(CURDIR)/stylelint.config.js \\\\n\\t\\t-f verbose \\\\n\\t\\t--color\\n\\nava: __obj\\n\\t$(MAKE) run_ava\\n\\nrun_ava:\\n\\t$(NPM_BIN)/ava test/\\n\\ngit_diff: ## Test whether there is no committed changes.\\n\\tgit diff --exit-code\\n\\n\\n# CI\\nci: test git_diff\\n\\n\\n# Tools\\nfmt: fmt_css ## Apply formetters for files.\\n\\nfmt_css:\\n\\t$(NPM_BIN)/prettier --single-quote --print-width 256 --write '$(SRC_DIR)/**/*.css'\\n\u0000'\n"
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 1
+  },
+  "ElapsedTime" : 644
+}

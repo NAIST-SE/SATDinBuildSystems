@@ -1,0 +1,2775 @@
+{
+  "Repository" : "27562458",
+  "Revision" : "HEAD",
+  "ObjectId" : "f0f3b795f246e0e00234914c3499d12ce91ba5f1",
+  "CommitTime" : "2018-11-17T22:41:40Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "0f213052ee8447c54053700630c4f40420cee65f",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CADO_DIST_ARCHIVE_NAME may be overridden by environment.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#####################################################################\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If you change the min version, also change scripts/call_cmake.sh\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# VERSION_GREATER_EQUAL is newish\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# does this get in the way with cmake tests ?? We used to have\n\n# CMP0054 OLD at some point.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# we could do this as well in other cases.\n\n# http://public.kitware.com/Bug/view.php?id=8726\n",
+        "Line" : 27,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "#####################################################################\n\n# What are we building ?\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#####################################################################\n\n# Allow building unit test programs with \"make test\"\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Also allow testing with \"make check\", but building all required\n\n# dependencies (las for the sieve test, etc.) as well. We also add the\n\n# \"verbose\" command line option here to get more meaningful output\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Note the $(ARGS) here. It is expanded by make, not by cmake, so that\n\n# the arguments which are present on the \"make check\" command line are\n\n# obeyed. This has the consequence that in order to pass a $, you need to\n\n# pass $$ ; well, plus quoting. So that gives, e.g.:\n\n#        make check ARGS=\"-R ^foo\\$\\$\"\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#####################################################################\n\n# Get some overrides from the environment.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Syntax is (user-friendly name) (cmake name)\n\n# Make sure everything is exported from scripts/call_cmake.sh\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# sigh...\n\n# https://cmake.org/Bug/view.php?id=10342\n",
+        "Line" : 88,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "#####################################################################\n\n# Add the CFLAGS that are needed in all cases.\n\n# Append them at the *end* of the parameter list so as to allow tweaking\n\n# of e.g. warnings by the user-defined overrides.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# It's redundant with something that CMake prints the first time it\n\n# detects the compiler. Alas, it's within a cached if, so we often don't\n\n# see it.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Hmmm, how delicious. cmake-2.8.7 does not have\n\n# CMAKE_CXX_COMPILER_VERSION\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# oh my... this is really ugly. I'd love to have more usable control\n\n# structures in cmake...\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# gcc defines __STRICT_ANSI__ with -std=c99, which under MinGW\n\n# causes many prototypes and macros not to be defined. Using gnu99\n\n# prevents the definition of __STRICT_ANSI__\n\n#\n\n# Ditto for C++, with the c++98/gnu++98 subtlety.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Someday we'll enable c11. This will provide us aligned_alloc.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# only gcc-4.8 is supposed to be c++11-complete. But for what we\n\n# use, gcc-4.7 will be ok.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "# see comment in utils/smallset.h\n",
+        "Line" : 149,
+        "CharPositionInLine" : 8
+      },
+      "21" : {
+        "Text" : "# https://gcc.gnu.org/ml/gcc/2017-05/msg00073.html\n",
+        "Line" : 164,
+        "CharPositionInLine" : 12
+      },
+      "22" : {
+        "Text" : "# It seems that even g++-4.6.3, as shipped in ubuntu 12.04, is\n\n# sufficient for the little we use, provided we use the -std=c++0x\n\n# flag (-std=c++11 replaced it with gcc-4.7.0).\n",
+        "Line" : 168,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# only icc>=15 is full c++11 compliant, it seems. But 14 will do.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# don't set standard flags explicitly. The default seems fine.\n\n# set (CMAKE_CXX_FLAGS   \"-std=gnu++98 -g -W -Wall ${CMAKE_CXX_FLAGS}\")\n",
+        "Line" : 197,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# Not the slightest idea when apple's clang became c++11-compliant.\n",
+        "Line" : 209,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# According to http://clang.llvm.org/cxx_status.html\n\n# Caveat: Apple's clang identifies itself as plain Clang on some\n\n# occasions... I don't exactly know when and how, but there's some\n\n# potential for misconfiguration.\n",
+        "Line" : 217,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "#####################################################################\n\n# Set dependencies for external software.\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# locates gmp. Obeys the env variables GMP GMP_LIBDIR GMP_INCDIR\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# locates gmp. Obeys the env variables GMP GMP_LIBDIR GMP_INCDIR\n",
+        "Line" : 247,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "#####\n",
+        "Line" : 254,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "#####################################################################\n\n# Obtain information from the host.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# cmake scripts here and there use the cmake variable, not the\n\n# environment variable.\n",
+        "Line" : 329,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "######################################################################\n\n# Try to detect whether pthreads and/or MPI are available.\n\n# This checks the MPI and PTHREADS environment variables.\n\n# As a result:\n\n# - If pthreads are available:\n\n#   * WITH_PTHREADS is defined to 1 as a cmake variable.\n\n#   * -DWITH_PTHREADS is added for the compilation of every file (because\n\n#     it can't hurt).\n\n#   In fact, in recent versions, pthread support is mandatory. Still,\n\n#   this piece of cmake checks the avaibility of the function\n\n#   pthread_barrier_wait, which is optional.\n\n# - If mpi is available:\n\n#   * WITH_MPI is defined to 1 as a cmake variable.\n\n#   * _NOTHING_ from the build environment is changed by default, because\n\n#     we do not want everything to be compiled with mpicc. Thus, relevant\n\n#     code parts should check for WITH_MPI in the CMakeLists.txt file,\n\n#     and, if relevant, use the MPI_C_COMPILER, MPI_CXX_COMPILER, MPIEXEC\n\n#     variables (which are guaranteed to be defined).\n\n#   * The cado_mpi_config.h file is possibly modified in order to trigger\n\n#     a rebuild of all mpi sources whenever the mpi library gets changed.\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#####################################################################\n\n# OK, it's freakin ugly. Don't look.\n",
+        "Line" : 379,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# there would have been ways to do it without a generated helper script,\n\n# I guess -- unfortunately I couldn't find one ;-((\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# It's weird. This thing does not seem to apply, or at least not always. I've\n\n# cured the problem by tweaking ccwrap, and let it decide whether it's linking\n\n# or not. If yes, then it uses g++ rather than gcc (or mpic++ vs mpicc)\n",
+        "Line" : 390,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "#####################################################################\n\n# now the real stuff.\n",
+        "Line" : 396,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# First, create the config file gathering everything we've got so far.\n",
+        "Line" : 399,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# link_directories (${CADO_NFS_BINARY_DIR}/utils)\n\n# link_directories (${CADO_NFS_BINARY_DIR}/gf2x/.libs)\n",
+        "Line" : 406,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "############################################################\n",
+        "Line" : 413,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# set(GF2X_LIB_FILE  ${CADO_NFS_BINARY_DIR}/gf2x/.libs/libgf2x.a)\n\n# set(GF2X-FFT_LIB_FILE ${CADO_NFS_BINARY_DIR}/gf2x/gf2x-fft/.libs/libgf2x-fft.a)\n\n# set(CANTOR128_LIB_FILE ${CADO_NFS_BINARY_DIR}/gf2x/gf2x-fft/.libs/libcantor128.a)\n",
+        "Line" : 431,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# add_subdirectory (gf2x-fft)\n",
+        "Line" : 436,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# commented the following since nfs-hd is not in \"make dist\"\n\n# add_subdirectory (nfs-hd)\n",
+        "Line" : 448,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# The trailing / is very important here. Without it, we would create a\n\n# parameters/ directory in ${PREFIX}/share/cado-nfs-X.Y/\n",
+        "Line" : 456,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Some scripts are handy to have also in the bin directory.\n",
+        "Line" : 465,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 46
+    },
+    "Makefile" : {
+      "ObjectId" : "9f3c7f284fd2026e639e115d2a01d6a5d67568ba",
+      "LastModified" : "2017-05-10T12:51:37Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# only this makefile is not parallel. Of course the cmake builds are.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Toolchain-MinGW64.cmake" : {
+      "ObjectId" : "77794033bf0d301cb05a80a2e2f1238096c71611",
+      "LastModified" : "2013-05-24T08:43:56Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# the name of the target operating system\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# which compilers to use for C and C++\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# here is the target environment located\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# adjust the default behaviour of the FIND_XXX() commands:\n\n# search headers and libraries in the target environment, search\n\n# programs in the host environment\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "config/alignas.cmake" : {
+      "ObjectId" : "8807ceac0258aa7c88b3cc1987559529b27d399b",
+      "LastModified" : "2018-05-11T16:28:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# alignas is c++11, but g++ 4.7 does not implement it.\n\n# There are also \"CMake compile features\" which test for things like the\n\n# alignas keyword, but they require CMake 3.1.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/aligned_alloc.cmake" : {
+      "ObjectId" : "0d9313c957a1e1c94246fac8eea270a71d0c4a30",
+      "LastModified" : "2018-05-11T16:28:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# aligned_alloc is c11, but not c++11. It's in c++17\n\n#\n\n# http://en.cppreference.com/w/c/memory/aligned_alloc\n\n# http://en.cppreference.com/w/cpp/memory/c/aligned_alloc\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/asprintf.cmake" : {
+      "ObjectId" : "f41a5a9280da03cee1486f4a13b97d050a631b7a",
+      "LastModified" : "2015-09-15T13:26:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#Testing the existence of asprintf/vasprintf functions\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/avx.cmake" : {
+      "ObjectId" : "6902777586873bce69ec882ada48dff573629d43",
+      "LastModified" : "2016-07-13T12:16:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# avx\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/avx2.cmake" : {
+      "ObjectId" : "ad3c527230beed97ce38f700e5f1d6bb397db3e5",
+      "LastModified" : "2016-07-13T12:16:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# avx2\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/check_uint64_type.cmake" : {
+      "ObjectId" : "858421b5c44f618d05ff7e5b06c1bd8ac2786daa",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# We need to know what exact type uint64_t is typedef'd to. The reason is\n\n# that some templates would otherwise resolve ambiguously if we define\n\n# both.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/curl.cmake" : {
+      "ObjectId" : "2ac8754645cf9e1ef4ca5ee83345473242aa2c98",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Define CURL=1 in local.sh to enable curl backend for bwc/u64_dispatch\n\n# (if you do not know what this means, you do not need this\n\n# functionality)\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can force a path to curl/curl.h using the environment variables CURL, or\n\n# CURL_INCDIR and CURL_LIBDIR (note that curl/curl.h is also searched)\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Yeah. CMake docs defines the ``PATH'' to a file as being its dirname. Very\n\n# helpful documentation there :-((\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "config/cxxabi.cmake" : {
+      "ObjectId" : "d1af563b0e78db3fea47e021e443973f070dcad5",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "config/gas-assembly.cmake" : {
+      "ObjectId" : "fdf57a82d25c7cc01292a60c4b110c2df04d0bdd",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# gas-syntax assembly sources.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# -x assembler below is gcc syntax, understood by icc as well. Do not\n\n# attempt to do the same with other compilers.\n\n#\n\n# Note that renaming asm_sample.c to asm_sample.S does not work,\n\n# because cmake's try_compile insists on knowing which compiler to\n\n# use directly from the file name extension. So far we haven't\n\n# decided to go the enable_languages(ASM-ATT) route, but if we do,\n\n# then this would make the -x assembler below unnecessary ; at the\n\n# expense of doing recognition for gas on top of all the rest.\n\n# https://cmake.org/Wiki/CMake/Assembler\n",
+        "Line" : 4,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "config/gcc-bugs.cmake" : {
+      "ObjectId" : "42d1fe87fd2e7109daef41f8b9b8e36599a80544",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# test a bug appeared in Ubuntu/Linaro 4.6.3-1ubuntu5\n\n# Since it is related to the treatment of amd64 asm constraints, we may\n\n# skip it in other cases (or we get a spurious \"Error (cannot compile)\"\n\n# message).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test for Ubuntu bug\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Ubuntu bug not detected\n",
+        "Line" : 17,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# Ubuntu bug detected\n",
+        "Line" : 20,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# Test for gcc bug 58805\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# gcc bug 58805 not detected\n",
+        "Line" : 38,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# gcc bug 58805 detected\n",
+        "Line" : 41,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 7
+    },
+    "config/gcc-inline-assembly.cmake" : {
+      "ObjectId" : "4787a5cffb4a12163d5186e859364097f1c7545d",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# gcc-style x86_64 inline assembly.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/glibc_vector_internals.cmake" : {
+      "ObjectId" : "121a37e676c724988cf0202e24436f8dc6a0306a",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "config/gmp.cmake" : {
+      "ObjectId" : "a1882ca06b33ccd70d9ddccd768657cf9fa26665",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# You can force a path to gmp.h using the environment variables GMP, or\n\n# GMP_INCDIR and GMP_LIBDIR\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# First try overrides, really. We want cmake to shut up.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Yeah. CMake docs defines the ``PATH'' to a file as being its dirname. Very\n\n# helpful documentation there :-((\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#pointless, since we have workarounds anyway\n\n#message(STATUS \"Testing whether gmpxx is available\")\n\n#try_compile(HAVE_GMPXX\n\n#    ${PROJECT_BINARY_DIR}/config\n\n#    ${PROJECT_SOURCE_DIR}/config/gmpxx-test.cpp\n\n#    CMAKE_FLAGS \"-DLINK_LIBRARIES:STRING=${gmp_libname};${gmp_libname}xx\")\n\n#\n\n#if (HAVE_GMPXX)\n\n#message(STATUS \"Testing whether gmpxx is available -- yes\")\n\n#else()\n\n#message(STATUS \"Testing whether gmpxx is available -- no\")\n\n#endif()\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "config/gmp_randstate.cmake" : {
+      "ObjectId" : "936ec66d1dc0f959fba82dbb2c52ad496cfba382",
+      "LastModified" : "2018-08-26T14:02:01Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "config/gmpecm.cmake" : {
+      "ObjectId" : "e5a48ecf60dc6c52a8d02de07c57057feb339033",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# You can force a path to ecm.h using the environment variables GMPECM, or\n\n# GMPECM_INCDIR and GMPECM_LIBDIR\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# prepend !\n",
+        "Line" : 15,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# prepend !\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Try in three passes, otherwise cmake gets in the way...\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Yeah. CMake docs defines the ``PATH'' to a file as being its dirname. Very\n\n# helpful documentation there :-((\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "config/hwloc.cmake" : {
+      "ObjectId" : "f58ceeb74afcd0a1608134685cf59159bf0e2c80",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# You can force a path to hwloc.h using the environment variables HWLOC, or\n\n# HWLOC_INCDIR and HWLOC_LIBDIR (note that curl/curl.h is also searched)\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# prepend !\n",
+        "Line" : 15,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# prepend !\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Try in three passes, otherwise cmake gets in the way...\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Yeah. CMake docs defines the ``PATH'' to a file as being its dirname. Very\n\n# helpful documentation there :-((\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "config/jevents.cmake" : {
+      "ObjectId" : "754a8dc2feecf6faa3a5aafa621eb5967f587152",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# You can force a path to jevents.h using the environment variables JEVENTS, or\n\n# JEVENTS_INCDIR and JEVENTS_LIBDIR\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# prepend !\n",
+        "Line" : 16,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# prepend !\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Try in three passes, otherwise cmake gets in the way...\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Yeah. CMake docs defines the ``PATH'' to a file as being its dirname. Very\n\n# helpful documentation there :-((\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "config/linux.cmake" : {
+      "ObjectId" : "23efc9d5b90e7e6df3451e457eaa3dc8274fefe1",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Tests for Linux-specific functionality and limitations\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/math-special.cmake" : {
+      "ObjectId" : "98e7122777329983ad375bb875aac503f0bde37d",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# I was a bit enthusiastic. These features are only in C++17 mainline,\n\n# and optionally in boost.math.\n\n#\n\n# http://en.cppreference.com/w/cpp/experimental/special_math\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/math.cmake" : {
+      "ObjectId" : "e012847b63b0385ba08186c884c143394bdab765",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# clog is c99, but freebsd-11.1 (released in 2017) does not have it.\n\n# https://www.freebsd.org/cgi/man.cgi?query=complex&manpath=FreeBSD+11.1-RELEASE\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/mingw.cmake" : {
+      "ObjectId" : "57da8e98752e2d3e748bba8e9b7590c139435fe4",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# check if we are under MinGW\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/mpi.cmake" : {
+      "ObjectId" : "92be7d903e51cbeaece057bccc53d6384b64e936",
+      "LastModified" : "2018-11-12T14:03:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################################\n\n# mpi\n\n# Don't use the FindMPI module, it's buggy.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# I can't make if($ENV{MPI}) evaluate to true as I want. In particular, I\n\n# want all of these yield true:\n\n# MPI=1 , MPI=on, MPI=yes, etc.\n\n# MPI=/opt/openmpi-1.7/\n\n# MPI=openmpi\n\n# The following excerpt from the doc seems to be just plain wrong:\n\n# #         if(variable)\n\n# #\n\n# #       True if the variable's value is not empty, 0, N, NO, OFF, FALSE,\n\n# #       NOTFOUND, or <variable>-NOTFOUND.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If MPI contains a /, then we assume it should be a path\n",
+        "Line" : 31,
+        "CharPositionInLine" : 12
+      },
+      "3" : {
+        "Text" : "# These are the standard names.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : "# otherwise we make the .<variant> binary names higher\n\n# priority than others This is for finding things such as\n\n# mpicc.mpich2 which get installed by the alternatives\n\n# mechanism on debian-like systems.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "# Well. Presently we're in fact *not* pushing the standard\n\n# names in the search list. Should we ?\n",
+        "Line" : 51,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# We're using this variable in the top-level substitution, so it needs\n\n# to escape its scope and go into the cache right now.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Run mpicc -v to detect the MPI implementation. We need this at least\n\n# to add some command-line arguments to MPI builds for the Intel MPI\n\n# implementation.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# perhaps it's openmpi, but openmpi won't tell on mere\n\n# mpicc -v...\n",
+        "Line" : 112,
+        "CharPositionInLine" : 16
+      },
+      "9" : {
+        "Text" : "# tl;dr leave_pinned is just plain broken\n\n# throughout most of the 1.7, 1.8. 1.9, and 1.10\n\n# series of OpenMPI. The work to fix this is at\n\n# https://github.com/open-mpi/ompi/pull/1495 ;\n\n# see the attached commit logs (namely, commits\n\n# 57035744 and 4b7cd1c0 in ompi-release carry the\n\n# fix. Those are open-mpi/ompi@7aa03d66 and\n\n# open-mpi/ompi@11e2d788 in the ompi repository).\n",
+        "Line" : 128,
+        "CharPositionInLine" : 24
+      },
+      "10" : {
+        "Text" : "# This is solely to fix\n\n# https://github.com/open-mpi/ompi/issues/299 but\n\n# the problem is broader than that.\n\n# set(MPI_C_COMPILER_CMDLINE_INSERTIONS \"--openmpi:linkall\")\n\n# set(MPI_CXX_COMPILER_CMDLINE_INSERTIONS \"--openmpi:linkall\")\n",
+        "Line" : 137,
+        "CharPositionInLine" : 24
+      },
+      "11" : {
+        "Text" : "# Now check for the MPI API version.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 12
+    },
+    "config/mpir.cmake" : {
+      "ObjectId" : "19c98b15cf51ed644e94aa7bd5023744dd90ff05",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# You can force a path to mpir.h using the environment variables MPIR, or\n\n# MPIR_INCDIR and MPIR_LIBDIR\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# First try overrides, really. We want cmake to shut up.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Yeah. CMake docs defines the ``PATH'' to a file as being its dirname. Very\n\n# helpful documentation there :-((\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# gmp.h matches too many times in this repository. We can't promise to\n\n# use a placeholder for either mpir.h or gmp.h. On the other hand, if\n\n# mpir was requested, installed in no-compatibility mode, while a\n\n# system-wide gmp exists, we would like mpir to be caught by #include\n\n# \"gmp.h\". To make sure this happens, we provide a wrapper which\n\n# #includes mpir.h.\n\n# (we could consider doing this only if no gmp.h exists in MPIR_INCDIR)\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#pointless, since we have workarounds anyway\n\n#message(STATUS \"Testing whether mpirxx is available\")\n\n#try_compile(HAVE_MPIRXX\n\n#    ${PROJECT_BINARY_DIR}/config\n\n#    ${PROJECT_SOURCE_DIR}/config/gmpxx-test.cpp\n\n#    CMAKE_FLAGS \"-DLINK_LIBRARIES:STRING=${gmp_libname};${gmp_libname}xx\")\n\n#\n\n#if(HAVE_MPIRXX)\n\n#file(WRITE ${PROJECT_BINARY_DIR}/gmpxx.h \"#include \\\"mpirxx.h\\\"\")\n\n#message(STATUS \"Testing whether mpirxx is available -- yes\")\n\n#else()\n\n#message(STATUS \"Testing whether mpirxx is available -- no\")\n\n#endif()\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "config/neon.cmake" : {
+      "ObjectId" : "2a749e9321b670e5516847c5a0bc1cbff2cfefee",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ARM NEON\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/openmp.cmake" : {
+      "ObjectId" : "4b131c71044e080c1b84c80976b8d8886bc43095",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Don't set unconditionally !\n\n# set (CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}\")\n\n# set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}\")\n",
+        "Line" : 8,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : "# OpenMP.cmake leaves crap around with clang.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 2
+    },
+    "config/pclmul.cmake" : {
+      "ObjectId" : "619de186c0d6f57a4c01711f649e645d36daf9bd",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# pclmul\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/perl.cmake" : {
+      "ObjectId" : "dcdb4d4764eb39cce18163ce2829adea71b1d7b0",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Look for an acceptable perl interpreter and test that importing the \n\n# module Digest::MD5 works. It should: it's been part of the standard\n\n# modules for ages. But some distros prefer to take it out.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test that the version is something sane\n\n# First get the version string from $^V\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Minumum acceptable perl version. Well, to be honest we have so minimal\n\n# requirements that probably any perl5 will do.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Check that the interpreter is one of the accepted versions\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Check that importing the Digest::MD5 module works.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "config/posix.cmake" : {
+      "ObjectId" : "740919d25f2d97f0e2bfd1d54cd8d1cee35c9636",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test for some POSIX headers and functions that may not exist on non-Unix systems\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The fact that CMake prints \"Looking for include files HAVE_RESOURCE_H\"\n\n# rather than \"Looking for include files sys/resource.h\" is a bug:\n\n# http://public.kitware.com/Bug/view.php?id=13484\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Unset the CMake variable that search_for_function() interprets\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "config/pthreads.cmake" : {
+      "ObjectId" : "236ba36589ebd580dbbd328bda7e7af808f06aec",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# OK. Assume that we have the bare minimum for using threads, falling\n\n# back on workalikes for barrier synchronization waits if needed\n\n# (like we used to do in the past, anyway). Thus we can already set\n\n# the proper flags.  We're using WITH_PTHREADS in the top-level\n\n# substitution, so it needs to escape its scope and go into the cache\n\n# right now.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "config/python.cmake" : {
+      "ObjectId" : "109156dd422498abe7659543a116fc6294758bed",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Look for an acceptable Python interpreter and test that importing the \n\n# module sqlite3 works\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Currently the cadofactor scripts use \"python3\" in the #! line, so we require\n\n# a binary of that name to exist\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test that the version is something sane\n\n# First get the version string from \"python3 --version\"\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Minumum acceptable Python version. Let's assume future versions are ok, too.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Check that the interpreter is one of the accepted versions\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Check that importing the sqlite3 module works. Some distros don't have the\n\n# sqlite3 librarby installed, and some omit the Python sqlite3 module... :-(\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "config/regex.cmake" : {
+      "ObjectId" : "b4c2e1892a5cd88d54198bd1d216175812969a44",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# We do require POSIX, and regex.h is provided by posix. Hence we should\n\n# not have to care. Now, regex.h is arguably a seldom used header. It\n\n# seems that some installs manage to botch it, and that does not prevent\n\n# release: the intel compiler suite, when python is also enabled,\n\n# exposes a failing regex.h file that takes priority over all others.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/rusage_thread.cmake" : {
+      "ObjectId" : "44fe5559b316d97a6e859afadb96012bbc9b89a0",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# RUSAGE_THREAD\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/search_for_function.cmake" : {
+      "ObjectId" : "92c06aec0fa9b30d5e150c0530a974644d204dfb",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This is a variation around CHECK_FUNCTION_EXISTS.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# search_for_function(FUNCTION VARIABLE [lib1 [lib2]])\n\n# - macro which checks if the function exists\n\n#  FUNCTION - the name of the function\n\n#  VARIABLE - variable to store the result\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The following variables may be set before calling this macro to\n\n# modify the way the check is run:\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#  CMAKE_REQUIRED_FLAGS = string of compile command line flags\n\n#  CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)\n\n#  CMAKE_REQUIRED_INCLUDES = list of include directories\n\n#  CMAKE_REQUIRED_LIBRARIES = list of libraries to link\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Additionally, extra libraries may be suggested, and will be tried in\n\n# order as supplementary arguments to CMAKE_REQUIRED_LIBRARIES -- note\n\n# that each library that has been found will be tried and kept for later\n\n# uses.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# If successful, VARIABLE is set to 1 and CMAKE_REQUIRED_LIBRARIES\n\n# contains the winning library set. CMAKE_REQUIRED_LIBRARIES_EXTRA\n\n# contains the libraries which had to be added to the initial library\n\n# set.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# message(STATUS \"Trying to compile with ${CMAKE_REQUIRED_DEFINITIONS} -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS} and also ${sff_ADD_LIBRARIES} ${sff_ADD_INCLUDES}\")\n",
+        "Line" : 50,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 7
+    },
+    "config/shared_ptr.cmake" : {
+      "ObjectId" : "158ed4dd1dca7223db4c8e645243552af0b6fd0a",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# In a sense, we're ready to believe that the boost version is almost\n\n# certainly fine, but we haven't checked whether it's always so. The\n\n# std:: version, however, is definitely not fine under certain\n\n# circumstances. See bug #21397\n",
+        "Line" : 70,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "config/sse2.cmake" : {
+      "ObjectId" : "10df1708461244acffe5737c5e9549691cb7cf4b",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# SSE-2\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/sse3.cmake" : {
+      "ObjectId" : "a64233d1543a16a45369c7952fbb5eb18bd3a339",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# SSE-3\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/sse41.cmake" : {
+      "ObjectId" : "8e25cc3b90bb5b22d6e3c36b8b007d1000379df2",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# SSE-4.1\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/ssse3.cmake" : {
+      "ObjectId" : "5b51e714cd86a861b9a5929e402ce48bfd1ac94b",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# SSSE-3\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/strlcpy.cmake" : {
+      "ObjectId" : "49951d35551dd095ef722e65ba49730387bf390b",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test whether strlcpy() and strlcat() exist\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/sync_fetch.cmake" : {
+      "ObjectId" : "647b4b81a89943b838fcbfb05d830117deead36b",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#Testing the existence of __sync_fetch functions\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/test-rand.cmake" : {
+      "ObjectId" : "8f3f97a7b0b985accd6ea6c2a9841ce5397abbae",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# test if rand() gives true alea\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# From \"man srand\" in openbsd:\n\n#\n\n#   Standards insist that this interface return deterministic results.\n\n#   Unsafe usage is very common, so OpenBSD changed the subsystem to return\n\n#   non-deterministic results by default.\n\n#\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "config/utilities.cmake" : {
+      "ObjectId" : "eb4622177320db4b4f00980ac0c68be54abbea4a",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Some cmake glue code.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "config/variables.cmake" : {
+      "ObjectId" : "4e4efc8348f40155e167e5f05fc1e8cedab381d6",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ------------------------- Begin Generic CMake Variable Logging ------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# /*\tC++ comment style not allowed\t*/\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# if you are building in-source, this is the same as CMAKE_SOURCE_DIR, otherwise\n\n# this is the top level directory of your build tree\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# if you are building in-source, this is the same as CMAKE_CURRENT_SOURCE_DIR, otherwise this\n\n# is the directory where the compiled or generated files from the current CMakeLists.txt will go to\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# this is the directory, from which cmake was started, i.e. the top level source directory\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# this is the directory where the currently processed CMakeLists.txt is located in\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# contains the full path to the top level directory of your build tree\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# contains the full path to the root of your project source directory,\n\n# i.e. to the nearest directory where CMakeLists.txt contains the PROJECT() command\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# set this variable to specify a common place where CMake should put all executable files\n\n# (instead of CMAKE_CURRENT_BINARY_DIR)\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# set this variable to specify a common place where CMake should put all libraries\n\n# (instead of CMAKE_CURRENT_BINARY_DIR)\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# tell CMake to search first in directories listed in CMAKE_MODULE_PATH\n\n# when you use FIND_PACKAGE() or INCLUDE()\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# this is the complete path of the cmake which runs currently (e.g. /usr/local/bin/cmake)\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# this is the CMake installation directory\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# this is the filename including the complete path of the file where this variable is used.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# this is linenumber where the variable is used\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# this is used when searching for include files e.g. using the FIND_PATH() command.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# this is used when searching for libraries e.g. using the FIND_LIBRARY() command.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# the complete system name, e.g. \"Linux-2.4.22\", \"FreeBSD-5.4-RELEASE\" or \"Windows 5.1\"\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# the short system name, e.g. \"Linux\", \"FreeBSD\" or \"Windows\"\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# only the version part of CMAKE_SYSTEM\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# the processor name (e.g. \"Intel(R) Pentium(R) M processor 2.00GHz\")\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# is TRUE on all UNIX-like OS's, including Apple OS X and CygWin\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# is TRUE on Windows, including CygWin\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# is TRUE on Apple OS X\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# is TRUE when using the MinGW compiler in Windows\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# is TRUE on Windows when using the CygWin version of cmake\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# is TRUE on Windows when using a Borland compiler\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Microsoft compiler\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# set this to true if you don't want to rebuild the object files if the rules have changed,\n\n# but not the actual source files or headers (e.g. if you changed the some compiler switches)\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# since CMake 2.1 the install rule depends on all, i.e. everything will be built before installing.\n\n# If you don't like this, set this one to true.\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# If set, runtime paths are not added when using shared libraries. Default it is set to OFF\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# set this to true if you are using makefiles and want to see the full compile and link\n\n# commands instead of only the shortened ones\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# this will cause CMake to not put in the rules that re-run CMake. This might be useful if\n\n# you want to use the generated build files on another machine.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# A simple way to get switches to the compiler is to use ADD_DEFINITIONS().\n\n# But there are also two variables exactly for this purpose:\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# the compiler flags for compiling C sources\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# the compiler flags for compiling C++ sources\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Choose the type of build.  Example: SET(CMAKE_BUILD_TYPE Debug)\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# if this is set to ON, then all libraries are built as shared libraries by default.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# the compiler used for C files\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# the compiler used for C++ files\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# if the compiler is a variant of gcc, this should be set to 1\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# if the compiler is a variant of g++, this should be set to 1\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# the tools for creating libraries\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# suffix for execuatable files, if any\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "#\n\n#MESSAGE( STATUS \": \" ${} )\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# ------------------------- End of Generic CMake Variable Logging ------------------\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 46
+    },
+    "dev_docs/README.cmake" : {
+      "ObjectId" : "cf2e32fef4d0e87f43abd0c3f6d9f47b2db753a3",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# vim: set ft=conf:\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "filter/CMakeLists.txt" : {
+      "ObjectId" : "8f6b50eadeacba7709af2217d17dd882d961de09",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# the utils library is already linked with -lgmp and -lm\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "filter/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "filter/out-of-core/Makefile" : {
+      "ObjectId" : "02aaeee17ccf00985e9e3f4dcc3d5dde3c1ecee8",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "gf2x/Makefile.am" : {
+      "ObjectId" : "b841724eeab7f664ebb3934df53b9d3c1b59db80",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#  This file is part of the gf2x library.\n\n#\n\n#  Copyright 2007, 2008, 2009, 2010, 2013, 2014, 2015\n\n#  Richard Brent, Pierrick Gaudry, Emmanuel Thome', Paul Zimmermann\n\n#\n\n#  This program is free software; you can redistribute it and/or modify it\n\n#  under the terms of either:\n\n#   - If the archive contains a file named toom-gpl.c (not a trivial\n\n#     placeholder), the GNU General Public License as published by the\n\n#     Free Software Foundation; either version 3 of the License, or (at\n\n#     your option) any later version.\n\n#   - If the archive contains a file named toom-gpl.c which is a trivial\n\n#     placeholder, the GNU Lesser General Public License as published by\n\n#     the Free Software Foundation; either version 2.1 of the License, or\n\n#     (at your option) any later version.\n\n#  \n\n#  This program is distributed in the hope that it will be useful, but WITHOUT\n\n#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n#  FITNESS FOR A PARTICULAR PURPOSE.  See the license text for more details.\n\n#  \n\n#  You should have received a copy of the GNU General Public License as\n\n#  well as the GNU Lesser General Public License along with this program;\n\n#  see the files COPYING and COPYING.LIB.  If not, write to the Free\n\n#  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA\n\n#  02110-1301, USA.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# default which gets shipped\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# All these are generated.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This is really a maintainer-only command. This can be used for creating\n\n# a tarball with an LGPL-licensed gf2x. Note that when this is done,\n\n# configure must be re-run !\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This one is simply taken from the generated Makefile. I agree it's a\n\n# bit ugly.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "gf2x/apps/Makefile.am" : {
+      "ObjectId" : "ca13f116d3e51ff4427679366fd7782ce7ecd890",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# put here the location of the NTL installation (for example /usr/local)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add -mbmi2 to use the pdep_u64 instruction\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "gf2x/fft/Makefile.am" : {
+      "ObjectId" : "05568474d6471ea38f782e28d94f6eaf96ced00c",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#  This file is part of the gf2x library.\n\n#\n\n#  Copyright 2007, 2008, 2009, 2010, 2013, 2014, 2015\n\n#  Richard Brent, Pierrick Gaudry, Emmanuel Thome', Paul Zimmermann\n\n#\n\n#  This program is free software; you can redistribute it and/or modify it\n\n#  under the terms of either:\n\n#   - If the archive contains a file named toom-gpl.c (not a trivial\n\n#     placeholder), the GNU General Public License as published by the\n\n#     Free Software Foundation; either version 3 of the License, or (at\n\n#     your option) any later version.\n\n#   - If the archive contains a file named toom-gpl.c which is a trivial\n\n#     placeholder, the GNU Lesser General Public License as published by\n\n#     the Free Software Foundation; either version 2.1 of the License, or\n\n#     (at your option) any later version.\n\n#  \n\n#  This program is distributed in the hope that it will be useful, but WITHOUT\n\n#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n#  FITNESS FOR A PARTICULAR PURPOSE.  See the license text for more details.\n\n#  \n\n#  You should have received a copy of the GNU General Public License as\n\n#  well as the GNU Lesser General Public License along with this program;\n\n#  see the files COPYING and COPYING.LIB.  If not, write to the Free\n\n#  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA\n\n#  02110-1301, USA.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We want to stress-test the libcantor_la implementation with the following\n\n# extra features (compile-time flags)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ternary fft is included by default in gf2x.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The rest is optional\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "gf2x/lowlevel/Makefile.am" : {
+      "ObjectId" : "09bf569d08632a24f40224ab8a6afe4a8d2e0178",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#  This file is part of the gf2x library.\n\n#\n\n#  Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013\n\n#  Richard Brent, Pierrick Gaudry, Emmanuel Thome', Paul Zimmermann\n\n#\n\n#  This program is free software; you can redistribute it and/or modify it\n\n#  under the terms of either:\n\n#   - If the archive contains a file named toom-gpl.c (not a trivial\n\n#     placeholder), the GNU General Public License as published by the\n\n#     Free Software Foundation; either version 3 of the License, or (at\n\n#     your option) any later version.\n\n#   - If the archive contains a file named toom-gpl.c which is a trivial\n\n#     placeholder, the GNU Lesser General Public License as published by\n\n#     the Free Software Foundation; either version 2.1 of the License, or\n\n#     (at your option) any later version.\n\n#  \n\n#  This program is distributed in the hope that it will be useful, but WITHOUT\n\n#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n#  FITNESS FOR A PARTICULAR PURPOSE.  See the license text for more details.\n\n#  \n\n#  You should have received a copy of the GNU General Public License as\n\n#  well as the GNU Lesser General Public License along with this program;\n\n#  see the files COPYING and COPYING.LIB.  If not, write to the Free\n\n#  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA\n\n#  02110-1301, USA.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This one is disabled by default, but we include it nevertheless\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "gf2x/src/Makefile.am" : {
+      "ObjectId" : "a40a29f6faad65d6ed0ce684a1d4771bdbd674cd",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#  This file is part of the gf2x library.\n\n#\n\n#  Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2013\n\n#  Richard Brent, Pierrick Gaudry, Emmanuel Thome', Paul Zimmermann\n\n#\n\n#  This program is free software; you can redistribute it and/or modify it\n\n#  under the terms of either:\n\n#   - If the archive contains a file named toom-gpl.c (not a trivial\n\n#     placeholder), the GNU General Public License as published by the\n\n#     Free Software Foundation; either version 3 of the License, or (at\n\n#     your option) any later version.\n\n#   - If the archive contains a file named toom-gpl.c which is a trivial\n\n#     placeholder, the GNU Lesser General Public License as published by\n\n#     the Free Software Foundation; either version 2.1 of the License, or\n\n#     (at your option) any later version.\n\n#  \n\n#  This program is distributed in the hope that it will be useful, but WITHOUT\n\n#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n#  FITNESS FOR A PARTICULAR PURPOSE.  See the license text for more details.\n\n#  \n\n#  You should have received a copy of the GNU General Public License as\n\n#  well as the GNU Lesser General Public License along with this program;\n\n#  see the files COPYING and COPYING.LIB.  If not, write to the Free\n\n#  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA\n\n#  02110-1301, USA.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This impacts the storage class of the functions in the inlines files.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# note that most automatic targets have their own CPPFLAGS, which\n\n# override this one.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We've got a lot of per-target cfiles here, but it's rather silly to\n\n# have automake produce separate .o files for the files which fo _not_\n\n# change in this regard. So we resort to having lots of silly libraries,\n\n# as a workaround.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# EXTRA_PROGRAMS=gen_bb_mul_code$(EXEEXT_FOR_BUILD)\n\n# gen_bb_mul_code_SOURCES=gen_bb_mul_code.c\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The stuff after \"-- begin generated code --\" following this comment\n\n# block is auto-generated by a perl script, from the input data provided\n\n# in this comment block in the ACTIVE COMMENTS below.\n\n#\n\n# After changing the set of functions to be tested below, use\n\n#  perl -i ./generate-test-list.pl Makefile.am\n\n# in order to regenerate the generated automake code (note that the\n\n# generation is done in place)\n\n#* test_sizes 1 2 3 4 5 6 7 8 9\n\n#* if GF2X_32BIT_SOURCES\n\n#*   test gen_mul1_w32k{2..6}\n\n#* endif\n\n#* if GF2X_64BIT_SOURCES\n\n#*   test gen_mul1_w64k{2..6}\n\n#* endif\n\n#*   test mul2k\n\n#*   test mul3k\n\n#*   test mul3k2\n\n#*   test mul4k\n\n#*   test mul5k_a\n\n#*   test mul5k_b\n\n#*   test mul5k_c\n\n#*   test mul5k_d\n\n#*   test mul6k_a\n\n#*   test mul6k_b\n\n#*   test mul6k_c\n\n#*   test mul7k\n\n#*   test mul8k\n\n#*   test mul9k\n\n#*   test mul9k2\n\n#* if GF2X_SSE2_AVAILABLE\n\n#*   if GF2X_64BIT_SOURCES\n\n#*     test mul2t\n\n#*     test mul2t2\n\n#*   endif\n\n#*   if GF2X_32BIT_SOURCES\n\n#*     test mul4t\n\n#*     test mul3t\n\n#*   endif\n\n#* endif\n\n#* if GF2X_PCLMUL_AVAILABLE\n\n#*   test mul1cl\n\n#*   test mul2cl\n\n# mul2cl2 uses psrldq, which is slightly different.\n\n#*   test mul2cl2\n\n#*   test mul3cl\n\n## (disabled)   test mul3k3\n\n#*   test mul4cl1\n\n#*   test mul4clk\n\n#*   test mul5clk_c\n\n#*   test mul5k3\n\n#*   test mul5clk2\n\n#*   test mul6clk2\n\n#*   test mul7cl\n\n#*   test mul7k3\n\n#*   test mul9k3\n\n#*   test mul9clk2\n\n#*   test mul9cl\n\n#* endif\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Autotools already use sed, so normally sed is not an extraordinary\n\n# difficult dependency.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# -- begin generated code --\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# -- end generated code --\n",
+        "Line" : 766,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "######################################################################\n",
+        "Line" : 768,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "######################################################################\n",
+        "Line" : 776,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "######################################################################\n",
+        "Line" : 782,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "######################################################################\n",
+        "Line" : 808,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "gf2x/tests/Makefile.am" : {
+      "ObjectId" : "967111e01a2c782fa125306a4b2d27b5f810ee68",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#  This file is part of the gf2x library.\n\n#\n\n#  Copyright 2007, 2008, 2009, 2010, 2013\n\n#  Richard Brent, Pierrick Gaudry, Emmanuel Thome', Paul Zimmermann\n\n#\n\n#  This program is free software; you can redistribute it and/or modify it\n\n#  under the terms of either:\n\n#   - If the archive contains a file named toom-gpl.c (not a trivial\n\n#     placeholder), the GNU General Public License as published by the\n\n#     Free Software Foundation; either version 3 of the License, or (at\n\n#     your option) any later version.\n\n#   - If the archive contains a file named toom-gpl.c which is a trivial\n\n#     placeholder, the GNU Lesser General Public License as published by\n\n#     the Free Software Foundation; either version 2.1 of the License, or\n\n#     (at your option) any later version.\n\n#  \n\n#  This program is distributed in the hope that it will be useful, but WITHOUT\n\n#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\n#  FITNESS FOR A PARTICULAR PURPOSE.  See the license text for more details.\n\n#  \n\n#  You should have received a copy of the GNU General Public License as\n\n#  well as the GNU Lesser General Public License along with this program;\n\n#  see the files COPYING and COPYING.LIB.  If not, write to the Free\n\n#  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA\n\n#  02110-1301, USA.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Be aware that ``make check'' from here cannot ensure that the\n\n# upper-level library is up-to-date.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "############# mul checks\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Do more tests only on 64-bit machines.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We'll run the *.mul tests above as:\n\n#       ./do-check-mul.sh -m check_10000_5437_64751d23.mul\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "############# fft interface checks\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# This must be exactly the same list of configurations as in fft/Makefile.am\n\n# the flags WITHOUT_CANTOR_TRUNCATION, CANTOR_GM, and CANTOR_GM_TRUNCATE\n\n# are irrelevant here, but we lazily copy the config block from\n\n# fft/Makefile.am\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# The list of tests is auto-generated with perl, and edited afterwards.\n\n# The edits are:\n\n#  - link check_ternaryns with libternary (since this is the same\n\n#  library, really).\n\n#  - add bench_ternary (introduced 7b9a9b45)\n\n# -- begin pattern --\n\n# check_PROGRAMS+=check_ARG0\n\n# check_ARG0_SOURCES=$(general_fftcheck_sources)\n\n# check_ARG0_CFLAGS=$(AM_CFLAGS) ARG1\n\n# check_ARG0_LDADD=$(top_builddir)/fft/libARG0.la\n\n# SYNTHESIZED_TESTS+=   \\\n#     check_ARG0_1000_1_c28bc2e3.fft            \\\n#     check_ARG0_1000_2_77db95cc.fft            \\\n#     check_ARG0_1000_3_6dc06b2f.fft\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# if WORDSIZE_IS_64\n\n# SYNTHESIZED_TESTS+=   \\\n#     check_ARG0_10000_1_2706ca53.fft           \\\n#     check_ARG0_10000_2_3f32a516.fft           \\\n#     check_ARG0_10000_3_fd7bba07.fft           \\\n#     check_ARG0_100000_1_fca70ced.fft          \\\n#     check_ARG0_100000_2_cd1293a5.fft          \\\n#     check_ARG0_100000_3_91e7d307.fft\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# endif\n\n# -- end pattern --\n\n# -- begin arguments --\n\n#  ternary $(TERNARY)\n\n#  ternaryns $(TERNARY_NS)\n\n# if ENABLE_FFT_INTERFACE\n\n#  cantor64 $(C64)\n\n#  cantor64nt $(C64nt)\n\n#  cantor64gm $(C64gm)\n\n#  cantor64gmt $(C64gmt)\n\n#  cantor128 $(C128)\n\n#  cantor128nt $(C128nt)\n\n#  cantor128gm $(C128gm)\n\n#  cantor128gmt $(C128gmt)\n\n# endif\n\n# -- end arguments --\n\n# -- begin generated code --\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# -- end generated code --\n",
+        "Line" : 324,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# We'll run the *.fft tests above as:\n\n#       ./do-check-fft.sh -m check_cantor64_100_1_00000000.fft\n",
+        "Line" : 327,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "linalg/CMakeLists.txt" : {
+      "ObjectId" : "93d9264be438f12e93e62893af79adeb5ace91f3",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# for worker-threads.[ch] and matops\n",
+        "Line" : 2,
+        "CharPositionInLine" : 25
+      },
+      "CommentCount" : 1
+    },
+    "linalg/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "linalg/bwc/CMakeLists.txt" : {
+      "ObjectId" : "3168ea12bb05a6897bda99ad3ec564a7f9592ab4",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# include_directories(mpfq)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use with care. Normally, binaries not needing MPI for real should not\n\n# emit MPI symbols since they don't do anything depending on this config\n\n# variable. However this mechanism is somewhat fragile.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "### bwc-specific configuration.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# unset(BUILD_DYNAMICALLY_LINKABLE_BWC)\n\n# Dynamically linkable bwc needs shared libs.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# having both shared and static is possible but messy. One needs two\n\n# add_library calls, and then I'm not sure whether\n\n# target_link_libraries picks the static or shared ones...\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# This is a default setting, but in reality we don't have much latitude\n\n# with it. We *have* to compile all the u64k* which are in the set of\n\n# sources, because of cross dependencies which are presently not\n\n# correctly guarded.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# In the fflas branch, this is used to plug in fflas.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# In case there's a user override, just make mention of the situation.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# The code in linalg/bwc/mpfq/ is 64-bit only, and relies on GNU\n\n# CC idioms. As it is not used in production yet, we don't want\n\n# to expose it on 32-bit platforms.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "### end bwc-specific configuration.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# These are just shorthands. Some targets also like to define compile and\n\n# link flags for their own, so it's really messy, because I don't know\n\n# how to have cmake *append* to the target's link flags.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Note that whenever a target (at least very certainly an executable)\n\n# links an mpi compiled library, it must be marked as mpi as well.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "### bwc_base\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Note that because the balancing code contains balancing_get_matrix_u32,\n\n# which calls the parallelizing_info layer, it's difficult to make them\n\n# two distinct libraries. So far it's the only stopper though.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "### end bwc_base\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "### bwc_mpfq\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# FIXME: does this have to be the same as BWC_GF2_ARITHMETIC_BACKENDS ?\n\n# Is there any reason for having two variables ??\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "### end bwc_mpfq\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "### link dependencies\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# matmul_common is a dependency of all the impl-specific libs. When doing\n\n# dynamic linking, there's no real need to make matmul_common *also*\n\n# shared, as embarking the code within the impl-specific .so is fine.\n\n# Unfortunately, we do want matmul_common to be compiled with -fPIC,\n\n# then. Which is easiest to trigger by making it a shared object.\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# message(STATUS \"Information: pz matmul backends are now disabled\")\n",
+        "Line" : 236,
+        "CharPositionInLine" : 8
+      },
+      "21" : {
+        "Text" : "### matmul_mf\n",
+        "Line" : 318,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "### end matmul_mf\n",
+        "Line" : 324,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# -Wl,-rpath,${CMAKE_CURRENT_BINARY_DIR}\")\n",
+        "Line" : 330,
+        "CharPositionInLine" : 8
+      },
+      "24" : {
+        "Text" : "# The macro bwc_program_extra is mostly used by the binaries specific to\n\n# the git tree.\n",
+        "Line" : 334,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Also lingen.\n",
+        "Line" : 360,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# This **MUST** match the #define in gf2x/Makefile.am\n",
+        "Line" : 368,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# for debug only\n\n# set_source_files_properties(lingen_binary.cpp COMPILE_FLAGS\n\n# \"-DCANTOR_BASE_FIELD_SIZE=128 -DLINGEN_BINARY_TRACE_MALLOCS=20\")\n",
+        "Line" : 373,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# It's ugly. FindOpenMP.cmake doesn't know how to differentiate between\n\n# required compile-time flags and required link-time flags...\n",
+        "Line" : 380,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# This is a convenience library which is used **ONLY** by one binary,\n\n# so there's absolutely no point in making it shared.\n",
+        "Line" : 392,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "# lingen-bigpolymat.c # deleted 20150826\n",
+        "Line" : 413,
+        "CharPositionInLine" : 8
+      },
+      "31" : {
+        "Text" : "# make plingen_pz a default target, but not the others.\n",
+        "Line" : 418,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# we also need link flags, and config/openmp.cmake won't provide them\n\n# separately.\n",
+        "Line" : 431,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# set_source_files_properties(plingen.cpp PROPERTIES COMPILE_FLAGS \"${OpenMP_CXX_FLAGS}\")\n",
+        "Line" : 434,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "# Those are used only for tests.\n",
+        "Line" : 453,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 35
+    },
+    "linalg/bwc/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "misc/CMakeLists.txt" : {
+      "ObjectId" : "6cfaac5429fc2e1a68ce18b1fdb8a96237c1f75e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "nfs-hd/CMakeLists.txt" : {
+      "ObjectId" : "03592d151ffa2e77e60c0feb7dad1c6057c09313",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Makefb\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Polynomial selection\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#set (POL_SRC polyselect-hd.c polynomials.c sieving_bound.c utils_mpz.c)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#add_executable(polyselect-hd ${POL_SRC})\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#target_link_libraries(polyselect-hd utils polyselect_common)\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#set_property(TARGET polyselect-hd PROPERTY COMPILE_DEFINITIONS EEA_BOUND)\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Parameters selection\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#set (PAR_SRC paraselect-hd.c parameters.c polynomials.c sieving_bound.c utils_mpz.c)\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#add_executable(paraselect-hd ${PAR_SRC})\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#target_link_libraries(paraselect-hd utils polyselect_common)\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Alpha 3d\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Murphy-E\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Test LLL int64\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "nfs-hd/check_relations/Makefile" : {
+      "ObjectId" : "41b7ab89127159fd885f3abeab32520703fb1025",
+      "LastModified" : "2018-11-12T14:03:41Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "numbertheory/CMakeLists.txt" : {
+      "ObjectId" : "c5bcf56a7efb172cb9be65ae19c45cce5fa3e388",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "numbertheory/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "polyselect/CMakeLists.txt" : {
+      "ObjectId" : "e5e034274b38e5e4cc98decf68e11e5a01dc2799",
+      "LastModified" : "2018-11-12T14:03:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# defining a library avoids compiling the same oject file once for each\n\n# binary. The choice of setting it as a shared library is completely\n\n# arbitrary here. A static would do as well.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Root OPTimization sources.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# the utils library already includes -lgmp and -lm\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# dlpolyselect\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "polyselect/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "scripts/cadofactor/CMakeLists.txt" : {
+      "ObjectId" : "13e41211a689b61e5591b80ec7bd0b1889ca49b7",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# install(FILES signalhandler.py DESTINATION ${LIBSUFFIX}/scripts/cadofactor)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# install(FILES verify.py DESTINATION ${LIBSUFFIX}/scripts/cadofactor)\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "sieve/CMakeLists.txt" : {
+      "ObjectId" : "244c1f9b60ca183ddb70a77cb18db9d05df057e0",
+      "LastModified" : "2018-11-14T08:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Some compilation defaults specific to this directory\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The following is needed for some SSE stuff\n\n# set (CMAKE_C_FLAGS   \"-flax-vector-conversions ${CMAKE_C_FLAGS}\")\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#include_directories (${CMAKE_CURRENT_BINARY_DIR})\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ugly (copied from linalg/bwc/CMakeLists.txt...)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# set (las_libraries trialdiv facul utils ${pthread_libs})\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "sieve/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "sieve/ecm/CMakeLists.txt" : {
+      "ObjectId" : "c8b4365c809c84f2cb712978230b9a10668cfd3f",
+      "LastModified" : "2018-11-14T08:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# All executables are somewhat optional ; testbench is the one which is\n\n# used for tests.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Would compile, but implies a dependency on gmp-ecm, or so it seems.\n\n# add_executable(find_primes_hit find_primes_hit.c)\n\n# target_link_libraries(find_primes_hit utils m)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# macro(variant_facul base typewidth)\n\n# string(TOUPPER ${typewidth} TW)\n\n#     SET(src ${CMAKE_CURRENT_SOURCE_DIR}/${base}.c)\n\n#     SET(dst ${CMAKE_CURRENT_BINARY_DIR}/${base}_${typewidth}.c)\n\n# add_custom_command(OUTPUT  ${dst}\n\n#     COMMAND ln -s ${src} ${dst}\n\n#     DEPENDS  ${src})\n\n# set_source_files_properties(${dst} PROPERTIES COMPILE_FLAGS -DMODREDC${TW})\n\n# endmacro()\n\n# \n\n# variant_facul(pm1 15ul)\n\n# variant_facul(pp1 15ul)\n\n# variant_facul(ecm 15ul)\n\n# variant_facul(facul_doit 15ul)\n\n# variant_facul(pm1 ul)\n\n# variant_facul(pp1 ul)\n\n# variant_facul(ecm ul)\n\n# variant_facul(facul_doit ul)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Useful for debugging: disables optimization for facul() and facul_doit_*()\n\n# which makes tracing program flow easier, but does not slow down the\n\n# arithmetic in pm1_*(), pp1_*(), ecm_*()\n\n# set_property(SOURCE facul.c PROPERTY COMPILE_FLAGS \"-O0 -g\")\n\n# set_property(SOURCE facul_doit_ul.c PROPERTY COMPILE_FLAGS \"-O0 -g\")\n\n# set_property(SOURCE facul_doit_15ul.c PROPERTY COMPILE_FLAGS \"-O0 -g\")\n\n# set_property(SOURCE facul_doit_2ul2.c PROPERTY COMPILE_FLAGS \"-O0 -g\")\n\n# set_property(SOURCE facul_doit_mpz.c PROPERTY COMPILE_FLAGS \"-O0 -g\")\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We now have wrappers, so it's very easy from the cmake perspective.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "sieve/ecm/Makefile" : {
+      "ObjectId" : "6e78076d7f0355507664f20df46d0b35c62b03e1",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "sieve/strategies/CMakeLists.txt" : {
+      "ObjectId" : "95d5b386c76068ec8d7f4a0c37f1e724e2cfdb8d",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "sieve/strategies/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "sqrt/CMakeLists.txt" : {
+      "ObjectId" : "312679de81d7e57616d8fbd56fc53e315d91f31f",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# crtalgsqrt requires both threads and mpi.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "sqrt/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/CMakeLists.txt" : {
+      "ObjectId" : "325c51d537a170d98938404d713c7490749833a2",
+      "LastModified" : "2018-11-14T08:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cmake understands tests and targets as being two different things. It\n\n# is perfectly common to have both a target and a test having the same\n\n# name X. Yet testing X will not trigger building X, and that is\n\n# admittedly unfortunate.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# INTERNALS:\n\n#\n\n# we define several macros for dealing with this in a better way.\n\n#\n\n#  For each test X, we define another test builddep_X.\n\n#\n\n#  The test builddep_X which only takes the necessary steps for building\n\n#  the dependencies of the test X. Those dependencies form a target\n\n#  named X_dependencies.\n\n#\n\n#  The target X_dependencies may perhaps include a target named X.\n\n#\n\n#  The test X is made to depend on builddep_X\n\n#\n\n#  The target all_test_dependencies is made to depend on X_dependencies\n\n#\n\n#  Tests may have other dependency relationships, which should be set\n\n#  in a manner which is compatible with our dependency X <- builddep_X.\n\n#  This is taken care of by update_test_build_depends\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# WHICH CMAKE COMMANDS SHOULD BE USED ?\n\n#\n\n# only the following:\n\n#\n\n#       cado_define_test()\n\n#       cado_divert_test()\n\n#\n\n# those are documented below within their source definitions.\n\n#\n\n# Note that for test X, there are some use cases where it is nice to know\n\n# about X_dependencies (for adding extra dependencies late), or the\n\n# targets X (for setting compile time definitions).\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This macro is appropriate for a test which consists in running a\n\n# binary. The different ways to call this macro are:\n\n# \n\n# cado_define_test(SOURCES foo.c bar.c\n\n#                        [TEST_NAME x]\n\n#                        [LIBRARIES x y z]\n\n#                        [TARGET_DEPENDENCIES x y z]\n\n#                        [TEST_DEPENDENCIES x y z]\n\n#                        [ARGUMENTS x y z]\n\n#                        [NO_DEFAULT_RUN])\n\n# cado_define_test(foo.c bar.c\n\n#                        [TEST_NAME x]\n\n#                        [LIBRARIES x y z]\n\n#                        [TARGET_DEPENDENCIES x y z]\n\n#                        [TEST_DEPENDENCIES x y z]\n\n#                        [ARGUMENTS x y z]\n\n#                        [NO_DEFAULT_RUN])\n\n# cado_define_test(foo\n\n#                        SOURCES foo.c bar.c\n\n#                        [LIBRARIES x y z]\n\n#                        [TARGET_DEPENDENCIES x y z]\n\n#                        [TEST_DEPENDENCIES x y z]\n\n#                        [ARGUMENTS x y z]\n\n#                        [NO_DEFAULT_RUN])\n\n# \n\n# cado_define_test(foo\n\n#                        SCRIPT test.sh\n\n#                        [WORKING_DIRECTORY x]\n\n#                        [TARGET_DEPENDENCIES x y z]\n\n#                        [TEST_DEPENDENCIES x y z]\n\n#                        [ARGUMENTS x y z]\n\n#                        [NO_DEFAULT_RUN])\n\n# \n\n# we define the \"implicit\" parameters as those occuring before any\n\n# tag of the form [SOURCES|LIBRARIES|...|...] (e.g foo.c bar.c in the\n\n# second example above).\n\n#\n\n# The test is named in either of the following ways:\n\n#   - after the TEST_NAME parameter if one is given,\n\n#   - as the implicit parameter if there is an explicit SOURCES or\n\n#     SCRIPT parameter and implicit parameters (there must not be\n\n#     more than one, then).\n\n#   - after the basename (with extension stripped) of the first source\n\n#     file or the SCRIPT parameter otherwise.\n\n#\n\n# The source files to be compiled are those defined by the SOURCES\n\n# parameter, or the implicit parameters otherwise.\n\n#\n\n# If the test consists in running a script (or any arbitrary external\n\n# command, really), then an explicit SCRIPT parameter must be\n\n# present, and explicit or implicit SOURCES parameters are forbidden.\n\n# If the SCRIPT parameter consists of more than one parameter and no\n\n# explicit ARGUMENTS parameter list is given, then the tail of the\n\n# SCRIPT parameter list is taken as an argument list.\n\n#\n\n# the PROGRAM tag has the exact same meaning as SCRIPT (handling is\n\n# identical)\n\n#\n\n# LIBRARIES, TARGET_DEPENDENCIES, TEST_DEPENDENCIES should be self\n\n# explanatory. LIBRARIES is incompatible with SCRIPT. Note that\n\n# TARGET_DEPENDENCIES is mostly useful for scripts (it ensures that\n\n# the targets have been built before running the script), but if\n\n# instead source files are given, the built executable is made to\n\n# depend on TARGET_DEPENDENCIES.\n\n#\n\n# ARGUMENTS defines which arguments are to be passed to the binary.\n\n# Optional.\n\n#\n\n# NO_DEFAULT_RUN indicates that no test is really defined, only a\n\n# baseline for further calls to cado_divert_test. (note that despite\n\n# the fact that no test is created in cmake's mind, we do need a test\n\n# name for further reference in cado_divert_test).\n\n#\n\n# Giving ARGUMENTS together with NO_DEFAULT_RUN just specifies a\n\n# common set of arguments to be passed to all diversions, provided\n\n# these are defined with APPEND_ARGUMENTS\n",
+        "Line" : 42,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Some additional features have been added after this macro was\n\n# documented. We have ENVIRONMENT, PRECOMMAND, as well as their\n\n# APPEND_ friends.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# special, because it's a flag, really\n",
+        "Line" : 159,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# do some checking.\n\n#message(STATUS \"IMPLICIT is ${IMPLICIT}\")\n\n#message(STATUS \"TEST_DEPENDENCIES is ${TEST_DEPENDENCIES}\")\n\n#message(STATUS \"TARGET_DEPENDENCIES is ${TARGET_DEPENDENCIES}\")\n\n#message(STATUS \"LIBRARIES is ${LIBRARIES}\")\n\n#message(STATUS \"SOURCES is ${SOURCES}\")\n\n#message(STATUS \"SCRIPT is ${SCRIPT}\")\n\n#message(STATUS \"ARGUMENTS is ${ARGUMENTS}\")\n\n#message(STATUS \"ENVIRONMENT is ${ENVIRONMENT}\")\n\n#message(STATUS \"PRECOMMAND is ${PRECOMMAND}\")\n\n#message(STATUS \"TEST_NAME is ${TEST_NAME}\")\n\n#message(STATUS \"WORKING_DIRECTORY is ${WORKING_DIRECTORY}\")\n\n#message(STATUS \"NO_DEFAULT_RUN is ${NO_DEFAULT_RUN}\")\n",
+        "Line" : 165,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# direct the implicit parameters somewhere\n",
+        "Line" : 189,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# from then on we know that SOURCES and SCRIPT are empty\n",
+        "Line" : 196,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Then use the tail as an argument list\n",
+        "Line" : 204,
+        "CharPositionInLine" : 12
+      },
+      "10" : {
+        "Text" : "# # message(STATUS \"trying to find a test name\")\n\n# # message(STATUS \"SOURCES = ${SOURCES}\")\n\n# # message(STATUS \"SCRIPT = ${SCRIPT}\")\n",
+        "Line" : 235,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# define the test name as the base name without extension of the\n\n# first source file.\n",
+        "Line" : 239,
+        "CharPositionInLine" : 12
+      },
+      "12" : {
+        "Text" : "# define the test name as the base name without extension of the\n\n# first source file.\n",
+        "Line" : 244,
+        "CharPositionInLine" : 12
+      },
+      "13" : {
+        "Text" : "# If we have a binary to build, then the meaning of\n\n# TARGET_DEPENDENCIES is most probably that we want the binary target\n\n# itself to depend on them. But bear in mind that the main use for\n\n# TARGET_DEPENDENCIES is probably for scripts anyway.\n",
+        "Line" : 257,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# even script tests may define target dependencies, even though it's\n\n# probably of little use.\n",
+        "Line" : 274,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# save for use by diverted tests\n",
+        "Line" : 294,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# seems that we need set_tests_properties to take only a\n\n# ;-separated list here.\n",
+        "Line" : 311,
+        "CharPositionInLine" : 12
+      },
+      "17" : {
+        "Text" : "# There is a special case. Even a NO_DEFAULT_RUN test may have\n\n# test dependencies, because that's a handy way to have all\n\n# inherited tests depend on these.\n",
+        "Line" : 318,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# This macro is appropriate when a test defined by\n\n# cado_define_test (possibly with NO_DEFAULT_RUN) needs to be\n\n# called several times with various parameter sets.\n\n# The different ways to call this macro are:\n\n# \n\n# optional arguments:\n\n#           TEST_DEPENDENCIES\n\n#           TARGET_DEPENDENCIES\n\n#           ARGUMENTS\n\n#           APPEND_ARGUMENTS\n\n#           NO_DEFAULT_RUN (useful if we want to divert further !)\n\n#\n\n# example use:\n\n#\n\n#     cado_define_test(TEST_NAME foo .....)\n\n#\n\n#     cado_divert_test(foo 1 --fast)\n\n#     cado_divert_test(foo 2 --thorough)\n\n#     cado_divert_test(foo extra --fallback TEST_DEPENDENCIES test3)\n\n#     cado_divert_test(foo extra TEST_DEPENDENCIES test3\n\n#                                ARGUMENTS --fallback)\n\n#\n\n# this defines tests foo_1, foo_2, and foo_extra, with the specific\n\n# arguments given. The two last syntaxes are equivalent.\n\n#\n\n# NOTE that if the base test name does indeed correspond to a test\n\n# (that is, it was not defined with NO_DEFAULT_RUN), then the\n\n# diverted test is made to depend on this base test.\n",
+        "Line" : 326,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# special, because it's a flag, really\n",
+        "Line" : 383,
+        "CharPositionInLine" : 12
+      },
+      "20" : {
+        "Text" : "# do some checking.\n",
+        "Line" : 389,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# we want to define builddep_X unconditionally, depending at least on\n\n# the dependencies of the base test.\n",
+        "Line" : 425,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# prepare a ;-separated list for set_tests_properties\n\n# note that we do not need to make the test depend on\n\n# builddep_${TEST_BASE}, since we have made ${TEST_NAME}_dependencies\n\n# depend on ${TEST_BASE}_dependencies. It's in fact relieving, given\n\n# that builddep_${TEST_BASE} does not necessarily exist.\n",
+        "Line" : 446,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# ok, TEST_BASE does not exist, but we've still built a list\n\n# of its test dependencies that we want to obey.\n",
+        "Line" : 455,
+        "CharPositionInLine" : 12
+      },
+      "24" : {
+        "Text" : "# see linalg/bwc/CMakeLists.txt for an explanation\n",
+        "Line" : 487,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# The following case was hitting the bug #21707\n",
+        "Line" : 499,
+        "CharPositionInLine" : 8
+      },
+      "26" : {
+        "Text" : "# we used to test separaterly with and without a user-supplied\n\n# workdir. We no longer do that, given that we rely first and\n\n# foremost on the shell wrapper to be a better safety net and catch\n\n# SIGHUP yet still clean up after itself. And we want to do that in\n\n# all cases, and that means that we're passing a user-supplied\n\n# workdir.\n",
+        "Line" : 525,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "#        this test is probably not very useful, given that the other\n\n#        (quicker) tests cover everything covered by this test.\n\n#        cado_define_test(full_p59\n\n#            SCRIPT\n\n#               ${CADO_NFS_SOURCE_DIR}/cado-nfs.py\n\n#               43341748620473677010074177283795146221310971425909898235183\n\n#               -dlp -t 2 -s auto -dlpnokeep\n\n#                ${CADO_NFS_SOURCE_DIR}\n\n#            TARGET_DEPENDENCIES full_c30_dependencies debug_renumber\n\n#            plingen_pz sm reconstructlog-dl merge-dl replay-dl badideals\n\n#        )\n",
+        "Line" : 560,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# commented the following since nfs-hd is not in \"make dist\"\n\n# add_subdirectory (nfs-hd)\n",
+        "Line" : 622,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 29
+    },
+    "tests/filter/CMakeLists.txt" : {
+      "ObjectId" : "f728772770e307c6cd6613b13230b10519580f46",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/filter/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/gf2x/CMakeLists.txt" : {
+      "ObjectId" : "ce0be4d57f589c5344d307a6af70d59dc93e2034",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# note that cmake sees gf2x as an external library, so adding gf2x with\n\n# target_link_libraries cannot have the effect that the target depends on\n\n# building gf2x. That dependency (on gf2x-build, in fact) has to be added\n\n# by hand.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This **MUST** match the #define in gf2x/Makefile.am\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tests/linalg/CMakeLists.txt" : {
+      "ObjectId" : "e6d1fe0418c9c702f7760a34e91d4bee2cf710d3",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/linalg/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/linalg/bwc/CMakeLists.txt" : {
+      "ObjectId" : "9c951933f71207679abd1b98226d5bb38e683940",
+      "LastModified" : "2018-11-14T08:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# NOTE: most GF(p) checks here depend on plingen_pz ; this is artifical,\n\n# and caused by the fact that bwc.pl is for the moment unable to call\n\n# anything else than plingen_pz\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# All this is 64-bit only !\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# the sha1sums here are from the time were we were transposing the\n\n# output. Now we no longer do that.\n\n# add_lingen_binary_test(test0 1dea0d8879d125aa280e26b8573f932f6bccea75,d0e758e619c8e81b3e28bbd4fe69c32826e9a4bd 64 64 160 1 lingen_threshold=10)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# todo presumably, on 32 bit, we get something different for the sha1sum.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The test below fails on 32bit. This should be investigated.\n\n# add_lingen_binary_test(test1 30b90451fb828f08caa160f96c585c4b1c0951a8 64 64 200 1 lingen_threshold=10)\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Only try to enable magma if CHECKS_EXPENSIVE is set.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "#        add_bwc_test(modp-inhomogeneous-minimal-2rhs-mn2 bwc-ptrace.sh\n\n#            prime=1009 random_matrix_size=50 nrhs=2 m=2 n=2 seed=1 ${mextra})\n\n#        add_dependencies(modp-inhomogeneous-minimal-2rhs-mn2_dependencies\n\n#        plingen_pz plingen_${gfp_layer})\n",
+        "Line" : 118,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "# Also add some plingen tests if it so occurs that the current\n\n# backend can process them\n\n# Each test has the following arguments\n\n# plingen test name\n\n# reference sha1 sum for generator\n\n# m\n\n# n\n\n# length of sequence to compute\n\n# p\n\n# seed for random generation (entries are (2^k*(seed/1000) mod q) + (3^k*(seed%1000) mod q) mod p, with q=2^20-3).\n\n# arguments to be passed to plingen (including mpi arguments)\n",
+        "Line" : 125,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# we create a phony first test, so as to limit the risk of having\n\n# several tests trigger the same build dependency on\n\n# plingen_${gfp_layer} at the same time. Of course, the bare test\n\n# here does not have the require arguments, so it will fail (we avoid\n\n# NO_DEFAULT_RUN in this case, precisely because we want a phony\n\n# test).\n",
+        "Line" : 137,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Note that the thr argument here is used only in MPI\n\n# context, and ignored otherwise. In MPI context, this triggers the\n\n# mpi portions of the code (actually the test gets run twice, once\n\n# with the threads, once without. Both have to succeed, of course).\n",
+        "Line" : 148,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Note: because of stop_at_step here, we're not verifying what we're\n\n# doing, which is a bit stupid.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# temporarily disabling this test, until I get to re-enabling the\n\n# feature.\n\n# add_bwc_test(mod2-interleaving bwc-trace.sh random_matrix_size=800 m=128 n=128\n\n#     interleaving=1 seed=1 thr=2)\n\n# add_dependencies(test-bwc-mod2-oddthr_dependencies mf_scan)\n",
+        "Line" : 220,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# some tests below use the bwc include files.\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# mingw has antique bash (3.1) with different regexp syntax, and having\n\n# the script below work with both isn't a very funny perspective.\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Then this macro will expand to nothing, that's life.\n",
+        "Line" : 319,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Tests which use bwc_base will need nwc_config.h\n",
+        "Line" : 366,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# yes, the mpi= and thr= arguments are given twice here. This is\n\n# intentional, because our only logic for discovering the scheduling\n\n# environment is within bwc.pl, so we have to use it.\n",
+        "Line" : 374,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 17
+    },
+    "tests/linalg/bwc/Makefile" : {
+      "ObjectId" : "00b349c276bff1b38f6f5d98ea8a8a27ba07b314",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/linalg/bwc/flint-fft/CMakeLists.txt" : {
+      "ObjectId" : "f5c9d9de99e0906486605b41b04396bb3cb8ba61",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The flint-fft library is only used if GF(p) lowlevel arithmetic is\n\n# enabled, and we never worked on that in the 32-bit context. So we need\n\n# to disable the flint-fft-only checks if BWC_GFP_ARITHMETIC_BACKENDS is\n\n# empty.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/linalg/bwc/mpfq/CMakeLists.txt" : {
+      "ObjectId" : "43eec6539c0612d55a2ba932daa319ab3a7fbdf7",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# because the source files we compile here are generated, we need to tell\n\n# cmake that the current source dir does still serve a purpose...\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# mpfq_test_fixmp is not seeded as of now, because it uses random2, and\n\n# there is no mpn_rrandomb as of gmp-6.0.0\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tests/misc/CMakeLists.txt" : {
+      "ObjectId" : "15b9511c66e5af17b9934ffd4d0682c0bc486abe",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/misc/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/nfs-hd/CMakeLists.txt" : {
+      "ObjectId" : "2b8749c00bd8db5c4f09980c078a310e20b8ccde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# -----\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# -----\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# -----\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# -----\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# -----\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# -----\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# -----\n\n#cado_define_test(test_resultant.c ${CADO_NFS_SOURCE_DIR}/nfs-hd/sieving_bound.c\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#${CADO_NFS_SOURCE_DIR}/nfs-hd/int64_vector.c\n\n#${CADO_NFS_SOURCE_DIR}/nfs-hd/mat_int64.c\n\n#${CADO_NFS_SOURCE_DIR}/nfs-hd/int64_poly.c\n\n#${CADO_NFS_SOURCE_DIR}/nfs-hd/mat_Z.c\n\n#${CADO_NFS_SOURCE_DIR}/utils/double_poly.c LIBRARIES utils)\n",
+        "Line" : 38,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 8
+    },
+    "tests/numbertheory/CMakeLists.txt" : {
+      "ObjectId" : "cd90d68d38aaf453de01507e079d070d671f15a4",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/numbertheory/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/polyselect/CMakeLists.txt" : {
+      "ObjectId" : "7bcbc44a955a1ef2ad6781b9d2306fa95b2aa0f8",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build polyselect before running check\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in the following example, there are 6 roots for q=241, but only 0 or 2 roots\n\n# for the other small primes\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## we disable the following test since twocubics is not in \"make dist\"\n\n## test also the twocubics binary\n\n# cado_define_test(twocubics PROGRAM\n\n#    ${CADO_NFS_BINARY_DIR}/polyselect/twocubics -n 999073468111577057576445816581 -P 500 -incr 30 -admax 1000\n\n#    TARGET_DEPENDENCIES twocubics)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "tests/polyselect/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/scripts/CMakeLists.txt" : {
+      "ObjectId" : "43383f42b48fdb322ddb7979b52f0fcce7bc14a7",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/scripts/cadofactor/CMakeLists.txt" : {
+      "ObjectId" : "f21cc69e99ef5973f728a36a7f97a343332c1c9e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# doctests in cadocommand don't seem to work.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Get filename without extension, e.g., cadoparams\n",
+        "Line" : 14,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Add doctest of Python sources, e.g., doctest cadoparams.py under test\n\n# name cadoparams\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "tests/sieve/CMakeLists.txt" : {
+      "ObjectId" : "ba244428694d2e528f519f830a5e6c2d7640c899",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMake 2.8.4 and newer has a WORKING_DIRECTORY property, but we may want\n\n# to stay compatible with older versions\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build makefb and las before running check\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Get paths to the makefb and las binaries and store in variables\n\n# makefb_path and las_path, resp.\n\n# for cmake pre-3.0, we did:\n\n# get_property(makefb_path TARGET makefb PROPERTY LOCATION)\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# now it seems to be forbidden with cmake 3.0+ (see cmake --help-policy\n\n# CMP0026). The following is probably safe enough.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# the only needed thing is test_init_norms at the end of the file. The\n\n# excerpt commented out below gives material to do a more thorough test.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# set(c95_21684_roots0 ${CMAKE_CURRENT_BINARY_DIR}/c95_21684.roots0.gz)\n\n# set(c95_21684_roots1 ${CMAKE_CURRENT_BINARY_DIR}/c95_21684.roots1.gz)\n\n# \n\n# cado_define_test(c95_21684_makefb0\n\n#         PROGRAM\n\n#             ${makefb_path}\n\n#             -poly ${c95_21684_poly}\n\n#             -lim 600000\n\n#             -maxbits 13\n\n#             -out ${c95_21684_roots0}\n\n#             -side 0\n\n#         TARGET_DEPENDENCIES makefb\n\n#         )\n\n# cado_define_test(c95_21684_makefb1\n\n#         PROGRAM\n\n#             ${makefb_path}\n\n#             -poly ${c95_21684_poly}\n\n#             -lim 850000\n\n#             -maxbits 13\n\n#             -out ${c95_21684_roots1}\n\n#             -side 1\n\n#         TARGET_DEPENDENCIES makefb\n\n#         )\n\n# \n\n# cado_define_test(c95_21684_sieve\n\n#         ENVIRONMENT\n\n#             I=13 poly=${c95_21684_poly} \n\n#             lim0=600000 lim1=850000 lpb0=24 lpb1=25 mfb0=48 mfb1=50 ncurves0=11\n\n#             ncurves1=14 \n\n#             fb0=${c95_21684_roots0}\n\n#             fb1=${c95_21684_roots1}\n\n#             sqside=1\n\n#             q0=310049 rho=270571\n\n#             CHECKSUM_FILE=\n\n#             LAS_BINARY=${las_path}\n\n#             \"REGEX=reports\"\n\n#         SCRIPT\n\n#             \"${CADO_NFS_SOURCE_DIR}/tests/provide-wdir.sh\" --env WORKDIR\n\n#             ${CMAKE_CURRENT_SOURCE_DIR}/sievetest.sh\n\n#             -v -v --adjust-strategy 0\n\n#         TARGET_DEPENDENCIES las\n\n#         TEST_DEPENDENCIES c95_21684_makefb0 c95_21684_makefb1\n\n#         )\n\n# \n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Before running F9_sievetest, remove the file with the captured checksums\n\n# We have to make this a \"test\" so that ctest runs it, even though it does\n\n# not actually test anything\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# go wild for the under-allocation. If this is valgrind-ok, then\n\n# surely #21513 is fixed. While we're at it, check all kind of possible\n\n# under-allocation recovers (the base test below serves only as a stem).\n\n#\n\n# Note that among the things we want to guard against, we have leaks:\n\n# exception-unsafe code during the exception windup definitely causes\n\n# leaks. So if those tests complain with valgrind, there's probably some\n\n# of those.\n\n#\n\n# Note that bug #21515 had a specific expensive test, which is now covered\n\n# by the _1long test below.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# working with the _2short overruns is a bit subtle. Because if we go\n\n# wild with these, chances are that we will be *VERY* likely to write\n\n# past the blank zone of 1MB, and then right into the red zone.\n\n# Especially because the case below has only one level-2 bucket anyway\n\n# (it is so contrived). So we are quite likely to get a plain, unpolite,\n\n# Segmentation Fault. The check below has been tuned so that the overrun\n\n# mechanism is indeed triggered, and so should run successfully.\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# We make these depend on sievetest, for checking the checksum file.\n\n# Since sievetest depends on makefb, we don't have to specify it\n\n# again.\n",
+        "Line" : 267,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Do a diversion for a single special-q. This is taking the same data set\n\n# as above, but with the real las binary.\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# force (q0, rho) to be used.\n",
+        "Line" : 278,
+        "CharPositionInLine" : 39
+      },
+      "12" : {
+        "Text" : "# The TRACE_K test does only a single special-q.\n\n# We redefine the test completely, since the binary changes.\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# we need to replace the full argument list, because the binary\n\n# is not the same.\n",
+        "Line" : 289,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# Try a too-large lambda value. We could divert on any test we like, but\n\n# it's mildly quicker to do it on the short test.\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Try sieving I (see bug 18814)\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Try the todo-list mode of las\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The descent also goes with the typical sievetest.sh\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# The underlying script changes, here. We have to do something slightly\n\n# different.\n",
+        "Line" : 351,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Try fake relation generation\n",
+        "Line" : 370,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Try with default TRIALDIV_MAXLEN, whatever it may be\n",
+        "Line" : 379,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Try specific TRIALDIV_MAXLEN from 1 to 6\n",
+        "Line" : 389,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# This one is a different test, meant to check speed and correctness, and\n\n# yet allow a run to simulate real polynomials because well, I can't be\n\n# sure with the current code... */\n",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# a couple of hard cases encountered during testing.\n",
+        "Line" : 444,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# 21684 has two algebraic sides, so it's fine if we have some extra\n\n# jitter.\n",
+        "Line" : 486,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# 21684 has two algebraic sides, so it's fine if we have some extra\n\n# jitter.\n",
+        "Line" : 499,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# we have no pretense to have optimized code for these cases, so don't\n\n# bother.\n",
+        "Line" : 505,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# bucket region = half line\n",
+        "Line" : 510,
+        "CharPositionInLine" : 49
+      },
+      "28" : {
+        "Text" : "# bucket region = quarter line\n",
+        "Line" : 512,
+        "CharPositionInLine" : 49
+      },
+      "29" : {
+        "Text" : "# test renumber\n",
+        "Line" : 525,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 30
+    },
+    "tests/sieve/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/sieve/ecm/CMakeLists.txt" : {
+      "ObjectId" : "5e121f772d49a34f6bbf558e7f432e206d9818ed",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build testbench before running check\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Get path to the testbench binary and store in variable testbench_path\n\n# see comment in tests/sieve/CMakeLists.txt\n\n# get_property(testbench_path TARGET testbench PROPERTY LOCATION)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This is just to factor out the common dependency on testbench\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ecmem12 with param=1 is the same as ecm with param=11\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tests/sieve/strategies/CMakeLists.txt" : {
+      "ObjectId" : "37f98706dcca79c96852d27f4396661641071114",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/sieve/strategies/utils_st/CMakeLists.txt" : {
+      "ObjectId" : "c1b0f797f97d58adab8687010b725a014d09afa0",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/sqrt/CMakeLists.txt" : {
+      "ObjectId" : "e493ff0b5ef7f0d4b2c9d48427eb73355622517c",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/sqrt/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/utils/CMakeLists.txt" : {
+      "ObjectId" : "31d938b57a4d44d7fec025e83b639ee6de60f80a",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# note: these tests used to be disabled...\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Should be run under Helgrind or other thread checkers\n",
+        "Line" : 33,
+        "CharPositionInLine" : 55
+      },
+      "CommentCount" : 2
+    },
+    "tests/utils/Makefile" : {
+      "ObjectId" : "6d241414d989bb44b6e3859b86ac6c5ae8fa8fde",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "utils/CMakeLists.txt" : {
+      "ObjectId" : "87c790f3f027f559099d2916cd302b5e616ff057",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############################################################\n\n# Get a list of modified files in the working directory,\n\n# with their SHA1 sums, and write as a string constant to\n\n# modified_files.c\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# How we do this mechanism of generating the modified files is very quirky,\n\n# and has varied with cmake versions. See http://public.kitware.com/Bug/view.php?id=11332\n\n#\n\n# The following seems to work also with pre-2.8.4 versions\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# the utils library is used by some shared objects (prominently the\n\n# matmul shared libs in bwc), and therefore must be shared.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# http://cado-nfs.gforge.inria.fr/bug.php?21410\n",
+        "Line" : 68,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "utils/Makefile" : {
+      "ObjectId" : "009c000816b2e58dd472bbe9a985c4fda2ac136e",
+      "LastModified" : "2018-09-27T08:39:53Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This makefile is a placeholder. Please have a look to $(TOP)/scripts/call_cmake.sh,\n\n# and (possibly) edit a file $(TOP)/local.sh to tweak your build preferences.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 78,
+    "MAKEFILE" : 22,
+    "AUTOMAKE" : 6
+  },
+  "ElapsedTime" : 3969
+}

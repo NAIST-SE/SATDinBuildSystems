@@ -1,0 +1,748 @@
+{
+  "Repository" : "7372037",
+  "Revision" : "HEAD",
+  "ObjectId" : "00b8ca0cdb13144cae65f58d3f1daef13826b336",
+  "CommitTime" : "2019-04-09T19:31:50Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "8745724e5f8c2865334933e9eeb9621079ca1a29",
+      "LastModified" : "2018-12-13T19:08:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n#  Makefile for the Duktape development repo.\n\n#\n\n#  This Makefile is intended for ONLY internal Duktape development\n\n#  on Linux (or other UNIX-like operating systems), and covers:\n\n#\n\n#    - Building the Duktape source distributable.\n\n#    - Running some basic test cases.\n\n#    - Building the duktape.org website.\n\n#\n\n#  The Makefile now also works in a very limited fashion with Cygwin,\n\n#  you can 'make dist' as long as you have enough software installed.\n\n#\n\n#  The source distributable has more platform neutral example Makefiles\n\n#  for end user projects (though an end user should really just use their\n\n#  own Makefile).\n\n#\n\n#  YOU SHOULD NOT COMPILE DUKTAPE WITH THIS MAKEFILE IN YOUR PROJECT!\n\n#\n\n#  When creating actual distributables, always use a clean checkout.\n\n#\n\n#  External projects are downloaded on-the-fly.  Clone git repos shallowly\n\n#  (--depth 1) whenever possible.  With build-critical resources, use a\n\n#  specific version instead of \"trunk\".\n\n#\n\n#  The makefile should work with -jN except for the 'clean' target, use:\n\n#\n\n#    $ make clean; make -j4\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# A few commands which may need to be edited.  NodeJS is sometimes found\n\n# as 'nodejs', sometimes as 'node'; sometimes 'node' is unrelated to NodeJS\n\n# so check 'nodejs' first.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Scrape version from the public header; convert from e.g. 10203 -> '1.2.3'\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Source lists.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Windows\n",
+        "Line" : 67,
+        "CharPositionInLine" : 18
+      },
+      "5" : {
+        "Text" : "# Windows\n",
+        "Line" : 72,
+        "CharPositionInLine" : 18
+      },
+      "6" : {
+        "Text" : "# Configure.py options for a few configuration profiles needed.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Profile guided optimization test set.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Compiler setup for Linux.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Windows\n",
+        "Line" : 113,
+        "CharPositionInLine" : 18
+      },
+      "10" : {
+        "Text" : "# Skip fancy (linenoise)\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# to avoid linenoise strdup() warnings\n",
+        "Line" : 124,
+        "CharPositionInLine" : 44
+      },
+      "12" : {
+        "Text" : "# -Wextra is very picky but catches e.g. signed/unsigned comparisons\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# on some compilers unreachable code is an error\n",
+        "Line" : 131,
+        "CharPositionInLine" : 37
+      },
+      "14" : {
+        "Text" : "# -Wfloat-equal is too picky, there's no apparent way to compare floats\n\n# (even when you know it's safe) without triggering warnings\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# prevent floods of errors if e.g. parenthesis missing\n",
+        "Line" : 137,
+        "CharPositionInLine" : 33
+      },
+      "16" : {
+        "Text" : "#CCOPTS_SHARED += -m32   # force 32-bit compilation on a 64-bit host\n\n#CCOPTS_SHARED += -mx32  # force X32 compilation on a 64-bit host\n\n#CCOPTS_SHARED += -fstack-usage  # enable manually, then e.g. $ make clean duk; python util/pretty_stack_usage.py duktape.su\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#CCOPTS_NONDEBUG += -malign-double\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#CLANG_CCOPTS_NONDEBUG += -fsanitize=undefined\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#CCOPTS_DUKLOW += '-fpack-struct=1'\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# extras/logger init writes to Duktape.Logger, problem with ROM build\n",
+        "Line" : 179,
+        "CharPositionInLine" : 48
+      },
+      "21" : {
+        "Text" : "# extras/module-duktape init writes to Duktape.Logger, problem with ROM build\n",
+        "Line" : 180,
+        "CharPositionInLine" : 47
+      },
+      "22" : {
+        "Text" : "#CCOPTS_DUKLOW += -DDUK_ALLOC_POOL_DEBUG\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# quite fast, but not free so disable for performance comparison\n",
+        "Line" : 188,
+        "CharPositionInLine" : 47
+      },
+      "24" : {
+        "Text" : "#CCOPTS_DUKLOW += -DDUK_ALLOC_POOL_TRACK_HIGHWATER  # VERY SLOW, just for manual testing\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Windows\n",
+        "Line" : 191,
+        "CharPositionInLine" : 18
+      },
+      "26" : {
+        "Text" : "# Emscripten options:\n\n#   - --memory-init-file 0 to avoid a separate memory init file (this is\n\n#     not mandatory but keeps the result in a single file)\n\n#   - -DEMSCRIPTEN needed by Duktape for feature detection\n\n# https://github.com/kripken/emscripten/wiki/Optimizing-Code\n\n# http://mozakai.blogspot.fi/2013/08/outlining-workaround-for-jits-and-big.html\n\n#\n\n# Reducing the TOTAL_MEMORY and TOTAL_STACK values is useful if you run\n\n# Duktape cmdline with resource limits (i.e. \"duk -r test.js\").\n\n#EMCCOPTS = -s TOTAL_MEMORY=2097152 -s TOTAL_STACK=524288 --memory-init-file 0\n",
+        "Line" : 197,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# enable stdin workaround in duk_cmdline.c\n",
+        "Line" : 211,
+        "CharPositionInLine" : 27
+      },
+      "28" : {
+        "Text" : "# Mandelbrot test, base-64 encoded.\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Options for runtests.js.\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Compile 'duk' only by default\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Check setup and warn about missing tools, libraries, etc.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Clean targets: 'cleanall' also deletes downloaded third party packages\n\n# which we don't want to delete by default with 'clean'.\n",
+        "Line" : 228,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# used by tests/api/test-eval-file.js\n",
+        "Line" : 257,
+        "CharPositionInLine" : 41
+      },
+      "34" : {
+        "Text" : "# Don't delete these in 'clean' to avoid re-downloading them over and over\n",
+        "Line" : 279,
+        "CharPositionInLine" : 1
+      },
+      "35" : {
+        "Text" : "# Targets for preparing different Duktape configurations.\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Library targets.\n",
+        "Line" : 366,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Various 'duk' command line tool targets.\n",
+        "Line" : 378,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Use -Wcast-align to trigger issues like: https://github.com/svaarala/duktape/issues/270\n\n# Use -Wshift-sign-overflow to trigger issues like: https://github.com/svaarala/duktape/issues/812\n\n# -Weverything\n",
+        "Line" : 466,
+        "CharPositionInLine" : 1
+      },
+      "39" : {
+        "Text" : "# Command line with a simple pool allocator, for low memory testing.\n\n# The pool sizes only make sense with -m32, so force that.  This forces\n\n# us to use barebones cmdline too.\n",
+        "Line" : 498,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# util/fix_emscripten.py is used so that emduk.js can also be executed using\n\n# Duktape itself (though you can't currently pass arguments/files to it).\n\n# No Emscripten fixes are needed in practice since Duktape 1.5.0.\n",
+        "Line" : 567,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# This is a prototype of running Duktape in a web environment with Emscripten,\n\n# and providing an eval() facility from both sides.  This is a placeholder now\n\n# and doesn't do anything useful yet.\n",
+        "Line" : 580,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Miscellaneous dumps.\n",
+        "Line" : 594,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# check for leaked file local symbols (does not cover internal, but not public symbols)\n",
+        "Line" : 599,
+        "CharPositionInLine" : 43
+      },
+      "44" : {
+        "Text" : "# Overall quick test target.\n",
+        "Line" : 629,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Set of miscellaneous tests for release.\n",
+        "Line" : 635,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# These tests now have output checks.\n",
+        "Line" : 639,
+        "CharPositionInLine" : 40
+      },
+      "47" : {
+        "Text" : "# Runtests-based ECMAScript and API tests.\n",
+        "Line" : 641,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Configure.py test.\n",
+        "Line" : 664,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Dukweb.js test.\n",
+        "Line" : 669,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Third party tests.\n",
+        "Line" : 678,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# speed test disabled, requires JSLitmus\n\n#-util/underscore_test.sh ./duk underscore/test/speed.js\n",
+        "Line" : 688,
+        "CharPositionInLine" : 1
+      },
+      "52" : {
+        "Text" : "# Spidermonkey test is pretty close, just lacks 'arguments'\n\n# Should run with assertions enabled in 'duk'\n",
+        "Line" : 694,
+        "CharPositionInLine" : 1
+      },
+      "53" : {
+        "Text" : "# Lodash test.js assumes require() etc.  Placeholder test for now, no\n\n# expect string etc.\n",
+        "Line" : 702,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# http://wiki.ecmascript.org/doku.php?id=test262:command\n",
+        "Line" : 711,
+        "CharPositionInLine" : 1
+      },
+      "55" : {
+        "Text" : "# Awkward helper to write out a testcase, the awkwardness is that it\n\n# reads command line arguments and complains about missing targets etc:\n\n# http://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line\n",
+        "Line" : 716,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "#./duk /tmp/duk-emcc-test-fixed.js\n",
+        "Line" : 730,
+        "CharPositionInLine" : 1
+      },
+      "57" : {
+        "Text" : "#./duk /tmp/duk-emcc-test-fixed.js\n",
+        "Line" : 740,
+        "CharPositionInLine" : 1
+      },
+      "58" : {
+        "Text" : "# Compile Duktape and hello.c using Emscripten and execute the result with\n\n# Duktape.\n",
+        "Line" : 743,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "#./duk /tmp/duk-emcc-test-fixed.js\n",
+        "Line" : 752,
+        "CharPositionInLine" : 1
+      },
+      "60" : {
+        "Text" : "# Compile Duktape with Emscripten and execute it with NodeJS.\n",
+        "Line" : 755,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# Compile Lua 5.2.3 with Emscripten and run it with Duktape.\n",
+        "Line" : 772,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "#./duk /tmp/duk-emcc-luatest-fixed.js\n",
+        "Line" : 780,
+        "CharPositionInLine" : 1
+      },
+      "63" : {
+        "Text" : "# missing end semicolon causes automatic semicolon problem\n",
+        "Line" : 821,
+        "CharPositionInLine" : 38
+      },
+      "64" : {
+        "Text" : "# missing end semicolon causes automatic semicolon problem\n",
+        "Line" : 823,
+        "CharPositionInLine" : 38
+      },
+      "65" : {
+        "Text" : "# Third party download/unpack targets, libraries etc.\n",
+        "Line" : 834,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# git clone https://github.com/antirez/linenoise.git\n\n# Use forked repo to get compile warnings fixed.\n",
+        "Line" : 836,
+        "CharPositionInLine" : 1
+      },
+      "67" : {
+        "Text" : "# https://code.google.com/p/regfuzz/\n\n# SHA1: 774be8e3dda75d095225ba699ac59969d92ac970\n",
+        "Line" : 840,
+        "CharPositionInLine" : 1
+      },
+      "68" : {
+        "Text" : "# http://underscorejs.org/\n\n# https://github.com/jashkenas/underscore\n\n# Master is OK because not a critical dependency\n",
+        "Line" : 844,
+        "CharPositionInLine" : 1
+      },
+      "69" : {
+        "Text" : "# http://lodash.com/\n\n# https://github.com/lodash\n\n# Master is OK because not a critical dependency\n",
+        "Line" : 849,
+        "CharPositionInLine" : 1
+      },
+      "70" : {
+        "Text" : "# http://test262.ecmascript.org/\n\n# https://github.com/tc39/test262\n\n# HG repo seems to have migrated to https://github.com/tc39/test262\n\n#$(WGET) http://hg.ecmascript.org/tests/test262/archive/d067d2f0ca30.tar.bz2 -O $@\n\n#$(WGET) https://github.com/tc39/test262/archive/595a36b252ee97110724e6fa89fc92c9aa9a206a.zip -O $@\n\n# This is a snapshot from the master, and seems to have test case bugs\n",
+        "Line" : 854,
+        "CharPositionInLine" : 1
+      },
+      "71" : {
+        "Text" : "# https://github.com/tc39/test262/tree/es5-tests\n\n# This is a stable branch for ES5 tests\n",
+        "Line" : 865,
+        "CharPositionInLine" : 1
+      },
+      "72" : {
+        "Text" : "# https://github.com/kripken/emscripten\n\n# Master is OK because not a critical dependency\n\n# Setup is complicated because needs matching fastcomp which\n\n# you must provide yourself and add to ~/.emscripten:\n\n# http://kripken.github.io/emscripten-site/docs/building_from_source/building_fastcomp_manually_from_source.html\n",
+        "Line" : 872,
+        "CharPositionInLine" : 1
+      },
+      "73" : {
+        "Text" : "# https://github.com/mherkender/lua.js\n",
+        "Line" : 886,
+        "CharPositionInLine" : 1
+      },
+      "74" : {
+        "Text" : "# https://github.com/NeilFraser/JS-Interpreter\n\n# Master is OK because not a critical dependency\n",
+        "Line" : 893,
+        "CharPositionInLine" : 1
+      },
+      "75" : {
+        "Text" : "# Closure\n\n# Prebuilt latest version; this is not good as a build dependency\n\n# because closure changes may break minified initjs code and make\n\n# old builds unreliable.\n\n# https://code.google.com/p/closure-compiler/\n",
+        "Line" : 899,
+        "CharPositionInLine" : 1
+      },
+      "76" : {
+        "Text" : "# https://github.com/google/closure-compiler\n",
+        "Line" : 906,
+        "CharPositionInLine" : 1
+      },
+      "77" : {
+        "Text" : "# ensure date is newer than compiler-latest.zip\n",
+        "Line" : 916,
+        "CharPositionInLine" : 11
+      },
+      "78" : {
+        "Text" : "# https://github.com/mishoo/UglifyJS\n\n# Use a specific release because UglifyJS is used in building Duktape\n\n# Don't use this because it's a moving critical dependency\n\n#$(GIT) clone --depth 1 https://github.com/mishoo/UglifyJS.git\n",
+        "Line" : 918,
+        "CharPositionInLine" : 1
+      },
+      "79" : {
+        "Text" : "# https://github.com/mishoo/UglifyJS2\n\n# Use a specific release because UglifyJS2 is used in building Duktape\n\n# (This is now a bit futile because UglifyJS2 requires an 'npm install',\n\n# the NodeJS dependencies need to be controlled for this to really work.)\n\n# Don't use this because it's a moving critical dependency\n\n#$(GIT) clone --depth 1 https://github.com/mishoo/UglifyJS2.git\n",
+        "Line" : 928,
+        "CharPositionInLine" : 1
+      },
+      "80" : {
+        "Text" : "# http://cloc.sourceforge.net/\n",
+        "Line" : 941,
+        "CharPositionInLine" : 1
+      },
+      "81" : {
+        "Text" : "# http://coffeescript.org/\n\n# https://github.com/jashkenas/coffee-script\n",
+        "Line" : 944,
+        "CharPositionInLine" : 1
+      },
+      "82" : {
+        "Text" : "# http://livescript.net/\n\n# https://github.com/gkz/LiveScript\n",
+        "Line" : 948,
+        "CharPositionInLine" : 1
+      },
+      "83" : {
+        "Text" : "# https://github.com/satyr/coco\n",
+        "Line" : 952,
+        "CharPositionInLine" : 1
+      },
+      "84" : {
+        "Text" : "# https://github.com/isaacs/sax-js\n",
+        "Line" : 955,
+        "CharPositionInLine" : 1
+      },
+      "85" : {
+        "Text" : "# https://github.com/nfarina/xmldoc\n\n# http://nfarina.com/post/34302964969/a-lightweight-xml-document-class-for-nodejs-javascript\n",
+        "Line" : 958,
+        "CharPositionInLine" : 1
+      },
+      "86" : {
+        "Text" : "# http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html\n\n# https://github.com/brendangregg/FlameGraph\n",
+        "Line" : 962,
+        "CharPositionInLine" : 1
+      },
+      "87" : {
+        "Text" : "# https://github.com/dtrace4linux/linux\n\n# http://crtags.blogspot.fi/\n",
+        "Line" : 966,
+        "CharPositionInLine" : 1
+      },
+      "88" : {
+        "Text" : "# https://github.com/facebook/flow\n",
+        "Line" : 970,
+        "CharPositionInLine" : 1
+      },
+      "89" : {
+        "Text" : "# https://github.com/pieroxy/lz-string.git\n",
+        "Line" : 973,
+        "CharPositionInLine" : 1
+      },
+      "90" : {
+        "Text" : "# Duktape binary releases are in a separate repo.\n",
+        "Line" : 976,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# Reference documents.\n",
+        "Line" : 980,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "# Documentation.\n",
+        "Line" : 992,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# Source distributable for end users.\n",
+        "Line" : 998,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "# ISO target is useful with some system emulators with no network access.\n",
+        "Line" : 1014,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "# Website targets.\n",
+        "Line" : 1019,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "# get binaries up-to-date, but allow errors for offline use\n",
+        "Line" : 1026,
+        "CharPositionInLine" : 43
+      },
+      "97" : {
+        "Text" : "# useful for quick preview\n",
+        "Line" : 1030,
+        "CharPositionInLine" : 19
+      },
+      "98" : {
+        "Text" : "# When doing a final dist build, run html tidy\n\n# Also pull binaries up-to-date\n",
+        "Line" : 1033,
+        "CharPositionInLine" : 1
+      },
+      "99" : {
+        "Text" : "# get binaries up-to-date\n",
+        "Line" : 1035,
+        "CharPositionInLine" : 42
+      },
+      "100" : {
+        "Text" : "# Code policy check.\n",
+        "Line" : 1045,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "# XXX: config files not yet FIXME pure\n",
+        "Line" : 1119,
+        "CharPositionInLine" : 1
+      },
+      "102" : {
+        "Text" : "# Simple heap graph and peak usage using valgrind --tool=massif, for quick\n\n# and dirty baseline comparison.  Say e.g. 'make massif-test-dev-hello-world'.\n\n# The target name is intentionally not 'massif-%.out' so that the rule is never\n\n# satisfied and can be executed multiple times without cleaning.\n\n# Grep/sed hacks from:\n\n# http://stackoverflow.com/questions/774556/peak-memory-usage-of-a-linux-unix-process\n",
+        "Line" : 1158,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# Convenience targets\n",
+        "Line" : 1172,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 104,
+      "Errorlog" : "line 1171:63 token recognition error at: '\\1'\n"
+    },
+    "debugger/Makefile" : {
+      "ObjectId" : "f142c255b32b0423a61052bac9fbe99b30d5c7ea",
+      "LastModified" : "2017-01-02T03:43:33Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Try to get a useful default --source-dirs which works both in the Duktape\n\n# repo and in the distributable.  We don't want to add '..' because it would\n\n# scan a lot of undesired files in the Duktape repo (e.g. test262 testcases).\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# http://balupton.github.io/jquery-syntaxhighlighter/demo/\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# http://steamdev.com/snippet/\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# http://prismjs.com/\n\n# http://prismjs.com/plugins/line-highlight/\n\n#\n\n# XXX: prism download manually?\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# https://raw.github.com/LeaVerou/prefixfree/gh-pages/prefixfree.min.js\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# http://meyerweb.com/eric/tools/css/reset/\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "examples/debug-trans-dvalue/Makefile" : {
+      "ObjectId" : "79b731748362832b72bddbbf15483b204facec86",
+      "LastModified" : "2017-01-02T03:43:33Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#DUKTAPE_OPTS+=-DDUK_USE_DEBUGGER_TRANSPORT_TORTURE\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#TRANS_OPTS+=-DDEBUG_PRINTS\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extras/alloc-pool/Makefile" : {
+      "ObjectId" : "6bd6ee575bb0bd6044492a705235d4d9fb41d4cc",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/alloc-pool and run ./test.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#DEFS += '-DDUK_ALLOC_POOL_DEBUG'\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extras/cbor/Makefile" : {
+      "ObjectId" : "1e8a6d41210c1b73639fa07abdf7c4b0ed4551e8",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/cbor.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#CCOPTS += -fsanitize=undefined\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2,
+      "Errorlog" : "line 43:41 token recognition error at: '\"\\x'\nline 43:46 token recognition error at: '\\x'\nline 43:50 token recognition error at: '\\x'\nline 44:42 token recognition error at: '\\x'\nline 44:46 token recognition error at: '\\x'\nline 44:50 token recognition error at: '\\x'\nline 45:42 token recognition error at: '\\x'\nline 45:46 token recognition error at: '\\x'\nline 45:50 token recognition error at: '\\x'\nline 46:42 token recognition error at: '\\x'\nline 46:46 token recognition error at: '\\x'\nline 46:50 token recognition error at: '\\x'\nline 48:42 token recognition error at: '\\x'\nline 48:46 token recognition error at: '\\x'\nline 48:50 token recognition error at: '\\x'\nline 49:42 token recognition error at: '\\x'\nline 49:46 token recognition error at: '\\x'\nline 49:50 token recognition error at: '\\x'\nline 50:42 token recognition error at: '\\x'\nline 50:46 token recognition error at: '\\x'\nline 50:50 token recognition error at: '\\x'\nline 51:42 token recognition error at: '\\x'\nline 51:46 token recognition error at: '\\x'\nline 51:50 token recognition error at: '\\x'\nline 52:42 token recognition error at: '\\x'\nline 52:46 token recognition error at: '\\x'\nline 52:50 token recognition error at: '\\x'\nline 53:42 token recognition error at: '\\x'\nline 53:46 token recognition error at: '\\x'\nline 53:50 token recognition error at: '\\x'\nline 54:42 token recognition error at: '\\x'\nline 54:46 token recognition error at: '\\x'\nline 54:50 token recognition error at: '\\x'\nline 55:42 token recognition error at: '\\x'\nline 55:46 token recognition error at: '\\x'\nline 55:50 token recognition error at: '\\x'\nline 56:42 token recognition error at: '\\x'\nline 56:46 token recognition error at: '\\x'\nline 56:50 token recognition error at: '\\x'\nline 57:42 token recognition error at: '\\x'\nline 57:46 token recognition error at: '\\x'\nline 57:50 token recognition error at: '\\x'\nline 58:42 token recognition error at: '\\x'\nline 58:46 token recognition error at: '\\x'\nline 58:50 token recognition error at: '\\x'\nline 59:42 token recognition error at: '\\x'\nline 59:46 token recognition error at: '\\x'\nline 59:50 token recognition error at: '\\x'\nline 61:42 token recognition error at: '\\x'\nline 61:46 token recognition error at: '\\x'\nline 61:50 token recognition error at: '\\x'\nline 62:42 token recognition error at: '\\x'\nline 62:46 token recognition error at: '\\x'\nline 62:50 token recognition error at: '\\x'\nline 63:42 token recognition error at: '\\x'\nline 63:46 token recognition error at: '\\x'\nline 63:50 token recognition error at: '\\x'\nline 64:42 token recognition error at: '\\x'\nline 64:46 token recognition error at: '\\x'\nline 64:50 token recognition error at: '\\x'\nline 65:42 token recognition error at: '\\x'\nline 65:46 token recognition error at: '\\x'\nline 65:50 token recognition error at: '\\x'\nline 66:42 token recognition error at: '\\x'\nline 66:46 token recognition error at: '\\x'\nline 66:50 token recognition error at: '\\x'\nline 67:42 token recognition error at: '\\x'\nline 67:46 token recognition error at: '\\x'\nline 67:50 token recognition error at: '\\x'\nline 68:42 token recognition error at: '\\x'\nline 68:46 token recognition error at: '\\x'\nline 68:50 token recognition error at: '\\x'\nline 69:42 token recognition error at: '\\x'\nline 69:46 token recognition error at: '\\x'\nline 69:50 token recognition error at: '\\x'\nline 70:42 token recognition error at: '\\x'\nline 70:46 token recognition error at: '\\x'\nline 70:50 token recognition error at: '\\x'\nline 71:42 token recognition error at: '\\x'\nline 71:46 token recognition error at: '\\x'\nline 71:50 token recognition error at: '\\x'\nline 72:42 token recognition error at: '\\x'\nline 72:46 token recognition error at: '\\x'\nline 72:50 token recognition error at: '\\x'\nline 73:42 token recognition error at: '\\x'\nline 73:46 token recognition error at: '\\x'\nline 73:50 token recognition error at: '\\x'\nline 74:42 token recognition error at: '\\x'\nline 74:46 token recognition error at: '\\x'\nline 74:50 token recognition error at: '\\x'\nline 75:42 token recognition error at: '\\x'\nline 75:46 token recognition error at: '\\x'\nline 75:50 token recognition error at: '\\x'\nline 76:42 token recognition error at: '\\x'\nline 76:46 token recognition error at: '\\x'\nline 76:50 token recognition error at: '\\x'\nline 77:42 token recognition error at: '\\x'\nline 77:46 token recognition error at: '\\x'\nline 77:50 token recognition error at: '\\x'\nline 78:42 token recognition error at: '\\x'\nline 78:46 token recognition error at: '\\x'\nline 78:50 token recognition error at: '\\x'\nline 79:42 token recognition error at: '\\x'\nline 79:46 token recognition error at: '\\x'\nline 79:50 token recognition error at: '\\x'\nline 80:42 token recognition error at: '\\x'\nline 80:46 token recognition error at: '\\x'\nline 80:50 token recognition error at: '\\x'\nline 82:42 token recognition error at: '\\x'\nline 82:46 token recognition error at: '\\x'\nline 82:50 token recognition error at: '\\x'\nline 83:42 token recognition error at: '\\x'\nline 83:46 token recognition error at: '\\x'\nline 83:50 token recognition error at: '\\x'\nline 84:42 token recognition error at: '\\x'\nline 84:46 token recognition error at: '\\x'\nline 84:50 token recognition error at: '\\x'\nline 85:42 token recognition error at: '\\x'\nline 85:46 token recognition error at: '\\x'\nline 85:50 token recognition error at: '\\x'\nline 87:42 token recognition error at: '\\x'\nline 87:46 token recognition error at: '\\x'\nline 87:50 token recognition error at: '\\x'\nline 88:42 token recognition error at: '\\x'\nline 88:46 token recognition error at: '\\x'\nline 88:50 token recognition error at: '\\x'\nline 89:42 token recognition error at: '\\x'\nline 89:46 token recognition error at: '\\x'\nline 89:50 token recognition error at: '\\x'\nline 90:42 token recognition error at: '\\x'\nline 90:46 token recognition error at: '\\x'\nline 90:50 token recognition error at: '\\x'\nline 91:42 token recognition error at: '\\x'\nline 91:46 token recognition error at: '\\x'\nline 91:50 token recognition error at: '\\x'\nline 92:42 token recognition error at: '\\x'\nline 92:46 token recognition error at: '\\x'\nline 92:50 token recognition error at: '\\x'\nline 93:42 token recognition error at: '\\x'\nline 93:46 token recognition error at: '\\x'\nline 93:50 token recognition error at: '\\x'\nline 94:42 token recognition error at: '\\x'\nline 94:46 token recognition error at: '\\x'\nline 94:50 token recognition error at: '\\x'\nline 95:42 token recognition error at: '\\x'\nline 95:46 token recognition error at: '\\x'\nline 95:50 token recognition error at: '\\x'\nline 96:42 token recognition error at: '\\x'\nline 96:46 token recognition error at: '\\x'\nline 96:50 token recognition error at: '\\x'\nline 97:42 token recognition error at: '\\x'\nline 97:46 token recognition error at: '\\x'\nline 97:50 token recognition error at: '\\x'\nline 98:42 token recognition error at: '\\x'\nline 98:46 token recognition error at: '\\x'\nline 98:50 token recognition error at: '\\x'\nline 102:42 token recognition error at: '\\x'\nline 102:46 token recognition error at: '\\x'\nline 102:50 token recognition error at: '\\x'\nline 102:54 token recognition error at: '\\x'\nline 102:58 token recognition error at: '\\x'\nline 102:62 token recognition error at: '\\x'\nline 102:66 token recognition error at: '\\x'\nline 102:70 token recognition error at: '\\x'\nline 102:74 token recognition error at: '\\x'\nline 102:78 token recognition error at: '\\x'\nline 102:82 token recognition error at: '\\x'\nline 102:86 token recognition error at: '\\x'\nline 102:90 token recognition error at: '\\x'\nline 102:94 token recognition error at: '\\x'\nline 102:98 token recognition error at: '\\x'\nline 102:102 token recognition error at: '\\x'\nline 102:106 token recognition error at: '\\x'\nline 102:110 token recognition error at: '\\x'\nline 102:114 token recognition error at: '\\x'\nline 103:42 token recognition error at: '\\x'\nline 103:46 token recognition error at: '\\x'\nline 103:50 token recognition error at: '\\x'\nline 103:54 token recognition error at: '\\x'\nline 103:58 token recognition error at: '\\x'\nline 103:62 token recognition error at: '\\x'\nline 103:66 token recognition error at: '\\x'\nline 103:70 token recognition error at: '\\x'\nline 103:74 token recognition error at: '\\x'\nline 103:78 token recognition error at: '\\x'\nline 103:82 token recognition error at: '\\x'\nline 103:86 token recognition error at: '\\x'\nline 103:90 token recognition error at: '\\x'\nline 103:94 token recognition error at: '\\x'\nline 103:98 token recognition error at: '\\x'\nline 103:102 token recognition error at: '\\x'\nline 103:106 token recognition error at: '\\x'\nline 103:110 token recognition error at: '\\x'\nline 103:114 token recognition error at: '\\x'\nline 107:42 token recognition error at: '\\x'\nline 107:46 token recognition error at: '\\x'\nline 107:53 token recognition error at: '\\x'\nline 107:60 token recognition error at: '\\x'\nline 107:67 token recognition error at: '\\x'\nline 107:71 token recognition error at: '\\x'\nline 107:79 token recognition error at: '\\x'\nline 107:83 token recognition error at: '\\x'\nline 107:87 token recognition error at: '\\x'\nline 107:94 token recognition error at: '\\x'\nline 107:98 token recognition error at: '\\x'\nline 107:103 token recognition error at: '\\x'\nline 107:108 token recognition error at: '\\x'\nline 107:113 token recognition error at: '\\x'\nline 107:118 token recognition error at: '\\x'\nline 107:127 token recognition error at: '\\x'\nline 107:131 token recognition error at: '\\x'\nline 107:136 token recognition error at: '\\x'\nline 107:141 token recognition error at: '\\x'\nline 107:146 token recognition error at: '\\x'\nline 107:151 token recognition error at: '\\x'\nline 107:155 token recognition error at: '\\x'\nline 108:42 token recognition error at: '\\x'\nline 108:46 token recognition error at: '\\x'\nline 108:53 token recognition error at: '\\x'\nline 108:60 token recognition error at: '\\x'\nline 108:67 token recognition error at: '\\x'\nline 108:71 token recognition error at: '\\x'\nline 108:79 token recognition error at: '\\x'\nline 108:83 token recognition error at: '\\x'\nline 108:87 token recognition error at: '\\x'\nline 108:94 token recognition error at: '\\x'\nline 108:98 token recognition error at: '\\x'\nline 108:103 token recognition error at: '\\x'\nline 108:108 token recognition error at: '\\x'\nline 108:113 token recognition error at: '\\x'\nline 108:118 token recognition error at: '\\x'\nline 108:127 token recognition error at: '\\x'\nline 108:131 token recognition error at: '\\x'\nline 108:136 token recognition error at: '\\x'\nline 108:141 token recognition error at: '\\x'\nline 108:146 token recognition error at: '\\x'\nline 108:151 token recognition error at: '\\x'\nline 108:155 token recognition error at: '\\x'\nline 112:42 token recognition error at: '\\x'\nline 113:42 token recognition error at: '\\x'\nline 114:42 token recognition error at: '\\x'\nline 114:46 token recognition error at: '\\x'\nline 114:50 token recognition error at: '\\x'\nline 115:42 token recognition error at: '\\x'\nline 115:46 token recognition error at: '\\x'\nline 115:50 token recognition error at: '\\x'\nline 116:42 token recognition error at: '\\x'\nline 116:46 token recognition error at: '\\x'\nline 117:42 token recognition error at: '\\x'\nline 117:46 token recognition error at: '\\x'\nline 118:42 token recognition error at: '\\x'\nline 118:151 token recognition error at: '\\x'\nline 119:42 token recognition error at: '\\x'\nline 119:151 token recognition error at: '\\x'\nline 120:42 token recognition error at: '\\x'\nline 120:50 token recognition error at: '\\x'\nline 121:42 token recognition error at: '\\x'\nline 121:50 token recognition error at: '\\x'\nline 122:42 token recognition error at: '\\x'\nline 122:63 token recognition error at: '\\x'\nline 123:42 token recognition error at: '\\x'\nline 123:63 token recognition error at: '\\x'\nline 124:42 token recognition error at: '\\x'\nline 124:46 token recognition error at: '\\x'\nline 125:42 token recognition error at: '\\x'\nline 125:46 token recognition error at: '\\x'\nline 126:42 token recognition error at: '\\x'\nline 126:150 token recognition error at: '\\x'\nline 127:42 token recognition error at: '\\x'\nline 127:150 token recognition error at: '\\x'\nline 128:42 token recognition error at: '\\x'\nline 128:50 token recognition error at: '\\x'\nline 129:42 token recognition error at: '\\x'\nline 129:50 token recognition error at: '\\x'\nline 130:42 token recognition error at: '\\x'\nline 130:63 token recognition error at: '\\x'\nline 131:42 token recognition error at: '\\x'\nline 131:63 token recognition error at: '\\x'\nline 132:42 token recognition error at: '\\x'\nline 133:42 token recognition error at: '\\x'\nline 134:42 token recognition error at: '\\x'\nline 134:46 token recognition error at: '\\x'\nline 135:42 token recognition error at: '\\x'\nline 135:46 token recognition error at: '\\x'\nline 136:42 token recognition error at: '\\x'\nline 136:46 token recognition error at: '\\x'\nline 137:42 token recognition error at: '\\x'\nline 137:46 token recognition error at: '\\x'\nline 138:42 token recognition error at: '\\x'\nline 138:46 token recognition error at: '\\x'\nline 138:50 token recognition error at: '\\x'\nline 139:42 token recognition error at: '\\x'\nline 139:46 token recognition error at: '\\x'\nline 139:50 token recognition error at: '\\x'\nline 231:11 token recognition error at: '\\u'\nline 232:11 token recognition error at: '\\u'\nline 233:8 token recognition error at: '\\u'\nline 233:14 token recognition error at: '\\u'\nline 233:20 token recognition error at: '\\u'\nline 233:26 token recognition error at: '\\u'\nline 233:32 token recognition error at: '\\u'\nline 233:38 token recognition error at: '\\u'\nline 233:44 token recognition error at: '\\u'\nline 234:8 token recognition error at: '\\u'\nline 234:14 token recognition error at: '\\u'\nline 234:20 token recognition error at: '\\u'\nline 234:26 token recognition error at: '\\u'\nline 234:32 token recognition error at: '\\u'\nline 234:38 token recognition error at: '\\u'\nline 234:44 token recognition error at: '\\u'\nline 235:8 token recognition error at: '\\u'\nline 235:14 token recognition error at: '\\u'\nline 235:20 token recognition error at: '\\u'\nline 235:26 token recognition error at: '\\u'\nline 235:32 token recognition error at: '\\u'\nline 235:38 token recognition error at: '\\u'\nline 235:44 token recognition error at: '\\u'\nline 236:8 token recognition error at: '\\u'\nline 236:14 token recognition error at: '\\u'\nline 236:20 token recognition error at: '\\u'\nline 236:26 token recognition error at: '\\u'\nline 236:32 token recognition error at: '\\u'\nline 236:38 token recognition error at: '\\u'\nline 236:44 token recognition error at: '\\u'\nline 237:8 token recognition error at: '\\u'\nline 237:14 token recognition error at: '\\u'\nline 237:20 token recognition error at: '\\u'\nline 237:26 token recognition error at: '\\u'\nline 237:32 token recognition error at: '\\u'\nline 237:38 token recognition error at: '\\u'\nline 237:44 token recognition error at: '\\u'\nline 261:51 token recognition error at: '\", params: { a: 123, b: 234 }})' | $(VALGRIND) -q ./jsoncbor -r js -w cbor | python2 cbordecode.py\\n\u0000'\n"
+    },
+    "extras/console/Makefile" : {
+      "ObjectId" : "cfd9ecffd71a433a9581057aa376fb198f951af6",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/console and run ./test.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# circular ref\n",
+        "Line" : 13,
+        "CharPositionInLine" : 76
+      },
+      "CommentCount" : 2
+    },
+    "extras/duk-v1-compat/Makefile" : {
+      "ObjectId" : "96bb313036b4b7a238f799987a7d2eefe4f02485",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/duk-v1-compat and run ./test.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "extras/logging/Makefile" : {
+      "ObjectId" : "0eda5a5620ea0fdb229e618bcc6146779b7bfbd5",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/logging and run ./test.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "extras/minimal-printf/Makefile" : {
+      "ObjectId" : "f96907256583588319e507f7a0745ef2e6ca0f48",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Just for manual testing\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "extras/module-duktape/Makefile" : {
+      "ObjectId" : "a0566208a07938c2f89577eb6cdb18fd4c2b37ee",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/module-duktape and run ./test.\n\n# There's test coverage in tests/ecmascript, so tests here are very simple.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "extras/module-node/Makefile" : {
+      "ObjectId" : "bae55455d401a7fbabbaf507f6571dcc03209438",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/module-node and run ./test.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "extras/print-alert/Makefile" : {
+      "ObjectId" : "e26ec48cbb50c23abdd64f5e4bc74c37c410136f",
+      "LastModified" : "2017-11-15T00:04:22Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# For manual testing; say 'make' in extras/print-alert and run ./test.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/google-v8-benchmark-v7/Makefile" : {
+      "ObjectId" : "1dd0e9180a93c9fc30defc9a5d9f55017e6869f3",
+      "LastModified" : "2016-03-24T01:19:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Say 'make' and then just run combined.js.\n\n#\n\n# https://v8.googlecode.com/svn/data/benchmarks/v7/run.html\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# needed by mujs\n",
+        "Line" : 16,
+        "CharPositionInLine" : 26
+      },
+      "2" : {
+        "Text" : "# needed by mujs\n",
+        "Line" : 21,
+        "CharPositionInLine" : 32
+      },
+      "CommentCount" : 3
+    },
+    "tests/octane/Makefile" : {
+      "ObjectId" : "bad8300649cca0d9217cbb378e471ca963324a3b",
+      "LastModified" : "2017-04-10T23:25:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# octane/mandreel.js: exceeds const limit at present.\n\n# octane/run.js: not needed, duktape_harness.js handles\n\n# octane/typescript-compiler.js: I/O to be stubbed\n\n# octane/typescript-input.js: -\"\"-\n\n# octane/typescript.js: -\"\"-\n\n# octane/zlib.js: read() dependency\n\n# octane/zlib-data.js: -\"\"-\n\n# octane/regexp.js: checksum error\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#ENGINE=jerry\n\n#ENGINE=mujs\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Useful for comparison to other engines when the set of successful sub-tests\n\n# isn't the same; run what can be run.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 14
+  },
+  "ElapsedTime" : 2362
+}

@@ -1,0 +1,602 @@
+{
+  "Repository" : "24849002",
+  "Revision" : "HEAD",
+  "ObjectId" : "771c9c9641a6e3b8180c2628d1192dca1ba92339",
+  "CommitTime" : "2019-04-17T16:01:22Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "399f5f26601b6a807a0b64a58ec6bae7ecab5f54",
+      "LastModified" : "2019-04-15T15:54:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set default build type. Must use FORCE because project() sets default to \"\"\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build time switch to turn off memory pooling.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "##\n\n## Find dependencies\n\n##\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## Optional dependencies\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Find python-unittest2\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# add bogus test for folk who may have missed the cmake warning\n",
+        "Line" : 77,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# define the configuration directory based on whether or not the install prefix is defined\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Set up runtime checks (valgrind, sanitizers etc.)\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "##\n\n## Include directories used by all sub-directories.\n\n##\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "##\n\n## Header file installation\n\n##\n",
+        "Line" : 181,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Tools\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Doc files\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Build src first so other subdirs can use QPID_DISPATCH_LIB\n",
+        "Line" : 206,
+        "CharPositionInLine" : 22
+      },
+      "14" : {
+        "Text" : "# run.py environment runner script - needs QPID_DISPATCH_LIB\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# reconfigure.in is a workaround to force cmake re-configuration. For example,\n\n# we use GLOB to collect .h files for install and apidoc, so if you _remove_ a\n\n# .h file it won't trigger automatic re-configure and everybody's builds will\n\n# fail till they run cmake manually.\n\n#\n\n# If you do check in such a change, increase the number in this file by 1.\n\n# That will force automatic re-configure and everybody will be happy.\n\n#\n",
+        "Line" : 227,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "cmake/FindLibWebSockets.cmake" : {
+      "ObjectId" : "e8572ac14bb3943832cc4d08f15d25614bef3798",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Find libwebsockets include dirs and libraries.\n\n#\n\n# Sets the following variables:\n\n#\n\n#   LIBWEBSOCKETS_FOUND            - True if headers and requested libraries were found\n\n#   LIBWEBSOCKETS_INCLUDE_DIRS     - LibWebSockets include directories\n\n#   LIBWEBSOCKETS_LIBRARIES        - Link these to use libwebsockets\n\n#   LIBWEBSOCKETS_VERSION_STRING   - The library version number\n\n#\n\n# This module reads hints about search locations from variables::\n\n#   LIBWEBSOCKETS_LIBRARYDIR       - Preferred library directory e.g. <prefix>/lib\n\n#   LIBWEBSOCKETS_ROOT             - Preferred installation prefix\n\n#   CMAKE_INSTALL_PREFIX           - Install location for the current project.\n\n#   LIBWEBSOCKETS_INCLUDEDIR       - Preferred include directory e.g. <prefix>/include\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/RuntimeChecks.cmake" : {
+      "ObjectId" : "872f943c454abec9961d5bd41213b09cde25f421",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Configuration for code analysis tools: runtime checking and coverage.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##\n\n## Valgrind\n\n##\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "##\n\n## Sanitizers\n\n##\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "console/CMakeLists.txt" : {
+      "ObjectId" : "7bdb48161cae87b6fe2f03776b6263ddb295942e",
+      "LastModified" : "2019-04-15T15:54:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##\n\n## Add cmake option to choose whether to install stand-alone console\n\n##\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "## copy the build config files\n",
+        "Line" : 36,
+        "CharPositionInLine" : 10
+      },
+      "3" : {
+        "Text" : "## Files needed to create the ${CONSOLE_ARTIFACTS}\n",
+        "Line" : 44,
+        "CharPositionInLine" : 10
+      },
+      "4" : {
+        "Text" : "## Files created during the console build\n",
+        "Line" : 51,
+        "CharPositionInLine" : 10
+      },
+      "5" : {
+        "Text" : "## Tell cmake how and when to build ${CONSOLE_ARTIFACTS}\n",
+        "Line" : 58,
+        "CharPositionInLine" : 10
+      },
+      "6" : {
+        "Text" : "## Ensure ${CONSOLE_ARTIFACTS} is built on a make when needed\n",
+        "Line" : 68,
+        "CharPositionInLine" : 10
+      },
+      "7" : {
+        "Text" : "##\n\n## Install the static and built console files\n\n##\n",
+        "Line" : 73,
+        "CharPositionInLine" : 10
+      },
+      "8" : {
+        "Text" : "## Files copied to the root of the console's install dir\n",
+        "Line" : 77,
+        "CharPositionInLine" : 10
+      },
+      "9" : {
+        "Text" : "## Files copied to the img/ dir\n",
+        "Line" : 83,
+        "CharPositionInLine" : 10
+      },
+      "10" : {
+        "Text" : "## Files copied to the css/ dir\n",
+        "Line" : 89,
+        "CharPositionInLine" : 10
+      },
+      "11" : {
+        "Text" : "## Files copied to the css/fonts/ dir\n",
+        "Line" : 93,
+        "CharPositionInLine" : 10
+      },
+      "12" : {
+        "Text" : "## Files copied to the fonts/ dir\n",
+        "Line" : 98,
+        "CharPositionInLine" : 10
+      },
+      "13" : {
+        "Text" : "##\n\n## Add a custom make hawtio target\n\n##\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# the directory where the .war file will be built\n",
+        "Line" : 155,
+        "CharPositionInLine" : 7
+      },
+      "15" : {
+        "Text" : "# create the console .war file\n",
+        "Line" : 158,
+        "CharPositionInLine" : 7
+      },
+      "16" : {
+        "Text" : "# install the built war file into the console dir\n",
+        "Line" : 164,
+        "CharPositionInLine" : 7
+      },
+      "17" : {
+        "Text" : "# We don't know in advance what the name of the final .war will be because\n\n# the war file name depends on the version in the pom.xml. The version will change each release\n",
+        "Line" : 166,
+        "CharPositionInLine" : 11
+      },
+      "CommentCount" : 18
+    },
+    "console/hawtio/pom.xml" : {
+      "ObjectId" : "e875b9c9f75d5c917a80f27cf51df6dd09744d0c",
+      "LastModified" : "2019-04-15T15:54:32Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n  Licensed to the Apache Software Foundation (ASF) under one or more\n  contributor license agreements.  See the NOTICE file distributed with\n  this work for additional information regarding copyright ownership.\n  The ASF licenses this file to You under the Apache License, Version 2.0\n  (the \"License\"); you may not use this file except in compliance with\n  the License.  You may obtain a copy of the License at\n  http://www.apache.org/licenses/LICENSE-2.0\n  Unless required by applicable law or agreed to in writing, software\n  distributed under the License is distributed on an \"AS IS\" BASIS,\n  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  See the License for the specific language governing permissions and\n  limitations under the License.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " filtered plugin properties, we don't define plugin-scripts here\n      as we build that dynamically using maven-antrun-plugin below. ",
+        "Line" : 53,
+        "CharPositionInLine" : 72
+      },
+      "2" : {
+        "Text" : " plugin-context is what context this plugin will handle requests on\n      in the application server ",
+        "Line" : 55,
+        "CharPositionInLine" : 36
+      },
+      "3" : {
+        "Text" : " plugin-name is the name of our plugin, affects the name used for\n      the plugin's mbean ",
+        "Line" : 59,
+        "CharPositionInLine" : 29
+      },
+      "4" : {
+        "Text" : " plugin-domain is currently unused, we just define it to an empty\n      string ",
+        "Line" : 63,
+        "CharPositionInLine" : 17
+      },
+      "5" : {
+        "Text" : " dependency versions ",
+        "Line" : 66,
+        "CharPositionInLine" : 33
+      },
+      "6" : {
+        "Text" : " plugin versions ",
+        "Line" : 71,
+        "CharPositionInLine" : 29
+      },
+      "7" : {
+        "Text" : " this lets this plugin deploy nicely into karaf, these get used\n      for the ImportPackage directive for maven-bundle-plugin ",
+        "Line" : 80,
+        "CharPositionInLine" : 66
+      },
+      "8" : {
+        "Text" : " we only need to embed this dependency in the war, this contains\n      a nice helper class that our plugin can use to export it's plugin\n      mbean ",
+        "Line" : 94,
+        "CharPositionInLine" : 16
+      },
+      "9" : {
+        "Text" : " logging ",
+        "Line" : 101,
+        "CharPositionInLine" : 21
+      },
+      "10" : {
+        "Text" : " servlet API is provided by the container ",
+        "Line" : 113,
+        "CharPositionInLine" : 54
+      },
+      "11" : {
+        "Text" : " we want to ensure src/main/resources/WEB-INF/web.xml is being filtered\n      so that it picks up all of our javascript files ",
+        "Line" : 127,
+        "CharPositionInLine" : 58
+      },
+      "12" : {
+        "Text" : " We use maven-antrun-plugin to build up a list of\n           javascript files for our plugin mbean, this means\n           it needs to run before the maven-resources-plugin\n           copies and filters the web.xml, since for this\n           example we use contextParam settings to configure\n           our plugin mbean ",
+        "Line" : 145,
+        "CharPositionInLine" : 32
+      },
+      "13" : {
+        "Text" : " we run this early in the build process before\n              maven-resources-plugin is run.  We're exporting the\n              plugin-scripts property from here, so we need to\n              use maven-antrun-plugin 1.6 or up ",
+        "Line" : 156,
+        "CharPositionInLine" : 52
+      },
+      "14" : {
+        "Text" : " javascript-files will contain all of the javascript in\n                  our project ",
+        "Line" : 166,
+        "CharPositionInLine" : 34
+      },
+      "15" : {
+        "Text" : " we need to strip out the top level path which is\n                   our source directory and be sure to change the directory\n                   separators to forward slashes ",
+        "Line" : 172,
+        "CharPositionInLine" : 53
+      },
+      "16" : {
+        "Text" : " this exports plugin-scripts to the maven build, without\n                this line ${plugin-scripts} in the web.xml file won't be\n                replaced ",
+        "Line" : 184,
+        "CharPositionInLine" : 29
+      },
+      "17" : {
+        "Text" : " defining this maven plugin in the same phase as the\n              maven-antrun-plugin but *after* we've configured the\n              maven-antrun-plugin ensures we filter resources *after*\n              we've discovered the plugin .js files. ",
+        "Line" : 198,
+        "CharPositionInLine" : 57
+      },
+      "18" : {
+        "Text" : " maven-bundle-plugin config, needed to make this war\n        deployable in karaf, defines the context that this bundle\n        should handle requests on ",
+        "Line" : 210,
+        "CharPositionInLine" : 38
+      },
+      "19" : {
+        "Text" : " We define the maven-war-plugin here and make sure it uses\n        the manifest file generated by the maven-bundle-plugin.  We\n        also ensure it picks up our filtered web.xml and not the one\n        in src/main/resources ",
+        "Line" : 257,
+        "CharPositionInLine" : 34
+      },
+      "20" : {
+        "Text" : " Profile to override the parent pom profile of the same name to\n         stop creation of a source-release.zip file here, as the overall\n         dispatch source release was generated separately already. ",
+        "Line" : 290,
+        "CharPositionInLine" : 71
+      },
+      "CommentCount" : 21
+    },
+    "docs/CMakeLists.txt" : {
+      "ObjectId" : "361796f14afd9ab71427b2fc0e331c88423aa7ae",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "docs/books/CMakeLists.txt" : {
+      "ObjectId" : "b30c99d408caac1caa3dd20f0eeadf5ceb80aa98",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't follow symlinks and don't warn about it\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "docs/man/CMakeLists.txt" : {
+      "ObjectId" : "e14d9d7346518c2a90809941de46e4a0e65dfe11",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Popular locations\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Flags for doc tools, based on cmake options\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Generate asciidoc fragments from management schema to incorporate in text\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Generate asciidoc .adoc from --help output for man pages\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Generate HTML\n",
+        "Line" : 77,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Pretty .html for direct viewing.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Raw .html.in body for inclusion in Qpid website.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# Generate man pages.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Man section number\n",
+        "Line" : 107,
+        "CharPositionInLine" : 68
+      },
+      "CommentCount" : 10
+    },
+    "pom.xml" : {
+      "ObjectId" : "755008d11f28613992c337cdc91d1074ce7b7651",
+      "LastModified" : "2019-04-15T15:54:32Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n  Licensed to the Apache Software Foundation (ASF) under one or more\n  contributor license agreements.  See the NOTICE file distributed with\n  this work for additional information regarding copyright ownership.\n  The ASF licenses this file to You under the Apache License, Version 2.0\n  (the \"License\"); you may not use this file except in compliance with\n  the License.  You may obtain a copy of the License at\n  http://www.apache.org/licenses/LICENSE-2.0\n  Unless required by applicable law or agreed to in writing, software\n  distributed under the License is distributed on an \"AS IS\" BASIS,\n  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  See the License for the specific language governing permissions and\n  limitations under the License.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Run this file like this - mvn apache-rat:check ",
+        "Line" : 17,
+        "CharPositionInLine" : 56
+      },
+      "2" : {
+        "Text" : " This is for ignoring the intellij idea project files ",
+        "Line" : 108,
+        "CharPositionInLine" : 115
+      },
+      "3" : {
+        "Text" : " This is for files created by emacs ",
+        "Line" : 109,
+        "CharPositionInLine" : 91
+      },
+      "4" : {
+        "Text" : " PyCharm project file ",
+        "Line" : 110,
+        "CharPositionInLine" : 85
+      },
+      "CommentCount" : 5
+    },
+    "python/CMakeLists.txt" : {
+      "ObjectId" : "117de872d6f074a332f91a44422b3182a3a0b662",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Private python modules, not in standard python site dir.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install script for public python modules\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "python/install_python.cmake" : {
+      "ObjectId" : "9af16c4f55da387ea182e187c6ec374370a9ffc8",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Install script to install public python modules.\n\n# Install with setup.py, add installed files to install manifest.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "router/CMakeLists.txt" : {
+      "ObjectId" : "52e9ccc818f26e6e2725f21c88edbf7e1603d76c",
+      "LastModified" : "2019-03-05T15:40:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n## \n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n## \n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##\n\n## Build the router application\n\n##\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "67983fb2b61bf2a69f4f5cb9c2c8c22fbc19ef41",
+      "LastModified" : "2019-04-17T16:01:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generate code from the management schema.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build the qpid-dispatch library.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# USE_LIBWEBSOCKETS is true only if LIBWEBSOCKETS_FOUND\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# DISPATCH-654 There are, in fact, no strict-aliasing violations and newer compilers don't complain.\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# https://stackoverflow.com/questions/54771452/expanding-a-variable-cmakedefine-and-generator-expression-in-template-file\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "tests/CMakeLists.txt" : {
+      "ObjectId" : "e76c81c34cd3a6ef724699c70b9ea8ead6dcd5e5",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n## Licensed to the Apache Software Foundation (ASF) under one\n\n## or more contributor license agreements.  See the NOTICE file\n\n## distributed with this work for additional information\n\n## regarding copyright ownership.  The ASF licenses this file\n\n## to you under the Apache License, Version 2.0 (the\n\n## \"License\"); you may not use this file except in compliance\n\n## with the License.  You may obtain a copy of the License at\n\n##\n\n##   http://www.apache.org/licenses/LICENSE-2.0\n\n##\n\n## Unless required by applicable law or agreed to in writing,\n\n## software distributed under the License is distributed on an\n\n## \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n## KIND, either express or implied.  See the License for the\n\n## specific language governing permissions and limitations\n\n## under the License.\n\n##\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##\n\n## Build test applications\n\n##\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Unit test python modules\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# System test python modules\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#   system_tests_broker\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Use tox to run the flake8 python linter tool on all the python\n\n# sources. Highly recommended if you're hacking the python code.\n\n# Unfortunately this can only be done for versions of tox >= 1.9.0\n\n# since that version allows us to skip the install step (we have\n\n# no modules thus no setup.py)\n\n#\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Once we move to tox >= v1.7.2 we can remove the next\n\n# line.  See tox.ini file for details\n",
+        "Line" : 158,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Additional files to install for running system tests.\n\n# NOTE: Don't install run.py. A system test of a dispatch installation should pick everything\n\n# up from standard install locations.\n\n#\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# following install() functions will be called only if you do a make \"install\"\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 12,
+    "MAVEN" : 2
+  },
+  "ElapsedTime" : 2313
+}

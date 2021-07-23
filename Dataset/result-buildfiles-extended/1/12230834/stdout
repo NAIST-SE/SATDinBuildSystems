@@ -1,0 +1,418 @@
+{
+  "Repository" : "12230834",
+  "Revision" : "HEAD",
+  "ObjectId" : "33f79e26e5199129704d393d5caa197c21fb96b7",
+  "CommitTime" : "2019-04-11T18:53:47Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "b983b9af6c8062bf40505a790a9e30002f74ee52",
+      "LastModified" : "2017-08-02T21:45:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The rest of Couchbase server use tcmalloc as the memory\n\n# allocator for WIN32. Override the allocator to jemalloc\n",
+        "Line" : 58,
+        "CharPositionInLine" : 7
+      },
+      "1" : {
+        "Text" : "# Make sure that we define all of the variables\n",
+        "Line" : 62,
+        "CharPositionInLine" : 7
+      },
+      "2" : {
+        "Text" : "# Include platform directory for Couchbase Server Builds\n",
+        "Line" : 133,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Comment the line below to disable compiling Copy-On-Write (COW) optimizations\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Supress mismatched tags warnings seen with Clang only.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# using /W0 cause msvc to print out a warning that it overrides\n\n# previous settings (/W3 is added by default).\n\n# Let's just disable the ones we're \"violating\"\n\n# (we should probably fix them at some point?)\n",
+        "Line" : 148,
+        "CharPositionInLine" : 7
+      },
+      "6" : {
+        "Text" : "# If building outside CB server build, set required flags for the selected compiler.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Breakpad support with Couchbase Server Build only when on Windows/Linux.\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Breakpad has headers (which are dependencies for our breakpad\n\n# integration code) that don't compile cleanly as C++11, so the\n\n# GNU standard is used instead.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 12
+      },
+      "9" : {
+        "Text" : "# Create objects libraries for the different \"tools\" parts forestdb, which can be reused\n\n# by various targets.\n",
+        "Line" : 264,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# add top-level testing dir\n",
+        "Line" : 327,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "cmake/Modules/CodeCoverage.cmake" : {
+      "ObjectId" : "48d1d8f7950e22dc65816499e2f5f3da55bb9752",
+      "LastModified" : "2015-10-23T04:46:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# 2012-01-31, Lars Bilke\n\n# - Enable Code Coverage\n\n#\n\n# 2013-09-17, Joakim Söderberg\n\n# - Added support for Clang.\n\n# - Some additional usage instructions.\n\n#\n\n# USAGE:\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 0. (Mac only) If you use Xcode 5.1 make sure to patch geninfo as described here:\n\n#      http://stackoverflow.com/a/22404544/80480\n\n#\n\n# 1. Copy this file into your cmake modules path.\n\n#\n\n# 2. Add the following line to your CMakeLists.txt:\n\n#      INCLUDE(CodeCoverage)\n\n#\n\n# 3. Set compiler flags to turn off optimization and enable coverage:\n\n#    SET(CMAKE_CXX_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#     SET(CMAKE_C_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\n\n# 3. Use the function SETUP_TARGET_FOR_COVERAGE to create a custom make target\n\n#    which runs your test executable and produces a lcov code coverage report:\n\n#    Example:\n\n#     SETUP_TARGET_FOR_COVERAGE(\n\n#                my_coverage_target  # Name for custom target.\n\n#                test_driver         # Name of the test driver executable that runs the tests.\n\n#                                    # NOTE! This should always have a ZERO as exit code\n\n#                                    # otherwise the coverage generation will not complete.\n\n#                coverage            # Name of output directory.\n\n#                )\n\n#\n\n# 4. Build a Debug build:\n\n#     cmake -DCMAKE_BUILD_TYPE=Debug ..\n\n#     make\n\n#     make my_coverage_target\n\n#\n\n#\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NOT GCOV_PATH\n",
+        "Line" : 49,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Clang version 3.0.0 and greater now supports gcov as well.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# NOT CMAKE_COMPILER_IS_GNUCXX\n",
+        "Line" : 58,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 84,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests.\n\n#                        MUST return ZERO always, even on errors.\n\n#                        If not, no coverage report will be created!\n\n# Param _outputname     lcov output is generated as _outputname.info\n\n#                       HTML report is generated in _outputname/index.html\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 99,
+        "CharPositionInLine" : 12
+      },
+      "9" : {
+        "Text" : "# NOT GENHTML_PATH\n",
+        "Line" : 103,
+        "CharPositionInLine" : 12
+      },
+      "10" : {
+        "Text" : "# Setup target\n",
+        "Line" : 105,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 108,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# Run tests\n",
+        "Line" : 111,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 114,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 124,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE\n",
+        "Line" : 130,
+        "CharPositionInLine" : 14
+      },
+      "16" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests\n\n# Param _outputname     cobertura output is generated as _outputname.xml\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# NOT PYTHON_EXECUTABLE\n",
+        "Line" : 141,
+        "CharPositionInLine" : 12
+      },
+      "18" : {
+        "Text" : "# NOT GCOVR_PATH\n",
+        "Line" : 145,
+        "CharPositionInLine" : 12
+      },
+      "19" : {
+        "Text" : "# Run tests\n",
+        "Line" : 149,
+        "CharPositionInLine" : 8
+      },
+      "20" : {
+        "Text" : "# Running gcovr\n",
+        "Line" : 152,
+        "CharPositionInLine" : 8
+      },
+      "21" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 158,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_COBERTURA\n",
+        "Line" : 164,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 23
+    },
+    "cmake/Modules/CouchbaseCodeCoverage.cmake" : {
+      "ObjectId" : "7f1519cf511bfd28c0f73aa0af8aee754aa9045b",
+      "LastModified" : "2015-10-23T04:46:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Support for running code coverage reporting.\n\n#\n\n# Usage:\n\n# 1). Add a call to ADD_COVERAGE_REPORT() to the module(s) you wish to\n\n#     obtain code coverage reports on.\n\n# 2). Enable the option CB_CODE_COVERAGE (e.g. pass -DCB_CODE_COVERAGE=ON to cmake).\n\n# 3). Build as normal.\n\n# 4). Run unit test(s) to exercise the codebase.\n\n# 5). Run `make coverage-report-html` and/or `coverage-report-xml`\n\n#     (from the selected module subdirectory) to generate the reports.\n\n# 6) (Optional) to zero coverage counters before a re-run run `make coverage-zero-counters`.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Defines a coverage report for the current module. If CB_CODE_COVERAGE is enabled,\n\n# adds three new targets to that module:\n\n#   <project>-coverage-zero-counters: Zeros the code coverage counters for the module.\n\n#   <project>-coverage-report-html:   Generates a code coverage report in HTML.\n\n#   <project>-coverage-report-xml:    Generates a code coverage report in XML.\n\n# Usage:\n\n# 1) `make <project>-coverage-zero-counters` to clear any counters from\n\n#    previously-executed programs.\n\n# 2) Run whatever programs to excercise the code (unit tests, etc).\n\n# 3) `make <project>-coverage-report-{html,xml}` to generate a report.\n\n#\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindAsyncIOLib.cmake" : {
+      "ObjectId" : "be477a59be760f8a971a9f7d81f33a7db6e540ae",
+      "LastModified" : "2015-10-23T04:46:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate async I/O libraries on a host OS.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindEncryptionLib.cmake" : {
+      "ObjectId" : "08372ea6e38953c94d07c8245b92ecf77d73bb03",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate the encryption library given by the build environment\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindJemalloc.cmake" : {
+      "ObjectId" : "1fae7cd10551a87c78b91ed0d7f7bf1bc18fa1e9",
+      "LastModified" : "2015-10-23T04:46:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate jemalloc libraries on a host OS.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindSnappy.cmake" : {
+      "ObjectId" : "5074c11d30269e38ad68fb62afbd22d0c8ec2700",
+      "LastModified" : "2015-10-23T04:46:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Locate snappy library\n\n# This module defines\n\n#  SNAPPY_FOUND, if false, do not try to link with snappy\n\n#  LIBSNAPPY, Library path and libs\n\n#  SNAPPY_INCLUDE_DIR, where to find the ICU headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/MemoryCheck.cmake" : {
+      "ObjectId" : "75f1216a44176efb256c7b3720374b8bfc4bfa0c",
+      "LastModified" : "2015-10-23T04:46:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# - Enable Valgrind Check\n\n#\n\n#   Build a Valgrind build:\n\n#     cmake -DCMAKE_BUILD_TYPE=Valgrind ..\n\n#     make\n\n#     make _targetname\n\n#\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# NOT VALGRIND_PATH\n",
+        "Line" : 16,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 44,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param list of target tests\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# NOT VALGRIND_PATH\n",
+        "Line" : 53,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# Setup target\n",
+        "Line" : 55,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Run tests\n",
+        "Line" : 60,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# SETUP_TARGET_FOR_MEMCHECK\n",
+        "Line" : 69,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 9
+    },
+    "cmake/Modules/ThreadSanitizer.cmake" : {
+      "ObjectId" : "86294f5d47377890e4baccdaba4ead0486f459a1",
+      "LastModified" : "2015-10-23T20:53:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Support for building with ThreadSanitizer (tsan) -\n\n# https://code.google.com/p/thread-sanitizer/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Also needs to be a link flag for test to pass\n",
+        "Line" : 13,
+        "CharPositionInLine" : 50
+      },
+      "2" : {
+        "Text" : "# TC/jemalloc are incompatible with ThreadSanitizer - force\n\n# the use of the system allocator.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# Configure CTest's MemCheck to ThreadSanitizer.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Override the normal ADD_TEST macro to set the TSAN_OPTIONS\n\n# environment variable - this allows us to specify the\n\n# suppressions file to use.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 5
+    },
+    "tests/CMakeLists.txt" : {
+      "ObjectId" : "d5f7db2d48c7400f035da9cdf63abbbae7641780",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# import each test suite\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/anomaly/CMakeLists.txt" : {
+      "ObjectId" : "a17a975c634cb60c7e55086322c79b5686ff242b",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# every file same as FORESTDB_CORE_SRC execept filemgr_ops.cc replaced\n\n# with filemgr_anomalous_ops.cc\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add test target\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tests/e2e/CMakeLists.txt" : {
+      "ObjectId" : "78e6d59ebf7701f30ad4c7122f3ac7b0a583a570",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add test target\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/fdbench-micro/CMakeLists.txt" : {
+      "ObjectId" : "e02ea0b1ed5541f51a6ada0231e042a508e0c194",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add test target\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/functional/CMakeLists.txt" : {
+      "ObjectId" : "42c3dc8be612c4d160c76ade150a1c3e61ef24ac",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add test target\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/unit/CMakeLists.txt" : {
+      "ObjectId" : "626e521022ea24ad3eeb1cc32127de03476d3e3c",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add test target\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/usecase/CMakeLists.txt" : {
+      "ObjectId" : "f4c3e55b51c3ad92152c250d16b15e382cac487d",
+      "LastModified" : "2016-11-29T21:57:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add test target\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 16
+  },
+  "ElapsedTime" : 2470
+}

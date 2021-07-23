@@ -1,0 +1,470 @@
+{
+  "Repository" : "253834",
+  "Revision" : "HEAD",
+  "ObjectId" : "03dd029a5b84bb4de13c8c61af22555d294f64b2",
+  "CommitTime" : "2019-04-17T20:32:27Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "35772be90dc8692fa53a2569ad0c4bff2b6ffa37",
+      "LastModified" : "2019-04-16T12:31:23Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# This GNU Makefile supports different OS and CPU combinations.\n\n#\n\n# You should use it this way :\n\n#   [g]make TARGET=os ARCH=arch CPU=cpu USE_xxx=1 ...\n\n#\n\n# By default the detailed commands are hidden for a cleaner output, but you may\n\n# see them by appending \"V=1\" to the make command.\n\n#\n\n# Valid USE_* options are enumerated in the \"use_opts\" variable and are listed\n\n# below. Most of them are automatically set by the TARGET, others have to be\n\n# explicitly specified :\n\n#   USE_EPOLL            : enable epoll() on Linux 2.6. Automatic.\n\n#   USE_KQUEUE           : enable kqueue() on BSD. Automatic.\n\n#   USE_MY_EPOLL         : redefine epoll_* syscalls. Automatic.\n\n#   USE_MY_SPLICE        : redefine the splice syscall if build fails without.\n\n#   USE_NETFILTER        : enable netfilter on Linux. Automatic.\n\n#   USE_PCRE             : enable use of libpcre for regex. Recommended.\n\n#   USE_PCRE_JIT         : enable JIT for faster regex on libpcre >= 8.32\n\n#   USE_PCRE2            : enable use of libpcre2 for regex.\n\n#   USE_PCRE2_JIT        : enable JIT for faster regex on libpcre2\n\n#   USE_POLL             : enable poll(). Automatic.\n\n#   USE_PRIVATE_CACHE    : disable shared memory cache of ssl sessions.\n\n#   USE_THREAD           : enable threads support.\n\n#   USE_PTHREAD_PSHARED  : enable pthread process shared mutex on sslcache.\n\n#   USE_REGPARM          : enable regparm optimization. Recommended on x86.\n\n#   USE_STATIC_PCRE      : enable static libpcre. Recommended.\n\n#   USE_STATIC_PCRE2     : enable static libpcre2.\n\n#   USE_TPROXY           : enable transparent proxy. Automatic.\n\n#   USE_LINUX_TPROXY     : enable full transparent proxy. Automatic.\n\n#   USE_LINUX_SPLICE     : enable kernel 2.6 splicing. Automatic.\n\n#   USE_LIBCRYPT         : enable crypted passwords using -lcrypt\n\n#   USE_CRYPT_H          : set it if your system requires including crypt.h\n\n#   USE_VSYSCALL         : enable vsyscall on Linux x86, bypassing libc\n\n#   USE_GETADDRINFO      : use getaddrinfo() to resolve IPv6 host names.\n\n#   USE_OPENSSL          : enable use of OpenSSL. Recommended, but see below.\n\n#   USE_LUA              : enable Lua support.\n\n#   USE_FUTEX            : enable use of futex on kernel 2.6. Automatic.\n\n#   USE_ACCEPT4          : enable use of accept4() on linux. Automatic.\n\n#   USE_MY_ACCEPT4       : use own implemention of accept4() if glibc < 2.10.\n\n#   USE_PRCTL            : enable use of prctl(). Automatic.\n\n#   USE_ZLIB             : enable zlib library support.\n\n#   USE_SLZ              : enable slz library instead of zlib (pick at most one).\n\n#   USE_CPU_AFFINITY     : enable pinning processes to CPU on Linux. Automatic.\n\n#   USE_TFO              : enable TCP fast open. Supported on Linux >= 3.7.\n\n#   USE_NS               : enable network namespace support. Supported on Linux >= 2.6.24.\n\n#   USE_DL               : enable it if your system requires -ldl. Automatic on Linux.\n\n#   USE_RT               : enable it if your system requires -lrt. Automatic on Linux.\n\n#   USE_DEVICEATLAS      : enable DeviceAtlas api.\n\n#   USE_51DEGREES        : enable third party device detection library from 51Degrees\n\n#   USE_SYSTEMD          : enable sd_notify() support.\n\n#   USE_OBSOLETE_LINKER  : use when the linker fails to emit __start_init/__stop_init\n\n#\n\n# Options can be forced by specifying \"USE_xxx=1\" or can be disabled by using\n\n# \"USE_xxx=\" (empty string).\n\n#\n\n# Variables useful for packagers :\n\n#   CC is set to \"gcc\" by default and is used for compilation only.\n\n#   LD is set to \"gcc\" by default and is used for linking only.\n\n#   ARCH may be useful to force build of 32-bit binary on 64-bit systems\n\n#   CFLAGS is automatically set for the specified CPU and may be overridden.\n\n#   LDFLAGS is automatically set to -g and may be overridden.\n\n#   DEP may be cleared to ignore changes to include files during development\n\n#   SMALL_OPTS may be used to specify some options to shrink memory usage.\n\n#   DEBUG may be used to set some internal debugging options.\n\n#   ERR may be set to non-empty to pass -Werror to the compiler\n\n#   ADDINC may be used to complete the include path in the form -Ipath.\n\n#   ADDLIB may be used to complete the library list in the form -Lpath -llib.\n\n#   DEFINE may be used to specify any additional define, which will be reported\n\n#          by \"haproxy -vv\" in CFLAGS.\n\n#   SILENT_DEFINE may be used to specify other defines which will not be\n\n#     reported by \"haproxy -vv\".\n\n#   EXTRA   is used to force building or not building some extra tools.\n\n#   DESTDIR is not set by default and is used for installation only.\n\n#           It might be useful to set DESTDIR if you want to install haproxy\n\n#           in a sandbox.\n\n#   PREFIX  is set to \"/usr/local\" by default and is used for installation only.\n\n#   SBINDIR is set to \"$(PREFIX)/sbin\" by default and is used for installation\n\n#           only.\n\n#   MANDIR  is set to \"$(PREFIX)/share/man\" by default and is used for\n\n#           installation only.\n\n#   DOCDIR  is set to \"$(PREFIX)/doc/haproxy\" by default and is used for\n\n#           installation only.\n\n#\n\n# Other variables :\n\n#   PCRE_CONFIG    : force the binary path to get pcre config (by default\n\n#                                                              pcre-config)\n\n#   PCREDIR        : force the path to libpcre.\n\n#   PCRE_LIB       : force the lib path to libpcre (defaults to $PCREDIR/lib).\n\n#   PCRE_INC       : force the include path to libpcre ($PCREDIR/inc)\n\n#   PCRE2_CONFIG   : force the binary path to get pcre2 config (by default\n\n#                                                               pcre2-config)\n\n#   SSL_LIB        : force the lib path to libssl/libcrypto\n\n#   SSL_INC        : force the include path to libssl/libcrypto\n\n#   LUA_LIB        : force the lib path to lua\n\n#   LUA_INC        : force the include path to lua\n\n#   LUA_LIB_NAME   : force the lib name (or automatically evaluated, by order of\n\n#                                        priority : lua5.3, lua53, lua).\n\n#   IGNOREGIT      : ignore GIT commit versions if set.\n\n#   VERSION        : force haproxy version reporting.\n\n#   SUBVERS        : add a sub-version (eg: platform, model, ...).\n\n#   VERDATE        : force haproxy's release date.\n\n#\n\n#   VTEST_PROGRAM : location of the vtest program to run reg-tests.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# verbosity: pass V=1 for verbose shell invocation\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Function used to detect support of a given option by the compiler.\n\n# Usage: CFLAGS += $(call cc-opt,option). Eg: $(call cc-opt,-fwrapv)\n\n# Note: ensure the referencing variable is assigned using \":=\" and not \"=\" to\n\n#       call it only once.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# same but emits $2 if $1 is not supported\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Disable a warning when supported by the compiler. Don't put spaces around the\n\n# warning! And don't use cc-opt which doesn't always report an error until\n\n# another one is also returned.\n\n# Usage: CFLAGS += $(call cc-nowarn,warning). Eg: $(call cc-opt,format-truncation)\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#### Installation options.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#### TARGET system\n\n# Use TARGET=<target_name> to optimize for a specifc target OS among the\n\n# following list (use the default \"generic\" if uncertain) :\n\n#    generic, linux22, linux24, linux24e, linux26, solaris,\n\n#    freebsd, openbsd, netbsd, cygwin, haiku, custom, aix51, aix52\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#### TARGET CPU\n\n# Use CPU=<cpu_name> to optimize for a particular CPU, among the following\n\n# list :\n\n#    generic, native, i586, i686, ultrasparc, custom\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#### Architecture, used when not building for native architecture\n\n# Use ARCH=<arch_name> to force build for a specific architecture. Known\n\n# architectures will lead to \"-m32\" or \"-m64\" being added to CFLAGS and\n\n# LDFLAGS. This can be required to build 32-bit binaries on 64-bit targets.\n\n# Currently, only 32, 64, x86_64, i386, i486, i586 and i686 are understood.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#### Toolchain options.\n\n# GCC is normally used both for compiling and linking.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#### Debug flags (typically \"-g\").\n\n# Those flags only feed CFLAGS so it is not mandatory to use this form.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#### Add -Werror when set to non-empty\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#### May be used to force running a specific set of reg-tests\n",
+        "Line" : 166,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#### Compiler-specific flags that may be used to disable some negative over-\n\n# optimization or to silence some warnings. -fno-strict-aliasing is needed with\n\n# gcc >= 4.4.\n\n# We rely on signed integer wraparound on overflow, however clang think it\n\n# can do whatever it wants since it's an undefined behavior, so use -fwrapv\n\n# to be sure we get the intended behavior.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#### Memory usage tuning\n\n# If small memory footprint is required, you can reduce the buffer size. There\n\n# are 2 buffers per concurrent session, so 16 kB buffers will eat 32 MB memory\n\n# with 1000 concurrent sessions. Putting it slightly lower than a page size\n\n# will prevent the additional parameters to go beyond a page. 8030 bytes is\n\n# exactly 5.5 TCP segments of 1460 bytes and is generally good. Useful tuning\n\n# macros include :\n\n#    SYSTEM_MAXCONN, BUFSIZE, MAXREWRITE, REQURI_LEN, CAPTURE_LEN.\n\n# Example: SMALL_OPTS = -DBUFSIZE=8030 -DMAXREWRITE=1030 -DSYSTEM_MAXCONN=1024\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#### Debug settings\n\n# You can enable debugging on specific code parts by setting DEBUG=-DDEBUG_xxx.\n\n# Currently defined DEBUG macros include DEBUG_FULL, DEBUG_MEMORY, DEBUG_FSM,\n\n# DEBUG_HASH, DEBUG_AUTH, DEBUG_SPOE, DEBUG_UAF and DEBUG_THREAD. Please check\n\n# sources for exact meaning or do not use at all.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#### Trace options\n\n# Use TRACE=1 to trace function calls to file \"trace.out\" or to stderr if not\n\n# possible.\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#### Additional include and library dirs\n\n# Redefine this if you want to add some special PATH to include/libs\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#### Specific macro definitions\n\n# Use DEFINE=-Dxxx to set any tunable macro. Anything declared here will appear\n\n# in the build options reported by \"haproxy -vv\". Use SILENT_DEFINE if you do\n\n# not want to pollute the report with complex defines.\n\n# The following settings might be of interest when SSL is enabled :\n\n#   LISTEN_DEFAULT_CIPHERS is a cipher suite string used to set the default SSL\n\n#           ciphers on \"bind\" lines instead of using OpenSSL's defaults.\n\n#   CONNECT_DEFAULT_CIPHERS is a cipher suite string used to set the default\n\n#           SSL ciphers on \"server\" lines instead of using OpenSSL's defaults.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#### extra programs to build\n\n# Force this to enable building extra programs or to disable them.\n\n# It's automatically appended depending on the targets.\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#### CPU dependant optimizations\n\n# Some CFLAGS are set by default depending on the target CPU. Those flags only\n\n# feed CPU_CFLAGS, which in turn feed CFLAGS, so it is not mandatory to use\n\n# them. You should not have to change these options. Better use CPU_CFLAGS or\n\n# even CFLAGS instead.\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#### ARCH dependant flags, may be overridden by CPU flags\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#### Common CFLAGS\n\n# These CFLAGS contain general optimization options, CPU-specific optimizations\n\n# and debug flags. They may be overridden by some distributions which prefer to\n\n# set all of them at once instead of playing with the CPU and DEBUG variables.\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#### Common LDFLAGS\n\n# These LDFLAGS are used as the first \"ld\" options, regardless of any library\n\n# path or any other option. They may be changed to add any linker-specific\n\n# option at the beginning of the ld command line.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#### list of all \"USE_*\" options. These ones must be updated if new options are\n\n# added, so that the relevant options are properly added to the CFLAGS and to\n\n# the reported build options.\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#### Target system options\n\n# Depending on the target platform, some options are set, as well as some\n\n# CFLAGS and LDFLAGS. All variables pre-set here will not appear in the build\n\n# options string. They may be set to any value, but are historically set to\n\n# \"implicit\" which eases debugging. You should not have to change anything\n\n# there unless you're adding support for a new platform.\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# poll() is always supported, unless explicitly disabled by passing USE_POLL=\"\"\n\n# on the make command line.\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Always enable threads support by default and let the Makefile detect if\n\n# HAProxy can be compiled with threads or not.\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# generic system target has nothing specific\n",
+        "Line" : 302,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Haiku\n",
+        "Line" : 307,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Linux 2.2\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Standard Linux 2.4 with netfilter but without epoll()\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Enhanced Linux 2.4 with netfilter and epoll() patch > 0.21\n",
+        "Line" : 325,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Standard Linux 2.6 with netfilter and standard epoll()\n",
+        "Line" : 332,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Standard Linux >= 2.6.28 with netfilter, epoll, tproxy and splice\n",
+        "Line" : 339,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Solaris 8 and above\n",
+        "Line" : 347,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# We also enable getaddrinfo() which works since solaris 8.\n",
+        "Line" : 349,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# FreeBSD 5 and above\n",
+        "Line" : 356,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Mac OS/X\n",
+        "Line" : 363,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# OpenBSD 5.7 and above\n",
+        "Line" : 370,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# NetBSD\n",
+        "Line" : 376,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# AIX 5.1 only\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# AIX 5.2 and above\n",
+        "Line" : 390,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Cygwin\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Cygwin adds IPv6 support only in version 1.7 (in beta right now). \n",
+        "Line" : 402,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# set the default settings according to the target above\n",
+        "Line" : 406,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "#### Determine version, sub-version and release date.\n\n# If GIT is found, and IGNOREGIT is not set, VERSION, SUBVERS and VERDATE are\n\n# extracted from the last commit. Otherwise, use the contents of the files\n\n# holding the same names in the current directory.\n",
+        "Line" : 409,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# OK git is there and works.\n",
+        "Line" : 417,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Last commit version not found, take it from the files.\n",
+        "Line" : 423,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "#### Build options\n\n# Do not change these ones, enable USE_* variables instead.\n",
+        "Line" : 434,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "#### Extra objects to be built and integrated (used only for development)\n",
+        "Line" : 440,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Return USE_xxx=$(USE_xxx) if the variable was set from the environment or the\n\n# command line.\n\n# Usage:\n\n#   BUILD_OPTIONS += $(call ignore_implicit,USE_xxx)\n",
+        "Line" : 443,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# This variable collects all USE_* values except those set to \"implicit\". This\n\n# is used to report a list of all flags which were used to build this version.\n\n# Do not assign anything to it.\n",
+        "Line" : 452,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# All USE_* options have their equivalent macro defined in the code (some might\n\n# possibly be unused though)\n",
+        "Line" : 458,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Use SLZ_INC and SLZ_LIB to force path to zlib.h and libz.{a,so} if needed.\n",
+        "Line" : 484,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Use ZLIB_INC and ZLIB_LIB to force path to zlib.h and libz.{a,so} if needed.\n",
+        "Line" : 492,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# OpenSSL is packaged in various forms and with various dependencies.\n\n# In general -lssl is enough, but on some platforms, -lcrypto may be needed,\n\n# reason why it's added by default. Some even need -lz, then you'll need to\n\n# pass it in the \"ADDLIB\" variable if needed. If your SSL libraries are not\n\n# in the usual path, use SSL_INC=/path/to/inc and SSL_LIB=/path/to/lib.\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# The private cache option affect the way the shctx is built\n",
+        "Line" : 557,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Try to automatically detect the Lua library\n",
+        "Line" : 571,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# Use DEVICEATLAS_SRC and possibly DEVICEATLAS_INC and DEVICEATLAS_LIB to force path\n\n# to DeviceAtlas headers and libraries if needed.\n",
+        "Line" : 593,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Use 51DEGREES_SRC and possibly 51DEGREES_INC and 51DEGREES_LIB to force path\n\n# to 51degrees headers and libraries if needed.\n",
+        "Line" : 609,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# PCREDIR is used to automatically construct the PCRE_INC and PCRE_LIB paths,\n\n# by appending /include and /lib respectively. If your system does not use the\n\n# same sub-directories, simply force these variables instead of PCREDIR. It is\n\n# automatically detected but can be forced if required (for cross-compiling).\n\n# Forcing PCREDIR to an empty string will let the compiler use the default\n\n# locations.\n",
+        "Line" : 635,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# dynamic PCRE\n",
+        "Line" : 650,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# static PCRE\n",
+        "Line" : 654,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# This one can be changed to look for ebtree files in an external directory\n",
+        "Line" : 702,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "#### Global compile options\n",
+        "Line" : 705,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# if tracing is enabled, we want it to be as fast as possible\n",
+        "Line" : 725,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "#### Global link options\n\n# These options are added at the end of the \"ld\" command line. Use LDFLAGS to\n\n# add options at the beginning of the \"ld\" command line if needed.\n",
+        "Line" : 735,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# Not used right now\n",
+        "Line" : 810,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# Used only for forced dependency checking. May be cleared during development.\n",
+        "Line" : 813,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "#list of levels\"\n",
+        "Line" : 971,
+        "CharPositionInLine" : 45
+      },
+      "CommentCount" : 71,
+      "Errorlog" : "line 818:13 token recognition error at: '\"/^[^#]*$$/q;s/^#\\(.*\\)/\\1'\n"
+    },
+    "contrib/debug/Makefile" : {
+      "ObjectId" : "74e7547e0f5d8bffb298c9c94e190ec9f46ace55",
+      "LastModified" : "2015-12-20T22:21:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/halog/Makefile" : {
+      "ObjectId" : "5e687c09accc1edff294afde7e154e32a026f607",
+      "LastModified" : "2015-12-20T22:21:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# note: it is recommended to also add -fomit-frame-pointer on i386\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# most recent glibc provide platform-specific optimizations that make\n\n# memchr faster than the generic C implementation (eg: SSE and prefetch\n\n# on x86_64). Try with an without. In general, on x86_64 it's better to\n\n# use memchr using the define below.\n\n# DEFINE   = -DUSE_MEMCHR\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/hpack/Makefile" : {
+      "ObjectId" : "4fce8dbf79c2eba24b9eefe4d897a997b5d41039",
+      "LastModified" : "2018-12-11T08:06:46Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/ip6range/Makefile" : {
+      "ObjectId" : "55849b6deb9556b41b4ed0e8ea9ed3c8b3a35eec",
+      "LastModified" : "2015-12-20T22:21:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/iprange/Makefile" : {
+      "ObjectId" : "b3c72eda50a3e39c781f0e305cc370213092fe54",
+      "LastModified" : "2015-12-20T22:21:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/mod_defender/Makefile" : {
+      "ObjectId" : "efc7d7f6e18e2742b0fbbc37d980879981635293",
+      "LastModified" : "2017-12-02T13:36:15Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/modsecurity/Makefile" : {
+      "ObjectId" : "aa0d6e38db1a0817c82d5c455c7b261f7cb0a6ff",
+      "LastModified" : "2017-12-02T13:36:15Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/spoa_example/Makefile" : {
+      "ObjectId" : "c44c2b87937a6512bc4688737e23b8d02faa2d25",
+      "LastModified" : "2017-12-02T13:36:15Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/systemd/Makefile" : {
+      "ObjectId" : "e542c2387c7940e79cb546d7bcb2e935e1e0c9e9",
+      "LastModified" : "2015-12-20T22:21:57Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/tcploop/Makefile" : {
+      "ObjectId" : "42a6259c2ba72ce7483f5eff44c651c1ca4c38c1",
+      "LastModified" : "2016-11-12T17:04:05Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "doc/lua-api/Makefile" : {
+      "ObjectId" : "b21857d2584cf7c5ba75fc1dc1c0ae331c90dced",
+      "LastModified" : "2016-11-12T17:04:05Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 12
+  },
+  "ElapsedTime" : 2864
+}

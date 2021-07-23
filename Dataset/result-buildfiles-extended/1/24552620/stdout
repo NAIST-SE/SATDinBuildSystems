@@ -1,0 +1,170 @@
+{
+  "Repository" : "24552620",
+  "Revision" : "HEAD",
+  "ObjectId" : "bb5aec963b2f7d0566b4daf7c11b93f467972500",
+  "CommitTime" : "2019-03-21T21:04:42Z",
+  "Files" : {
+    "core/Makefile" : {
+      "ObjectId" : "f68eb49e5795edaab4f8db3d98b5b5fb2b69babe",
+      "LastModified" : "2019-02-27T23:44:28Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2014-2017, The Regents of the University of California.\n\n# Copyright (c) 2016-2017, Nefeli Networks, Inc.\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions are met:\n\n#\n\n# * Redistributions of source code must retain the above copyright notice, this\n\n# list of conditions and the following disclaimer.\n\n#\n\n# * Redistributions in binary form must reproduce the above copyright notice,\n\n# this list of conditions and the following disclaimer in the documentation\n\n# and/or other materials provided with the distribution.\n\n#\n\n# * Neither the names of the copyright holders nor the names of their\n\n# contributors may be used to endorse or promote products derived from this\n\n# software without specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n\n# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\n# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n\n# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n\n# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n\n# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n\n# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n\n# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n\n# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n\n# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n\n# POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Disable all implicit Makefile rules\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# 'clang' or 'g++'\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# if the user didn't do \"make install\" for DPDK\n",
+        "Line" : 72,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# We always want these libraries to be dynamically linked even when the\n\n# user requests a static build.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# These libraries are not supported by pkg-config.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If pkg-config is available, we just need a list of the dependecies.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# If pkg-config is not available, we need to list the libs we depend on.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# If pkg-config is not available and we're static linking, we also need\n\n# the indirect dependecies.  This is annoying, because they may change\n\n# in future versions.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Plugins get to look in $COREDIR through -I $(COREDIR).  Let them also\n\n# see their own top level directory, e.g., /some/path/to/modules/foo.cc\n\n# gets /some/path/to/modules/.. so that it can read its own\n\n# /some/path/to/utils/foo.h; and add $COREDIR/modules, so that\n\n# relative paths from there work as if they lived in that directory.\n\n# We give these paths to all compilations, not just plugins, but\n\n# they are harmless for non-plugin files.\n\n#\n\n# TODO(torek): currently all -I are -isystem to disable warnings from\n\n# these headers.  Should fix the warnings.  Using -isystem also disables\n\n# -MMD dependency recording (should we use -MD?).\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# -Wshadow should not be used for g++ 4.x, as it has too many false positives\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Disable GNU_UNIQUE symbol for g++\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Used static libraries\n",
+        "Line" : 141,
+        "CharPositionInLine" : 5
+      },
+      "13" : {
+        "Text" : "# One of our pkg-config dependency might depend on a library that\n\n# we want to dynamically link no matter what.  Filter those out\n\n# to avoid including them into the static linking section.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Unless we explicitly specify a default goal, the first target in the\n\n# included .mk file below will become the default goal by surprise.\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Each plugin may have their own extra Makefile snippets\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Given PLUGINS (set in extra.mk), set up PROTO_PLUGINS,\n\n# DRIVER_PLUGINS, MODULE_PLUGINS, and UTIL_PLUGINS.  Note\n\n# that paths in extra.mk are already absolute.  Use\n\n# $(wildcard) in case there are no drivers or modules or\n\n# whatever: $(wildcard /path/to/nonexistent/dir) expands to\n\n# empty, while $(wildcard /path/to/existing/dir) expands to\n\n# /path/to/existing/dir.  This doesn't help if the PLUGINS\n\n# path points to files (instead of directories), but that's\n\n# a severe user-configuration error.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Much as above, ../protobuf has our standard protobufs and\n\n# ports; there may be additional plugin ones via PLUGINS.\n\n# Scan all these dirs and set up --proto_path argument to\n\n# include these dirs, and add each to the vpath for %.proto\n\n# so that Make can find the source for $< expansion.\n\n#\n\n# NB: protoc strips off the *first matching* leading --proto_path.\n\n# This means we want longer paths (the ports/ sub-directories)\n\n# to appear first.  As above, leave out the ports/ sub-directory\n\n# if it does not exist (for plugins that do not define any\n\n# port driver protobufs).\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# NB: MODULES as defined here may include test and/or benchmark\n\n# sources -- it's just all the files in all modules/.\n\n# Use MODULE_SRCS below, which filters them out, when that's important.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# NB: the first vpath is for most files, including objects for drivers,\n\n# modules, utils, gate_hooks, and resume_hooks since those compile to\n\n# \"{drivers,modules,utils,gate_hooks,resume_hooks}/%.o\".  That is,\n\n# we just need make to search ./<path> and $(PLUGINS)/<path>.\n\n#\n\n# We need to keep the various names separate since, e.g., we have:\n\n#     resume_hooks/metadata.o: resume_hooks/metadata.cc\n\n# and yet:\n\n#     metadata.o: metadata.cc\n\n# (which are very different files).  We don't want to require that\n\n# all source and object file names be unique across everything, so\n\n# we use GNU make's \"best (longest) match\" feature to build the\n\n# .o file from the appropriate source.\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# These vpaths, however, are for tests that compile to %_test.o,\n\n# in the current directory.  There are no such tests at the moment\n\n# for gate hooks and resume hooks, but there are some for drivers,\n\n# modules, and utils.\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We don't (yet?) make shared objects for drivers.\n",
+        "Line" : 291,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# ? why doesn't HEADERS include module headers?\n",
+        "Line" : 300,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# This just makes sure all the plugin directories actually exist\n\n# (it's a sanity check on the value of $(PLUGINS) since if one is\n\n# misspelled or not container-mounted, its modules just seem to\n\n# vanish).\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Generate version string from the current status of the git working copy\n",
+        "Line" : 344,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Default if previous command fails (e.g., when building from a tarball)\n",
+        "Line" : 347,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Make sure version.h is created before its use.\n\n# This is necessary since ./deps/main.d might not be there yet.\n",
+        "Line" : 354,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# This build wrapper takes 4 parameters:\n\n# $(1): build type (CXX, LD, ...)\n\n# $(2): Make target\n\n# $(3): Make prerequisites\n\n# $(4): command\n",
+        "Line" : 358,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 28,
+      "Errorlog" : "line 373:8 token recognition error at: '\"Error: \\0'\nline 374:9 token recognition error at: '\\0'\nline 374:27 token recognition error at: '\\0'\nline 499:8 token recognition error at: '\".  But it's a lot easier than carefully expanding\\n# # out all the MODULE, DRIVER, and UTIL names to have the correct\\n# prefixes.\\n-include $(wildcard $(DEPDIR)/*.d) $(wildcard $(DEPDIR)/*/*.d)\\n\u0000'\n"
+    },
+    "core/kmod/Makefile" : {
+      "ObjectId" : "760ed7f35b43b44a4add01ffa86c4ebcdc96d51a",
+      "LastModified" : "2017-07-19T22:26:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright (c) 2014-2016, The Regents of the University of California.\n\n# Copyright (c) 2016-2017, Nefeli Networks, Inc.\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions are met:\n\n#\n\n# * Redistributions of source code must retain the above copyright notice, this\n\n# list of conditions and the following disclaimer.\n\n#\n\n# * Redistributions in binary form must reproduce the above copyright notice,\n\n# this list of conditions and the following disclaimer in the documentation\n\n# and/or other materials provided with the distribution.\n\n#\n\n# * Neither the names of the copyright holders nor the names of their\n\n# contributors may be used to endorse or promote products derived from this\n\n# software without specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n\n# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\n# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n\n# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n\n# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n\n# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n\n# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n\n# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n\n# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n\n# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n\n# POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 1717
+}

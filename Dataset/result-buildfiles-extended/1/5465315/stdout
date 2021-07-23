@@ -1,0 +1,1601 @@
+{
+  "Repository" : "5465315",
+  "Revision" : "HEAD",
+  "ObjectId" : "fa57859477441b60914e6239382c6fba286a0c26",
+  "CommitTime" : "2019-03-19T22:31:21Z",
+  "Files" : {
+    "Builds/CMake/CMakeFuncs.cmake" : {
+      "ObjectId" : "2f16fb7d81fbe1439c5a60154f51bb943d01877b",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## \"target\" parsing..DEPRECATED and will be removed in future\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Parse the target\n",
+        "Line" : 5,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# get the component up to the next dot or end\n",
+        "Line" : 8,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# TBD\n",
+        "Line" : 49,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "############################################################\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#[=========================================================[\n  This is a function override for one function in the\n  standard ExternalProject module. We want to change\n  the generated build script slightly to include printing\n  the build logs in the case of failure. Those modifications\n  have been made here. This function override could break\n  in the future if the ExternalProject module changes internal\n  function names or changes the way it generates the build\n  scripts.\n   See:\n    https://gitlab.kitware.com/cmake/cmake/blob/df1ddeec128d68cc636f2dde6c2acd87af5658b6/Modules/ExternalProject.cmake#L1855-1952\n#]=========================================================]",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# GNU make recognizes the string \"$(MAKE)\" as recursive make, so\n\n# ensure that it appears directly in the makefile.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Wrap multiple 'COMMAND' lines up into a second-level wrapper\n\n# script so all output can be sent to one log file.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Wrap the command in a script to log output to files.\n",
+        "Line" : 218,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# function that calls git log to get current hash\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# note: optional second extra string argument not in signature\n",
+        "Line" : 258,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 11
+    },
+    "Builds/CMake/FindBoost.cmake" : {
+      "ObjectId" : "c02977fbd66baa9650523d2e3fe9707310d9e097",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#[=======================================================================[.rst:\nFindBoost\n---------\n\nFind Boost include dirs and libraries\n\nUse this module by invoking find_package with the form::\n\n  find_package(Boost\n    [version] [EXACT]      # Minimum or EXACT version e.g. 1.67.0\n    [REQUIRED]             # Fail with error if Boost is not found\n    [COMPONENTS <libs>...] # Boost libraries by their canonical name\n                           # e.g. \"date_time\" for \"libboost_date_time\"\n    [OPTIONAL_COMPONENTS <libs>...]\n                           # Optional Boost libraries by their canonical name)\n    )                      # e.g. \"date_time\" for \"libboost_date_time\"\n\nThis module finds headers and requested component libraries OR a CMake\npackage configuration file provided by a \"Boost CMake\" build.  For the\nlatter case skip to the \"Boost CMake\" section below.  For the former\ncase results are reported in variables::\n\n  Boost_FOUND            - True if headers and requested libraries were found\n  Boost_INCLUDE_DIRS     - Boost include directories\n  Boost_LIBRARY_DIRS     - Link directories for Boost libraries\n  Boost_LIBRARIES        - Boost component libraries to be linked\n  Boost_<C>_FOUND        - True if component <C> was found (<C> is upper-case)\n  Boost_<C>_LIBRARY      - Libraries to link for component <C> (may include\n                           target_link_libraries debug/optimized keywords)\n  Boost_VERSION          - BOOST_VERSION value from boost/version.hpp\n  Boost_LIB_VERSION      - Version string appended to library filenames\n  Boost_MAJOR_VERSION    - Boost major version number (X in X.y.z)\n  Boost_MINOR_VERSION    - Boost minor version number (Y in x.Y.z)\n  Boost_SUBMINOR_VERSION - Boost subminor version number (Z in x.y.Z)\n  Boost_VERSION_STRING   - Boost version number in x.y.z format\n  Boost_LIB_DIAGNOSTIC_DEFINITIONS (Windows)\n                         - Pass to add_definitions() to have diagnostic\n                           information about Boost's automatic linking\n                           displayed during compilation\n\nNote that Boost Python components require a Python version suffix\n(Boost 1.67 and later), e.g. ``python36`` or ``python27`` for the\nversions built against Python 3.6 and 2.7, respectively.  This also\napplies to additional components using Python including\n``mpi_python`` and ``numpy``.  Earlier Boost releases may use\ndistribution-specific suffixes such as ``2``, ``3`` or ``2.7``.\nThese may also be used as suffixes, but note that they are not\nportable.\n\nThis module reads hints about search locations from variables::\n\n  BOOST_ROOT             - Preferred installation prefix\n   (or BOOSTROOT)\n  BOOST_INCLUDEDIR       - Preferred include directory e.g. <prefix>/include\n  BOOST_LIBRARYDIR       - Preferred library directory e.g. <prefix>/lib\n  Boost_NO_SYSTEM_PATHS  - Set to ON to disable searching in locations not\n                           specified by these hint variables. Default is OFF.\n  Boost_ADDITIONAL_VERSIONS\n                         - List of Boost versions not known to this module\n                           (Boost install locations may contain the version)\n\nand saves search results persistently in CMake cache entries::\n\n  Boost_INCLUDE_DIR         - Directory containing Boost headers\n  Boost_LIBRARY_DIR_RELEASE - Directory containing release Boost libraries\n  Boost_LIBRARY_DIR_DEBUG   - Directory containing debug Boost libraries\n  Boost_<C>_LIBRARY_DEBUG   - Component <C> library debug variant\n  Boost_<C>_LIBRARY_RELEASE - Component <C> library release variant\n\nThe following :prop_tgt:`IMPORTED` targets are also defined::\n\n  Boost::boost                  - Target for header-only dependencies\n                                  (Boost include directory)\n  Boost::<C>                    - Target for specific component dependency\n                                  (shared or static library); <C> is lower-\n                                  case\n  Boost::diagnostic_definitions - interface target to enable diagnostic\n                                  information about Boost's automatic linking\n                                  during compilation (adds BOOST_LIB_DIAGNOSTIC)\n  Boost::disable_autolinking    - interface target to disable automatic\n                                  linking with MSVC (adds BOOST_ALL_NO_LIB)\n  Boost::dynamic_linking        - interface target to enable dynamic linking\n                                  linking with MSVC (adds BOOST_ALL_DYN_LINK)\n\nImplicit dependencies such as Boost::filesystem requiring\nBoost::system will be automatically detected and satisfied, even\nif system is not specified when using find_package and if\nBoost::system is not added to target_link_libraries.  If using\nBoost::thread, then Threads::Threads will also be added automatically.\n\nIt is important to note that the imported targets behave differently\nthan variables created by this module: multiple calls to\nfind_package(Boost) in the same directory or sub-directories with\ndifferent options (e.g. static or shared) will not override the\nvalues of the targets created by the first call.\n\nUsers may set these hints or results as cache entries.  Projects\nshould not read these entries directly but instead use the above\nresult variables.  Note that some hint names start in upper-case\n\"BOOST\".  One may specify these as environment variables if they are\nnot specified as CMake variables or cache entries.\n\nThis module first searches for the Boost header files using the above\nhint variables (excluding BOOST_LIBRARYDIR) and saves the result in\nBoost_INCLUDE_DIR.  Then it searches for requested component libraries\nusing the above hints (excluding BOOST_INCLUDEDIR and\nBoost_ADDITIONAL_VERSIONS), \"lib\" directories near Boost_INCLUDE_DIR,\nand the library name configuration settings below.  It saves the\nlibrary directories in Boost_LIBRARY_DIR_DEBUG and\nBoost_LIBRARY_DIR_RELEASE and individual library\nlocations in Boost_<C>_LIBRARY_DEBUG and Boost_<C>_LIBRARY_RELEASE.\nWhen one changes settings used by previous searches in the same build\ntree (excluding environment variables) this module discards previous\nsearch results affected by the changes and searches again.\n\nBoost libraries come in many variants encoded in their file name.\nUsers or projects may tell this module which variant to find by\nsetting variables::\n\n  Boost_USE_DEBUG_LIBS     - Set to ON or OFF to specify whether to search\n                             and use the debug libraries.  Default is ON.\n  Boost_USE_RELEASE_LIBS   - Set to ON or OFF to specify whether to search\n                             and use the release libraries.  Default is ON.\n  Boost_USE_MULTITHREADED  - Set to OFF to use the non-multithreaded\n                             libraries ('mt' tag).  Default is ON.\n  Boost_USE_STATIC_LIBS    - Set to ON to force the use of the static\n                             libraries.  Default is OFF.\n  Boost_USE_STATIC_RUNTIME - Set to ON or OFF to specify whether to use\n                             libraries linked statically to the C++ runtime\n                             ('s' tag).  Default is platform dependent.\n  Boost_USE_DEBUG_RUNTIME  - Set to ON or OFF to specify whether to use\n                             libraries linked to the MS debug C++ runtime\n                             ('g' tag).  Default is ON.\n  Boost_USE_DEBUG_PYTHON   - Set to ON to use libraries compiled with a\n                             debug Python build ('y' tag). Default is OFF.\n  Boost_USE_STLPORT        - Set to ON to use libraries compiled with\n                             STLPort ('p' tag).  Default is OFF.\n  Boost_USE_STLPORT_DEPRECATED_NATIVE_IOSTREAMS\n                           - Set to ON to use libraries compiled with\n                             STLPort deprecated \"native iostreams\"\n                             ('n' tag).  Default is OFF.\n  Boost_COMPILER           - Set to the compiler-specific library suffix\n                             (e.g. \"-gcc43\").  Default is auto-computed\n                             for the C++ compiler in use.  A list may be\n                             used if multiple compatible suffixes should\n                             be tested for, in decreasing order of\n                             preference.\n  Boost_ARCHITECTURE       - Set to the architecture-specific library suffix\n                             (e.g. \"-x64\").  Default is auto-computed for the\n                             C++ compiler in use.\n  Boost_THREADAPI          - Suffix for \"thread\" component library name,\n                             such as \"pthread\" or \"win32\".  Names with\n                             and without this suffix will both be tried.\n  Boost_NAMESPACE          - Alternate namespace used to build boost with\n                             e.g. if set to \"myboost\", will search for\n                             myboost_thread instead of boost_thread.\n\nOther variables one may set to control this module are::\n\n  Boost_DEBUG              - Set to ON to enable debug output from FindBoost.\n                             Please enable this before filing any bug report.\n  Boost_DETAILED_FAILURE_MSG\n                           - Set to ON to add detailed information to the\n                             failure message even when the REQUIRED option\n                             is not given to the find_package call.\n  Boost_REALPATH           - Set to ON to resolve symlinks for discovered\n                             libraries to assist with packaging.  For example,\n                             the \"system\" component library may be resolved to\n                             \"/usr/lib/libboost_system.so.1.67.0\" instead of\n                             \"/usr/lib/libboost_system.so\".  This does not\n                             affect linking and should not be enabled unless\n                             the user needs this information.\n  Boost_LIBRARY_DIR        - Default value for Boost_LIBRARY_DIR_RELEASE and\n                             Boost_LIBRARY_DIR_DEBUG.\n\nOn Visual Studio and Borland compilers Boost headers request automatic\nlinking to corresponding libraries.  This requires matching libraries\nto be linked explicitly or available in the link library search path.\nIn this case setting Boost_USE_STATIC_LIBS to OFF may not achieve\ndynamic linking.  Boost automatic linking typically requests static\nlibraries with a few exceptions (such as Boost.Python).  Use::\n\n  add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})\n\nto ask Boost to report information about automatic linking requests.\n\nExample to find Boost headers only::\n\n  find_package(Boost 1.36.0)\n  if(Boost_FOUND)\n    include_directories(${Boost_INCLUDE_DIRS})\n    add_executable(foo foo.cc)\n  endif()\n\nExample to find Boost libraries and use imported targets::\n\n  find_package(Boost 1.56 REQUIRED COMPONENTS\n               date_time filesystem iostreams)\n  add_executable(foo foo.cc)\n  target_link_libraries(foo Boost::date_time Boost::filesystem\n                            Boost::iostreams)\n\nExample to find Boost Python 3.6 libraries and use imported targets::\n\n  find_package(Boost 1.67 REQUIRED COMPONENTS\n               python36 numpy36)\n  add_executable(foo foo.cc)\n  target_link_libraries(foo Boost::python36 Boost::numpy36)\n\nExample to find Boost headers and some *static* (release only) libraries::\n\n  set(Boost_USE_STATIC_LIBS        ON)  # only find static libs\n  set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and\n  set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs\n  set(Boost_USE_MULTITHREADED      ON)\n  set(Boost_USE_STATIC_RUNTIME    OFF)\n  find_package(Boost 1.66.0 COMPONENTS date_time filesystem system ...)\n  if(Boost_FOUND)\n    include_directories(${Boost_INCLUDE_DIRS})\n    add_executable(foo foo.cc)\n    target_link_libraries(foo ${Boost_LIBRARIES})\n  endif()\n\nBoost CMake\n^^^^^^^^^^^\n\nIf Boost was built using the boost-cmake project it provides a package\nconfiguration file for use with find_package's Config mode.  This\nmodule looks for the package configuration file called\nBoostConfig.cmake or boost-config.cmake and stores the result in cache\nentry \"Boost_DIR\".  If found, the package configuration file is loaded\nand this module returns with no further action.  See documentation of\nthe Boost CMake package configuration for details on what it provides.\n\nSet Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake.\n#]=======================================================================]",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Save project's policies\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# if IN_LIST\n",
+        "Line" : 243,
+        "CharPositionInLine" : 30
+      },
+      "4" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n# Before we go searching, check whether boost-cmake is available, unless the\n\n# user specifically asked NOT to search for boost-cmake.\n\n#\n\n# If Boost_DIR is set, this behaves as any find_package call would. If not,\n\n# it looks at BOOST_ROOT and BOOSTROOT to find Boost.\n\n#\n",
+        "Line" : 245,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# If Boost_DIR is not set, look for BOOSTROOT and BOOST_ROOT as alternatives,\n\n# since these are more conventional for Boost.\n",
+        "Line" : 253,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Do the same find_package call but look specifically for the CMake version.\n\n# Note that args are passed in the Boost_FIND_xxxxx variables, so there is no\n\n# need to delegate them to this find_package call.\n",
+        "Line" : 263,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# If we found boost-cmake, then we're done.  Print out what we found.\n\n# Otherwise let the rest of the module try to find it.\n",
+        "Line" : 269,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Restore project's policies\n",
+        "Line" : 276,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#  FindBoost functions & macros\n\n#\n",
+        "Line" : 283,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "############################################\n\n#\n\n# Check the existence of the libraries.\n\n#\n\n############################################\n\n# This macro was taken directly from the FindQt4.cmake file that is included\n\n# with the CMake distribution. This is NOT my work. All work was done by the\n\n# original authors of the FindQt4.cmake file. Only minor modifications were\n\n# made to remove references to Qt and make this file more generally applicable\n\n# And ELSE/ENDIF pairs were removed for readability.\n\n#########################################################################\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# if the generator is multi-config or if CMAKE_BUILD_TYPE is set for\n\n# single-config generators, set optimized and debug libraries\n",
+        "Line" : 302,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# For single-config generators where CMAKE_BUILD_TYPE has no value,\n\n# just use the release libraries\n",
+        "Line" : 308,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# FIXME: This probably should be set for both cases\n",
+        "Line" : 312,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# if only the release version was found, set the debug variable also to the release version\n",
+        "Line" : 316,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# if only the debug version was found, set the release variable also to the debug version\n",
+        "Line" : 323,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# If the debug & release library ends up being the same, omit the keywords\n",
+        "Line" : 330,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Make variables changeable to the advanced user\n",
+        "Line" : 345,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Detect changes in used variables.\n\n# Compares the current variable value with the last one.\n\n# In short form:\n\n# v != v_LAST                      -> CHANGED = 1\n\n# v is defined, v_LAST not         -> CHANGED = 1\n\n# v is not defined, but v_LAST is  -> CHANGED = 1\n\n# otherwise                        -> CHANGED = 0\n\n# CHANGED is returned in variable named ${changed_var}\n",
+        "Line" : 352,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# Find the given library (var).\n\n# Use 'build_type' to support different lib paths for RELEASE or DEBUG builds\n\n#\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# If this is the first library found then save Boost_LIBRARY_DIR_[RELEASE,DEBUG].\n",
+        "Line" : 391,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Try component-specific hints but do not save Boost_LIBRARY_DIR_[RELEASE,DEBUG].\n",
+        "Line" : 397,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# If Boost_LIBRARY_DIR_[RELEASE,DEBUG] is known then search only there.\n",
+        "Line" : 401,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "#-------------------------------------------------------------------------------\n",
+        "Line" : 412,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Convert CMAKE_CXX_COMPILER_VERSION to boost compiler suffix version.\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "#\n\n# Take a list of libraries with \"thread\" in it\n\n# and prepend duplicates with \"thread_${Boost_THREADAPI}\"\n\n# at the front of the list\n\n#\n",
+        "Line" : 428,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#\n\n# If a library is found, replace its cache entry with its REALPATH\n\n#\n",
+        "Line" : 439,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Guesses Boost's compiler prefix used in built library names\n\n# Returns the guess by setting the variable pointed to by _ret\n",
+        "Line" : 457,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "#[========================================================[\n       NOTE: newer versions of FindBoost from kitware\n       change this version check to use MSVC_TOOLSET_VERSION.\n       That variable only exists in make 3.12 or greater, so\n       until all envs (including bundled visual studio) have\n       this min version of cmake, stick with this\n       CMAKE_CXX_COMPILER_VERSION check\n    #]========================================================]",
+        "Line" : 469,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "# Good luck!\n",
+        "Line" : 497,
+        "CharPositionInLine" : 59
+      },
+      "30" : {
+        "Text" : "# yes, this is correct\n",
+        "Line" : 498,
+        "CharPositionInLine" : 34
+      },
+      "31" : {
+        "Text" : "# VS 6.0 Good luck!\n",
+        "Line" : 499,
+        "CharPositionInLine" : 11
+      },
+      "32" : {
+        "Text" : "# yes, this is correct\n",
+        "Line" : 500,
+        "CharPositionInLine" : 34
+      },
+      "33" : {
+        "Text" : "# no GCC version encoding prior to 1.34\n",
+        "Line" : 510,
+        "CharPositionInLine" : 36
+      },
+      "34" : {
+        "Text" : "# From GCC 5 and clang 4, versioning changes and minor becomes patch.\n\n# For those compilers, patch is exclude from compiler tag in Boost 1.69+ library naming.\n",
+        "Line" : 518,
+        "CharPositionInLine" : 6
+      },
+      "35" : {
+        "Text" : "# no GCC version encoding prior to 1.34\n",
+        "Line" : 529,
+        "CharPositionInLine" : 36
+      },
+      "36" : {
+        "Text" : "# Determine which version of GCC we have.\n",
+        "Line" : 531,
+        "CharPositionInLine" : 8
+      },
+      "37" : {
+        "Text" : "# In Boost 1.36.0 and newer, the mangled compiler name used\n\n# on macOS/Darwin is \"xgcc\".\n",
+        "Line" : 535,
+        "CharPositionInLine" : 14
+      },
+      "38" : {
+        "Text" : "# In Boost <= 1.35.0, there is no mangled compiler name for\n\n# the macOS/Darwin version of GCC.\n",
+        "Line" : 539,
+        "CharPositionInLine" : 14
+      },
+      "39" : {
+        "Text" : "# We don't know the Boost version, so assume it's\n\n# pre-1.36.0.\n",
+        "Line" : 544,
+        "CharPositionInLine" : 12
+      },
+      "40" : {
+        "Text" : "# TODO: Find out any Boost version constraints vs clang support.\n",
+        "Line" : 553,
+        "CharPositionInLine" : 6
+      },
+      "41" : {
+        "Text" : "# TODO at least Boost_DEBUG here?\n",
+        "Line" : 557,
+        "CharPositionInLine" : 4
+      },
+      "42" : {
+        "Text" : "#\n\n# Get component dependencies.  Requires the dependencies to have been\n\n# defined for the Boost release version.\n\n#\n\n# component - the component to check\n\n# _ret - list of library dependencies\n\n#\n",
+        "Line" : 563,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Note: to add a new Boost release, run\n\n#\n\n#   % cmake -DBOOST_DIR=/path/to/boost/source -P Utilities/Scripts/BoostScanDeps.cmake\n\n#\n\n# The output may be added in a new block below.  If it's the same as\n\n# the previous release, simply update the version range of the block\n\n# for the previous release.  Also check if any new components have\n\n# been added, and add any new components to\n\n# _Boost_COMPONENT_HEADERS.\n\n#\n\n# This information was originally generated by running\n\n# BoostScanDeps.cmake against every boost release to date supported\n\n# by FindBoost:\n\n#\n\n#   % for version in /path/to/boost/sources/*\n\n#     do\n\n#       cmake -DBOOST_DIR=$version -P Utilities/Scripts/BoostScanDeps.cmake\n\n#     done\n\n#\n\n# The output was then updated by search and replace with these regexes:\n\n#\n\n# - Strip message(STATUS) prefix dashes\n\n#   s;^-- ;;\n\n# - Indent\n\n#   s;^set(;    set(;;\n\n# - Add conditionals\n\n#   s;Scanning /path/to/boost/sources/boost_\\(.*\\)_\\(.*\\)_\\(.*);  elseif(NOT Boost_VERSION VERSION_LESS \\10\\20\\3 AND Boost_VERSION VERSION_LESS xxxx);\n\n#\n\n# This results in the logic seen below, but will require the xxxx\n\n# replacing with the following Boost release version (or the next\n\n# minor version to be released, e.g. 1.59 was the latest at the time\n\n# of writing, making 1.60 the next, so 106000 is the needed version\n\n# number).  Identical consecutive releases were then merged together\n\n# by updating the end range of the first block and removing the\n\n# following redundant blocks.\n\n#\n\n# Running the script against all historical releases should be\n\n# required only if the BoostScanDeps.cmake script logic is changed.\n\n# The addition of a new release should only require it to be run\n\n# against the new release.\n",
+        "Line" : 571,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Handle Python version suffixes\n",
+        "Line" : 612,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# message(STATUS \"Dependencies for Boost::${component}: ${_boost_DEPS_STRING}\")\n",
+        "Line" : 916,
+        "CharPositionInLine" : 2
+      },
+      "46" : {
+        "Text" : "#\n\n# Get component headers.  This is the primary header (or headers) for\n\n# a given component, and is used to check that the headers are present\n\n# as well as the library itself as an extra sanity check of the build\n\n# environment.\n\n#\n\n# component - the component to check\n\n# _hdrs\n\n#\n",
+        "Line" : 919,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Handle Python version suffixes\n",
+        "Line" : 929,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# Note: new boost components will require adding here.  The header\n\n# must be present in all versions of Boost providing a library.\n",
+        "Line" : 935,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "# message(STATUS \"Headers for Boost::${component}: ${_boost_HDRS_STRING}\")\n",
+        "Line" : 1000,
+        "CharPositionInLine" : 2
+      },
+      "50" : {
+        "Text" : "#\n\n# Determine if any missing dependencies require adding to the component list.\n\n#\n\n# Sets _Boost_${COMPONENT}_DEPENDENCIES for each required component,\n\n# plus _Boost_IMPORTED_TARGETS (TRUE if imported targets should be\n\n# defined; FALSE if dependency information is unavailable).\n\n#\n\n# componentvar - the component list variable name\n\n# extravar - the indirect dependency list variable name\n\n#\n\n#\n",
+        "Line" : 1003,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# _boost_unprocessed_components - list of components requiring processing\n\n# _boost_processed_components - components already processed (or currently being processed)\n\n# _boost_new_components - new components discovered for future processing\n\n#\n",
+        "Line" : 1015,
+        "CharPositionInLine" : 2
+      },
+      "52" : {
+        "Text" : "#\n\n# Some boost libraries may require particular set of compler features.\n\n# The very first one was `boost::fiber` introduced in Boost 1.62.\n\n# One can check required compiler features of it in\n\n# `${Boost_ROOT}/libs/fiber/build/Jamfile.v2`.\n\n#\n",
+        "Line" : 1046,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Boost >= 1.62 and < 1.67\n",
+        "Line" : 1053,
+        "CharPositionInLine" : 2
+      },
+      "54" : {
+        "Text" : "#\n\n# Update library search directory hint variable with paths used by prebuilt boost binaries.\n\n#\n\n# Prebuilt windows binaries (https://sourceforge.net/projects/boost/files/boost-binaries/)\n\n# have library directories named using MSVC compiler version and architecture.\n\n# This function would append corresponding directories if MSVC is a current compiler,\n\n# so having `BOOST_ROOT` would be enough to specify to find everything.\n\n#\n",
+        "Line" : 1073,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "#\n\n# End functions/macros\n\n#\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1114,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n# main.\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1119,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# If the user sets Boost_LIBRARY_DIR, use it as the default for both\n\n# configurations.\n",
+        "Line" : 1124,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Check the version of Boost against the requested version.\n",
+        "Line" : 1146,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# The version may appear in a directory with or without the patch\n\n# level, even when the patch level is non-zero.\n",
+        "Line" : 1152,
+        "CharPositionInLine" : 2
+      },
+      "60" : {
+        "Text" : "# The user has not requested an exact version.  Among known\n\n# versions, find those that are acceptable to the user request.\n\n#\n\n# Note: When adding a new Boost release, also update the dependency\n\n# information in _Boost_COMPONENT_DEPENDENCIES and\n\n# _Boost_COMPONENT_HEADERS.  See the instructions at the top of\n\n# _Boost_COMPONENT_DEPENDENCIES.\n",
+        "Line" : 1158,
+        "CharPositionInLine" : 2
+      },
+      "61" : {
+        "Text" : "# Select acceptable versions.\n",
+        "Line" : 1180,
+        "CharPositionInLine" : 4
+      },
+      "62" : {
+        "Text" : "# This version is high enough.\n",
+        "Line" : 1183,
+        "CharPositionInLine" : 8
+      },
+      "63" : {
+        "Text" : "# This version is a short-form for the requested version with\n\n# the patch level dropped.\n",
+        "Line" : 1186,
+        "CharPositionInLine" : 8
+      },
+      "64" : {
+        "Text" : "# Any version is acceptable.\n",
+        "Line" : 1192,
+        "CharPositionInLine" : 4
+      },
+      "65" : {
+        "Text" : "# The reason that we failed to find Boost. This will be set to a\n\n# user-friendly message when we fail to find some necessary piece of\n\n# Boost.\n",
+        "Line" : 1197,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# Output some of their choices\n",
+        "Line" : 1203,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# Supply Boost_LIB_DIAGNOSTIC_DEFINITIONS as a convenience target. It\n\n# will only contain any interface definitions on WIN32, but is created\n\n# on all platforms to keep end user code free from platform dependent\n\n# code.  Also provide convenience targets to disable autolinking and\n\n# enable dynamic linking.\n",
+        "Line" : 1218,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# In windows, automatic linking is performed, so you do not have\n\n# to specify the libraries.  If you are linking to a dynamic\n\n# runtime, then you can choose to link to either a static or a\n\n# dynamic Boost library, the default is to do a static link.  You\n\n# can alter this for a specific library \"whatever\" by defining\n\n# BOOST_WHATEVER_DYN_LINK to force Boost library \"whatever\" to be\n\n# linked dynamically.  Alternatively you can force all Boost\n\n# libraries to dynamic link by defining BOOST_ALL_DYN_LINK.\n",
+        "Line" : 1229,
+        "CharPositionInLine" : 2
+      },
+      "69" : {
+        "Text" : "# This feature can be disabled for Boost library \"whatever\" by\n\n# defining BOOST_WHATEVER_NO_LIB, or for all of Boost by defining\n\n# BOOST_ALL_NO_LIB.\n",
+        "Line" : 1238,
+        "CharPositionInLine" : 2
+      },
+      "70" : {
+        "Text" : "# If you want to observe which libraries are being linked against\n\n# then defining BOOST_LIB_DIAGNOSTIC will cause the auto-linking\n\n# code to emit a #pragma message each time a library is selected\n\n# for linking.\n",
+        "Line" : 1242,
+        "CharPositionInLine" : 2
+      },
+      "71" : {
+        "Text" : "# Collect environment variable inputs as hints.  Do not consider changes.\n",
+        "Line" : 1259,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# Collect inputs and cached results.  Detect changes since the last run.\n",
+        "Line" : 1272,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Search for Boost include DIR\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1294,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Clear Boost_INCLUDE_DIR if it did not change but other input affecting the\n\n# location did.  We will find a new one based on the new inputs.\n",
+        "Line" : 1300,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# Try to find Boost by stepping backwards through the Boost versions\n\n# we know about.\n\n# Build a list of path suffixes for each version.\n",
+        "Line" : 1336,
+        "CharPositionInLine" : 2
+      },
+      "76" : {
+        "Text" : "# Add in a path suffix, based on the required version, ideally\n\n# we could read this from version.hpp, but for that to work we'd\n\n# need to know the include dir already\n",
+        "Line" : 1341,
+        "CharPositionInLine" : 4
+      },
+      "77" : {
+        "Text" : "# Transform 1.35 => 1_35 and 1.36.0 => 1_36_0\n",
+        "Line" : 1346,
+        "CharPositionInLine" : 4
+      },
+      "78" : {
+        "Text" : "# Look for a standard boost header file.\n",
+        "Line" : 1373,
+        "CharPositionInLine" : 2
+      },
+      "79" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Extract version information from version.hpp\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1381,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# Set Boost_FOUND based only on header location and version.\n\n# It will be updated below for component libraries.\n",
+        "Line" : 1385,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "# Extract Boost_VERSION and Boost_LIB_VERSION from version.hpp\n",
+        "Line" : 1393,
+        "CharPositionInLine" : 2
+      },
+      "82" : {
+        "Text" : "# Set Boost_FOUND based on requested version.\n",
+        "Line" : 1420,
+        "CharPositionInLine" : 4
+      },
+      "83" : {
+        "Text" : "# State that we found a version of Boost that is too new or too old.\n",
+        "Line" : 1433,
+        "CharPositionInLine" : 6
+      },
+      "84" : {
+        "Text" : "# Caller will accept any Boost version.\n",
+        "Line" : 1446,
+        "CharPositionInLine" : 4
+      },
+      "85" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Prefix initialization\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1455,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Suffix initialization and compiler suffix detection.\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1476,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# Setting some more suffixes for the library\n",
+        "Line" : 1493,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# Attempt to guess the compiler suffix\n\n# NOTE: this is not perfect yet, if you experience any issues\n\n# please report them and use the Boost_COMPILER variable\n\n# to work around the problems.\n",
+        "Line" : 1501,
+        "CharPositionInLine" : 2
+      },
+      "89" : {
+        "Text" : "#======================\n\n# Systematically build up the Boost ABI tag for the 'tagged' and 'versioned' layouts\n\n# http://boost.org/doc/libs/1_66_0/more/getting_started/windows.html#library-naming\n\n# http://boost.org/doc/libs/1_66_0/boost/config/auto_link.hpp\n\n# http://boost.org/doc/libs/1_66_0/tools/build/src/tools/common.jam\n\n# http://boost.org/doc/libs/1_66_0/boostcpp.jam\n",
+        "Line" : 1521,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "# Key       Use this library when:\n\n#  s        linking statically to the C++ standard library and\n\n#           compiler runtime support libraries.\n",
+        "Line" : 1529,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "#  g        using debug versions of the standard and runtime\n\n#           support libraries\n",
+        "Line" : 1536,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "#  y        using special debug build of python\n",
+        "Line" : 1545,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "#  d        using a debug version of your code\n",
+        "Line" : 1549,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "#  p        using the STLport standard library rather than the\n\n#           default one supplied with your compiler\n",
+        "Line" : 1551,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "#  n        using the STLport deprecated \"native iostreams\" feature\n\n#           removed from the documentation in 1.43.0 but still present in\n\n#           boost/config/auto_link.hpp\n",
+        "Line" : 1557,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "#  -x86     Architecture and address model tag\n\n#           First character is the architecture, then word-size, either 32 or 64\n\n#           Only used in 'versioned' layout, added in Boost 1.66.0\n",
+        "Line" : 1565,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "# {CMAKE_CXX_COMPILER_ARCHITECTURE_ID} is not currently set for all compilers\n",
+        "Line" : 1576,
+        "CharPositionInLine" : 2
+      },
+      "98" : {
+        "Text" : "# This needs to be kept in-sync with the section of CMakePlatformId.h.in\n\n# inside 'defined(_WIN32) && defined(_MSC_VER)'\n",
+        "Line" : 1579,
+        "CharPositionInLine" : 4
+      },
+      "99" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Begin finding boost libraries\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1607,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "# Clear Boost_LIBRARY_DIR_${c} if it did not change but other input affecting the\n\n# location did.  We will find a new one based on the new inputs.\n",
+        "Line" : 1616,
+        "CharPositionInLine" : 2
+      },
+      "101" : {
+        "Text" : "# If Boost_LIBRARY_DIR_[RELEASE,DEBUG] is set, prefer its value.\n",
+        "Line" : 1622,
+        "CharPositionInLine" : 2
+      },
+      "102" : {
+        "Text" : "# Support preference of static libs by adjusting CMAKE_FIND_LIBRARY_SUFFIXES\n",
+        "Line" : 1671,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# We want to use the tag inline below without risking double dashes\n",
+        "Line" : 1681,
+        "CharPositionInLine" : 0
+      },
+      "104" : {
+        "Text" : "# The previous behavior of FindBoost when Boost_USE_STATIC_LIBS was enabled\n\n# on WIN32 was to:\n\n#  1. Search for static libs compiled against a SHARED C++ standard runtime library (use if found)\n\n#  2. Search for static libs compiled against a STATIC C++ standard runtime library (use if found)\n\n# We maintain this behavior since changing it could break people's builds.\n\n# To disable the ambiguous behavior, the user need only\n\n# set Boost_USE_STATIC_RUNTIME either ON or OFF.\n",
+        "Line" : 1693,
+        "CharPositionInLine" : 0
+      },
+      "105" : {
+        "Text" : "# On versions < 1.35, remove the System library from the considered list\n\n# since it wasn't added until 1.35.\n",
+        "Line" : 1707,
+        "CharPositionInLine" : 0
+      },
+      "106" : {
+        "Text" : "# Additional components may be required via component dependencies.\n\n# Add any missing components to the list.\n",
+        "Line" : 1715,
+        "CharPositionInLine" : 0
+      },
+      "107" : {
+        "Text" : "# If thread is required, get the thread libs as a dependency\n",
+        "Line" : 1719,
+        "CharPositionInLine" : 0
+      },
+      "108" : {
+        "Text" : "# If the user changed any of our control inputs flush previous results.\n",
+        "Line" : 1730,
+        "CharPositionInLine" : 0
+      },
+      "109" : {
+        "Text" : "# Compute component-specific hints.\n",
+        "Line" : 1749,
+        "CharPositionInLine" : 2
+      },
+      "110" : {
+        "Text" : "# Handle Python version suffixes\n",
+        "Line" : 1762,
+        "CharPositionInLine" : 2
+      },
+      "111" : {
+        "Text" : "# Boost >= 1.67\n",
+        "Line" : 1776,
+        "CharPositionInLine" : 4
+      },
+      "112" : {
+        "Text" : "# Debian/Ubuntu (Some versions omit the 2 and/or 3 from the suffix)\n",
+        "Line" : 1778,
+        "CharPositionInLine" : 4
+      },
+      "113" : {
+        "Text" : "# Gentoo\n",
+        "Line" : 1781,
+        "CharPositionInLine" : 4
+      },
+      "114" : {
+        "Text" : "# RPMs\n",
+        "Line" : 1783,
+        "CharPositionInLine" : 4
+      },
+      "115" : {
+        "Text" : "# Boost < 1.67\n",
+        "Line" : 1787,
+        "CharPositionInLine" : 4
+      },
+      "116" : {
+        "Text" : "# Consolidate and report component-specific hints.\n",
+        "Line" : 1791,
+        "CharPositionInLine" : 2
+      },
+      "117" : {
+        "Text" : "#\n\n# Find headers\n\n#\n",
+        "Line" : 1809,
+        "CharPositionInLine" : 2
+      },
+      "118" : {
+        "Text" : "# Look for a standard boost header file.\n",
+        "Line" : 1813,
+        "CharPositionInLine" : 2
+      },
+      "119" : {
+        "Text" : "#\n\n# Find RELEASE libraries\n\n#\n",
+        "Line" : 1825,
+        "CharPositionInLine" : 2
+      },
+      "120" : {
+        "Text" : "# if Boost_LIBRARY_DIR_RELEASE is not defined,\n\n# but Boost_LIBRARY_DIR_DEBUG is, look there first for RELEASE libs\n",
+        "Line" : 1860,
+        "CharPositionInLine" : 2
+      },
+      "121" : {
+        "Text" : "# Avoid passing backslashes to _Boost_FIND_LIBRARY due to macro re-parsing.\n",
+        "Line" : 1866,
+        "CharPositionInLine" : 2
+      },
+      "122" : {
+        "Text" : "#\n\n# Find DEBUG libraries\n\n#\n",
+        "Line" : 1878,
+        "CharPositionInLine" : 2
+      },
+      "123" : {
+        "Text" : "# if Boost_LIBRARY_DIR_DEBUG is not defined,\n\n# but Boost_LIBRARY_DIR_RELEASE is, look there first for DEBUG libs\n",
+        "Line" : 1913,
+        "CharPositionInLine" : 2
+      },
+      "124" : {
+        "Text" : "# Avoid passing backslashes to _Boost_FIND_LIBRARY due to macro re-parsing.\n",
+        "Line" : 1919,
+        "CharPositionInLine" : 2
+      },
+      "125" : {
+        "Text" : "# Check if component requires some compiler features\n",
+        "Line" : 1938,
+        "CharPositionInLine" : 2
+      },
+      "126" : {
+        "Text" : "# Restore the original find library ordering\n",
+        "Line" : 1943,
+        "CharPositionInLine" : 0
+      },
+      "127" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  End finding boost libraries\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 1948,
+        "CharPositionInLine" : 0
+      },
+      "128" : {
+        "Text" : "# The above setting of Boost_FOUND was based only on the header files.\n\n# Update it for the requested component libraries.\n",
+        "Line" : 1964,
+        "CharPositionInLine" : 0
+      },
+      "129" : {
+        "Text" : "# The headers were found.  Check for requested component libs.\n",
+        "Line" : 1967,
+        "CharPositionInLine" : 2
+      },
+      "130" : {
+        "Text" : "# Optional indirect dependencies are not counted as missing.\n",
+        "Line" : 1978,
+        "CharPositionInLine" : 4
+      },
+      "131" : {
+        "Text" : "# We were unable to find some libraries, so generate a sensible\n\n# error message that lists the libraries we were unable to find.\n",
+        "Line" : 1988,
+        "CharPositionInLine" : 4
+      },
+      "132" : {
+        "Text" : "# Compatibility Code for backwards compatibility with CMake\n\n# 2.4's FindBoost module.\n",
+        "Line" : 2015,
+        "CharPositionInLine" : 4
+      },
+      "133" : {
+        "Text" : "# Look for the boost library path.\n\n# Note that the user may not have installed any libraries\n\n# so it is quite possible the Boost_LIBRARY_DIRS may not exist.\n",
+        "Line" : 2018,
+        "CharPositionInLine" : 4
+      },
+      "134" : {
+        "Text" : "# Strip off the trailing \"/include\" in the path.\n",
+        "Line" : 2028,
+        "CharPositionInLine" : 6
+      },
+      "135" : {
+        "Text" : "# Boost headers were not found so no components were found.\n",
+        "Line" : 2046,
+        "CharPositionInLine" : 2
+      },
+      "136" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Add imported targets\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 2053,
+        "CharPositionInLine" : 0
+      },
+      "137" : {
+        "Text" : "# For header-only libraries\n",
+        "Line" : 2058,
+        "CharPositionInLine" : 2
+      },
+      "138" : {
+        "Text" : "# Even if Boost_USE_STATIC_LIBS is OFF, we might have static\n\n# libraries as a result.\n",
+        "Line" : 2074,
+        "CharPositionInLine" : 10
+      },
+      "139" : {
+        "Text" : "# ------------------------------------------------------------------------\n\n#  Notification to end user about what was found\n\n# ------------------------------------------------------------------------\n",
+        "Line" : 2121,
+        "CharPositionInLine" : 0
+      },
+      "140" : {
+        "Text" : "# we opt not to automatically output Boost_ERROR_REASON here as\n\n# it could be quite lengthy and somewhat imposing in its requests\n\n# Since Boost is not always a required dependency we'll leave this\n\n# up to the end-user.\n",
+        "Line" : 2150,
+        "CharPositionInLine" : 6
+      },
+      "141" : {
+        "Text" : "# Configure display of cache entries in GUI.\n",
+        "Line" : 2163,
+        "CharPositionInLine" : 0
+      },
+      "142" : {
+        "Text" : "# Record last used values of input variables so we can\n\n# detect on the next run if the user changed them.\n",
+        "Line" : 2178,
+        "CharPositionInLine" : 0
+      },
+      "143" : {
+        "Text" : "# Maintain a persistent list of components requested anywhere since\n\n# the last flush.\n",
+        "Line" : 2191,
+        "CharPositionInLine" : 0
+      },
+      "144" : {
+        "Text" : "# Restore project's policies\n",
+        "Line" : 2200,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 145
+    },
+    "Builds/CMake/Findjemalloc.cmake" : {
+      "ObjectId" : "820ceeed4a1cf4ebe48ce945a518a17a0432dfc5",
+      "LastModified" : "2017-07-11T16:54:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find jemalloc\n\n# Once done this will define\n\n#  JEMALLOC_FOUND - System has jemalloc\n\n#  JEMALLOC_INCLUDE_DIRS - The jemalloc include directories\n\n#  JEMALLOC_LIBRARIES - The libraries needed to use jemalloc\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we're asked to use static linkage, add libjemalloc.a as a preferred library name.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set JEMALLOC_FOUND to TRUE\n\n# if all listed variables are TRUE\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Builds/CMake/RippleConfig.cmake" : {
+      "ObjectId" : "2cb2f2731a377de96895c5820d29b4cc1d3ef2d3",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# need to represent system dependencies of the lib here\n\n#[=========================================================[\n  Boost\n#]=========================================================]",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#[=========================================================[\n  OpenSSL\n#]=========================================================]",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Builds/CMake/echo_file.cmake" : {
+      "ObjectId" : "eda85899431a3d5057c4ea058b37fa581934fa91",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#[=========================================================[\n  This is a CMake script file that is used to write\n  the contents of a file to stdout (using the cmake\n  echo command). The input file is passed via the\n  IN_FILE variable.\n#]=========================================================]",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## only print files that actually have some text in them\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Builds/CMake/soci_patch.cmake" : {
+      "ObjectId" : "7cfeaa2e4d1ba839508c5634abecd22ed9a6f25d",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This patches unsigned-types.h in the soci official sources\n\n# so as to remove type range check exceptions that cause\n\n# us trouble when using boost::optional to select int values\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "1e1ddd209291e627ddced2982ca02eb2a60e0a46",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# must come *after* ExternalProject b/c it overrides one function in EP\n",
+        "Line" : 9,
+        "CharPositionInLine" : 21
+      },
+      "1" : {
+        "Text" : "#[===================================================================[\n   convenience variables and sanity checks\n#]===================================================================]",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# never use more than half of cores for EP builds\n",
+        "Line" : 25,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# for simplicity, these are the only two config types we care about. Limiting\n\n# the build types simplifies dealing with external project builds especially\n",
+        "Line" : 43,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# both Clang and AppleClang\n",
+        "Line" : 56,
+        "CharPositionInLine" : 50
+      },
+      "5" : {
+        "Text" : "# check for in-source build and fail\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#[===================================================================[\n   read version from source\n#]===================================================================]",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#[===================================================================[\n   declare user options/settings\n#]===================================================================]",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# we are not ready to allow shared-libs on windows because it would require\n\n# export declarations. On macos it's more feasible, but static openssl\n\n# produces odd linker errors, thus we disable shared lib builds for now.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# this one is a string and therefore can't be an option\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# the remaining options are obscure and rarely used\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# NOTE - THIS OPTION CURRENTLY DOES NOT COMPILE :\n\n# TODO: fix or remove\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#[===================================================================[\n   NIH prefix path..this is where we will download\n   and build any ExternalProjects, and they will hopefully\n   survive across build directory deletion (manual cleans)\n#]===================================================================]",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# HACK: trying to shorten paths for windows CI (which hits 260 MAXPATH easily)\n\n# @see:  https://issues.jenkins-ci.org/browse/JENKINS-38706?focusedCommentId=339847\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "## two convenience variables:\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# this is a setting for FetchContent and needs to be\n\n# a cache variable\n\n# https://cmake.org/cmake/help/latest/module/FetchContent.html#populating-the-content\n",
+        "Line" : 247,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#[===================================================================[\n   package/container targets - (optional)\n#]===================================================================]",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# if no container label is provided, use current git hash\n",
+        "Line" : 262,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "#[===================================================================[\n        rpm\n    #]===================================================================]",
+        "Line" : 284,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "#[===================================================================[\n        dpkg\n    #]===================================================================]",
+        "Line" : 328,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# currently use ubuntu 16.04 as a base b/c it has one of\n\n# the lower versions of libc among ubuntu and debian releases.\n\n# we could change this in the future and build with some other deb\n\n# based system.\n",
+        "Line" : 331,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "#[===================================================================[\n   setup project-wide compiler settings\n#]===================================================================]",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#[=========================================================[\n   TODO some/most of these common settings belong in a\n   toolchain file, especially the ABI-impacting ones\n#]=========================================================]",
+        "Line" : 405,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# add a single global dependency on this interface lib\n",
+        "Line" : 411,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# ^^^^ NOTE: CMAKE release builds already have NDEBUG\n\n# defined, so no need to add it explicitly except for\n\n# this special case of (profile ON) and (assert OFF)\n\n# -- presumably this is because we don't want profile\n\n# builds asserting unless asserts were specifically\n\n# requested\n",
+        "Line" : 420,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# remove existing exception flag since we set it to -EHa\n",
+        "Line" : 428,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# also remove dynamic runtime\n",
+        "Line" : 430,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Increase object file max size\n\n# Floating point behavior\n\n# __cdecl calling convention\n\n# Minimal rebuild: disabled\n\n# Function level linking: disabled\n\n# Multiprocessor compilation\n\n# pragma omp: disabled\n\n# No error reporting to Internet\n\n# Suppress login banner\n\n# Disable signed/unsigned comparison warnings\n\n# Disable float to int possible loss of data warnings\n\n# Disable size_t to T possible loss of data warnings\n\n# Disable C4800(int to bool performance)\n\n# Decorated name length exceeded, name was truncated\n",
+        "Line" : 439,
+        "CharPositionInLine" : 25
+      },
+      "28" : {
+        "Text" : "# static runtime\n",
+        "Line" : 462,
+        "CharPositionInLine" : 6
+      },
+      "29" : {
+        "Text" : "# TODO: Resolve these warnings, don't just silence them\n",
+        "Line" : 474,
+        "CharPositionInLine" : 6
+      },
+      "30" : {
+        "Text" : "# HACK : because these need to come first, before any warning demotion\n",
+        "Line" : 482,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# not MSVC\n",
+        "Line" : 484,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# tweak gcc optimization for debug\n",
+        "Line" : 501,
+        "CharPositionInLine" : 6
+      },
+      "33" : {
+        "Text" : "# Add debug symbols to release config\n",
+        "Line" : 503,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# use gold linker if available\n",
+        "Line" : 512,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "#[=========================================================[\n       NOTE: THE gold linker inserts -rpath as DT_RUNPATH by\n       default intead of DT_RPATH, so you might have slightly\n       unexpected runtime ld behavior if you were expecting\n       DT_RPATH.  Specify --disable-new-dtags to gold if you do\n       not want the default DT_RUNPATH behavior. This rpath\n       treatment as well as static/dynamic selection means that\n       gold does not currently have ideal default behavior when\n       we are using jemalloc. Thus for simplicity we don't use\n       it when jemalloc is requested. An alternative to\n       disabling would be to figure out all the settings\n       required to make gold play nicely with jemalloc.\n    #]=========================================================]",
+        "Line" : 516,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "#[=========================================================[\n           see https://bugs.launchpad.net/ubuntu/+source/eglibc/+bug/1253638/comments/5\n           DT_RUNPATH does not work great for transitive\n           dependencies (of which boost has a few) - so just\n           switch to DT_RPATH if doing dynamic linking with gold\n        #]=========================================================]",
+        "Line" : 534,
+        "CharPositionInLine" : 8
+      },
+      "37" : {
+        "Text" : "# use lld linker if available\n",
+        "Line" : 546,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "#[===================================================================[\n   rippled compile options/settings via an interface library\n#]===================================================================]",
+        "Line" : 562,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# doesn't currently compile ? :\n",
+        "Line" : 583,
+        "CharPositionInLine" : 4
+      },
+      "40" : {
+        "Text" : "## TODO see if we can use the BUILD_RPATH target property (is it transitive?)\n",
+        "Line" : 607,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "#[===================================================================[\n   rippled transitive library deps via an interface library\n#]===================================================================]",
+        "Line" : 625,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "#[===================================================================[\n   NIH dep: boost\n#]===================================================================]",
+        "Line" : 663,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Workaround for MSVC having two boost versions - x86 and x64 on same PC in stage folders\n",
+        "Line" : 672,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# uncomment the following as needed to debug FindBoost issues:\n\n#set (Boost_DEBUG ON)\n",
+        "Line" : 684,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "#[=========================================================[\n   boost dynamic libraries don't trivially support @rpath\n   linking right now (cmake's default), so just force\n   static linking for macos, or if requested on linux by flag\n#]=========================================================]",
+        "Line" : 687,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# workaround for xcode 10.2 and boost < 1.69\n\n# once we require Boost 1.69 or higher, this can be removed\n\n# see:  https://github.com/boostorg/asio/commit/43874d5\n",
+        "Line" : 736,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "#[===================================================================[\n   NIH dep: openssl\n#]===================================================================]",
+        "Line" : 745,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "#[===============================================[\n  OPENSSL_ROOT_DIR is the only variable that\n  FindOpenSSL honors for locating, so convert any\n  OPENSSL_ROOT vars to this\n#]===============================================]",
+        "Line" : 749,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# HACK for travis\n",
+        "Line" : 770,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# disable SSLv2...this can also be done when building/configuring OpenSSL\n",
+        "Line" : 779,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "#[=========================================================[\n   https://gitlab.kitware.com/cmake/cmake/issues/16885\n   depending on how openssl is built, it might depend\n   on zlib. In fact, the openssl find package should\n   figure this out for us, but it does not currently...\n   so let's add zlib ourselves to the lib list\n   TODO: investigate linking to static zlib for static\n   build option\n#]=========================================================]",
+        "Line" : 782,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "#[===================================================================[\n   NIH dep: secp256k1\n#]===================================================================]",
+        "Line" : 799,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#[===========================[\n   headers installation\n#]===========================]",
+        "Line" : 827,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "#[===================================================================[\n   NIH dep: ed25519-donna\n#]===================================================================]",
+        "Line" : 835,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "#[=========================================================[\n   NOTE for macos:\n   https://github.com/floodyberry/ed25519-donna/issues/29\n   our source for ed25519-donna-portable.h has been\n   patched to workaround this.\n#]=========================================================]",
+        "Line" : 847,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "#[===========================[\n   headers installation\n#]===========================]",
+        "Line" : 856,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "#[===================================================================[\n   NIH dep: lz4\n#]===================================================================]",
+        "Line" : 864,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "#[===================================================================[\n   NIH dep: libarchive\n#]===================================================================]",
+        "Line" : 925,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# passing the compiler seems to be needed for windows CI, sadly\n",
+        "Line" : 938,
+        "CharPositionInLine" : 4
+      },
+      "60" : {
+        "Text" : "# because we are building a static lib, this lz4 library doesn't\n\n# actually matter since you can't generally link static libs to other static\n\n# libs. The include files are needed, but the library itself is not (until\n\n# we link our application, at which point we use the lz4 we built above).\n\n# nonetheless, we need to provide a library to libarchive else it will\n\n# NOT include lz4 support when configuring\n",
+        "Line" : 947,
+        "CharPositionInLine" : 4
+      },
+      "61" : {
+        "Text" : "#[===================================================================[\n   NIH dep: sqlite\n#]===================================================================]",
+        "Line" : 1027,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# sqlite doesn't use git, but it provides versioned tarballs\n",
+        "Line" : 1033,
+        "CharPositionInLine" : 2
+      },
+      "63" : {
+        "Text" : "# ^^^ version is apparent in the URL:  3260000 => 3.26.0\n",
+        "Line" : 1035,
+        "CharPositionInLine" : 2
+      },
+      "64" : {
+        "Text" : "# we wrote a very simple CMake file to build sqlite\n\n# so that's what we copy here so that we can build with\n\n# CMake. sqlite doesn't generally provided a build system\n\n# for the single amalgamation source file.\n",
+        "Line" : 1037,
+        "CharPositionInLine" : 2
+      },
+      "65" : {
+        "Text" : "#[===================================================================[\n   NIH dep: soci\n#]===================================================================]",
+        "Line" : 1095,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# for some reason soci on windows still prepends lib (non-standard)\n",
+        "Line" : 1102,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# this version in the name might change if/when we change versions of soci\n",
+        "Line" : 1104,
+        "CharPositionInLine" : 2
+      },
+      "68" : {
+        "Text" : "# We had an issue with soci integer range checking for boost::optional\n\n# and needed to remove the exception that SOCI throws in this case.\n\n# This is *probably* a bug in SOCI, but has never been investigated more\n\n# nor reported to the maintainers.\n\n# This cmake script comments out the lines in question.\n\n# This patch process is likely fragile and should be reviewed carefully\n\n# whenever we update the GIT_TAG above.\n",
+        "Line" : 1111,
+        "CharPositionInLine" : 2
+      },
+      "69" : {
+        "Text" : "# SEE: https://github.com/SOCI/soci/issues/640\n",
+        "Line" : 1154,
+        "CharPositionInLine" : 4
+      },
+      "70" : {
+        "Text" : "# something has to depend on the ExternalProject to trigger it\n",
+        "Line" : 1201,
+        "CharPositionInLine" : 42
+      },
+      "71" : {
+        "Text" : "#[===================================================================[\n   NIH dep: snappy\n#]===================================================================]",
+        "Line" : 1210,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "#[===================================================================[\n   NIH dep: rocksdb\n#]===================================================================]",
+        "Line" : 1270,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# only used by windows build\n",
+        "Line" : 1279,
+        "CharPositionInLine" : 4
+      },
+      "74" : {
+        "Text" : "# fixup their build version file to keep the values\n\n# from changing always\n",
+        "Line" : 1284,
+        "CharPositionInLine" : 4
+      },
+      "75" : {
+        "Text" : "#[===================================================================[\n   NIH dep: nudb\n\n   NuDB is header-only, thus is an INTERFACE lib in CMake.\n   TODO: move the library definition into NuDB repo and add\n   proper targets and export/install\n#]===================================================================]",
+        "Line" : 1386,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# NuDB not needed in the case of xrpl_core inclusion build\n",
+        "Line" : 1394,
+        "CharPositionInLine" : 21
+      },
+      "77" : {
+        "Text" : "# specify as system includes so as to avoid warnings\n",
+        "Line" : 1424,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "#[===================================================================[\n   import protobuf (lib and compiler) and create a lib\n   from our proto message definitions. If the system protobuf\n   is not found, fallback on EP to download and build a version\n   from official source.\n#]===================================================================]",
+        "Line" : 1434,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# protobuf prepends lib even on windows\n",
+        "Line" : 1448,
+        "CharPositionInLine" : 4
+      },
+      "80" : {
+        "Text" : "# for the external project build of protobuf, we currently ignore the\n\n# static option and always build static libs here. This is consistent\n\n# with our other EP builds. Dynamic libs in an EP would add complexity\n\n# because we'd need to get them into the runtime path, and probably\n\n# install them.\n",
+        "Line" : 1453,
+        "CharPositionInLine" : 2
+      },
+      "81" : {
+        "Text" : "#[===================================================================[\n   xrpl_core\n   core functionality, useable by some client software perhaps\n#]===================================================================]",
+        "Line" : 1559,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "## headers added here for benefit of IDEs\n",
+        "Line" : 1569,
+        "CharPositionInLine" : 17
+      },
+      "83" : {
+        "Text" : "#[===============================[\n    beast/legacy FILES:\n    TODO: review these sources for removal or replacement\n#]===============================]",
+        "Line" : 1571,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "#[===============================[\n    core sources\n#]===============================]",
+        "Line" : 1601,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "#[===============================[\n      nounity, main sources:\n        subdir: basics (partial)\n    #]===============================]",
+        "Line" : 1612,
+        "CharPositionInLine" : 4
+      },
+      "86" : {
+        "Text" : "#[===============================[\n      nounity, main sources:\n        subdir: json\n    #]===============================]",
+        "Line" : 1623,
+        "CharPositionInLine" : 4
+      },
+      "87" : {
+        "Text" : "#[===============================[\n      nounity, main sources:\n        subdir: protocol\n    #]===============================]",
+        "Line" : 1636,
+        "CharPositionInLine" : 4
+      },
+      "88" : {
+        "Text" : "#[===============================[\n      nounity, main sources:\n        subdir: crypto\n    #]===============================]",
+        "Line" : 1680,
+        "CharPositionInLine" : 4
+      },
+      "89" : {
+        "Text" : "# this one is for beast/legacy files:\n",
+        "Line" : 1695,
+        "CharPositionInLine" : 4
+      },
+      "90" : {
+        "Text" : "#[=================================[\n   main/core headers installation\n#]=================================]",
+        "Line" : 1709,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "#[===================================[\n   beast/legacy headers installation\n#]===================================]",
+        "Line" : 1819,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "# WARNING!! -- horrible levelization ahead\n\n# (these files should be isolated or moved...but\n\n#  unfortunately unit_test.h above creates this dependency)\n",
+        "Line" : 1872,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "#[===================================================================[\n   rippled executable\n#]===================================================================]",
+        "Line" : 1895,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "#[=========================================================[\n   this one header is added as source just to keep older\n   versions of cmake happy. cmake 3.10+ allows\n   add_executable with no sources\n#]=========================================================]",
+        "Line" : 1899,
+        "CharPositionInLine" : 0
+      },
+      "95" : {
+        "Text" : "#[===============================[\n       unity, main sources\n    #]===============================]",
+        "Line" : 1907,
+        "CharPositionInLine" : 4
+      },
+      "96" : {
+        "Text" : "#[===============================[\n       unity, test sources\n    #]===============================]",
+        "Line" : 1935,
+        "CharPositionInLine" : 4
+      },
+      "97" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: app\n    #]===============================]",
+        "Line" : 1963,
+        "CharPositionInLine" : 4
+      },
+      "98" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: basics (partial)\n    #]===============================]",
+        "Line" : 2064,
+        "CharPositionInLine" : 4
+      },
+      "99" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: conditions\n    #]===============================]",
+        "Line" : 2076,
+        "CharPositionInLine" : 4
+      },
+      "100" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: core\n    #]===============================]",
+        "Line" : 2083,
+        "CharPositionInLine" : 4
+      },
+      "101" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: consensus\n    #]===============================]",
+        "Line" : 2098,
+        "CharPositionInLine" : 4
+      },
+      "102" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: ledger\n    #]===============================]",
+        "Line" : 2103,
+        "CharPositionInLine" : 4
+      },
+      "103" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: net\n    #]===============================]",
+        "Line" : 2122,
+        "CharPositionInLine" : 4
+      },
+      "104" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: nodestore\n    #]===============================]",
+        "Line" : 2133,
+        "CharPositionInLine" : 4
+      },
+      "105" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: overlay\n    #]===============================]",
+        "Line" : 2153,
+        "CharPositionInLine" : 4
+      },
+      "106" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: peerfinder\n    #]===============================]",
+        "Line" : 2165,
+        "CharPositionInLine" : 4
+      },
+      "107" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: resource\n    #]===============================]",
+        "Line" : 2175,
+        "CharPositionInLine" : 4
+      },
+      "108" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: rpc\n    #]===============================]",
+        "Line" : 2183,
+        "CharPositionInLine" : 4
+      },
+      "109" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: server\n    #]===============================]",
+        "Line" : 2256,
+        "CharPositionInLine" : 4
+      },
+      "110" : {
+        "Text" : "#[===============================[\n       nounity, main sources:\n         subdir: shamap\n    #]===============================]",
+        "Line" : 2262,
+        "CharPositionInLine" : 4
+      },
+      "111" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: app\n    #]===============================]",
+        "Line" : 2273,
+        "CharPositionInLine" : 4
+      },
+      "112" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: basics\n    #]===============================]",
+        "Line" : 2316,
+        "CharPositionInLine" : 4
+      },
+      "113" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: beast\n    #]===============================]",
+        "Line" : 2336,
+        "CharPositionInLine" : 4
+      },
+      "114" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: conditions\n    #]===============================]",
+        "Line" : 2354,
+        "CharPositionInLine" : 4
+      },
+      "115" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: consensus\n    #]===============================]",
+        "Line" : 2359,
+        "CharPositionInLine" : 4
+      },
+      "116" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: core\n    #]===============================]",
+        "Line" : 2370,
+        "CharPositionInLine" : 4
+      },
+      "117" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: crypto\n    #]===============================]",
+        "Line" : 2382,
+        "CharPositionInLine" : 4
+      },
+      "118" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: csf\n    #]===============================]",
+        "Line" : 2387,
+        "CharPositionInLine" : 4
+      },
+      "119" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: json\n    #]===============================]",
+        "Line" : 2397,
+        "CharPositionInLine" : 4
+      },
+      "120" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: jtx\n    #]===============================]",
+        "Line" : 2405,
+        "CharPositionInLine" : 4
+      },
+      "121" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: ledger\n    #]===============================]",
+        "Line" : 2441,
+        "CharPositionInLine" : 4
+      },
+      "122" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: nodestore\n    #]===============================]",
+        "Line" : 2454,
+        "CharPositionInLine" : 4
+      },
+      "123" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: overlay\n    #]===============================]",
+        "Line" : 2464,
+        "CharPositionInLine" : 4
+      },
+      "124" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: peerfinder\n    #]===============================]",
+        "Line" : 2471,
+        "CharPositionInLine" : 4
+      },
+      "125" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: protocol\n    #]===============================]",
+        "Line" : 2477,
+        "CharPositionInLine" : 4
+      },
+      "126" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: resource\n    #]===============================]",
+        "Line" : 2498,
+        "CharPositionInLine" : 4
+      },
+      "127" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: rpc\n    #]===============================]",
+        "Line" : 2503,
+        "CharPositionInLine" : 4
+      },
+      "128" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: server\n    #]===============================]",
+        "Line" : 2540,
+        "CharPositionInLine" : 4
+      },
+      "129" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: shamap\n    #]===============================]",
+        "Line" : 2546,
+        "CharPositionInLine" : 4
+      },
+      "130" : {
+        "Text" : "#[===============================[\n       nounity, test sources:\n         subdir: unit_test\n    #]===============================]",
+        "Line" : 2553,
+        "CharPositionInLine" : 4
+      },
+      "131" : {
+        "Text" : "#[===================================================================[\n   install stuff\n#]===================================================================]",
+        "Line" : 2566,
+        "CharPositionInLine" : 0
+      },
+      "132" : {
+        "Text" : "# sample configs should not overwrite existing files\n\n# install if-not-exists workaround as suggested by\n\n# https://cmake.org/Bug/view.php?id=12646\n",
+        "Line" : 2602,
+        "CharPositionInLine" : 2
+      },
+      "133" : {
+        "Text" : "#[===================================================================[\n   coverage report target\n#]===================================================================]",
+        "Line" : 2618,
+        "CharPositionInLine" : 0
+      },
+      "134" : {
+        "Text" : "# create baseline info file\n",
+        "Line" : 2685,
+        "CharPositionInLine" : 8
+      },
+      "135" : {
+        "Text" : "# run tests\n",
+        "Line" : 2689,
+        "CharPositionInLine" : 8
+      },
+      "136" : {
+        "Text" : "# Create test coverage data file\n",
+        "Line" : 2692,
+        "CharPositionInLine" : 8
+      },
+      "137" : {
+        "Text" : "# Combine baseline and test coverage data\n",
+        "Line" : 2696,
+        "CharPositionInLine" : 8
+      },
+      "138" : {
+        "Text" : "# extract our files\n",
+        "Line" : 2699,
+        "CharPositionInLine" : 8
+      },
+      "139" : {
+        "Text" : "# generate HTML report\n",
+        "Line" : 2702,
+        "CharPositionInLine" : 8
+      },
+      "140" : {
+        "Text" : "#[===================================================================[\n   multiconfig misc\n#]===================================================================]",
+        "Line" : 2710,
+        "CharPositionInLine" : 0
+      },
+      "141" : {
+        "Text" : "# This code finds all source files in the src subdirectory for inclusion\n\n# in the IDE file tree as non-compiled sources. Since this file list will\n\n# have some overlap with files we have already added to our targets to\n\n# be compiled, we explicitly remove any of these target source files from\n\n# this list.\n",
+        "Line" : 2715,
+        "CharPositionInLine" : 2
+      },
+      "142" : {
+        "Text" : "#[===================================================================[\n   docs target (optional)\n#]===================================================================]",
+        "Line" : 2750,
+        "CharPositionInLine" : 0
+      },
+      "143" : {
+        "Text" : "# read the source config and make a modified one\n\n# that points the output files to our build directory\n",
+        "Line" : 2759,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 144
+    },
+    "src/secp256k1/Makefile.am" : {
+      "ObjectId" : "c071fbe2753c9bda4c8d7b74143dc15878572c4b",
+      "LastModified" : "2019-03-18T23:44:54Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 7,
+    "AUTOMAKE" : 1
+  },
+  "ElapsedTime" : 5077
+}

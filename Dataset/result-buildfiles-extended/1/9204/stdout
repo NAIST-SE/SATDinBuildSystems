@@ -1,0 +1,2771 @@
+{
+  "Repository" : "9204",
+  "Revision" : "HEAD",
+  "ObjectId" : "03bf35810fd70dbbe03eeff21bad9931400ce4d1",
+  "CommitTime" : "2019-04-18T18:00:51Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "85f244dfc95727015f8d9f82d2b3b1331507e8e4",
+      "LastModified" : "2019-01-02T21:09:58Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is part of VoltDB.\n\n# Copyright (C) 2008-2019 VoltDB Inc.\n\n#\n\n# This program is free software: you can redistribute it and/or modify\n\n# it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU Affero General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with VoltDB.  If not, see <http://www.gnu.org/licenses/>.\n\n########################################################################\n\n#\n\n# A CMake build configuration for VoltDB.  The commands for the ant\n\n# targets in build.xml call tools/build_cmake.py, which calls\n\n# cmake and make here, so you don't really need to know how to use this.\n\n# But for special cases this may be useful.\n\n#\n\n# There are three projects here.  One is the root project, called\n\n# VoltDB.  This is a container for the other two, and defines some\n\n# variables common to the two.  The others are:\n\n#   1.) VoltDB_EE\n\n#       This is the project which is responsible for building the\n\n#       VoltDB Execution Engine's shared library.  It's also\n\n#       responsible for building the voltdbipc program, which can\n\n#       be used to debug the EE standalone.\n\n#   2.) VoltDB_Tests\n\n#       This project is responsible for building the tests.  Some\n\n#       tests are manually written, and some are auto generated\n\n#       from descriptions in the server's java code.  This requires\n\n#       that the Java code be compiled first and that the jars\n\n#       be packaged up, and this requires the shared library from\n\n#       the VoltDB_EE package.  So this is a separate CMake project.\n\n#\n\n# The two output artifacts are:\n\n#   1.) The jni library, which will be in\n\n#           obj/${BUILD}/ee/nativelibs/libvoltdb-VERSION.so\n\n#       for Linux and\n\n#           obj/${BUILD}/ee/nativelibs/libvoltdb-VERSION.dylib\n\n#       for Darwin.\n\n#   2.) The voltdbipcrun program, which is used for memory leak detection,\n\n#       and to debug this EE.  This will be found in\n\n#           obj/${BUILD}/ee/prod/voltdbipcrun\n\n#       on both Linux and Darwin.\n\n#\n\n# The main way to build this, and the procedure the ant build uses,\n\n# is to run \"tools/build_cmake.py\".  Run this command with --help\n\n# for details.\n\n#\n\n# To use this standalone, in the root of the voltdb hierarchy, run this\n\n# procedure. All files are relative to the VoltDB source tree root.  This\n\n# is the directory which contains src, test, voltdb and the VoltDB\n\n# LICENSE file.  Names in curly braces, like ${THIS}, are names of\n\n# things in your build, like the build type or the build directory.\n\n#   1.) mkdir -p obj/${BUILD_TYPE}\n\n#       where ${BUILD_TYPE} is memcheck, release or debug.\n\n#   2.) cd obj/${BUILD_TYPE}\n\n#   3.) cmake -DVOLTDB_BUILD_TYPE=${BUILD_TYPE} ${VOLTDB_ROOT}\n\n#       where ${VOLTDB_ROOT} is the pathname of the root of the voltdb\n\n#       source directory, typically where you found this file.\n\n#       There are other arguments which could be added.  See build.xml.\n\n#       CMake looks at the build environment and creates makefiles\n\n#       aplenty.  This will configure the binary directories\n\n#       ${CMAKE_BINARY_DIR}/ee for VoltDB_EE and\n\n#       ${CMAKE_BINARY_DIR}/tests for VoltDB_Tests.\n\n#   4.) cd obj/${BUILD}; make -j <N> -k install\n\n#       where, as usual, <N> is number telling make how much parallelism\n\n#       to use.  Values between 1 and 8 are typical.  Higher values\n\n#       may produce faster builds, or they may just gum things up.\n\n#       If you use N=50 you will have to reboot your computer.  Really.\n\n#   5.) If this succeeds, then the build artifacts will be placed in\n\n#       obj/${BUILD}/nativelibs and obj/${BUILD}/prod.  The tests\n\n#       are not built at this point.\n\n#   6.) There are several ways to build and run tests.  Tests are grouped\n\n#       into directories.  You can build and run individual tests, all tests\n\n#       in a directory and all tests.\n\n#       a.) To run the tests run \"make -j <N> -k run-all-tests\".\n\n#       b.) To run a particular test run \"make run-TEST\".\n\n#       c.) To run all tests is a director run \"make run-TESTDIR\"\n\n#       d.) To build but not run tests, use the commands above, but\n\n#           use build- rather than run-.\n\n#       e.) There are labels for sets of tests.\n\n#           i.) The label manual means tests which have been created\n\n#               manually.  Most tests are manual tests.\n\n#           ii.) The label generated means tests which have been generated.\n\n#           iii.) Each test folder names a label.  So common, storage,\n\n#               catalog and so forth are labels.\n\n#       f.) To run all tests labelled L use \"make run-L-tests\".  For example,\n\n#           \"make run-catalog-tests\" runs the catalog tests, or\n\n#           \"make run-generated-tests\" runs the generated tests.\n\n#       Note that in memcheck builds we run under valgrind.  The test\n\n#       system knows how to do this. Note also that no output is shown\n\n#       from any test unless the test fails.  If you run the test\n\n#       executable you can see the test output.  There is a bug in\n\n#       the CMake program ctest which precludes listing all output\n\n#       easily.\n\n#\n\n# Just to review the way CMake works:\n\n#    a. CMake is best thought of as a functional language which describes\n\n#       the artifacts to be built by describing their constituents.\n\n#    b. Artifacts are called *targets*.  Targets can be libraries or\n\n#       executables.  We can also add tests.  These three are created\n\n#       with ADD_LIBRARY, ADD_EXECUTABLE and ADD_TEST.\n\n#    c. There are three kinds of library, SHARED, STATIC and OBJECT.\n\n#       SHARED is the usual dynamically linked library, denoted by a\n\n#       .so or .dylib suffix.  STATIC libraries are the usual .a\n\n#       archives, though we don't use these here.  OBJECT libraries,\n\n#       which we do use, are just sets of .o object files which\n\n#       CMake manages for us with a single name.\n\n#    d. Targets have properties, like compilation flags, link libraries\n\n#       and include directories.  These are associated with a target\n\n#       using ADD_COMPILE_OPTIONS, TARGET_LINK_LIBRARIES and\n\n#       TARGET_INCLUDE_DIRECTORIES.  Tests have names and other\n\n#       properties.\n\n#\n\n# There's the potential for making Eclipse or XCode projects here.\n\n# Also, there's the potential for substituting ninja for make, which\n\n# would improve EE build times.  More experience is needed.\n\n#\n\n########################################################################\n\n#\n\n# System Dependences\n\n#\n\n########################################################################\n\n#\n\n# Note that by default only GCC is supported on Linux, and only Clang is\n\n# supported on Darwin.  By redefining CMAKE_CXX_COMPILER, in the usual\n\n# CMake way, one can change this.  New C++ compilation flags can be\n\n# added by defining the cmake variable VOLTDB_CXXFLAGS.  New libraries can be added\n\n# to the link line for libvolt-*.so by defining VOLTDB_LINK_FLAGS\n\n# and VOLTDB_LDFLAGS.  For example,\n\n#    cmake -DVOLT_CXX_FLAGS=\"-fno-use-pirates\" -DVOLT_LDFLAGS=\"-lninjutsu\".\n\n#\n\n# This requires a gcc compiler version of at least 4.4.7, and a cmake\n\n# version of at least 2.8.11.  It's possible that older versions of\n\n# cmake will work, but 2.8.7, which is the released version for\n\n# Ubuntu 12.04, will be too old.  Recompiling a more recent cmake\n\n# version might very well make Ubuntu 12.04 a viable platform, but we\n\n# have not tested this.\n\n#\n\n# We also use Google's S2 geography library, pcre2 for regular\n\n# expression matching and openssl for arbitrary precision arithmetic.\n\n# These are all included in the source code of VoltDB.  But pcre3\n\n# is an autoconf/automake program.  So, you will need the autoconf\n\n# and automake suites.  Trying to build without autotools gives obscure\n\n# error messages, so make sure autotools is installed.\n\n#\n\n# You probably need python 2.7.  We don't know if python 2.6 or earlier\n\n# works, or if python 3 works.\n\n#\n\n########################################################################\n\n# There are a few rules which may make things be more organized,\n\n# both here and in the subprojects in src/ee and tests/ee.\n\n#\n\n# 1. All variables defined here should start with VOLTDB_, with a few\n\n#    exceptions for historical reasons.  These exceptions are:\n\n#          VOLT_LOG_LEVEL   The numeric log level.  See the values\n\n#                           for VOLT_LEVEL_* in src/ee/common/debuglog.h\n\n#                           The default is 500.  This is cached, so it\n\n#                           needs to be specified to cmake each time it needs\n\n#                           to be changed.\n\n# 2. Object files generally go into these folders.  The variables are\n\n#    set in the root CMakeLists.txt file.\n\n#      ${CMAKE_BINARY_DIR}\n\n#                           Root of the output tree.  This is\n\n#                           generally obj/debug, obj/release or obj/memcheck.\n\n#                           It will have -profile or -coverage at the\n\n#                           end if those options are enabled, and this is\n\n#                           called from the ant build process.\n\n#      ${CMAKE_BINARY_DIR}/3pty_install\n\n#                           All third party artifacts on which which\n\n#                           voltdb depends go here, in lib or include.\n\n#                           There are some other subfolders created\n\n#                           by the third party install procedures,\n\n#                           but we don't care about anything but the\n\n#                           static libraries and includes.\n\n########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Newer versions of CMake than we use set this\n\n# policy on the mac.  There there is a way to set the\n\n# rpath which is different from Linux.  We just ignore\n\n# it, but we need to use the old behavior on the mac.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "########################################################################\n\n#\n\n# Some functions to make things look simpler.  These\n\n# are needed in both the src/ee and tests/ee projects.\n\n#\n\n########################################################################\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "########################################################################\n\n#\n\n# Sanity check the configuration.\n\n#\n\n########################################################################\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "########################################################################\n\n#\n\n# Set some variables useful to all the sub projects.\n\n#   VOLTDB_VERSION\n\n#   VOLT_LOG_LEVEL\n\n#\n\n########################################################################\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "########################################################################\n\n#\n\n# Add some special flags if this is a valgrind build.\n\n#\n\n########################################################################\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "########################################################################\n\n#\n\n# Encapsulate the compilation flags and definitions in one place.\n\n#\n\n########################################################################\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "########################################################################\n\n#\n\n# Options.\n\n# These can be turned on and off to steer the build.\n\n# Note: These don't work.  When we enable coverage\n\n#       and profiling this is how they will be enabled, though.\n\n#\n\n########################################################################\n",
+        "Line" : 264,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "########################################################################\n\n#\n\n# Go and build the openssl library.  We only use this\n\n# for the arbitrary precision arithmetic code, which\n\n# S2GEO uses.  We have to untar it and build it, which\n\n# we do at build time.\n\n#\n\n########################################################################\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Again, we unpack the tarball in the binary directory.  See pcre2 above.\n",
+        "Line" : 290,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# VOLTDB_3PTY_INSTALL_PREFIX: voltdb/obj/${VOLTDB_BUILD_TYPE}/ee/3pty-install\n\n# VOLTDB_3PTY_BUILD_PREFIX:   voltdb/obj/${VOLTDB_BUILD_TYPE}/ee/3pty-obj\n\n# VOLTDB_OPENSSL_BUILD_PREFIX:     /openssl\n\n# VOLTDB_OPENSSL_SRC:                  /src/openssl-1.0.2.d/ ... unpacked source\n\n# VOLTDB_OPENSSL_OBJ:                  /src/openssl-1.2.0.d/ ... generated binaries\n\n# Binary and source are the same for openssl.  There\n\n# are not obvious ways to do out-of-tree builds.\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Not sure this is necessary.\n",
+        "Line" : 313,
+        "CharPositionInLine" : 40
+      },
+      "12" : {
+        "Text" : "########################################################################\n\n#\n\n# Go and build the pcre2 library.\n\n# We have to untar it and configure it.  We will\n\n# do this at build time.  There is supposed to be a way\n\n# to do this with a CMake build, but we don't use it.\n\n#\n\n########################################################################\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We unpack the tarball in the binary directory.  It saves us\n\n# checking it all in to github.  That's why this is\n\n# ${PROJECT_NAME}_BINARY_DIR.\n",
+        "Line" : 336,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#\n\n# VOLTDB_3PTY_INSTALL_PREFIX: voltdb/obj/${VOLTDB_BUILD_TYPE}/ee/3pty-install\n\n# VOLTDB_3PTY_BUILD_PREFIX:   voltdb/obj/${VOLTDB_BUILD_TYPE}/ee/3pty-obj\n\n# VOLTDB_PCRE2_BUILD_PREFIX:      /pcre2\n\n# VOLTDB_PCRE2_SRC:                   /src/pcre2-10.10/ ... unpacked source\n\n# VOLTDB_PCRE2_OBJ:                   /obj/pcre2-10.10/ ... generated binaries\n",
+        "Line" : 340,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Not sure this is necessary.\n",
+        "Line" : 357,
+        "CharPositionInLine" : 39
+      },
+      "16" : {
+        "Text" : "########################################################################\n\n#\n\n# Go and build the S2GEO library.\n\n# This is built with CMake.  We use a somewhat customized version\n\n# of the library.\n\n#\n\n########################################################################\n",
+        "Line" : 368,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Not sure this is needed.\n",
+        "Line" : 392,
+        "CharPositionInLine" : 33
+      },
+      "18" : {
+        "Text" : "########################################################################\n\n#\n\n# Configure the ee files.\n\n#\n\n########################################################################\n",
+        "Line" : 401,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "########################################################################\n\n#\n\n# Configure the tests.\n\n#\n\n########################################################################\n",
+        "Line" : 408,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 20
+    },
+    "build.xml" : {
+      "ObjectId" : "cf667a81f250f6ae69650fdf13ad0ddbd4d20b67",
+      "LastModified" : "2019-04-09T17:14:04Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " GENERAL HELPER MACROS ",
+        "Line" : 8,
+        "CharPositionInLine" : 31
+      },
+      "1" : {
+        "Text" : " PATHS AND PROPERTIES ",
+        "Line" : 40,
+        "CharPositionInLine" : 30
+      },
+      "2" : {
+        "Text" : " make environment var foo available as env.foo ",
+        "Line" : 54,
+        "CharPositionInLine" : 55
+      },
+      "3" : {
+        "Text" : " allow env.VOLTBUILD to override \"build\" property ",
+        "Line" : 57,
+        "CharPositionInLine" : 58
+      },
+      "4" : {
+        "Text" : " enable code coverage for JUnit's if USE_JACOCO in environment",
+        "Line" : 61,
+        "CharPositionInLine" : 70
+      },
+      "5" : {
+        "Text" : " allow env.VOLTPRO to override \"voltpro\" property ",
+        "Line" : 68,
+        "CharPositionInLine" : 58
+      },
+      "6" : {
+        "Text" : " stub the voltpro classpath and src.dir fileset so a fileset with this id always exists ",
+        "Line" : 73,
+        "CharPositionInLine" : 96
+      },
+      "7" : {
+        "Text" : " import the pro build.xml if it exists and is requested ",
+        "Line" : 77,
+        "CharPositionInLine" : 64
+      },
+      "8" : {
+        "Text" : " Some definitions the EE build process needs. ",
+        "Line" : 118,
+        "CharPositionInLine" : 54
+      },
+      "9" : {
+        "Text" : " os.mac is set when build is running on Mac OSX ",
+        "Line" : 127,
+        "CharPositionInLine" : 56
+      },
+      "10" : {
+        "Text" : " Default heap size for Volt server (MB)  ",
+        "Line" : 138,
+        "CharPositionInLine" : 49
+      },
+      "11" : {
+        "Text" : " Default heap size for Volt clients+loaders (MB)  ",
+        "Line" : 143,
+        "CharPositionInLine" : 58
+      },
+      "12" : {
+        "Text" : " Default is that debug logging is turned off  ",
+        "Line" : 148,
+        "CharPositionInLine" : 54
+      },
+      "13" : {
+        "Text" : " By default, do not do extra checking on the EE memory pools  ",
+        "Line" : 153,
+        "CharPositionInLine" : 70
+      },
+      "14" : {
+        "Text" : " By default, do not do execution timings  ",
+        "Line" : 158,
+        "CharPositionInLine" : 50
+      },
+      "15" : {
+        "Text" : " Default always round trip DDL in junit. Jenkins will turn this off on master  ",
+        "Line" : 163,
+        "CharPositionInLine" : 87
+      },
+      "16" : {
+        "Text" : " Property \"kitbuild\" is true if we're pulling in both Mac and Linux native libraries ",
+        "Line" : 168,
+        "CharPositionInLine" : 93
+      },
+      "17" : {
+        "Text" : " Overridden in the Hudson test script. ",
+        "Line" : 171,
+        "CharPositionInLine" : 47
+      },
+      "18" : {
+        "Text" : "         <exclude name='kafka-clients-0.10.2.1.jar' /> ",
+        "Line" : 188,
+        "CharPositionInLine" : 64
+      },
+      "19" : {
+        "Text" : "       <exclude name='kafka-clients-0.8.2.2.jar' /> ",
+        "Line" : 189,
+        "CharPositionInLine" : 62
+      },
+      "20" : {
+        "Text" : "Global exclude list for junit ",
+        "Line" : 197,
+        "CharPositionInLine" : 38
+      },
+      "21" : {
+        "Text" : " Exclude nested classes ",
+        "Line" : 198,
+        "CharPositionInLine" : 36
+      },
+      "22" : {
+        "Text" : " Exclude quarantine ",
+        "Line" : 201,
+        "CharPositionInLine" : 32
+      },
+      "23" : {
+        "Text" : " Specifig exclude community tests ",
+        "Line" : 204,
+        "CharPositionInLine" : 46
+      },
+      "24" : {
+        "Text" : " fails legacy ",
+        "Line" : 205,
+        "CharPositionInLine" : 104
+      },
+      "25" : {
+        "Text" : " Recorded as ENG-4423 ",
+        "Line" : 207,
+        "CharPositionInLine" : 34
+      },
+      "26" : {
+        "Text" : " Specific Excluded pro tests ",
+        "Line" : 211,
+        "CharPositionInLine" : 41
+      },
+      "27" : {
+        "Text" : " fails legacy ",
+        "Line" : 213,
+        "CharPositionInLine" : 78
+      },
+      "28" : {
+        "Text" : " fails legacy ",
+        "Line" : 216,
+        "CharPositionInLine" : 119
+      },
+      "29" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 221,
+        "CharPositionInLine" : 36
+      },
+      "30" : {
+        "Text" : " Exclude tests ",
+        "Line" : 225,
+        "CharPositionInLine" : 27
+      },
+      "31" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 234,
+        "CharPositionInLine" : 36
+      },
+      "32" : {
+        "Text" : " Exclude tests ",
+        "Line" : 251,
+        "CharPositionInLine" : 27
+      },
+      "33" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 256,
+        "CharPositionInLine" : 36
+      },
+      "34" : {
+        "Text" : " Exclude tests ",
+        "Line" : 267,
+        "CharPositionInLine" : 27
+      },
+      "35" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 272,
+        "CharPositionInLine" : 36
+      },
+      "36" : {
+        "Text" : " Exclude tests ",
+        "Line" : 328,
+        "CharPositionInLine" : 27
+      },
+      "37" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 333,
+        "CharPositionInLine" : 36
+      },
+      "38" : {
+        "Text" : " Exclude tests ",
+        "Line" : 397,
+        "CharPositionInLine" : 27
+      },
+      "39" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 402,
+        "CharPositionInLine" : 36
+      },
+      "40" : {
+        "Text" : " Exclude tests ",
+        "Line" : 405,
+        "CharPositionInLine" : 27
+      },
+      "41" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 410,
+        "CharPositionInLine" : 36
+      },
+      "42" : {
+        "Text" : " Exclude tests ",
+        "Line" : 413,
+        "CharPositionInLine" : 27
+      },
+      "43" : {
+        "Text" : " Workload Tracer Properties ",
+        "Line" : 437,
+        "CharPositionInLine" : 36
+      },
+      "44" : {
+        "Text" : "\n***************************************\nPRIMARY ENTRY POINTS\n***************************************\n",
+        "Line" : 452,
+        "CharPositionInLine" : 4
+      },
+      "45" : {
+        "Text" : "\n***************************************\nDISTRIBUTION\n***************************************\n",
+        "Line" : 580,
+        "CharPositionInLine" : 4
+      },
+      "46" : {
+        "Text" : " populate selected server/compiler javadoc documentation ",
+        "Line" : 584,
+        "CharPositionInLine" : 69
+      },
+      "47" : {
+        "Text" : " populate selected client javadoc documentation ",
+        "Line" : 612,
+        "CharPositionInLine" : 60
+      },
+      "48" : {
+        "Text" : " dist_internal_core populates the core distribution components needed by all\n     distributions except tools. ",
+        "Line" : 619,
+        "CharPositionInLine" : 37
+      },
+      "49" : {
+        "Text" : " prepare release directory for new content ",
+        "Line" : 621,
+        "CharPositionInLine" : 55
+      },
+      "50" : {
+        "Text" : " populate the docs and other core files ",
+        "Line" : 627,
+        "CharPositionInLine" : 52
+      },
+      "51" : {
+        "Text" : " This will be packaged into the Jar, do not need to include it into the distribution. ",
+        "Line" : 642,
+        "CharPositionInLine" : 106
+      },
+      "52" : {
+        "Text" : " create, and leave empty extension directory for user supplied jars ",
+        "Line" : 647,
+        "CharPositionInLine" : 80
+      },
+      "53" : {
+        "Text" : " populate java client and native libraries ",
+        "Line" : 650,
+        "CharPositionInLine" : 55
+      },
+      "54" : {
+        "Text" : " add the Project and Deployment file schemas to the dist ",
+        "Line" : 658,
+        "CharPositionInLine" : 69
+      },
+      "55" : {
+        "Text" : " add misc. other tools in the tools directory ",
+        "Line" : 661,
+        "CharPositionInLine" : 58
+      },
+      "56" : {
+        "Text" : " 3rd party libraries copied to the same location in the dist ",
+        "Line" : 676,
+        "CharPositionInLine" : 73
+      },
+      "57" : {
+        "Text" : " copy license to voltdb dir ",
+        "Line" : 683,
+        "CharPositionInLine" : 40
+      },
+      "58" : {
+        "Text" : " internal target for building a full distribution. dist_internal_core\n     populates the core components used by the client distribution. ",
+        "Line" : 689,
+        "CharPositionInLine" : 72
+      },
+      "59" : {
+        "Text" : " build the jars for the clients ",
+        "Line" : 692,
+        "CharPositionInLine" : 44
+      },
+      "60" : {
+        "Text" : " build the jars for the tutorials ",
+        "Line" : 709,
+        "CharPositionInLine" : 46
+      },
+      "61" : {
+        "Text" : " populate the stuff not handled by dist_internal_core ",
+        "Line" : 713,
+        "CharPositionInLine" : 66
+      },
+      "62" : {
+        "Text" : " populate the voltdb java libraries ",
+        "Line" : 724,
+        "CharPositionInLine" : 48
+      },
+      "63" : {
+        "Text" : " add tools and support files ",
+        "Line" : 732,
+        "CharPositionInLine" : 41
+      },
+      "64" : {
+        "Text" : " copy meshmonitor ",
+        "Line" : 737,
+        "CharPositionInLine" : 30
+      },
+      "65" : {
+        "Text" : " make shell scripts executable ",
+        "Line" : 752,
+        "CharPositionInLine" : 43
+      },
+      "66" : {
+        "Text" : " create an archive for distribution ",
+        "Line" : 762,
+        "CharPositionInLine" : 48
+      },
+      "67" : {
+        "Text" : " move it back to dist directory for downstream dependencies ",
+        "Line" : 775,
+        "CharPositionInLine" : 72
+      },
+      "68" : {
+        "Text" : " prepare release directory for new content ",
+        "Line" : 785,
+        "CharPositionInLine" : 55
+      },
+      "69" : {
+        "Text" : " populate the dist-client-java dir from the superset dist ",
+        "Line" : 791,
+        "CharPositionInLine" : 70
+      },
+      "70" : {
+        "Text" : " make shell scripts executable ",
+        "Line" : 804,
+        "CharPositionInLine" : 43
+      },
+      "71" : {
+        "Text" : " Debugging in Eclipse will need this catalog library in the voltdb folder. ",
+        "Line" : 834,
+        "CharPositionInLine" : 91
+      },
+      "72" : {
+        "Text" : " copy to dir where jar picks it up as well ",
+        "Line" : 842,
+        "CharPositionInLine" : 55
+      },
+      "73" : {
+        "Text" : " libcatalog for both OS copied in the \"catalog\" target (earlier than this) ",
+        "Line" : 843,
+        "CharPositionInLine" : 87
+      },
+      "74" : {
+        "Text" : " Call shell script that handles copying native libs so they can be packaged together ",
+        "Line" : 850,
+        "CharPositionInLine" : 97
+      },
+      "75" : {
+        "Text" : " Prepare libvoltdb* for distribution. ",
+        "Line" : 864,
+        "CharPositionInLine" : 46
+      },
+      "76" : {
+        "Text" : " Linux prepare libvoltdb* for distribution. ",
+        "Line" : 867,
+        "CharPositionInLine" : 52
+      },
+      "77" : {
+        "Text" : " save the symbols from the shared library ",
+        "Line" : 870,
+        "CharPositionInLine" : 54
+      },
+      "78" : {
+        "Text" : " strip the voltbin shared library (~40x size reduction) ",
+        "Line" : 875,
+        "CharPositionInLine" : 68
+      },
+      "79" : {
+        "Text" : " embed the path to the symbol file into the ELF binary ",
+        "Line" : 880,
+        "CharPositionInLine" : 67
+      },
+      "80" : {
+        "Text" : " Mac prepare libvoltdb* for distribution. ",
+        "Line" : 887,
+        "CharPositionInLine" : 50
+      },
+      "81" : {
+        "Text" : " objcopy is unavailable by default on Mac ",
+        "Line" : 889,
+        "CharPositionInLine" : 54
+      },
+      "82" : {
+        "Text" : " Just use strip -S since strip-unneeded option is unavailable. ",
+        "Line" : 891,
+        "CharPositionInLine" : 75
+      },
+      "83" : {
+        "Text" : "\n***************************************\nCLEANING\n***************************************\n",
+        "Line" : 938,
+        "CharPositionInLine" : 4
+      },
+      "84" : {
+        "Text" : "\n***************************************\nJAR BUILDING\n***************************************\n",
+        "Line" : 1033,
+        "CharPositionInLine" : 4
+      },
+      "85" : {
+        "Text" : "<jar destfile=\"voltdb/voltdbclient-${dist.version}-javadoc.jar\">\n        <fileset dir=\"${doc.dir}/javadoc/java-client-api\" defaultexcludes=\"no\" >\n            <include name=\"**\"/>\n        </fileset>\n        <manifest>\n            <section name=\"Credits\">\n                <attribute name=\"Author\" value=\"VoltDB Inc.\" />\n            </section>\n            <section name=\"Shared\">\n                <attribute\n                    name=\"Title\"\n                    value=\"VoltDB Client JavaDoc\"\n                />\n                <attribute name=\"Date\" value=\"${TODAY}\" />\n            </section>\n        </manifest>\n    </jar",
+        "Line" : 1112,
+        "CharPositionInLine" : 13
+      },
+      "86" : {
+        "Text" : "\n***************************************\nJAVA COMPILATION\n***************************************\n",
+        "Line" : 1241,
+        "CharPositionInLine" : 4
+      },
+      "87" : {
+        "Text" : " copy resources needed for logging messages ",
+        "Line" : 1274,
+        "CharPositionInLine" : 56
+      },
+      "88" : {
+        "Text" : " Do not compress javascript unless this is a release build. ",
+        "Line" : 1299,
+        "CharPositionInLine" : 76
+      },
+      "89" : {
+        "Text" : " Compress javascript if this is a release build. ",
+        "Line" : 1304,
+        "CharPositionInLine" : 61
+      },
+      "90" : {
+        "Text" : " README files we want to include in the jar ",
+        "Line" : 1320,
+        "CharPositionInLine" : 56
+      },
+      "91" : {
+        "Text" : " pick src/** schemas as package resources ",
+        "Line" : 1327,
+        "CharPositionInLine" : 54
+      },
+      "92" : {
+        "Text" : " the ddl files used by tests and benchmark clients are copied\n         relative to the client class and found with class.getResource() ",
+        "Line" : 1335,
+        "CharPositionInLine" : 77
+      },
+      "93" : {
+        "Text" : " put the jar file to client class path in order to be found with class.getResource().\n         The client will only get the jar file with getResource() but not automatically load\n         the classes from the jar. ",
+        "Line" : 1354,
+        "CharPositionInLine" : 39
+      },
+      "94" : {
+        "Text" : " Compressed resources for tests ",
+        "Line" : 1362,
+        "CharPositionInLine" : 44
+      },
+      "95" : {
+        "Text" : " copy file containing workloads for voltdbfat.jar ",
+        "Line" : 1375,
+        "CharPositionInLine" : 62
+      },
+      "96" : {
+        "Text" : " compile the individual source directories ",
+        "Line" : 1388,
+        "CharPositionInLine" : 55
+      },
+      "97" : {
+        "Text" : " hsql ",
+        "Line" : 1389,
+        "CharPositionInLine" : 18
+      },
+      "98" : {
+        "Text" : " voltcore and third-party java (including our zookeeper ",
+        "Line" : 1391,
+        "CharPositionInLine" : 68
+      },
+      "99" : {
+        "Text" : " non-voltcore voltdb code ",
+        "Line" : 1406,
+        "CharPositionInLine" : 38
+      },
+      "100" : {
+        "Text" : " compile the individual test directories ",
+        "Line" : 1409,
+        "CharPositionInLine" : 53
+      },
+      "101" : {
+        "Text" : " This task only executes if the voltpro.flavor property is set. ",
+        "Line" : 1417,
+        "CharPositionInLine" : 72
+      },
+      "102" : {
+        "Text" : "\n***************************************\nNATIVE EE STUFF\n***************************************\n",
+        "Line" : 1433,
+        "CharPositionInLine" : 4
+      },
+      "103" : {
+        "Text" : "both libcatalogs are checked out, so copy to right place",
+        "Line" : 1443,
+        "CharPositionInLine" : 68
+      },
+      "104" : {
+        "Text" : " Build the jni library. ",
+        "Line" : 1451,
+        "CharPositionInLine" : 32
+      },
+      "105" : {
+        "Text" : " The tool ${cmake.build.tool} does all the EE building.\n             See the comment in that file for complete details.\n         ",
+        "Line" : 1525,
+        "CharPositionInLine" : 13
+      },
+      "106" : {
+        "Text" : " The tool ${cmake.build.tool} does all the EE building.\n             See the comment in that file for complete details.\n         ",
+        "Line" : 1546,
+        "CharPositionInLine" : 13
+      },
+      "107" : {
+        "Text" : " The tool ${cmake.build.tool} does all the EE building.\n             See the comment in that file for complete details.\n         ",
+        "Line" : 1565,
+        "CharPositionInLine" : 13
+      },
+      "108" : {
+        "Text" : " The tool ${cmake.build.tool} does all the EE building.\n             See the comment in that file for complete details.\n         ",
+        "Line" : 1584,
+        "CharPositionInLine" : 13
+      },
+      "109" : {
+        "Text" : " The tool ${cmake.build.tool} does all the EE building.\n             See the comment in that file for complete details.\n         ",
+        "Line" : 1604,
+        "CharPositionInLine" : 13
+      },
+      "110" : {
+        "Text" : "\n***************************************\nLICENSING\n***************************************\n",
+        "Line" : 1623,
+        "CharPositionInLine" : 4
+      },
+      "111" : {
+        "Text" : "\n***************************************\nTEST CASES\n***************************************\n",
+        "Line" : 1637,
+        "CharPositionInLine" : 4
+      },
+      "112" : {
+        "Text" : " Default ",
+        "Line" : 1640,
+        "CharPositionInLine" : 67
+      },
+      "113" : {
+        "Text" : " script that runs junit_onesuite for each class in a fileset ",
+        "Line" : 1651,
+        "CharPositionInLine" : 69
+      },
+      "114" : {
+        "Text" : " if there's a better way to do this than embedding javascript, please help... ",
+        "Line" : 1652,
+        "CharPositionInLine" : 86
+      },
+      "115" : {
+        "Text" : " run junit for one suite ",
+        "Line" : 1675,
+        "CharPositionInLine" : 33
+      },
+      "116" : {
+        "Text" : " set defaults for junit vars if not already set ",
+        "Line" : 1677,
+        "CharPositionInLine" : 60
+      },
+      "117" : {
+        "Text" : " select which set of regression suite configuration types to run ",
+        "Line" : 1687,
+        "CharPositionInLine" : 77
+      },
+      "118" : {
+        "Text" : "Force the execution of SQL queries to use the \"large\" mode\n    (for read-only AdHoc queries) at a certain percentage of the time.\n    -1 means uninitialized, and will be treated equally as null.",
+        "Line" : 1693,
+        "CharPositionInLine" : 68
+      },
+      "119" : {
+        "Text" : " convert the filename to a classname ",
+        "Line" : 1700,
+        "CharPositionInLine" : 53
+      },
+      "120" : {
+        "Text" : " assumes the file coming in has 1-1 folders to packages ",
+        "Line" : 1701,
+        "CharPositionInLine" : 72
+      },
+      "121" : {
+        "Text" : " run ant's junit runner ",
+        "Line" : 1710,
+        "CharPositionInLine" : 40
+      },
+      "122" : {
+        "Text" : " Following option is commented out because\n                 it introduces enough overhead to JNI calls\n                 that some tests time out with Java 8.\n                 See ENG-8730. ",
+        "Line" : 1725,
+        "CharPositionInLine" : 35
+      },
+      "123" : {
+        "Text" : " <jvmarg value=\"-Xcheck:jni\" /> ",
+        "Line" : 1726,
+        "CharPositionInLine" : 52
+      },
+      "124" : {
+        "Text" : " removed in java 8 <jvmarg value=\"-XX:-UseSplitVerifier\"/> ",
+        "Line" : 1730,
+        "CharPositionInLine" : 79
+      },
+      "125" : {
+        "Text" : " Leave breadcrumbs so we can figure out deep in the bowels of VoltDB if\n                 this is a test ",
+        "Line" : 1738,
+        "CharPositionInLine" : 36
+      },
+      "126" : {
+        "Text" : " Following two env vars are used by Java code\n                 when running ant check -Dbuild=memcheck\n                 The voltdbipc client is used in concert with valgrind\n                 for most tests (those that would normally run against\n                 the single process JNI backend. ",
+        "Line" : 1744,
+        "CharPositionInLine" : 53
+      },
+      "127" : {
+        "Text" : " junit log4j settings, generates log output of last suite ",
+        "Line" : 1747,
+        "CharPositionInLine" : 78
+      },
+      "128" : {
+        "Text" : " write per-testcase output to console if verbose mode ",
+        "Line" : 1755,
+        "CharPositionInLine" : 74
+      },
+      "129" : {
+        "Text" : " write per-testcase output to testoutput folder ",
+        "Line" : 1757,
+        "CharPositionInLine" : 68
+      },
+      "130" : {
+        "Text" : " write all kinds of fun voltdb output to testoutput folder ",
+        "Line" : 1759,
+        "CharPositionInLine" : 79
+      },
+      "131" : {
+        "Text" : " write xml output for the report  ",
+        "Line" : 1766,
+        "CharPositionInLine" : 54
+      },
+      "132" : {
+        "Text" : " specify the tests here (there should be only one) ",
+        "Line" : 1769,
+        "CharPositionInLine" : 71
+      },
+      "133" : {
+        "Text" : " per-test post processing script\n             1. ensure a result xml file got written\n             2. ensure no whacky processes were stranded ",
+        "Line" : 1781,
+        "CharPositionInLine" : 61
+      },
+      "134" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 1808,
+        "CharPositionInLine" : 48
+      },
+      "135" : {
+        "Text" : " Exclude many tests not directly related to sql functionality ",
+        "Line" : 1810,
+        "CharPositionInLine" : 86
+      },
+      "136" : {
+        "Text" : " Standard junit fileset ",
+        "Line" : 1877,
+        "CharPositionInLine" : 48
+      },
+      "137" : {
+        "Text" : " Exclude tests ",
+        "Line" : 1880,
+        "CharPositionInLine" : 39
+      },
+      "138" : {
+        "Text" : " common macro to run a bunch of junit ",
+        "Line" : 1943,
+        "CharPositionInLine" : 46
+      },
+      "139" : {
+        "Text" : " Fail the build if there were any problems.\n             This runs all the tests before failing. ",
+        "Line" : 1977,
+        "CharPositionInLine" : 57
+      },
+      "140" : {
+        "Text" : " regressed during 3.0 bugfix? ",
+        "Line" : 1999,
+        "CharPositionInLine" : 106
+      },
+      "141" : {
+        "Text" : " Resources for the JaCoCo task below. ",
+        "Line" : 2026,
+        "CharPositionInLine" : 46
+      },
+      "142" : {
+        "Text" : " <include name=\"*voltdb.*\"/>  ",
+        "Line" : 2040,
+        "CharPositionInLine" : 58
+      },
+      "143" : {
+        "Text" : " <include name=\"*voltcore.*\"/> ",
+        "Line" : 2041,
+        "CharPositionInLine" : 59
+      },
+      "144" : {
+        "Text" : "pmsg is the protobuf-generated code for dragent",
+        "Line" : 2042,
+        "CharPositionInLine" : 75
+      },
+      "145" : {
+        "Text" : " <include name=\"voltdb/**/*.java\"/> ",
+        "Line" : 2049,
+        "CharPositionInLine" : 64
+      },
+      "146" : {
+        "Text" : " <include name=\"voltcore/**/*.java\"/> ",
+        "Line" : 2050,
+        "CharPositionInLine" : 66
+      },
+      "147" : {
+        "Text" : " This target will run a junit suite. It will also run a single\n     suite under valgrind with -Dbuild=memcheck.  NOTE: to use valgrind,\n     you must \"cd obj/memcheck && make prod/voltdbipc\" separately. ",
+        "Line" : 2119,
+        "CharPositionInLine" : 71
+      },
+      "148" : {
+        "Text" : " output per-testcase stats at the end of each suite ",
+        "Line" : 2129,
+        "CharPositionInLine" : 64
+      },
+      "149" : {
+        "Text" : " run iv2 by default. -Denableiv2=false to get legacy ",
+        "Line" : 2133,
+        "CharPositionInLine" : 65
+      },
+      "150" : {
+        "Text" : " make sure example application compiles ",
+        "Line" : 2150,
+        "CharPositionInLine" : 52
+      },
+      "151" : {
+        "Text" : " Default ",
+        "Line" : 2194,
+        "CharPositionInLine" : 67
+      },
+      "152" : {
+        "Text" : " Enable with -Dexplain=-re ",
+        "Line" : 2360,
+        "CharPositionInLine" : 97
+      },
+      "153" : {
+        "Text" : " Enable with -Dexplain=-re ",
+        "Line" : 2390,
+        "CharPositionInLine" : 97
+      },
+      "154" : {
+        "Text" : " build the jar file used to test the load and remove commands ",
+        "Line" : 2413,
+        "CharPositionInLine" : 74
+      },
+      "155" : {
+        "Text" : " build the jar file used to test the load and remove commands ",
+        "Line" : 2435,
+        "CharPositionInLine" : 74
+      },
+      "156" : {
+        "Text" : "\n***************************************\nBENCHMARKS\n***************************************\n",
+        "Line" : 2458,
+        "CharPositionInLine" : 4
+      },
+      "157" : {
+        "Text" : "\n***************************************\nJAPEX MICROBENCHMARKS\n***************************************\n",
+        "Line" : 2519,
+        "CharPositionInLine" : 4
+      },
+      "158" : {
+        "Text" : " don't fail on error: jpeg generator requires sun jdk ",
+        "Line" : 2522,
+        "CharPositionInLine" : 66
+      },
+      "159" : {
+        "Text" : "\n***************************************\nHUDSON-SPECIFIC TARGETS\n***************************************\n",
+        "Line" : 2535,
+        "CharPositionInLine" : 4
+      },
+      "160" : {
+        "Text" : "\n***************************************\nUTILITIES\n***************************************\n",
+        "Line" : 2548,
+        "CharPositionInLine" : 4
+      },
+      "161" : {
+        "Text" : " Delete the generated ee unit tests, but not if they don't exist. ",
+        "Line" : 2565,
+        "CharPositionInLine" : 78
+      },
+      "162" : {
+        "Text" : "\n***************************************\nDEPLOYMENT FILE SCHEMA CODE GENERATION\n***************************************\n",
+        "Line" : 2573,
+        "CharPositionInLine" : 4
+      },
+      "163" : {
+        "Text" : "\n***************************************\nDBBPool.java preprocessing\n***************************************\n",
+        "Line" : 2604,
+        "CharPositionInLine" : 4
+      },
+      "164" : {
+        "Text" : " -ffreestanding prevents gcc 4.8 generating comments to violate our license standards. ",
+        "Line" : 2615,
+        "CharPositionInLine" : 105
+      },
+      "165" : {
+        "Text" : " END PROJECT ",
+        "Line" : 2633,
+        "CharPositionInLine" : 21
+      },
+      "CommentCount" : 166
+    },
+    "src/ee/CMakeLists.txt" : {
+      "ObjectId" : "52d7535aca8a242a6a8d00a2dfe3b7e233fd9b77",
+      "LastModified" : "2019-04-09T17:14:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is part of VoltDB.\n\n# Copyright (C) 2008-2019 VoltDB Inc.\n\n#\n\n# This program is free software: you can redistribute it and/or modify\n\n# it under the terms of the GNU Affero General Public License as\n\n# published by the Free Software Foundation, either version 3 of the\n\n# License, or (at your option) any later version.\n\n#\n\n# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU Affero General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU Affero General Public License\n\n# along with VoltDB.  If not, see <http://www.gnu.org/licenses/>.\n\n########################################################################\n\n#\n\n# A CMake build configuration for the VoltDB Execution Engine.\n\n# This is called from the CMakeLists.txt file in the root of\n\n# the VoltDB source tree.  So you probably don't want to be\n\n# using this by itself.\n\n#\n\n# The two artifacts are:\n\n#   1.) The jni library, which will be in\n\n#           ${CMAKE_BINARY_}/nativelibs/libvoltdb-VERSION.so\n\n#       for Linux and\n\n#           ${CMAKE_BINARY_DIR}/nativelibs/libvoltdb-VERSION.dylib\n\n#       for Darwin.\n\n#   2.) The voltdbipcrun program, which is used for memory leak detection,\n\n#       and to debug this EE.  This will be found in\n\n#           ${CMAKE_BINARY_DIR}/prod/voltdbipcrun\n\n#       on both Linux and Darwin.\n\n#\n\n# Note that we don't build any tests here.  The tests are built\n\n# in tests/ee, which has its own CMakeLists.txt file and is\n\n# built separately from the Execution Engine.\n\n#\n\n########################################################################\n\n#\n\n# A Note On Names.\n\n#\n\n# This project's name is VoltDB_EE.  This is in the variable\n\n# PROJECT_NAME.  The source and binary directories for this project\n\n# are in ${${PROJECT_NAME}_SOURCE_DIR} and ${${PROJECT_NAME}_BINARY_DIR}.\n\n# the name ${CMAKE_SOURCE_DIR} and ${CMAKE_BINARY_DIR} are the names of\n\n# the source and binary directories of the parent project.  These are\n\n# the root of the voltdb source tree and the value of\n\n# ${CMAKE_SOURCE_DIR}/obj/${VOLTDB_BUILD_TYPE} respectively.\n\n#\n\n########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Newer versions of CMake than we use set this\n\n# policy on the mac.  There there is a way to set the\n\n# rpath which is different from Linux.  We just ignore\n\n# it, but we need to use the old behavior on the mac.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "########################################################################\n\n#\n\n# This CMakeLists.txt file describes the builds for the VoltDB Runtime.\n\n#\n\n# There are a few rules which may make things be more organized.\n\n# 1. Object files generally go into these folders.  The variables are\n\n#    set in the root CMakeLists.txt file.\n\n#      ${${PROJECT_NAME}_BINARY_DIR}\n\n#                           Root of the output tree.  This is\n\n#                           generally obj/debug/ee, obj/release/ee\n\n#                           or obj/memcheck/ee.\n\n#                           It will have -profile or -coverage at the\n\n#                           end if those options are enabled.\n\n#      ${CMAKE_BINARY_DIR}/3pty_install\n\n#                           All third party artifacts on which which\n\n#                           voltdb depends go here, in lib or include.\n\n#                           There are some other subfolders created\n\n#                           by the third party install procedures,\n\n#                           but we don't care about anything but the\n\n#                           static libraries and includes.  Note that\n\n#                           this is not the project directory, but\n\n#                           in the parent project's directory.\n\n########################################################################\n\n########################################################################\n\n#\n\n# Go and build the VoltDB library and IPC command.\n\n#\n\n########################################################################\n\n#\n\n# This is a list of all source files for the EE itself.  The order is\n\n# probably not important, but it's in alphabetical order, so why not try\n\n# to keep it that way?\n\n#\n\n########################################################################\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "########################################################################\n\n#\n\n# This is a list of all third party sources we include in our\n\n# shared library.  Keep it in alphabetical order, ok?\n\n#\n\n########################################################################\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "########################################################################\n\n#\n\n# These are sources for the jni and ipc drivers.  Only one will\n\n# be used at a time.\n\n#\n\n########################################################################\n",
+        "Line" : 298,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# These are sets of object files, something like static libraries.\n\n#\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "########################################################################\n\n#\n\n# Adding the voltdb jni library target.\n\n#\n\n########################################################################\n",
+        "Line" : 345,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "########################################################################\n\n#\n\n# Adding the voltdbipc executable target.\n\n#\n\n########################################################################\n",
+        "Line" : 364,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "########################################################################\n\n#\n\n# Where to install things, and what to install.\n\n#\n\n########################################################################\n",
+        "Line" : 382,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "########################################################################\n\n#\n\n# What about voltrun?  Do we use that anymore?  Where is it used?\n\n#\n\n########################################################################\n\n#\n\n# Add a custom target to build the two build artifacts we care about.\n\n#\n\n########################################################################\n",
+        "Line" : 393,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "tests/ee/CMakeLists.txt" : {
+      "ObjectId" : "da0b86cdeb1f52741ba4f0a8aa2eaa06c56880e6",
+      "LastModified" : "2019-04-09T17:14:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file is part of VoltDB.\n\n# Copyright (C) 2008-2019 VoltDB Inc.\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining\n\n# a copy of this software and associated documentation files (the\n\n# \"Software\"), to deal in the Software without restriction, including\n\n# without limitation the rights to use, copy, modify, merge, publish,\n\n# distribute, sublicense, and/or sell copies of the Software, and to\n\n# permit persons to whom the Software is furnished to do so, subject to\n\n# the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be\n\n# included in all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\n\n# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n\n# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n\n# IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR\n\n# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\n\n# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\n\n# OTHER DEALINGS IN THE SOFTWARE.\n\n########################################################################\n\n#\n\n# A CMake build configuration for VoltDB EE Unit Tests.\n\n#\n\n# There are two kinds of EE Unit Tests.  One kind, called\n\n# a manual test, is written as usual, by creating a C++\n\n# text file from scratch.  The other is written by one\n\n# of several Java classes which hold a specification of\n\n# the input and output tables, the plan of a SQL statement,\n\n# the catalog string of some DDL and a specification of\n\n# the expected output.  These latter tests are called generated\n\n# tests.\n\n#\n\n########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Newer versions of CMake than we use set this\n\n# policy on the mac.  There there is a way to set the\n\n# rpath which is different from Linux.  We just ignore\n\n# it, but we need to use the old behavior on the mac.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# MESSAGE(\"VOLTDB_CORE_COUNT IS ${VOLTDB_CORE_COUNT}\")\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "########################################################################\n\n#\n\n# Here we have all the names of tests which are not generated\n\n# and which are expected to pass.  Mostly if you add a new test and\n\n# you expect to it to succeed, just add it to this list.  If it's\n\n# expected to fail add it to VOLTDB_MANUAL_FAILING_TEST_PROGRAMS.\n\n# If it's expected to fail in valgrind but succeed otherwise,\n\n# add it to VOLTDB_MANUAL_VALGRIND_FAILING_TEST_PROGRAMS.\n\n#\n\n# Note that these are the names of the test executables and not\n\n# the test source files.  The source files must have extension .cpp\n\n# and be found in the given directory in voltdb/tests/ee.  This\n\n# makes some of the test processing easier.\n\n#\n\n# They have the form directory/test_name.  The test names must all be\n\n# globally unique.  We test for this later on.\n\n#\n\n# Keeping this list in alphabetical order helps find things.\n\n# Order is not really important, though.  The ones not in\n\n# alphabetical order are there to make them run first.\n\n#\n\n########################################################################\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# These two need to run first, since they take\n\n# the longest to run.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#\n\n# These are like the earlier tests, but they\n\n# are expected to fail when run under valgrind.\n\n# We use these to test that we are finding\n\n# valgrind errors.\n\n#\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# These are expected to fail.  There are none of\n\n# these now, but the harness_tester test has one that\n\n# should fit into this category.\n\n#\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# These are tests which are not run under valgrind\n\n# but are run when not in a valgrind build.  There\n\n# are none of them now, but there used to be and\n\n# may be in the future.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# Generated test programs are created by calling a Java program\n\n# in the server.  The java class we run is named here.  We may\n\n# name more than one class.\n\n#\n\n# First, name all the classes we want to use.\n\n#\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n# Generate the tests.\n\n#\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# The previous command left the test names in\n\n# This file.  Each line is a single file name.  We\n\n# need to do some CMake magic to convert this to a\n\n# CMake list.\n\n#\n",
+        "Line" : 197,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# MESSAGE( \"VOLTDB_GENERATED_TEST_PROGRAMS is ${VOLTDB_GENERATED_TEST_PROGRAMS}\" )\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#\n\n# The list of all test programs is the union of\n\n# the manual tests and the generated tests.  We\n\n# do some calculation to split them up into directory\n\n# names and test names.\n\n#\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\n\n# The calls to ADD_TEST_PROGRAM adds the test names\n\n# to VOLTDB_TEST_ALLTEST and the test directories\n\n# to VOLTDB_TEST_DIR_LIST.  We also set variables\n\n# for each test telling if it's generated and if\n\n# it's expected to fail.\n\n#\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# FALSE TRUE means we don't expect a failure, and to\n\n# run valgrind in a memcheck build.\n",
+        "Line" : 226,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# FALSE TRUE means we don't expect a failure and run valgrind\n\n# in a memcheck build.\n\n#\n\n# The difference between this and the last one is that these\n\n# are generated.\n",
+        "Line" : 231,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# MESSAGE(\"TEST ${TEST} IS EXPECTED TO FAIL: ${VOLTDB_TESTFAIL_${TEST}}\")\n\n# MESSAGE(\"TEST ${TEST}: VOLTDB_TESTDIR_${TEST} == ${VOLTDB_TESTDIR_${TEST}}\")\n\n# MESSAGE(\"TEST ${TEST}: VOLTDB_TESTGEN_${TEST} == ${VOLTDB_TESTGEN_${TEST}}\")\n",
+        "Line" : 237,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# TRUE TRUE means we do expect a failure, and to run valgrind\n\n# in a memcheck build.\n",
+        "Line" : 243,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# If IS_VALGRIND_BUILD is TRUE then we\n\n# expect a failure.  Otherwise we don't.\n\n# The TRUE says to run valgrind.\n",
+        "Line" : 248,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# FALSE FALSE means we don't expect a failure, but don't run valgrind\n\n# in a memcheck build.\n",
+        "Line" : 254,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# The test harness is its own OBJECT library target.  It's\n\n# just one file now, but it could be more.\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# MESSAGE(\"VoltDB_Tests: PROJECT_NAME Is ${PROJECT_NAME}\")\n\n# MESSAGE(\"VoltDB_Tests: PROJECT_SOURCE_DIRECTORY is ${${PROJECT_NAME}_SOURCE_DIR}\")\n",
+        "Line" : 266,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "########################################################################\n\n#\n\n# Calculate the list of directories and the list of\n\n# tests in each directory.  The test names must be be\n\n# unique, even ignoring directories.\n\n#\n\n########################################################################\n\n#\n\n# Create run-all-tests and build-all-tests.  We will make\n\n# build-all-tests depend on building each individual test.\n\n# So there's no command necessary.  However, we need to make\n\n# the test directory first.\n\n#\n\n########################################################################\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "########################################################################\n\n#\n\n# For each test directory, create a target.  We will\n\n# make this target depend on the test executable later\n\n# on.\n\n#\n\n########################################################################\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# We assign each test the label of its test directory.\n\n# So running all tests is just running all tests with\n\n# the given label.\n",
+        "Line" : 309,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "########################################################################\n\n#\n\n# For each test, on the VOLTDB_TEST_ALLTESTS list, generate\n\n# targets, commands and dependences.\n\n#\n\n########################################################################\n",
+        "Line" : 322,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# MESSAGE(\"VOLTDB_TEST_ALLTESTS IS ${VOLTDB_TEST_ALLTESTS}\")\n",
+        "Line" : 329,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 27
+    },
+    "tests/test_apps/aggregates/build.xml" : {
+      "ObjectId" : "ac05efa412c82fcc5b7527cd7a420f62409f5bb7",
+      "LastModified" : "2013-10-07T19:10:26Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n***************************************\nPATHS AND PROPERTIES\n***************************************\n",
+        "Line" : 8,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "\n***************************************\nPRIMARY ENTRY POINTS\n***************************************\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : " apprunner looks for a target named build ",
+        "Line" : 30,
+        "CharPositionInLine" : 50
+      },
+      "3" : {
+        "Text" : " server to connect to ",
+        "Line" : 61,
+        "CharPositionInLine" : 64
+      },
+      "4" : {
+        "Text" : " username ",
+        "Line" : 62,
+        "CharPositionInLine" : 52
+      },
+      "5" : {
+        "Text" : " password ",
+        "Line" : 63,
+        "CharPositionInLine" : 52
+      },
+      "6" : {
+        "Text" : " rows ",
+        "Line" : 64,
+        "CharPositionInLine" : 48
+      },
+      "7" : {
+        "Text" : " project file ",
+        "Line" : 76,
+        "CharPositionInLine" : 74
+      },
+      "8" : {
+        "Text" : " output ",
+        "Line" : 77,
+        "CharPositionInLine" : 68
+      },
+      "9" : {
+        "Text" : "\n***************************************\nCLEANING\n***************************************\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "\n***************************************\nJAVA COMPILATION\n***************************************\n",
+        "Line" : 104,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 11
+    },
+    "tests/test_apps/dedupe/build.xml" : {
+      "ObjectId" : "0c696eace3dac3605baa011a0b366b84ebfca10b",
+      "LastModified" : "2013-10-07T19:10:26Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n***************************************\nPATHS AND PROPERTIES\n***************************************\n",
+        "Line" : 8,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "\n***************************************\nPRIMARY ENTRY POINTS\n***************************************\n",
+        "Line" : 32,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : " project file ",
+        "Line" : 60,
+        "CharPositionInLine" : 64
+      },
+      "3" : {
+        "Text" : " catalog name ",
+        "Line" : 61,
+        "CharPositionInLine" : 64
+      },
+      "4" : {
+        "Text" : " maximum transactions per second ",
+        "Line" : 74,
+        "CharPositionInLine" : 109
+      },
+      "5" : {
+        "Text" : " feedback interval (seconds) ",
+        "Line" : 75,
+        "CharPositionInLine" : 105
+      },
+      "6" : {
+        "Text" : " client duration (seconds) ",
+        "Line" : 76,
+        "CharPositionInLine" : 103
+      },
+      "7" : {
+        "Text" : " total number of user ",
+        "Line" : 77,
+        "CharPositionInLine" : 98
+      },
+      "8" : {
+        "Text" : " total number of user applications ",
+        "Line" : 78,
+        "CharPositionInLine" : 111
+      },
+      "9" : {
+        "Text" : " offset timestamps by supplied number of days ",
+        "Line" : 79,
+        "CharPositionInLine" : 122
+      },
+      "10" : {
+        "Text" : " seconds to wait before recording latency information ",
+        "Line" : 80,
+        "CharPositionInLine" : 130
+      },
+      "11" : {
+        "Text" : " servers to connect to ",
+        "Line" : 81,
+        "CharPositionInLine" : 99
+      },
+      "12" : {
+        "Text" : " reset latency min/max/avg every <x> seconds ",
+        "Line" : 82,
+        "CharPositionInLine" : 121
+      },
+      "13" : {
+        "Text" : " number of moves per transaction ",
+        "Line" : 95,
+        "CharPositionInLine" : 109
+      },
+      "14" : {
+        "Text" : " servers to connect to ",
+        "Line" : 96,
+        "CharPositionInLine" : 91
+      },
+      "15" : {
+        "Text" : " client duration (seconds) ",
+        "Line" : 97,
+        "CharPositionInLine" : 103
+      },
+      "16" : {
+        "Text" : " loop pause duration (seconds), seconds to pause if no full \"moves\" occurred ",
+        "Line" : 98,
+        "CharPositionInLine" : 153
+      },
+      "17" : {
+        "Text" : " number of moves per transaction ",
+        "Line" : 111,
+        "CharPositionInLine" : 109
+      },
+      "18" : {
+        "Text" : " servers to connect to ",
+        "Line" : 112,
+        "CharPositionInLine" : 91
+      },
+      "19" : {
+        "Text" : " client duration (seconds) ",
+        "Line" : 113,
+        "CharPositionInLine" : 103
+      },
+      "20" : {
+        "Text" : " loop pause duration (seconds), seconds to pause if no full \"moves\" occurred ",
+        "Line" : 114,
+        "CharPositionInLine" : 153
+      },
+      "21" : {
+        "Text" : " client/admin : port to connect to ",
+        "Line" : 128,
+        "CharPositionInLine" : 101
+      },
+      "22" : {
+        "Text" : " list of servers to connect to, comma seperated ",
+        "Line" : 130,
+        "CharPositionInLine" : 114
+      },
+      "23" : {
+        "Text" : " text to prepend to created files ",
+        "Line" : 132,
+        "CharPositionInLine" : 100
+      },
+      "24" : {
+        "Text" : " username (if using security) ",
+        "Line" : 134,
+        "CharPositionInLine" : 96
+      },
+      "25" : {
+        "Text" : " password (if using security) ",
+        "Line" : 136,
+        "CharPositionInLine" : 96
+      },
+      "26" : {
+        "Text" : " csv/tsv : csv for comma seperated files, tsv for tab seperated files ",
+        "Line" : 138,
+        "CharPositionInLine" : 136
+      },
+      "27" : {
+        "Text" : " output directory for EL files ",
+        "Line" : 140,
+        "CharPositionInLine" : 98
+      },
+      "28" : {
+        "Text" : " number of deletes per transaction ",
+        "Line" : 153,
+        "CharPositionInLine" : 111
+      },
+      "29" : {
+        "Text" : " servers to connect to ",
+        "Line" : 154,
+        "CharPositionInLine" : 91
+      },
+      "30" : {
+        "Text" : "\n***************************************\nCLEANING\n***************************************\n",
+        "Line" : 167,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "\n***************************************\nJAVA COMPILATION\n***************************************\n",
+        "Line" : 183,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 32
+    },
+    "tests/test_apps/eng585/build.xml" : {
+      "ObjectId" : "63b013a8306b2fcf21fe2ff1a13668df34f3237e",
+      "LastModified" : "2013-10-07T19:10:26Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n***************************************\nPATHS AND PROPERTIES\n***************************************\n",
+        "Line" : 8,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "\n***************************************\nPRIMARY ENTRY POINTS\n***************************************\n",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : " server to connect to ",
+        "Line" : 53,
+        "CharPositionInLine" : 34
+      },
+      "3" : {
+        "Text" : " User Name ",
+        "Line" : 55,
+        "CharPositionInLine" : 23
+      },
+      "4" : {
+        "Text" : " Password ",
+        "Line" : 57,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : " server to connect to ",
+        "Line" : 74,
+        "CharPositionInLine" : 34
+      },
+      "6" : {
+        "Text" : " User Name ",
+        "Line" : 76,
+        "CharPositionInLine" : 23
+      },
+      "7" : {
+        "Text" : " Password ",
+        "Line" : 78,
+        "CharPositionInLine" : 22
+      },
+      "8" : {
+        "Text" : " server to connect to ",
+        "Line" : 95,
+        "CharPositionInLine" : 34
+      },
+      "9" : {
+        "Text" : " User Name ",
+        "Line" : 97,
+        "CharPositionInLine" : 23
+      },
+      "10" : {
+        "Text" : " Password ",
+        "Line" : 99,
+        "CharPositionInLine" : 22
+      },
+      "11" : {
+        "Text" : " project file ",
+        "Line" : 111,
+        "CharPositionInLine" : 74
+      },
+      "12" : {
+        "Text" : " hosts ",
+        "Line" : 112,
+        "CharPositionInLine" : 67
+      },
+      "13" : {
+        "Text" : " sites ",
+        "Line" : 113,
+        "CharPositionInLine" : 67
+      },
+      "14" : {
+        "Text" : " host ",
+        "Line" : 114,
+        "CharPositionInLine" : 66
+      },
+      "15" : {
+        "Text" : " output ",
+        "Line" : 115,
+        "CharPositionInLine" : 68
+      },
+      "16" : {
+        "Text" : "\n***************************************\nCLEANING\n***************************************\n",
+        "Line" : 126,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "\n***************************************\nJAVA COMPILATION\n***************************************\n",
+        "Line" : 142,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 18
+    },
+    "tests/test_apps/eng866/build.xml" : {
+      "ObjectId" : "4d3166f236452e404cb31f5a18040aab5d3f90b9",
+      "LastModified" : "2013-10-07T19:10:26Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n***************************************\nPRIMARY ENTRY POINTS\n***************************************\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " number of hashtag table entries ",
+        "Line" : 53,
+        "CharPositionInLine" : 67
+      },
+      "2" : {
+        "Text" : " comma separated list of volt servers to connect to ",
+        "Line" : 54,
+        "CharPositionInLine" : 97
+      },
+      "3" : {
+        "Text" : " project file ",
+        "Line" : 63,
+        "CharPositionInLine" : 57
+      },
+      "4" : {
+        "Text" : " output ",
+        "Line" : 64,
+        "CharPositionInLine" : 51
+      },
+      "5" : {
+        "Text" : " project file ",
+        "Line" : 73,
+        "CharPositionInLine" : 57
+      },
+      "6" : {
+        "Text" : " output ",
+        "Line" : 74,
+        "CharPositionInLine" : 51
+      },
+      "7" : {
+        "Text" : "\n***************************************\nCLEANING\n***************************************\n",
+        "Line" : 84,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "\n***************************************\nJAVA COMPILATION\n***************************************\n",
+        "Line" : 101,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 9
+    },
+    "tests/test_apps/genqa/build.xml" : {
+      "ObjectId" : "3d25f7a69554c8de5fd8a0e014eae3da90cf80ff",
+      "LastModified" : "2019-04-09T17:14:04Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Simple build file to build test ",
+        "Line" : 1,
+        "CharPositionInLine" : 41
+      },
+      "CommentCount" : 1
+    },
+    "tests/test_apps/kafkaimporter/build.xml" : {
+      "ObjectId" : "baa31cd1b9904ed7b4dacf0b1f822a3424bd54c3",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Simple build file to build kafka stream importer ",
+        "Line" : 1,
+        "CharPositionInLine" : 58
+      },
+      "1" : {
+        "Text" : " <include name=\"voltdbclient*.jar\"/> ",
+        "Line" : 33,
+        "CharPositionInLine" : 56
+      },
+      "2" : {
+        "Text" : " <copy file=\"formatter.jar\" todir=\"${basedir}/../../../../pro/obj/pro/voltdb-ent-6.6/bundles\"/> ",
+        "Line" : 94,
+        "CharPositionInLine" : 112
+      },
+      "CommentCount" : 3
+    },
+    "tests/test_apps/kvbenchmark/build.xml" : {
+      "ObjectId" : "ce7fc9dcdb830a7bf7cd27336d1047876ee6993a",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Simple build file to build KV Benchmark ",
+        "Line" : 1,
+        "CharPositionInLine" : 49
+      },
+      "1" : {
+        "Text" : " <include name=\"voltdbclient*.jar\"/> ",
+        "Line" : 26,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 2
+    },
+    "tests/test_apps/socketimporter/build.xml" : {
+      "ObjectId" : "8eebf6d702d1162cf58e3727ec5335fbeb82a8ba",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Simple build file to build socket stream importer ",
+        "Line" : 1,
+        "CharPositionInLine" : 59
+      },
+      "CommentCount" : 1
+    },
+    "tests/test_apps/txnid-selfcheck2/build.xml" : {
+      "ObjectId" : "1efb9e90cb957e61ff5f43d865c41fa9ff322385",
+      "LastModified" : "2017-04-27T19:43:19Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Simple build file to build tnxid2 client & SP's ",
+        "Line" : 1,
+        "CharPositionInLine" : 57
+      },
+      "1" : {
+        "Text" : " <include name=\"voltdbclient*.jar\"/> ",
+        "Line" : 30,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 2
+    },
+    "tests/test_apps/voltkvqa/build.xml" : {
+      "ObjectId" : "215acac5e8576ce061ff58e76ac8a2614e1fff5e",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Simple build file to build voltkv client & SP's ",
+        "Line" : 1,
+        "CharPositionInLine" : 57
+      },
+      "1" : {
+        "Text" : " <include name=\"voltdbclient*.jar\"/> ",
+        "Line" : 29,
+        "CharPositionInLine" : 56
+      },
+      "2" : {
+        "Text" : " <include name=\"voltdbclient*.jar\"/> ",
+        "Line" : 33,
+        "CharPositionInLine" : 56
+      },
+      "3" : {
+        "Text" : " <include name=\"voltdbclient*.jar\"/> ",
+        "Line" : 37,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 4
+    },
+    "third_party/cpp/google-s2-geometry/CMakeLists.txt" : {
+      "ObjectId" : "be9cbbcff724ebe7078a67d0d602b2a43162c377",
+      "LastModified" : "2018-02-12T19:17:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# These are set by the ant task.\n\n# set(VOLTDB_SOURCE_DIR \"../../..\")\n\n# set(VOLTDB_THIRD_PARTY_DIR \"${VOLTDB_SOURCE_DIR}/third_party\")\n\n# set(VOLTDB_THIRD_PARTY_CPP_DIR \"${VOLTDB_SOURCE_DIR}/third_party/cpp\")\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add RPATH info to executables so that when they are run after being installed\n\n# (i.e., from /usr/local/bin/) the linker can find library dependencies. For\n\n# more info see http://www.cmake.org/Wiki/CMake_RPATH_handling\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The pthreads library is available and allowed.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 30
+      },
+      "3" : {
+        "Text" : "# allow underscores in targets\n",
+        "Line" : 86,
+        "CharPositionInLine" : 32
+      },
+      "CommentCount" : 4
+    },
+    "third_party/cpp/googletest/googlemock/CMakeLists.txt" : {
+      "ObjectId" : "cd522776412549b1f75f44990dc2692955b24b9d",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n# CMake build script for Google Mock.\n\n#\n\n# To run the tests for Google Mock itself on Linux, use 'make test' or\n\n# ctest.  You can select which tests to run using 'ctest -R regex'.\n\n# For more options, run 'ctest --help'.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to\n\n# make it prominent in the GUI.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# A directory to find Google Test sources.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Defines pre_project_set_up_hermetic_build() and set_up_hermetic_build().\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Google Test also calls hermetic setup functions from add_subdirectory,\n\n# although its changes will not affect things at the current scope.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "########################################################################\n\n#\n\n# Project-wide settings\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Name of the project.\n\n#\n\n# CMake files in this project can refer to the root source directory\n\n# as ${gmock_SOURCE_DIR} and to the root binary directory as\n\n# ${gmock_BINARY_DIR}.\n\n# Language \"C\" is required for find_package(Threads).\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Instructs CMake to process Google Test's CMakeLists.txt and add its\n\n# targets to the current scope.  We are placing Google Test's binary\n\n# directory in a subdirectory of our own as VC compilation may break\n\n# if they are the same (the default).\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Although Google Test's CMakeLists.txt calls this function, the\n\n# changes there don't affect the current scope.  Therefore we have to\n\n# call it again here.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# from ${gtest_dir}/cmake/internal_utils.cmake\n",
+        "Line" : 56,
+        "CharPositionInLine" : 30
+      },
+      "10" : {
+        "Text" : "# Adds Google Mock's and Google Test's header directories to the search path.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# This directory is needed to build directly from Google\n\n# Test sources.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 20
+      },
+      "12" : {
+        "Text" : "# Summary of tuple support for Microsoft Visual Studio:\n\n# Compiler    version(MS)  version(cmake)  Support\n\n# ----------  -----------  --------------  -----------------------------\n\n# <= VS 2010  <= 10        <= 1600         Use Google Tests's own tuple.\n\n# VS 2012     11           1700            std::tr1::tuple + _VARIADIC_MAX=10\n\n# VS 2013     12           1800            std::tr1::tuple\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "########################################################################\n\n#\n\n# Defines the gmock & gmock_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Google Mock libraries.  We build them using more strict warnings than what\n\n# are used for other targets, to ensure that Google Mock can be compiled by\n\n# a user aggressive about warnings.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "########################################################################\n\n#\n\n# Google Mock's own tests.\n\n#\n\n# You can skip this section if you aren't interested in testing\n\n# Google Mock itself.\n\n#\n\n# The tests are not built by default.  To build them, set the\n\n# gmock_build_tests option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgmock_build_tests=ON flag when running cmake.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# This must be set in the root directory for the tests to be run by\n\n# 'make test' or ctest.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "############################################################\n\n# C++ tests built with standard compiler flags.\n",
+        "Line" : 111,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# gmock_all_test is commented to save time building and running tests.\n\n# Uncomment if necessary.\n\n# cxx_test(gmock_all_test gmock_main)\n",
+        "Line" : 134,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "############################################################\n\n# C++ tests built with non-standard compiler flags.\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# 1600 is Visual Studio 2010.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 43
+      },
+      "21" : {
+        "Text" : "# Visual Studio 2010, 2012, and 2013 define symbols in std::tr1 that\n\n# conflict with our own definitions. Therefore using our own tuple does not\n\n# work on those compilers.\n",
+        "Line" : 148,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# Tests that a binary can be built with Google Mock as a shared library.  On\n\n# some system configurations, it may not possible to run the binary without\n\n# knowing more details about the system configurations. We do not try to run\n\n# this binary. To get a more robust shared library coverage, configure with\n\n# -DBUILD_SHARED_LIBS=ON.\n",
+        "Line" : 167,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "############################################################\n\n# Python tests.\n",
+        "Line" : 178,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 24
+    },
+    "third_party/cpp/googletest/googlemock/Makefile.am" : {
+      "ObjectId" : "7ad45888fb8505100124d5e8ef82ce2cb0d943f8",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Automake file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Nonstandard package files for distribution.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We may need to build our internally packaged gtest. If so, it will be\n\n# included in the 'subdirs' variable.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This is generated by the configure script, so clean it for distribution.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We define the global AM_CPPFLAGS as everything we compile includes from these\n\n# directories.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Modifies compiler and linker flags for pthreads compatibility.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Build rules for libraries.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Build rules for tests. Automake's naming for some of these variables isn't\n\n# terribly obvious, so this is a brief reference:\n\n#\n\n# TESTS -- Programs run automatically by \"make check\"\n\n# check_PROGRAMS -- Programs built by \"make check\" but not necessarily run\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# This exercises all major components of Google Mock.  It also\n\n# verifies that libgmock works.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# This tests using Google Mock in multiple translation units.  It also\n\n# verifies that libgmock_main and libgmock work.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Tests that fused gmock files compile and work.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Google Mock source files that we don't compile directly.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# C++ tests that we don't compile using autotools.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Python tests, which we don't run using autotools.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Nonstandard package files for distribution.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Pump scripts for generating Google Mock headers.\n\n# TODO(chandlerc@google.com): automate the generation of *.h from *.h.pump.\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Script for fusing Google Mock and Google Test source files.\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The Google Mock Generator tool from the cppclean project.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Script for diagnosing compiler errors in programs that use Google\n\n# Mock.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# CMake scripts.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Microsoft Visual Studio 2005 projects.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Microsoft Visual Studio 2010 projects.\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# gmock_test.cc does not really depend on files generated by the\n\n# fused-gmock-internal rule.  However, gmock_test.o does, and it is\n\n# important to include test/gmock_test.cc as part of this rule in order to\n\n# prevent compiling gmock_test.o until all dependent files have been\n\n# generated.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# TODO(vladl@google.com): Find a way to add Google Tests's sources here.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Death tests may produce core dumps in the build directory. In case\n\n# this happens, clean them to keep distcleancheck happy.\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Disables 'make install' as installing a compiled version of Google\n\n# Mock can lead to undefined behavior due to violation of the\n\n# One-Definition Rule.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "third_party/cpp/googletest/googlemock/make/Makefile" : {
+      "ObjectId" : "c1cc0e90f172b9f6a48fa9f74d72342d1d2e2585",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A sample Makefile for building both Google Mock and Google Test and\n\n# using them in user tests.  This file is self-contained, so you don't\n\n# need to use the Makefile in Google Test's source tree.  Please tweak\n\n# it to suit your environment and project.  You may want to move it to\n\n# your project's root directory.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Please tweak the following variable definitions as needed by your\n\n# project, except GMOCK_HEADERS and GTEST_HEADERS, which you can use\n\n# in your own targets but shouldn't modify.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Points to the root of Google Test, relative to where this file is.\n\n# Remember to tweak this if you move this file, or if you want to use\n\n# a copy of Google Test at a different location.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Points to the root of Google Mock, relative to where this file is.\n\n# Remember to tweak this if you move this file.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Where to find user code.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# Set Google Test and Google Mock's header directories as system\n\n# directories, such that the compiler doesn't generate warnings in\n\n# these headers.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# All tests produced by this Makefile.  Remember to add new tests you\n\n# created to the list.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# All Google Test headers.  Usually you shouldn't change this\n\n# definition.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# All Google Mock headers. Note that all Google Test headers are\n\n# included here too, as they are #included by Google Mock headers.\n\n# Usually you shouldn't change this definition.\t\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# House-keeping build targets.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Builds gmock.a and gmock_main.a.  These libraries contain both\n\n# Google Mock and Google Test.  A test should link with either gmock.a\n\n# or gmock_main.a, depending on whether it defines its own main()\n\n# function.  It's fine if your test only uses features from Google\n\n# Test (and not Google Mock).\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Usually you shouldn't tweak such internal variables, indicated by a\n\n# trailing _.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# For simplicity and to avoid depending on implementation details of\n\n# Google Mock and Google Test, the dependencies specified below are\n\n# conservative and not optimized.  This is fine as Google Mock and\n\n# Google Test compile fast and for ordinary users their source rarely\n\n# changes.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Builds a sample test.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "third_party/cpp/googletest/googletest/CMakeLists.txt" : {
+      "ObjectId" : "bd78cfe675bd5b986194645c0905a1170c78da09",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n# CMake build script for Google Test.\n\n#\n\n# To run the tests for Google Test itself on Linux, use 'make test' or\n\n# ctest.  You can select which tests to run using 'ctest -R regex'.\n\n# For more options, run 'ctest --help'.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to\n\n# make it prominent in the GUI.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# When other libraries are using a shared version of runtime libraries,\n\n# Google Test also has to use one.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Defines pre_project_set_up_hermetic_build() and set_up_hermetic_build().\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "########################################################################\n\n#\n\n# Project-wide settings\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Name of the project.\n\n#\n\n# CMake files in this project can refer to the root source directory\n\n# as ${gtest_SOURCE_DIR} and to the root binary directory as\n\n# ${gtest_BINARY_DIR}.\n\n# Language \"C\" is required for find_package(Threads).\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Define helper functions and macros used by Google Test.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Defined in internal_utils.cmake.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 30
+      },
+      "8" : {
+        "Text" : "# Where Google Test's .h files can be found.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Where Google Test's libraries can be found.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Summary of tuple support for Microsoft Visual Studio:\n\n# Compiler    version(MS)  version(cmake)  Support\n\n# ----------  -----------  --------------  -----------------------------\n\n# <= VS 2010  <= 10        <= 1600         Use Google Tests's own tuple.\n\n# VS 2012     11           1700            std::tr1::tuple + _VARIADIC_MAX=10\n\n# VS 2013     12           1800            std::tr1::tuple\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "########################################################################\n\n#\n\n# Defines the gtest & gtest_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Google Test libraries.  We build them using more strict warnings than what\n\n# are used for other targets, to ensure that gtest can be compiled by a user\n\n# aggressive about warnings.\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "########################################################################\n\n#\n\n# Samples on how to link user tests with gtest or gtest_main.\n\n#\n\n# They are not built by default.  To build them, set the\n\n# gtest_build_samples option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgtest_build_samples=ON flag when running cmake.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "########################################################################\n\n#\n\n# Google Test's own tests.\n\n#\n\n# You can skip this section if you aren't interested in testing\n\n# Google Test itself.\n\n#\n\n# The tests are not built by default.  To build them, set the\n\n# gtest_build_tests option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgtest_build_tests=ON flag when running cmake.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# This must be set in the root directory for the tests to be run by\n\n# 'make test' or ctest.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "############################################################\n\n# C++ tests built with standard compiler flags.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "############################################################\n\n# C++ tests built with non-standard compiler flags.\n",
+        "Line" : 152,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# 1600 is Visual Studio 2010.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 43
+      },
+      "20" : {
+        "Text" : "# Visual Studio 2010, 2012, and 2013 define symbols in std::tr1 that\n\n# conflict with our own definitions. Therefore using our own tuple does not\n\n# work on those compilers.\n",
+        "Line" : 185,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "############################################################\n\n# Python tests.\n",
+        "Line" : 199,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# Visual Studio .NET 2003 does not support STL with exceptions disabled.\n",
+        "Line" : 205,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# 1310 is Visual Studio .NET 2003\n",
+        "Line" : 206,
+        "CharPositionInLine" : 46
+      },
+      "24" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 242,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 25
+    },
+    "third_party/cpp/googletest/googletest/Makefile.am" : {
+      "ObjectId" : "9c96b42572ca943d5fb4d4303842f12a545e8523",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Automake file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Nonstandard package files for distribution\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gtest source files that we don't compile directly.  They are\n\n# #included by gtest-all.cc.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Sample files that we don't compile.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# C++ test files that we don't compile directly.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Python tests that we don't run.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CMake script\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# MSVC project files\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# xcode project files\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# xcode sample files\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# C++Builder project files\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Distribute and install M4 macro\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# We define the global AM_CPPFLAGS as everything we compile includes from these\n\n# directories.\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Modifies compiler and linker flags for pthreads compatibility.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Build rules for libraries.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Bulid rules for samples and tests. Automake's naming for some of\n\n# these variables isn't terribly obvious, so this is a brief\n\n# reference:\n\n#\n\n# TESTS -- Programs run automatically by \"make check\"\n\n# check_PROGRAMS -- Programs built by \"make check\" but not necessarily run\n",
+        "Line" : 215,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# A simple sample on using gtest.\n",
+        "Line" : 238,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Another sample.  It also verifies that libgtest works.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# This tests most constructs of gtest and verifies that libgtest_main\n\n# and libgtest work.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Tests that fused gtest files compile and work.\n",
+        "Line" : 260,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Build rules for putting fused Google Test files into the distribution\n\n# package. The user can also create those files by manually running\n\n# scripts/fuse_gtest_files.py.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Death tests may produce core dumps in the build directory. In case\n\n# this happens, clean them to keep distcleancheck happy.\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Disables 'make install' as installing a compiled version of Google\n\n# Test can lead to undefined behavior due to violation of the\n\n# One-Definition Rule.\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "third_party/cpp/googletest/googletest/cmake/internal_utils.cmake" : {
+      "ObjectId" : "93e6dbb7c196d33706425ffbe3fcf3ed48d07f03",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Defines functions and macros useful for building Google Test and\n\n# Google Mock.\n\n#\n\n# Note:\n\n#\n\n# - This file will be run twice when building Google Mock (once via\n\n#   Google Test's CMakeLists.txt, and once via Google Mock's).\n\n#   Therefore it shouldn't have any side effects other than defining\n\n#   the functions and macros.\n\n#\n\n# - The functions/macros defined in this file may depend on Google\n\n#   Test and Google Mock's option() definitions, and thus must be\n\n#   called *after* the options have been defined.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tweaks CMake's default compiler/linker settings to suit Google Test's needs.\n\n#\n\n# This must be a macro(), as inside a function string() can only\n\n# update variables in the function scope.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For MSVC, CMake sets certain flags to defaults we want to override.\n\n# This replacement code is taken from sample in the CMake Wiki at\n\n# http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# When Google Test is built as a shared library, it should also use\n\n# shared runtime libraries.  Otherwise, it may end up with multiple\n\n# copies of runtime library data in different modules, resulting in\n\n# hard-to-find crashes. When it is built as a static library, it is\n\n# preferable to use CRT as static libraries, as we don't have to rely\n\n# on CRT DLLs being available. CMake always defaults to using shared\n\n# CRT libraries, so we override that default here.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# We prefer more strict warning checking for building Google Test.\n\n# Replaces /W3 with /W4 in defaults.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# Defines the compiler/linker flags used to build Google Test and\n\n# Google Mock.  You can tweak these definitions to suit your need.  A\n\n# variable's value is empty before it's explicitly assigned to.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Defines CMAKE_USE_PTHREADS_INIT and CMAKE_THREAD_LIBS_INIT.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Newlines inside flags variables break CMake's NMake generator.\n\n# TODO(vladl@google.com): Add -RTCs and -RTCu to debug builds.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# 1400 is Visual Studio 2005\n",
+        "Line" : 59,
+        "CharPositionInLine" : 33
+      },
+      "9" : {
+        "Text" : "# Suppress spurious warnings MSVC 7.1 sometimes issues.\n\n# Forcing value to bool.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "# Copy constructor and assignment operator could not be generated.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# Compatibility warnings not applicable to Google Test.\n\n# Resolved overload was found by argument-dependent lookup.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# 1500 is Visual Studio 2008\n",
+        "Line" : 69,
+        "CharPositionInLine" : 33
+      },
+      "13" : {
+        "Text" : "# Conditional expression is constant.\n\n# When compiling with /W4, we get several instances of C4127\n\n# (Conditional expression is constant). In our code, we disable that\n\n# warning on a case-by-case basis. However, on Visual Studio 2005,\n\n# the warning fires on std::list. Therefore on that compiler and earlier,\n\n# we disable the warning project-wide.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# 1700 is Visual Studio 2012.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 39
+      },
+      "15" : {
+        "Text" : "# Suppress \"unreachable code\" warning on VS 2012 and later.\n\n# http://stackoverflow.com/questions/3232669 explains the issue.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# Until version 4.3.2, GCC doesn't define a macro to indicate\n\n# whether RTTI is enabled.  Therefore we define GTEST_HAS_RTTI\n\n# explicitly.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Sun Pro doesn't provide macros to indicate whether exceptions and\n\n# RTTI are enabled, so we define GTEST_HAS_* explicitly.\n",
+        "Line" : 101,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# CMake 2.8 changes Visual Age's compiler ID to \"XL\".\n",
+        "Line" : 107,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Until version 9.0, Visual Age doesn't define a macro to indicate\n\n# whether RTTI is enabled.  Therefore we define GTEST_HAS_RTTI\n\n# explicitly.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# RTTI can not be disabled in HP aCC compiler.\n",
+        "Line" : 118,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# The pthreads library is available and allowed.\n",
+        "Line" : 122,
+        "CharPositionInLine" : 32
+      },
+      "22" : {
+        "Text" : "# For building gtest's own tests and samples.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# For building the gtest libraries.\n",
+        "Line" : 136,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Defines the gtest & gtest_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# type can be either STATIC or SHARED to denote a static or shared library.\n\n# ARGN refers to additional arguments after 'cxx_flags'.\n",
+        "Line" : 143,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "########################################################################\n\n#\n\n# Helper functions for creating build targets.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# cxx_executable_with_flags(name cxx_flags libs srcs...)\n\n#\n\n# creates a named C++ executable that depends on the given libraries and\n\n# is built from the given source files with the given compiler flags.\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# To support mixing linking in static and dynamic libraries, link each\n\n# library in with an extra call to target_link_libraries.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# cxx_executable(name dir lib srcs...)\n\n#\n\n# creates a named target that depends on the given libs and is built\n\n# from the given source files.  dir/name.cc is implicitly included in\n\n# the source file list.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Sets PYTHONINTERP_FOUND and PYTHON_EXECUTABLE.\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# cxx_test_with_flags(name cxx_flags libs srcs...)\n\n#\n\n# creates a named C++ test that depends on the given libs and is built\n\n# from the given source files with the given compiler flags.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# cxx_test(name libs srcs...)\n\n#\n\n# creates a named test target that depends on the given libs and is\n\n# built from the given source files.  Unlike cxx_test_with_flags,\n\n# test/name.cc is already implicitly included in the source file list.\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# py_test(name)\n\n#\n\n# creates a Python test with the given name whose main module is in\n\n# test/name.py.  It does nothing if Python is not installed.\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# We are not supporting Python tests on Linux yet as they consider\n\n# all Linux environments to be google3 and try to use google3 features.\n",
+        "Line" : 231,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# ${CMAKE_BINARY_DIR} is known at configuration time, so we can\n\n# directly bind it from cmake. ${CTEST_CONFIGURATION_TYPE} is known\n\n# only at ctest runtime (by calling ctest -c <Configuration>), so\n\n# we have to escape $ to delay variable substitution here.\n",
+        "Line" : 234,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 36
+    },
+    "third_party/cpp/googletest/googletest/make/Makefile" : {
+      "ObjectId" : "9ac74493ba55246597e90b898fae847ae358eab5",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A sample Makefile for building Google Test and using it in user\n\n# tests.  Please tweak it to suit your environment and project.  You\n\n# may want to move it to your project's root directory.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Please tweak the following variable definitions as needed by your\n\n# project, except GTEST_HEADERS, which you can use in your own targets\n\n# but shouldn't modify.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Points to the root of Google Test, relative to where this file is.\n\n# Remember to tweak this if you move this file.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to find user code.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# Set Google Test's header directory as a system directory, such that\n\n# the compiler doesn't generate warnings in Google Test headers.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# All tests produced by this Makefile.  Remember to add new tests you\n\n# created to the list.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# All Google Test headers.  Usually you shouldn't change this\n\n# definition.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# House-keeping build targets.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Builds gtest.a and gtest_main.a.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Usually you shouldn't tweak such internal variables, indicated by a\n\n# trailing _.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# For simplicity and to avoid depending on Google Test's\n\n# implementation details, the dependencies specified below are\n\n# conservative and not optimized.  This is fine as Google Test\n\n# compiles fast and for ordinary users its source rarely changes.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Builds a sample test.  A test should link with either gtest.a or\n\n# gtest_main.a, depending on whether it defines its own main()\n\n# function.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "third_party/cpp/googletest/googletest/scripts/test/Makefile" : {
+      "ObjectId" : "cdff584637b7a6e9df1fa43ce8f588c43815e561",
+      "LastModified" : "2017-03-13T22:05:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A Makefile for fusing Google Test and building a sample test against it.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make check  - makes everything and runs the built sample test.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Points to the root of fused Google Test, relative to where this file is.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Paths to the fused gtest files.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to find the sample test.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Where to find gtest_main.cc.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# We have no idea here whether pthreads is available in the system, so\n\n# disable its use.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "tools/VoltDB.cmake" : {
+      "ObjectId" : "8a230e6907118c828a56e7bfc484b4c22ca7ed7b",
+      "LastModified" : "2018-02-27T19:02:20Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n#\n\n# These are some functions we use when using CMake.\n\n#\n\n########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# It would be good if we could add some different parameters,\n\n# such as --show-leak-kinds=all, --errors-for-leak-kinds=all and\n\n# --track-origins.  But these apparently are not available in\n\n# the really old version of valgrind on Centos 6.\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "#\n\n# Calculate if this is a python test.  If there is a python script\n\n# in the source folder called TEST_DIR/TEST_NAME.py, then we\n\n# wrap the test command with that script by putting the command\n\n# in the script's argument list.\n\n#\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# MESSAGE(\"Python Command for ${TEST_NAME} is ${TEST_EXE_CMD}\")\n",
+        "Line" : 67,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Surely there is some way to discover this.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "#\n\n# Parse the TEST_NAME and decide what directory the\n\n# source and executable should be in, what the command\n\n# should be and how to run it if it's a valgrind build.\n\n#\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Split the name into path components.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# MESSAGE(\"TEST_NAME_LIST is ${TEST_NAME_LIST}\")\n",
+        "Line" : 97,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# MESSAGE(\"TEST_NAME_LIST_LENGTH is ${TEST_NAME_LIST_LENGTH}\")\n\n# A test name will look like dir/test or else\n\n# generated/dir/test.  Indexing into a CMake list\n\n# with negative numbers get elements from the end.\n\n# So, the test is always at -1, the dir is always\n\n# at -2 and, if the generated exists, it is always\n\n# at -3.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# MESSAGE(\"TEST_NAME ${TEST_NAME}: GENERATED ${GENERATED}, DIR ${DIR}, TEST ${TEST}\")\n\n# Find if this test has been seen before.\n\n# If so it will be on the ALLTESTS list.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Find if this test directory has been\n\n# seen before.  If not, then append the\n\n# name to the test_dir_list.\n",
+        "Line" : 122,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# MESSAGE(\"Defining test ${TEST_DIR}/${TEST_NAME} (from ${TEST_GEN})\")\n\n#\n\n# Define the test executable, and set the build-all-tests\n\n# depends on the test.  Remember the necessary include\n\n# directories and link libraries.\n\n#\n\n# First, calculate the actual test command.  We\n\n# don't need this to define the executable, but we do\n\n# need it to define the output name of the executable.\n\n#\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# This allows us to run \"make build-sometest\" to build sometest.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# If we are running a valgrind test, then calculate the\n\n# valgrind command.  The output variable, VALGRIND_EXE_CMD,\n\n# may be the same as TARGET_EXE or else it may be a call\n\n# to valgrind.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Some tests need to run python.  This needs to be\n\n# second because we want to run valgrind on the actual\n\n# test executable, TARGET_EXE_CMD, and not on python.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# So, \"make build-${TEST_NAME}\"\" builds the test and\n\n# \"make run-${TEST_NAME}\" runs the single test.\n",
+        "Line" : 200,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# MESSAGE(\"Defining target run-${TEST_NAME}\")\n",
+        "Line" : 204,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Some tests are expected to fail.  Also, tag the\n\n# test with its label.\n\n# MESSAGE(\"Test ${TEST_NAME} has command ${CTEST_EXE_CMD}.\")\n",
+        "Line" : 208,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 18
+    },
+    "tools/VoltDBCompilation.cmake" : {
+      "ObjectId" : "4ef706a4f71dcea646a0c04c4ba1fa5e7cf24e0c",
+      "LastModified" : "2019-04-09T17:14:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n#\n\n# Compiler Options\n\n#\n\n########################################################################\n\n#\n\n# We give compiler options in two parts.  One is the set of base\n\n# options, which all compilations use.  The second is the set of\n\n# compiler, platform, and version options.\n\n#\n\n# These are the base compiler options, and some\n\n# other linker options.\n\n#\n\n########################################################################\n\n########################################################################\n\n#\n\n# Common Compiler Flags\n\n#\n\n########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# MESSAGE(\"Defining ${NAME} kind ${KIND} SOURCES ${ARGN}\")\n",
+        "Line" : 30,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Make shared libraries be .jnilib on the mac.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Set coverage and profiling options\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# Add VOLTDB_LDFLAGS, which is supplied by the user.\n\n#\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "########################################################################\n\n#\n\n# These are the compiler version specific options.\n\n# We calculate the compiler versions, and the options needed\n\n# for each of them. These are the versions of gcc and cmake for\n\n# each version of Linux we support.\n\n# OS Ver.        gcc vers     cmake ver.   Clang version\n\n# Centos6:          4.4.7     2.8.12.2\n\n# Ubuntu 10.04      N.A.      N.A.\n\n# Ubuntu 10.10      N.A.      N.A.\n\n# Ubuntu 12.04      4.6.3     2.8.7\n\n# Ubuntu 12.10      N.A.      N.A.\n\n# Ubuntu 14.04      4.8.4     2.8.12.2\n\n# Centos7:          4.8.5     2.8.12.2\n\n# Ubuntu 14.10      N.A.      N.A.\n\n# Ubuntu 15.04      4.9.2     3.0.2\n\n# Ubunty 15.10      5.2.1     3.2.2\n\n# Ubuntu 16.04      5.4.0     3.5.1\n\n# Ubuntu 16.10      6.2.0     3.5.2\n\n# Ubuntu 17.04      6.3.0     3.7.2\n\n# Ubuntu 17.10      7.2.0     3.9.1\n\n#\n\n# We should have a similar table for the mac, but apparently we\n\n# don't.  We do have some empirical evidence that some configurations\n\n# will build and run correctly.\n\n#\n\n########################################################################\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# Note: Update this when adding a new compiler support.\n\n#\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n#\n\n#\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# It turns out to be easier to go from a higher version to a lower\n\n# version, since we can't easily test <= and >=.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# COMPILER_VERSION >= 8.0.0\n",
+        "Line" : 153,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# 7.3.0 < COMPILER_VERSION < 8.0.0\n",
+        "Line" : 158,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# 7.2.0 < COMPILER_VERSION <= 7.3.0\n",
+        "Line" : 164,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# < 6.3.0 COMPILER_VERSION <= 7.2.0\n",
+        "Line" : 169,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# 6.2.0 < COMPILER_VERSION and COMPILER_VERSION <= 6.3.0\n",
+        "Line" : 174,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# 5.4.0 < COMPILER_VERSION and COMPILER_VERSION <= 6.2.0\n",
+        "Line" : 179,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# 5.2.1 < COMPILER_VERSION and COMPILER_VERSION <= 5.4.0\n",
+        "Line" : 184,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# 4.9.2 < COMPILER_VERSION and COMPILER_VERSION <= 5.2.1\n",
+        "Line" : 189,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# 4.8.4 < COMPILER_VERSION and COMPILER_VERSION <= 4.9.2\n\n# Note that U14.04 and C7 are different versions, but equivalent\n\n# for our needs here.\n\n# Nothing special added to the compile flags.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# 4.6.0 < COMPILER_VERSION and COMPILER_VERSION <= 4.8.4\n\n# Use -std=c++0x.  This is in GCC's experimental C++11 compiler\n\n# support version, which is sufficient for our use.\n",
+        "Line" : 202,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# All versions of clang use C++11.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Some clang 3.4.x version\n",
+        "Line" : 217,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# This is some odd mac version number.  It's not\n\n# related to the LLVM versioning numbers.\n",
+        "Line" : 220,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "#\n\n# Add VOLTDB_CXXFLAGS, supplied by the user.\n\n#\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "tools/meshmonitor/build.xml" : {
+      "ObjectId" : "67ede03558e3db571d423b3caf92146dfffa0b8d",
+      "LastModified" : "2018-02-12T19:17:22Z",
+      "FileType" : "ANT",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 9,
+    "MAKEFILE" : 3,
+    "AUTOMAKE" : 2,
+    "ANT" : 12
+  },
+  "ElapsedTime" : 15436
+}

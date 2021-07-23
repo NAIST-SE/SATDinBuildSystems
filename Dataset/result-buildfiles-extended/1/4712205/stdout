@@ -1,0 +1,1048 @@
+{
+  "Repository" : "4712205",
+  "Revision" : "HEAD",
+  "ObjectId" : "10b60971f520e5fa1f07626040f0013757091b44",
+  "CommitTime" : "2019-04-18T13:54:55Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "084c4f41749074ae5f36fc7239c915b55c9ddfe7",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This is the top-level CMakeLists.txt file for the Cuberite project\n\n#\n\n# Use CMake to generate the build files for your platform\n\n#\n\n# This script supports some configuration through CMake arguments (-Dparam=val syntax):\n\n#   BUILD_TOOLS=1            sets up additional executables to be built along with the server (ProtoProxy, GrownBiomeGenVisualiser, MCADefrag)\n\n#   BUILD_UNSTABLE_TOOLS=1   sets up yet more executables to be built, these can be broken and generally are obsolete (GeneratorPerformanceTest)\n\n#   NO_NATIVE_OPTIMIZATION=1 disables CPU-specific optimisations for the current machine, allows use on other CPUs of the same platform\n\n#   DISABLE_SYSTEM_LUA=1     disables the use of system Lua interpreter; the tolua executable will be built and used instead. Incompatible with cross-compiling\n\n#   SELF_TEST=1              enables testing code to be built\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Without this, the MSVC variable isn't defined for MSVC builds ( https://cmake.org/pipermail/cmake/2011-November/047130.html )\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable the support for solution folders in MSVC\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These env variables are used for configuring Travis CI builds.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The build info is defined by the build system (Travis / Jenkins)\n",
+        "Line" : 45,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# This is a local build, stuff in some basic info:\n",
+        "Line" : 65,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# The BUILD_COMMIT_ID and BUILD_DATETIME aren't updated on each repo pull\n\n# They are only updated when cmake re-configures the project\n\n# Therefore mark them as \"approx: \"\n",
+        "Line" : 89,
+        "CharPositionInLine" : 1
+      },
+      "7" : {
+        "Text" : "# We need C++11 features, Visual Studio has those from VS2012, but it needs a new platform toolset for those; VS2013 supports them natively:\n\n# Adapted from https://web.archive.org/web/https://binglongx.wordpress.com/2013/06/28/set-non-default-platform-toolset-in-cmake/\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# VC10- / VS2010-\n",
+        "Line" : 99,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# VC11 / VS2012\n",
+        "Line" : 103,
+        "CharPositionInLine" : 36
+      },
+      "10" : {
+        "Text" : "# VC12+, assuming C++11 supported.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# GCC or Clang, so get compiler version directly since CMAKE_CXX_COMPILER_VERSION is only available in CMake 2.8.8 and later\n",
+        "Line" : 109,
+        "CharPositionInLine" : 8
+      },
+      "12" : {
+        "Text" : "# Check for gcc version 4.8 or greater\n",
+        "Line" : 112,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "# Check for clang version 3.4 or greater\n",
+        "Line" : 117,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "# Check whether Lua can be used:\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# This has to be done before any flags have been set up.\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Under Windows, we need Lua as DLL; on *nix we need it linked statically:\n",
+        "Line" : 160,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The Expat library is linked in statically, make the source files aware of that:\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Let Lua use additional checks on its C API. This is only compiled into Debug builds:\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Self Test Mode enables extra checks at startup\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Build all dependent libraries as static:\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "####\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Set options for SQLiteCpp, disable all their tests and lints:\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Set options for LibEvent, disable all their tests and benchmarks:\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Set options for JsonCPP, disabling all of their tests\n\n# Additionally, their library is output to a strange location; make sure the linker knows where to find it\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Check that the libraries are present:\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Include all the libraries:\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Add proper include directories so that SQLiteCpp can find SQLite3:\n",
+        "Line" : 265,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Add proper includes for LibEvent's event-config.h header:\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Prettify jsoncpp_lib_static name in VS solution explorer\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# We use EXCLUDE_FROM_ALL so that only the explicit dependencies are used\n\n# (mbedTLS also has test and example programs in their CMakeLists.txt, we don't want those)\n",
+        "Line" : 281,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# mbed TLS uses the frame pointer's register in inline assembly for its bignum implementation:\n\n# https://tls.mbed.org/kb/development/arm-thumb-error-r7-cannot-be-used-in-asm-here\n",
+        "Line" : 286,
+        "CharPositionInLine" : 1
+      },
+      "32" : {
+        "Text" : "# Put projects into solution folders in MSVC:\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 33
+    },
+    "CheckLua.cmake" : {
+      "ObjectId" : "e8827fe00d31f049bbebcfc7a2b220da63d36917",
+      "LastModified" : "2016-07-18T20:11:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CheckLua.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Checks whether the Lua standalone interpreter is installed on the host system\n\n# If found, sets HAS_LUA_INTERPRETER to 1 and LUA_INTERPRETER_VERSION to the version reported (\"5.1\" etc.)\n\n# If not found, unsets HAS_LUA_INTERPRETER\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "SetFlags.cmake" : {
+      "ObjectId" : "0c878d6604340446809f6e81a15af6c3ce852d5f",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#this is a hack because we can't use cmake 2.8.10 because of travis\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add coverage processing, if requested:\n",
+        "Line" : 35,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "# Add the preprocessor macros used for distinguishing between debug and release builds (CMake does this automatically for MSVC):\n",
+        "Line" : 45,
+        "CharPositionInLine" : 1
+      },
+      "3" : {
+        "Text" : "# Make build use multiple threads under MSVC:\n",
+        "Line" : 56,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Make release builds use link-time code generation:\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Make build use Unicode:\n",
+        "Line" : 66,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "#on os x clang adds pthread for us but we need to add it for gcc\n",
+        "Line" : 82,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Let gcc / clang know that we're compiling a multi-threaded app:\n",
+        "Line" : 97,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# We use a signed char (fixes #640 on RasPi)\n",
+        "Line" : 115,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Allow for a forced 32-bit build under 64-bit OS:\n",
+        "Line" : 121,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# Have the compiler generate code specifically targeted at the current machine on Linux\n",
+        "Line" : 128,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Use static CRT in MSVC builds:\n",
+        "Line" : 142,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "# Set lower warnings-level for the libraries:\n",
+        "Line" : 152,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "# Remove /W3 from command line -- cannot just cancel it later with /w like in unix, MSVC produces a D9025 warning (option1 overriden by option2)\n",
+        "Line" : 154,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# On Unix we use two dynamic loading libraries dl and ltdl.\n\n# Preference is for dl on unknown systems as it is specified in POSIX\n\n# the dynamic loader is used by lua and sqllite.\n",
+        "Line" : 168,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# Declare the flags used for profiling builds:\n",
+        "Line" : 181,
+        "CharPositionInLine" : 1
+      },
+      "16" : {
+        "Text" : "# Declare the profiling configurations:\n",
+        "Line" : 191,
+        "CharPositionInLine" : 1
+      },
+      "17" : {
+        "Text" : "# The configuration types need to be set after their respective c/cxx/linker flags and before the project directive\n",
+        "Line" : 235,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "# Remove disabling the maximum warning level:\n\n# clang does not like a command line that reads -Wall -Wextra -w -Wall -Wextra and does not output any warnings\n\n# We do not do that for MSVC since MSVC produces an awful lot of warnings for its own STL headers;\n\n# the important warnings are turned on using #pragma in Globals.h\n",
+        "Line" : 244,
+        "CharPositionInLine" : 1
+      },
+      "19" : {
+        "Text" : "# we support non-IEEE 754 fpus so can make no guarentees about error\n",
+        "Line" : 257,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# backtrace() and friends are in libexecinfo\n",
+        "Line" : 261,
+        "CharPositionInLine" : 3
+      },
+      "21" : {
+        "Text" : "# clang does not provide the __extern_always_inline macro and a part of libm depends on this when using fast-math\n",
+        "Line" : 269,
+        "CharPositionInLine" : 3
+      },
+      "22" : {
+        "Text" : "# This is a pretty useless warning, we've already got -Wswitch which is what we need\n",
+        "Line" : 273,
+        "CharPositionInLine" : 38
+      },
+      "23" : {
+        "Text" : "# flags that are not present in 3.0\n",
+        "Line" : 275,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# flags introduced in 3.2\n",
+        "Line" : 279,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# Use this flag to ignore error for a reserved macro problem in sqlite 3\n",
+        "Line" : 287,
+        "CharPositionInLine" : 5
+      },
+      "26" : {
+        "Text" : "# Ignore another problem in sqlite\n",
+        "Line" : 291,
+        "CharPositionInLine" : 5
+      },
+      "27" : {
+        "Text" : "#\tif(\"${CMAKE_CXX_COMPILER_ID}\" STREQUAL \"Clang\")\n\n#\t\tforeach(FILENAME ${ARGN})\n\n#\t\t\tmessage(\"downgrade_warnings for ${FILENAME}\")\n\n#\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-error=sign-conversion -Wno-error=conversion\")\n\n#\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-error=missing-prototypes -Wno-error=deprecated\")\n\n#\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-error=shadow -Wno-error=old-style-cast  -Wno-error=switch-enum -Wno-error=switch\")\n\n#\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-error=float-equal -Wno-error=global-constructors\")\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "#\t\t\tif (\"${CLANG_VERSION}\" VERSION_GREATER 3.0)\n\n#\t\t\t\t# flags that are not present in 3.0\n\n#\t\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-error=covered-switch-default \")\n\n#\t\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-implicit-fallthrough -Wno-error=extra-semi\")\n\n#\t\t\t\tset_source_files_properties(${FILENAME} PROPERTIES COMPILE_FLAGS \"-Wno-error=missing-variable-declarations\")\n\n#\t\t\tendif()\n\n#\t\tendforeach()\n\n#\tendif()\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 29
+    },
+    "Tools/AnvilStats/CMakeLists.txt" : {
+      "ObjectId" : "865414a6d5efd05834a350322fd0697442ba8a41",
+      "LastModified" : "2016-07-18T20:11:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set include paths to the used libraries:\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include the shared files:\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include the main source files:\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Under MSVC we need to enlarge the default stack size for the executable:\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# set to empty string\n",
+        "Line" : 127,
+        "CharPositionInLine" : 16
+      },
+      "5" : {
+        "Text" : "# a space to cleanly separate from existing content\n",
+        "Line" : 130,
+        "CharPositionInLine" : 24
+      },
+      "6" : {
+        "Text" : "# append our values\n",
+        "Line" : 133,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 7
+    },
+    "Tools/GeneratorPerformanceTest/CMakeLists.txt" : {
+      "ObjectId" : "e218bd46ff15d20c04028b7a8ac8d4dd51350927",
+      "LastModified" : "2016-07-18T20:11:42Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Tools/GrownBiomeGenVisualiser/CMakeLists.txt" : {
+      "ObjectId" : "4626ecf7359420fc6798a988693e875c0b604908",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Without this, the MSVC variable isn't defined for MSVC builds ( https://www.cmake.org/pipermail/cmake/2011-November/047130.html )\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set include paths to the used libraries:\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include the libraries:\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Include the shared files:\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Include the main source files:\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "Tools/MCADefrag/CMakeLists.txt" : {
+      "ObjectId" : "3243bf1ebea7ca6cc06ca9898be1f1ebce20554b",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Without this, the MSVC variable isn't defined for MSVC builds ( https://www.cmake.org/pipermail/cmake/2011-November/047130.html )\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set include paths to the used libraries:\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include the libraries:\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Include the shared files:\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Include the main source files:\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "Tools/NoiseSpeedTest/CMakeLists.txt" : {
+      "ObjectId" : "86d153e2e8d6080aa45c42a224bc3cdfdd5ba410",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set include paths to the used libraries:\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include the shared files:\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include the main source files:\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Tools/ProtoProxy/CMakeLists.txt" : {
+      "ObjectId" : "b5b1365a247ebb1e07d6cc8fceeabfb73f477d0f",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set include paths to the used libraries:\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include the shared files:\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include the main source files:\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Tools/QtBiomeVisualiser/QtBiomeVisualiser.pro" : {
+      "ObjectId" : "daf2d40205b9289d5cfcb32f2d8e0aeed47fd09f",
+      "LastModified" : "2016-07-18T20:11:41Z",
+      "FileType" : "QMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------\n\n#\n\n# Project created by QtCreator 2014-09-11T15:22:43\n\n#\n\n#-------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add the advapi32 library for windows compiles; needed for the StackWalker:\n",
+        "Line" : 117,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "#\tStackWalker doesn't like how Qt inconsistently defines only UNICODE, but not _UNICODE:\n",
+        "Line" : 120,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 3
+    },
+    "android/CMakeLists.txt" : {
+      "ObjectId" : "4f863d114ad5736115a7795f97496ddffd3aa27e",
+      "LastModified" : "2016-12-12T14:32:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set up Android parameters\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We're crosscompiling for Android\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# SYSTEM flag to silence warnings for external headers\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Disable some compiler warnings (the lazy way out)\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Build the rest of the server\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "lib/mbedtls.cmake" : {
+      "ObjectId" : "2bf45fa236cd7d2794b9d7634d8395b5b6d2b388",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This script includes PolarSSL, if not already included.\n\n# It is needed for when multiple projects reference PolarSSL.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/Bindings/CMakeLists.txt" : {
+      "ObjectId" : "b1a19becada8b63adc7a0037cd68f7d4e7244d6a",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# List all the files that are generated as part of the Bindings build process\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/BlockEntities/CMakeLists.txt" : {
+      "ObjectId" : "859b845e6affc2a8d4636a59424449aa90737de8",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Blocks/CMakeLists.txt" : {
+      "ObjectId" : "07ab87eea336d2a297a8333385809de800ad88fc",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/BuildInfo.h.cmake" : {
+      "ObjectId" : "6337dab3e02325415da6cc66353ce7cef0cf6e36",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKESOURCE",
+      "CommentCount" : 0
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "e895b16573a7c67a1990b370afbb2b14653711fe",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Bindings need to reference other folders, so they are done here instead\n\n# lib dependencies are not included\n",
+        "Line" : 180,
+        "CharPositionInLine" : 1
+      },
+      "1" : {
+        "Text" : "#clear file\n",
+        "Line" : 190,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "#write each dependency on a seperate line\n",
+        "Line" : 193,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# If building a windows version, but not using MSVC, add the resources directly to the makefile:\n",
+        "Line" : 202,
+        "CharPositionInLine" : 1
+      },
+      "4" : {
+        "Text" : "# MSVC-specific handling: Put all files into one project, separate by the folders:\n",
+        "Line" : 207,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# Add all subfolders as solution-folders:\n",
+        "Line" : 211,
+        "CharPositionInLine" : 1
+      },
+      "6" : {
+        "Text" : "# Get all source files in this folder:\n",
+        "Line" : 227,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Get all headers in this folder:\n",
+        "Line" : 233,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Include this folder's CMakeLists.txt in the project:\n",
+        "Line" : 239,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Precompiled headers (1st part)\n",
+        "Line" : 251,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# CMake cannot \"remove\" the precompiled header flags, so we use a dummy precompiled header compatible with just this one file:\n",
+        "Line" : 255,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Make MSVC generate the PDB files even for the release build:\n",
+        "Line" : 261,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "# Generate a list of all source files:\n",
+        "Line" : 270,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# The paths in BINDING_DEPENDENCIES are relative to the Bindings folder, convert them relative to this folder:\n",
+        "Line" : 292,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "# Regenerate bindings:\n",
+        "Line" : 308,
+        "CharPositionInLine" : 3
+      },
+      "15" : {
+        "Text" : "# Output the executable into the $/Server folder, so that it has access to external resources:\n",
+        "Line" : 319,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Make the debug executable have a \"_debug\" suffix\n",
+        "Line" : 330,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Make the profiled executables have a \"_profile\" postfix\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Precompiled headers (2nd part)\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Create a folder for Bindings' documentation:\n",
+        "Line" : 367,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 20
+    },
+    "src/Entities/CMakeLists.txt" : {
+      "ObjectId" : "4c119080071ee46d25c8e4365d8bed0707008a61",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Generating/CMakeLists.txt" : {
+      "ObjectId" : "f01647d0e15b1b1151eb55c6fe940f0ae5c0ee82",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/HTTP/CMakeLists.txt" : {
+      "ObjectId" : "1bd311dc4128155549664fa22785ff450d06ba7f",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Items/CMakeLists.txt" : {
+      "ObjectId" : "92d12b3b3953db686a021901951b942858833ccb",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Mobs/CMakeLists.txt" : {
+      "ObjectId" : "d9969cfdce01fa56238a13db7c5a0e4b97cb5d99",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Noise/CMakeLists.txt" : {
+      "ObjectId" : "b099c1766da58a1f4b201151ca876b291dc46041",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/OSSupport/CMakeLists.txt" : {
+      "ObjectId" : "5513fe5c5fe1c48781e2c8d7ad677366d3d90469",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Protocol/CMakeLists.txt" : {
+      "ObjectId" : "9fe16900ce670615622f83383027807a320802ff",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Simulator/CMakeLists.txt" : {
+      "ObjectId" : "c8514d91d6b3b0735b93f46198bb64e98c3cb2ee",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Simulator/IncrementalRedstoneSimulator/CMakeLists.txt" : {
+      "ObjectId" : "fdce1bff550d3342d7fd92a8ef301b3676ccda80",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/UI/CMakeLists.txt" : {
+      "ObjectId" : "28a99b6ed07e4889ebb0ec6deadc8ee9b4795dea",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/WorldStorage/CMakeLists.txt" : {
+      "ObjectId" : "a0875e351a58d61f76191018c995866643b84ff5",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/mbedTLS++/CMakeLists.txt" : {
+      "ObjectId" : "29c323cc6582c61c946b010d518c879ee1c711a4",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/BoundingBox/CMakeLists.txt" : {
+      "ObjectId" : "da960ba19938401a329e02bfbcc770a817f1f3a0",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/ByteBuffer/CMakeLists.txt" : {
+      "ObjectId" : "aa053e80f2a8e1ef434dfad703dafcf1d2ad8cba",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/CMakeLists.txt" : {
+      "ObjectId" : "20ae1bfa372ffdb320ab1c8ace4723bd2a8d55db",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests/ChunkData/CMakeLists.txt" : {
+      "ObjectId" : "5bd617f6c15bc15c8b71ddad3da99ef927b68c93",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put all test projects into a separate folder:\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/CompositeChat/CMakeLists.txt" : {
+      "ObjectId" : "52eeedbe9cc3959461043d72cefefd7a67117f7d",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/FastRandom/CMakeLists.txt" : {
+      "ObjectId" : "bd51f90c82e8f14dec6efe44133cfeff620e2893",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/Generating/CMakeLists.txt" : {
+      "ObjectId" : "31cfc5c24e44a534466ad11decdfdda9120cb901",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# LoadablePieces test:\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# PieceRotation test:\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# PieceGeneratorBFSTree test:\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tests/HTTP/CMakeLists.txt" : {
+      "ObjectId" : "4ca1638643a0ec426e171878d18879efc3ba6dc6",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create a single HTTP library that contains all the HTTP code:\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define individual test executables:\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# HTTPMessageParser_file: Feed file contents into a cHTTPResponseParser and print the callbacks as they're called:\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# UrlClientTest: Tests the UrlClient class by requesting a few things off the internet:\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Define individual tests:\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Test parsing the response file in 2-byte chunks (should go from response line parsing through headers parsing to body parsing, each within a different step):\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Test parsing the response file in 128-byte chunks (should parse response line and part of headers in one step, the rest in another step):\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Test parsing a chunked-encoding response:\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Test parsing the request file in 2-byte chunks (should go from request line parsing through headers parsing to body parsing, each within a different step):\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Test parsing the request file in 512-byte chunks (should process everything in a single call):\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Test the URLClient\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Put all the tests into a solution folder (MSVC):\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "tests/LoadablePieces/CMakeLists.txt" : {
+      "ObjectId" : "4c8f698bf5492fc49366262aaf4e8f6419125cb1",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Add the MSVC-specific LeakFinder sources:\n",
+        "Line" : 84,
+        "CharPositionInLine" : 1
+      },
+      "1" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tests/LuaThreadStress/CMakeLists.txt" : {
+      "ObjectId" : "2f005a342da35736e2d30575e87ee1c7d04616c9",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/Network/CMakeLists.txt" : {
+      "ObjectId" : "84c49bfed22e8bc7f2b6bdbe6303005b8e3736fc",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create a single Network library that contains all the networking code:\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define individual tests:\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Google: download the google.com frontpage using http client socket:\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# EchoServer: Listen on port 9876, echo everything back:\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# NameLookup: Lookup hostname-to-IP and IP-to-hostname:\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# EnumInterfaces: List all network interfaces:\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Put all the tests into a solution folder (MSVC):\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "tests/OSSupport/CMakeLists.txt" : {
+      "ObjectId" : "60c68c472ac03a79052e9b00df9950703c6f578e",
+      "LastModified" : "2018-10-15T16:56:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create a single OSSupport library that contains all the OSSupport code used in the tests:\n\n# Only needed for Windows; Linux already defines the OSSupport lib\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define individual tests:\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# StressEvent: Stress-test the cEvent implementation:\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Put all the tests into a solution folder (MSVC):\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "tests/SchematicFileSerializer/CMakeLists.txt" : {
+      "ObjectId" : "a431bee8e50a5aab5a478df7a5f4b4287194babb",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests/UUID/CMakeLists.txt" : {
+      "ObjectId" : "384ebe1e55bd2896a9b1b6021562bac4f43ba1df",
+      "LastModified" : "2018-01-03T17:41:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Put the projects into solution folders (MSVC):\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 42,
+    "CMAKESOURCE" : 1,
+    "QMAKE" : 1
+  },
+  "ElapsedTime" : 2209
+}

@@ -1,0 +1,597 @@
+{
+  "Repository" : "55664673",
+  "Revision" : "HEAD",
+  "ObjectId" : "74af596d8ac0e1ee5f308f520b22831ca32f0339",
+  "CommitTime" : "2019-04-19T04:58:38Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "bf3abbe5289549c7508e57d8a384057a05452799",
+      "LastModified" : "2019-03-08T15:58:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Never run this makefile in parallel, as it could screw things up\n\n# It won't affect the submakes, so you still get the speedup from specifying -jx\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Allow the silent with lower caps to work the same way as upper caps\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We need to make sure that silent is always turned off at the top level\n\n# Otherwise the [OK], [ERROR] and [WARN] messages won't be displayed correctly\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Helper function to process the newt element of a space separated path\n\n# It works a bit like the traditional functional head tail\n\n# so the CURRENT_PATH_ELEMENT will become the new head\n\n# and the PATH_ELEMENTS are the rest that are still unprocessed\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We change the / to spaces so that we more easily can work with the elements\n\n# separately\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Initialize the path elements list for further processing\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# This function sets the KEYBOARD; KEYMAP and SUBPROJECT to the correct\n\n# variables depending on which directory you stand in.\n\n# It's really a very simple if else chain, if you squint enough,\n\n# but the makefile syntax makes it very verbose.\n\n# If we are in a subfolder of keyboards\n\n#\n\n# *** No longer needed **\n\n#\n\n# ifeq ($(CURRENT_PATH_ELEMENT),keyboards)\n\n#     $(eval $(call NEXT_PATH_ELEMENT))\n\n#     KEYBOARD := $(CURRENT_PATH_ELEMENT)\n\n#     $(eval $(call NEXT_PATH_ELEMENT))\n\n#     # If we are in a subfolder of keymaps, or in other words in a keymap\n\n#     # folder\n\n#     ifeq ($(CURRENT_PATH_ELEMENT),keymaps)\n\n#         $(eval $(call NEXT_PATH_ELEMENT))\n\n#         KEYMAP := $(CURRENT_PATH_ELEMENT)\n\n#      # else if we are not in the keyboard folder itself\n\n#     else ifneq ($(CURRENT_PATH_ELEMENT),)\n\n#         # the we can assume it's a subproject, as no other folders\n\n#         # should have make files in them\n\n#         SUBPROJECT := $(CURRENT_PATH_ELEMENT)\n\n#         $(eval $(call NEXT_PATH_ELEMENT))\n\n#         # if we are inside a keymap folder of a subproject\n\n#         ifeq ($(CURRENT_PATH_ELEMENT),keymaps)\n\n#             $(eval $(call NEXT_PATH_ELEMENT))\n\n#             KEYMAP := $(CURRENT_PATH_ELEMENT)\n\n#         endif\n\n#     endif\n\n# endif\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Only consider folders with makefiles, to prevent errors in case there are extra folders\n\n#KEYBOARDS += $(patsubst $(ROOD_DIR)/keyboards/%/rules.mk,%,$(wildcard $(ROOT_DIR)/keyboards/*/*/rules.mk))\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Compatibility with the old make variables, anything you specify directly on the command line\n\n# always overrides the detected folders\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Uncomment these for debugging\n\n# $(info Keyboard: $(KEYBOARD))\n\n# $(info Keymap: $(KEYMAP))\n\n# $(info Subproject: $(SUBPROJECT))\n\n# $(info Keyboards: $(KEYBOARDS))\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Set the default goal depending on where we are running make from\n\n# this handles the case where you run make without any arguments\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Inside a keyboard folder, build all keymaps for all subprojects\n\n# Note that this is different from the old behaviour, which would\n\n# build only the default keymap of the default keyboard\n",
+        "Line" : 161,
+        "CharPositionInLine" : 5
+      },
+      "12" : {
+        "Text" : "# Compare the start of the RULE variable with the first argument($1)\n\n# If the rules equals $1 or starts with $1:, RULE_FOUND is set to true\n\n#     and $1 is removed from the RULE variable\n\n# Otherwise the RULE_FOUND variable is set to false, and RULE left as it was\n\n# The function is a bit tricky, since there's no built in $(startswith) function\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# This makes it easier to call COMPARE_AND_REMOVE_FROM_RULE, since it makes it behave like\n\n# a function that returns the value\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Recursively try to find a match for the start of the rule to be checked\n\n# $1 The list to be checked\n\n# If a match is found, then RULE_FOUND is set to true\n\n# and MATCHED_ITEM to the item that was matched\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# A recursive helper function for finding the longest match\n\n# $1 The list to be checked\n\n# It works by always removing the currently matched item from the list\n\n# and call itself recursively, until a match is found\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Stop the recursion when the list is empty\n",
+        "Line" : 212,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# If a match is found in the current list, otherwise just return what we had before\n",
+        "Line" : 216,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# Save the best match so far and call itself recursively\n",
+        "Line" : 218,
+        "CharPositionInLine" : 12
+      },
+      "19" : {
+        "Text" : "# Recursively try to find the longest match for the start of the rule to be checked\n\n# $1 The list to be checked\n\n# If a match is found, then RULE_FOUND is set to true\n\n# and MATCHED_ITEM to the item that was matched\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Make it easier to call TRY_TO_MATCH_RULE_FROM_LIST\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# The entry point for rule parsing\n\n# parses a rule in the format <keyboard>:<keymap>:<target>\n\n# but this particular function only deals with the first <keyboard> part\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# If the rule starts with all, then continue the parsing from\n\n# PARSE_ALL_KEYBOARDS\n",
+        "Line" : 265,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# If the rule starts with the name of a known keyboard, then continue\n\n# the parsing from PARSE_KEYBOARD\n",
+        "Line" : 271,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Otherwise use the KEYBOARD variable, which is determined either by\n\n# the current directory you run make from, or passed in as an argument\n",
+        "Line" : 275,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# $1 = Keyboard\n\n# Parses a rule in the format <keymap>:<target>\n\n# the keyboard is already known when entering this function\n",
+        "Line" : 291,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# If we want to compile the default subproject, then we need to\n\n# include the correct makefile to determine the actual name of it\n",
+        "Line" : 295,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "# KEYBOARD_FOLDERS := $$(subst /, , $(CURRENT_KB))\n",
+        "Line" : 299,
+        "CharPositionInLine" : 4
+      },
+      "28" : {
+        "Text" : "# We assume that every rules.mk will contain the full default value\n",
+        "Line" : 303,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "# 5/4/3/2/1\n",
+        "Line" : 310,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "# get a list of all keymaps\n",
+        "Line" : 318,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "# this might be needed, but in a different form\n\n#KEYMAPS := $$(sort $$(filter-out $$(KEYBOARD_FOLDER_1) $$(KEYBOARD_FOLDER_2) \\\n        $$(KEYBOARD_FOLDER_3) $$(KEYBOARD_FOLDER_4) $$(KEYBOARD_FOLDER_5), $$(KEYMAPS)))\n",
+        "Line" : 324,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# if the rule after removing the start of it is empty (we haven't specified a kemap or target)\n\n# compile all the keymaps\n",
+        "Line" : 360,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# The same if all was specified\n",
+        "Line" : 364,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "# Try to match the specified keyamp with the list of known keymaps\n",
+        "Line" : 367,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# Otherwise try to match the keymap from the current folder, or arguments to the make command\n",
+        "Line" : 370,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# Otherwise, make all keymaps, again this is consistent with how it works without\n\n# any arguments\n",
+        "Line" : 373,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "# if we are going to compile all keyboards, match the rest of the rule\n\n# for each of them\n",
+        "Line" : 380,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# $1 Subproject\n\n# When entering this, the keyboard and subproject are known, so now we need\n\n# to determine which keymaps are going to get compiled\n\n# define PARSE_SUBPROJECT\n",
+        "Line" : 386,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# endef\n",
+        "Line" : 391,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# If we want to parse all subprojects, but the keyboard doesn't have any,\n\n# then use defaultsp instead\n\n# define PARSE_ALL_SUBPROJECTS\n\n#     ifeq ($$(SUBPROJECTS),)\n\n#         $$(eval $$(call PARSE_SUBPROJECT,defaultsp))\n\n#     else\n\n#         $$(eval $$(call PARSE_ALL_IN_LIST,PARSE_SUBPROJECT,$$(SUBPROJECTS)))\n\n#     endif\n\n# endef\n",
+        "Line" : 393,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# $1 Keymap\n\n# This is the meat of compiling a keyboard, when entering this, everything is known\n\n# keyboard, subproject, and keymap\n\n# Note that we are not directly calling the command here, but instead building a list,\n\n# which will later be processed\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# The rest of the rule is the target\n\n# Remove the leading \":\" from the target, as it acts as a separator\n",
+        "Line" : 410,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "# We need to generate an unique indentifer to append to the COMMANDS list\n",
+        "Line" : 413,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "# If we are compiling a keyboard without a subproject, we want to display just the name\n\n# of the keyboard, otherwise keyboard/subproject\n",
+        "Line" : 416,
+        "CharPositionInLine" : 4
+      },
+      "45" : {
+        "Text" : "# Format it in bold\n",
+        "Line" : 419,
+        "CharPositionInLine" : 4
+      },
+      "46" : {
+        "Text" : "# Specify the variables that we are passing forward to submake\n",
+        "Line" : 421,
+        "CharPositionInLine" : 4
+      },
+      "47" : {
+        "Text" : "# And the first part of the make command\n",
+        "Line" : 423,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "# The message to display\n",
+        "Line" : 425,
+        "CharPositionInLine" : 4
+      },
+      "49" : {
+        "Text" : "# We run the command differently, depending on if we want more output or not\n\n# The true version for silent output and the false version otherwise\n",
+        "Line" : 427,
+        "CharPositionInLine" : 4
+      },
+      "50" : {
+        "Text" : "# Just parse all the keymaps for a specific keyboard\n",
+        "Line" : 454,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Set the silent mode depending on if we are trying to compile multiple keyboards or not\n\n# By default it's on in that case, but it can be overridden by specifying silent=false\n\n# from the command line\n",
+        "Line" : 494,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# The empty line is important here, as it will force a new shell to be created for each command\n\n# Otherwise the command line will become too long with a lot of keyboards and keymaps\n",
+        "Line" : 515,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Let's match everything, we handle all the rule parsing ourselves\n",
+        "Line" : 532,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Check if we have the CMP tool installed\n",
+        "Line" : 535,
+        "CharPositionInLine" : 1
+      },
+      "55" : {
+        "Text" : "# Check if the submodules are dirty, and display a warning if they are\n",
+        "Line" : 537,
+        "CharPositionInLine" : 1
+      },
+      "56" : {
+        "Text" : "# Run all the commands in the same shell, notice the + at the first line\n\n# it has to be there to allow parallel execution of the submake\n\n# This always tries to compile everything, even if error occurs in the middle\n\n# But we return the error code at the end, to trigger travis failures\n\n# The sort at this point is to remove duplicates\n",
+        "Line" : 553,
+        "CharPositionInLine" : 1
+      },
+      "57" : {
+        "Text" : "# These no longer work because of the colon system\n",
+        "Line" : 563,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# All should compile everything\n\n# .PHONY: all\n\n# all: all-keyboards test-all\n",
+        "Line" : 565,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# Define some shortcuts, mostly for compatibility with the old syntax\n\n# .PHONY: all-keyboards\n\n# all-keyboards: all\\:all\\:all\n",
+        "Line" : 569,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# .PHONY: all-keyboards-defaults\n\n# all-keyboards-defaults: all\\:default\n",
+        "Line" : 573,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# .PHONY: test\n\n# test: test-all\n",
+        "Line" : 576,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# .PHONY: test-clean\n\n# test-clean: test-all-clean\n",
+        "Line" : 579,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Generate the version.h file\n",
+        "Line" : 595,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 64
+    },
+    "keyboards/kinesis/alvicstep/docs/kicad/kinesis.pro" : {
+      "ObjectId" : "9f130b5092ca089aa9a3970db974fff4016c64a9",
+      "LastModified" : "2017-01-09T06:02:01Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "keyboards/preonic/keymaps/that_canadian/Makefile" : {
+      "ObjectId" : "773e5c45dadd09bc328376a1808a673844faa606",
+      "LastModified" : "2019-01-04T15:25:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Build Options\n\n#   change to \"no\" to disable the options, or define them in the Makefile in \n\n#   the appropriate keymap folder that will get included automatically\n\n#\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Virtual DIP switch configuration(+1000)\n\n# Mouse keys(+4700)\n\n# Audio control and System control(+450)\n\n# Console for debug(+400)\n\n# Commands for debug and configuration\n",
+        "Line" : 7,
+        "CharPositionInLine" : 28
+      },
+      "2" : {
+        "Text" : "# Nkey Rollover - if this doesn't work, see here: https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work\n",
+        "Line" : 12,
+        "CharPositionInLine" : 29
+      },
+      "3" : {
+        "Text" : "# Enable keyboard backlight functionality\n",
+        "Line" : 13,
+        "CharPositionInLine" : 27
+      },
+      "4" : {
+        "Text" : "# MIDI controls\n",
+        "Line" : 14,
+        "CharPositionInLine" : 28
+      },
+      "5" : {
+        "Text" : "# Audio output on port C6\n",
+        "Line" : 15,
+        "CharPositionInLine" : 29
+      },
+      "6" : {
+        "Text" : "# Unicode\n\n# Enable Bluetooth with the Adafruit EZ-Key HID\n\n# Enable WS2812 RGB underlight.  Do not enable this with audio at the same time.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 28
+      },
+      "7" : {
+        "Text" : "# Do not enable SLEEP_LED_ENABLE. it uses the same timer as BACKLIGHT_ENABLE\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Breathing sleep LED during USB suspend\n",
+        "Line" : 21,
+        "CharPositionInLine" : 25
+      },
+      "CommentCount" : 9
+    },
+    "keyboards/zeal60/keymaps/tusing/Makefile" : {
+      "ObjectId" : "762905da03f9f5807238adec02d011823059bbea",
+      "LastModified" : "2019-01-04T15:25:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Build Options\n\n#   change to \"no\" to disable the options, or define them in the Makefile in \n\n#   the appropriate keymap folder that will get included automatically\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Underglow cannot be used with audio.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 19
+      },
+      "CommentCount" : 2
+    },
+    "lib/lufa/Bootloaders/HID/HostLoaderApp/Makefile" : {
+      "ObjectId" : "d7d6458a5c21c68efd8a90a31f20c3f435f913c6",
+      "LastModified" : "2019-01-04T15:25:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#OS ?= WINDOWS\n\n#OS ?= MACOSX\n\n#OS ?= BSD\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# also works on FreeBSD\n",
+        "Line" : 6,
+        "CharPositionInLine" : 21
+      },
+      "2" : {
+        "Text" : "# works on NetBSD and OpenBSD\n",
+        "Line" : 29,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 3
+    },
+    "quantum/serial_link/tests/Makefile" : {
+      "ObjectId" : "1b072c6f1d2f38fdb95348fbe631a905b3e6b425",
+      "LastModified" : "2019-01-04T15:25:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The MIT License (MIT)\n\n# \n\n# Copyright (c) 2016 Fred Sundvik\n\n# \n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n# \n\n# The above copyright notice and this permission notice shall be included in all\n\n# copies or substantial portions of the Software.\n\n# \n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tmk_core/protocol/usb_hid/USB_Host_Shield_2.0/examples/testusbhostFAT/Makefile" : {
+      "ObjectId" : "8a12ddc0471d52324e8a73e672919d5f1c58f230",
+      "LastModified" : "2019-01-04T15:25:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# These are set for a mega 1280 + quadram plus my serial patch.\n\n# If you lack quadram, or want to disable LFN, just change _FS_TINY=1 _USE_LFN=0\n\n#\n\n# If your board is a mega 2560 comment out the following two lines\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ...and then uncomment out the following two lines\n\n#BOARD_SUB = mega.menu.cpu.atmega2560\n\n#PROGRAMMER = wiring\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#BOARD = teensypp2\n\n#BOARD = teensy3\n\n#BOARD = teensy31\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# set your Arduino tty port here\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# change to 0 if you have quadram to take advantage of caching FAT\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Don't worry if you don't have external RAM, xmem2 detects this situation.\n\n# You *WILL* be wanting to get some kind of external ram on your mega in order to\n\n# do anything that is intense.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# These are no longer needed for the demo to work.\n\n# In the event you need more ram, uncomment these 3 lines.\n\n#EXTRA_FLAGS += -D DISABLE_SERIAL1\n\n#EXTRA_FLAGS += -D DISABLE_SERIAL2\n\n#EXTRA_FLAGS += -D DISABLE_SERIAL3\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# Advanced debug on Serial3\n\n#\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# uncomment the next two to enable debug on Serial3\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#EXTRA_FLAGS += -D DEBUG_USB_HOST\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# The following are the libraries used.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# And finally, the part that brings everything together for you.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "tmk_core/protocol/usb_hid/test/Makefile" : {
+      "ObjectId" : "83bf2aed67abdf4e24d9afe6dd0071d234e07b41",
+      "LastModified" : "2019-01-04T15:25:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#----------------------------------------------------------------------------\n\n# On command line:\n\n#\n\n# make all = Make software.\n\n#\n\n# make clean = Clean out built project files.\n\n#\n\n# make coff = Convert ELF to AVR COFF.\n\n#\n\n# make extcoff = Convert ELF to AVR Extended COFF.\n\n#\n\n# make program = Download the hex file to the device.\n\n#                Please customize your programmer settings(PROGRAM_CMD)\n\n#\n\n# make teensy = Download the hex file to the device, using teensy_loader_cli.\n\n#               (must have teensy_loader_cli installed).\n\n#\n\n# make dfu = Download the hex file to the device, using dfu-programmer (must\n\n#            have dfu-programmer installed).\n\n#\n\n# make flip = Download the hex file to the device, using Atmel FLIP (must\n\n#             have Atmel FLIP installed).\n\n#\n\n# make dfu-ee = Download the eeprom file to the device, using dfu-programmer\n\n#               (must have dfu-programmer installed).\n\n#\n\n# make flip-ee = Download the eeprom file to the device, using Atmel FLIP\n\n#                (must have Atmel FLIP installed).\n\n#\n\n# make debug = Start either simulavr or avarice as specified for debugging, \n\n#              with avr-gdb or avr-insight as the front end for debugging.\n\n#\n\n# make filename.s = Just compile filename.c into the assembler code only.\n\n#\n\n# make filename.i = Create a preprocessed source file for use in submitting\n\n#                   bug reports to the GCC project.\n\n#\n\n# To rebuild project do \"make clean\" then \"make all\".\n\n#----------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Target file name (without extension).\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Directory keyboard dependent files exist\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# MCU name\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Processor frequency.\n\n#     This will define a symbol, F_CPU, in all source code files equal to the\n\n#     processor frequency in Hz. You can then use this symbol in your source code to\n\n#     calculate timings. Do NOT tack on a 'UL' at the end, this will be done\n\n#     automatically to create a 32-bit value in your source code.\n\n#\n\n#     This will be an integer division of F_USB below, as it is sourced by\n\n#     F_USB after it has run through any CPU prescalers. Note that this value\n\n#     does not *change* the processor frequency - it should merely be updated to\n\n#     reflect the processor speed set externally so that the code can use accurate\n\n#     software delays.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#\n\n# LUFA specific\n\n#\n\n# Target architecture (see library \"Board Types\" documentation).\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Input clock frequency.\n\n#     This will define a symbol, F_USB, in all source code files equal to the\n\n#     input clock frequency (before any prescaling is performed) in Hz. This value may\n\n#     differ from F_CPU if prescaling is used on the latter, and is required as the\n\n#     raw input clock is fed directly to the PLL sections of the AVR for high speed\n\n#     clock generation for the USB and other AVR subsections. Do NOT tack on a 'UL'\n\n#     at the end, this will be done automatically to create a 32-bit value in your\n\n#     source code.\n\n#\n\n#     If no clock division is performed on the input clock inside the AVR (via the\n\n#     CPU clock adjust registers or the clock division fuses), this will be equal to F_CPU.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Interrupt driven control endpoint task\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Build Options\n\n#   comment out to disable the options.\n\n#\n\n# Console for debug\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Boot Section Size in bytes\n\n#   Teensy halfKay   512\n\n#   Atmel DFU loader 4096\n\n#   LUFA bootloader  4096\n\n#OPT_DEFS += -DBOOT_SIZE=4096\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Search Path\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# program Leonardo\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "util/usb_detach/Makefile" : {
+      "ObjectId" : "533c1928f494ad5a72261d99b340427a503eebba",
+      "LastModified" : "2019-03-08T15:58:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# the compiler: gcc for C program, define as g++ for C++\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# compiler flags:\n\n#  -g    adds debugging information to the executable file\n\n#  -Wall turns on most, but not all, compiler warnings\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# the build target executable:\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "QMAKE" : 1,
+    "MAKEFILE" : 8
+  },
+  "ElapsedTime" : 7720
+}

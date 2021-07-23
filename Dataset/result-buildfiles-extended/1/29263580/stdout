@@ -1,0 +1,1752 @@
+{
+  "Repository" : "29263580",
+  "Revision" : "HEAD",
+  "ObjectId" : "425bcba906e5326757b8368123f9246526ffbc4d",
+  "CommitTime" : "2019-04-16T01:33:35Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "63e3ba94e1ee8db95e49dace74bf13bc06b3ca41",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# If we are not building as a part of LLVM, build Clang as an\n\n# standalone project, using LLVM as an external library:\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Rely on llvm-config.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Normalize LLVM_CMAKE_PATH. --cmakedir might contain backslashes.\n\n# CMake assumes slashes as PATH.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Assertions should follow llvm-config's.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# We can't check LLVM_CONFIG here, because find_package(LLVM ...) also sets\n\n# LLVM_CONFIG.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Pull values from LLVMConfig.cmake.  We can drop this once the llvm-config\n\n# path is removed.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# They are used as destination of target generators.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# DLL platform -- put DLLs into bin.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Check prebuilt llvm/utils.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Note: path not really used, except for checking if lit was found\n",
+        "Line" : 148,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "# Seek installed Lit.\n",
+        "Line" : 167,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# Define the default arguments to use with 'lit', and an option for the user\n\n# to override.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 6
+      },
+      "12" : {
+        "Text" : "# On Win32 hosts, provide an option to specify the path to the GnuWin32 tools.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# Make sure that our source directory is on the current cmake module path so that\n\n# we can include cmake files from this directory.\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Don't look for libxml if we're using MSan, since uninstrumented third party\n\n# code may call MSan interceptors like strlen, leading to false positives.\n",
+        "Line" : 203,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# TODO: verify the values against LangStandards.def?\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# OpenMP offloading requires at least sm_35 because we use shuffle instructions\n\n# to generate efficient code for reductions and the atomicMax instruction on\n\n# 64-bit integers in the implementation of conditional lastprivate.\n",
+        "Line" : 270,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The libdir suffix must exactly match whatever LLVM's configuration used.\n",
+        "Line" : 302,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# If CLANG_VERSION_* is specified, use it, if not use LLVM_VERSION_*.\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Unlike PACKAGE_VERSION, CLANG_VERSION does not include LLVM_VERSION_SUFFIX.\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Configure the Version.inc file.\n",
+        "Line" : 330,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Add appropriate flags for GCC\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Enable -pedantic for Clang even if it's not enabled for LLVM.\n",
+        "Line" : 342,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# Determine HOST_LINK_VERSION on Darwin.\n",
+        "Line" : 353,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Clang version information\n",
+        "Line" : 449,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# All targets below may depend on all tablegen'd files.\n",
+        "Line" : 466,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Force target to be built as soon as possible. Clang modules builds depend\n\n# header-wise on it as they ship all headers from the umbrella folders. Building\n\n# an entire module might include header, which depends on intrinsics_gen.\n",
+        "Line" : 472,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# this line is needed as a cleanup to ensure that any CMakeCaches with the old\n\n# default value get updated to the new default.\n",
+        "Line" : 487,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Add a global check rule now that all subdirectories have been traversed\n\n# and we know the total set of lit testsuites.\n",
+        "Line" : 521,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "# If the next stage is LTO we need to depend on LTO and possibly lld or LLVMgold\n",
+        "Line" : 586,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# on Darwin we need to set DARWIN_LTO_LIBRARY so that -flto will work\n\n# using the just-built compiler, and we need to override DYLD_LIBRARY_PATH\n\n# so that the host object file tools will use the just-built libLTO.\n\n# However if System Integrity Protection is enabled the DYLD variables\n\n# will be scrubbed from the environment of any base system commands. This\n\n# includes /bin/sh, which ninja uses when executing build commands. To\n\n# work around the envar being filtered away we pass it in as a CMake\n\n# variable, and have LLVM's CMake append the envar to the archiver calls.\n",
+        "Line" : 590,
+        "CharPositionInLine" : 6
+      },
+      "31" : {
+        "Text" : "# We don't need to depend on compiler-rt/libcxx if we're building instrumented\n\n# because the next stage will use the same compiler used to build this stage.\n",
+        "Line" : 650,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# Use the current tools for LTO instead of the instrumented ones\n",
+        "Line" : 702,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# Find all variables that start with BOOTSTRAP_ and populate a variable with\n\n# them.\n",
+        "Line" : 718,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# Populate the passthrough variables\n",
+        "Line" : 734,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# We shouldn't need to set this here, but INSTALL_DIR doesn't\n\n# seem to work, so instead I'm passing this through\n",
+        "Line" : 755,
+        "CharPositionInLine" : 16
+      },
+      "36" : {
+        "Text" : "# exclude really-install from main target\n",
+        "Line" : 778,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# exclude from main target\n",
+        "Line" : 793,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 38
+    },
+    "bindings/python/tests/CMakeLists.txt" : {
+      "ObjectId" : "3386e6428c20877d0a2e478c7ec26548b94e7afd",
+      "LastModified" : "2018-10-18T17:47:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test target to run Python test suite from main build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Do not try to run if libclang was built with ASan because\n\n# the sanitizer library will likely be loaded too late to perform\n\n# interception and will then fail.\n\n# We could use LD_PRELOAD/DYLD_INSERT_LIBRARIES but this isn't\n\n# portable so its easier just to not run the tests when building\n\n# with ASan.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tests fail on Windows, and need someone knowledgeable to fix.\n\n# It's not clear whether it's a test or a valid binding problem.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# AArch64 and Hexagon have known test failures that need to be\n\n# addressed.\n\n# SystemZ has broken Python/FFI interface:\n\n# https://reviews.llvm.org/D52840#1265716\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/caches/3-stage-base.cmake" : {
+      "ObjectId" : "46c747edd77848f0dfe98d3f807aff253fea9bcc",
+      "LastModified" : "2016-05-05T21:08:41Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/caches/3-stage.cmake" : {
+      "ObjectId" : "49bce39dfc981b8b7b52dff96e17ceb0f18dd4b3",
+      "LastModified" : "2016-02-26T21:23:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/caches/Android-stage2.cmake" : {
+      "ObjectId" : "6720517590ab9320845760866f186fea90fbde42",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/caches/Android.cmake" : {
+      "ObjectId" : "6fbc4a53951e3a2b64b1c37f4c9db5510758b2ff",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for an Android toolchain build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/caches/Apple-stage1.cmake" : {
+      "ObjectId" : "518088801318a6ee1c21c8ee4a1966656119e12f",
+      "LastModified" : "2017-10-05T22:48:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for Apple-style bootstrap builds. It can be\n\n# used on any Darwin system to approximate Apple Clang builds.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Disabling embedded darwin compiler-rt on stage1 builds is required because we\n\n# don't build stage1 to support arm code generation.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#bootstrap\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/caches/Apple-stage2-ThinLTO.cmake" : {
+      "ObjectId" : "54e54e306e7a6b627cf70e3c68ac584f83e992e5",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for Apple-style stage2 ThinLTO bootstrap. It is\n\n# specified by the stage1 build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/caches/Apple-stage2.cmake" : {
+      "ObjectId" : "c7f3f04b420aa8c21b02160239e56bb47aea5b4f",
+      "LastModified" : "2018-06-26T17:05:01Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for Apple-style stage2 bootstrap. It is\n\n# specified by the stage1 build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make unit tests (if present) part of the ALL target\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generating Xcode toolchains is useful for developers wanting to build and use\n\n# clang without installing over existing tools.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# setup toolchain\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# test args\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/caches/BaremetalARM.cmake" : {
+      "ObjectId" : "d9d2efcbb4bb51381133b080947e08fe0cd67d7e",
+      "LastModified" : "2018-03-18T11:38:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Builtins\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/caches/DistributionExample-stage2.cmake" : {
+      "ObjectId" : "600ba56e4563447ae3dc605e368ec8e8842cc0e3",
+      "LastModified" : "2018-03-18T11:38:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for the second stage of a simple distribution\n\n# bootstrap build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# setup toolchain\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/caches/DistributionExample.cmake" : {
+      "ObjectId" : "551f4ee07eaccacb6aacc77ef1ada7e2c24d92d9",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for a simple distribution bootstrap build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Only build the native target in stage1 since it is a throwaway build.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Optimize the stage1 compiler, but don't LTO it because that wastes time.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Setup vendor-specific settings.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Setting up the stage2 LTO option needs to be done on the stage1 build so that\n\n# the proper LTO library dependencies can be connected.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Expose stage2 targets through the stage1 build configuration.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Setup the bootstrap build.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "cmake/caches/Fuchsia-stage2.cmake" : {
+      "ObjectId" : "9413c79dc3de0cd0e1c7ea53ac4947a138840748",
+      "LastModified" : "2018-11-22T02:36:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for the second stage of a Fuchsia toolchain\n\n# build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the per-target builtins options.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Set the per-target runtimes options.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Set the per-target builtins options.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Set the per-target runtimes options.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Setup toolchain.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/caches/Fuchsia.cmake" : {
+      "ObjectId" : "cc3baa294d0ef2672e88fbd0825c214293bef896",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file sets up a CMakeCache for a Fuchsia toolchain build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Setup the bootstrap build.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/caches/PGO-stage2-instrumented.cmake" : {
+      "ObjectId" : "858c07f562650965e2b881a81989f22000a916bb",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/caches/PGO-stage2.cmake" : {
+      "ObjectId" : "2080cd405f2a6351a66b029221f683ceda08b27e",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/caches/PGO.cmake" : {
+      "ObjectId" : "7e4a001129cb9d0c256185728dbf2c5d383a225b",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/modules/AddClang.cmake" : {
+      "ObjectId" : "7e22f16f365b023a66e0be29883d359fee94ef69",
+      "LastModified" : "2018-10-01T12:16:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Syntax:\n\n# clang_tablegen output-file [tablegen-arg ...] SOURCE source-file\n\n# [[TARGET cmake-target-name] [DEPENDS extra-dependency ...]]\n\n#\n\n# Generates a custom command for invoking tblgen as\n\n#\n\n# tblgen source-file -o=output-file tablegen-arg ...\n\n#\n\n# and, if cmake-target-name is provided, creates a custom target for\n\n# executing the custom command depending on output-file. It is\n\n# possible to list more files to depend after DEPENDS.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# Add public headers\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# It may contain unparsed unknown args.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 32
+      },
+      "3" : {
+        "Text" : "# Add empty \"phony\" target\n",
+        "Line" : 114,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Always generate install targets\n",
+        "Line" : 159,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "cmake/modules/CMakeLists.txt" : {
+      "ObjectId" : "be6d1d7257bc106ca3fd3abe653710b1081cf7a4",
+      "LastModified" : "2017-07-28T17:40:28Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Generate a list of CMake library targets so that other CMake projects can\n\n# link against them. LLVM calls its version of this file LLVMExports.cmake, but\n\n# the usual CMake convention seems to be ${Project}Targets.cmake.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Keep this in sync with llvm/cmake/CMakeLists.txt!\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generate ClangConfig.cmake for the build tree.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Generate ClangConfig.cmake for the install tree.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Construct the proper number of get_filename_component(... PATH)\n\n# calls to compute the installation prefix.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/modules/FindZ3.cmake" : {
+      "ObjectId" : "7a224f789ec1d30ec05039a51bc9f6a1c5f114ec",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Looking for Z3 in CLANG_ANALYZER_Z3_INSTALL_DIR\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If Z3 has not been found in CLANG_ANALYZER_Z3_INSTALL_DIR look in the default directories\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set Z3_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/modules/ProtobufMutator.cmake" : {
+      "ObjectId" : "5f23f33f4c73799c8c2cd4aa09c3ff7b2c48ee84",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "docs/CMakeLists.txt" : {
+      "ObjectId" : "d2956c18f80c558ed583ddefce1a14fe9d7f6c0e",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# If asked, configure doxygen for the creation of a Qt Compressed Help file.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "examples/AnnotateFunctions/CMakeLists.txt" : {
+      "ObjectId" : "44b6317e72afcb5507cdb234b7f9484750ea6cd7",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/CMakeLists.txt" : {
+      "ObjectId" : "8c2654840a98827964ce8793702ae8de33ff55c2",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/PrintFunctionNames/CMakeLists.txt" : {
+      "ObjectId" : "68c6f76dff0544677679888a5b446b1c7eb586d6",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# If we don't need RTTI or EH, there's no reason to export anything\n\n# from the plugin.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# MSVC mangles symbols differently, and\n\n# PrintFunctionNames.export contains C++ symbols.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 15
+      },
+      "CommentCount" : 2
+    },
+    "examples/analyzer-plugin/CMakeLists.txt" : {
+      "ObjectId" : "7c7b2aec1988ddb790956cf01f73e1209424bb36",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "examples/clang-interpreter/CMakeLists.txt" : {
+      "ObjectId" : "b69a82e0541bc5cdc2e08cb837668f6d44527281",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Is this a CMake bug that even with export_executable_symbols, Windows\n\n# needs to explictly export the type_info vtable\n",
+        "Line" : 34,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# Really have to jump through hoops to enable exception handling independent\n\n# of how LLVM is being built.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# /EHs to allow throwing from extern \"C\"\n",
+        "Line" : 45,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : "# Strip the exception & rtti flags from the target\n",
+        "Line" : 69,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Re-add the exception & rtti flags from LLVM\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Invoke with exceptions & rtti\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "include/CMakeLists.txt" : {
+      "ObjectId" : "253a09b1012fbb1ed22808a79989363e2a2c6aa8",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/AST/CMakeLists.txt" : {
+      "ObjectId" : "942d08d585fec34e15de252f0fdadb35cef0d2a8",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/Basic/CMakeLists.txt" : {
+      "ObjectId" : "15bed5adec9e16efa4c5921cc1a1564f635c7172",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ARM NEON\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "include/clang/CMakeLists.txt" : {
+      "ObjectId" : "feb81f0686caca1828bb21ab29fde0db2659dd96",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/Config/config.h.cmake" : {
+      "ObjectId" : "1d624450b9d905bed7ba2d2e9c7c41c922971e37",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKESOURCE",
+      "0" : {
+        "Text" : "/* This generated file is for internal use. Do not include it from headers. */",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "/* Bug report URL. */",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "/* Default linker to use. */",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "/* Default C/ObjC standard to use. */",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "/* Default C++/ObjC++ standard to use. */",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "/* Default C++ stdlib to use. */",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "/* Default runtime library to use. */",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "/* Default objcopy to use */",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "/* Default OpenMP runtime used by -fopenmp. */",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "/* Default architecture for OpenMP offloading to Nvidia GPUs. */",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "/* Multilib suffix for libdir. */",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "/* Relative directory for resource files */",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "/* Directories clang will search for headers */",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "/* Directories clang will search for configuration files */",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "/* Default <path> to all compiler invocations for --sysroot=<path>. */",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "/* Directory where gcc is installed. */",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "/* Define if we have libxml2 */",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "/* Define if we have z3 and want to build it */",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "/* Define if we have sys/resource.h (rlimits) */",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "/* The LLVM product name and version */",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "/* Linker version detected at compile time. */",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "/* pass --build-id to ld */",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "/* enable x86 relax relocations by default */",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "/* Enable the experimental new pass manager by default */",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "/* Enable each functionality of modules */",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 25
+    },
+    "include/clang/Driver/CMakeLists.txt" : {
+      "ObjectId" : "a9d988047920b0d845e69f0e03f1ef88b68d4556",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/Parse/CMakeLists.txt" : {
+      "ObjectId" : "2cc7e54b3b01a2bf84539eb07f02c60d8ca19bee",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/Sema/CMakeLists.txt" : {
+      "ObjectId" : "5a48b901d2bfbda8ad3d798754f602d8c2147acd",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/Serialization/CMakeLists.txt" : {
+      "ObjectId" : "d91513da99979d5a6b8e55e4d6759a86c0f5d5b1",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "include/clang/StaticAnalyzer/Checkers/CMakeLists.txt" : {
+      "ObjectId" : "236647c5348519f88af706b594c5a4e1d27cc0fb",
+      "LastModified" : "2018-10-13T19:45:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/APINotes/CMakeLists.txt" : {
+      "ObjectId" : "da9d0d1e5507836439fa7ad69f205b62e61781a2",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/ARCMigrate/CMakeLists.txt" : {
+      "ObjectId" : "619328ca5ca7611d67afacc6fd487ada96b2a13f",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/AST/CMakeLists.txt" : {
+      "ObjectId" : "570ca718acf5dceb8d5ba87ade3250ecaef9bbaa",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/ASTMatchers/CMakeLists.txt" : {
+      "ObjectId" : "b49528ede2272c20408ab190687530602031e09f",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/ASTMatchers/Dynamic/CMakeLists.txt" : {
+      "ObjectId" : "82c12a47fa9397bbf3e289adeb164fbea0fe6881",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The registry source file ends up generating a lot of sections for each\n\n# matcher. Each matcher appears to get a vtable and several methods. Each\n\n# method needs .text, .pdata, .xdata, and .debug sections, adding to the\n\n# section multiplier. By default MSVC has a 2^16 limit on the number of\n\n# sections in an object file, and this needs more than that.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/Analysis/CMakeLists.txt" : {
+      "ObjectId" : "940a3dfe6f60d69c568c5435e32fac61718e0d5d",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Basic/CMakeLists.txt" : {
+      "ObjectId" : "5ca169a2d015f6e48575541fdc6eceaed3b41131",
+      "LastModified" : "2019-03-20T16:58:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The VC revision include that we want to generate.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create custom target to generate the VC revision include.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Mark the generated header as being generated.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Tell Version.cpp that it needs to build with -DHAVE_SVN_VERSION_INC.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Not producing a VC revision include.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Being able to force-set the SVN revision in cases where it isn't available\n\n# is useful for performance tracking, and matches compatibility from autoconf.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "lib/CMakeLists.txt" : {
+      "ObjectId" : "adcfee8a166495fa212723dab5f81f1393f327d7",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/CodeGen/CMakeLists.txt" : {
+      "ObjectId" : "416bc4dc3122efb67e226e44fe4f032bc77f1b3c",
+      "LastModified" : "2019-04-12T16:37:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# In a standard Clang+LLVM build, we need to generate intrinsics before\n\n# building codegen. In a standalone build, LLVM is already built and we don't\n\n# need this dependency. Furthermore, LLVM doesn't export it so we can't have\n\n# this dependency.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/CrossTU/CMakeLists.txt" : {
+      "ObjectId" : "632b5072ad6ab3ea3089f89a5bf9be73c6cae9b1",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/DirectoryWatcher/CMakeLists.txt" : {
+      "ObjectId" : "5b506166b7aeaae21b01ca20a1d70facc72ef4fe",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Driver/CMakeLists.txt" : {
+      "ObjectId" : "084176b52464e20abbb3fa1f46953c3f10f39993",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# MSVCToolChain.cpp uses version.dll.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "lib/Edit/CMakeLists.txt" : {
+      "ObjectId" : "99aff3c3aeb199af073bd8102263a842367bbef4",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Format/CMakeLists.txt" : {
+      "ObjectId" : "0019d045cd06d72818feb9f4f5f49714b5a29dea",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Frontend/CMakeLists.txt" : {
+      "ObjectId" : "b47a248bdabf339a07c18100aaecdd63c7a4eec6",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Frontend/Rewrite/CMakeLists.txt" : {
+      "ObjectId" : "61a22b5b13b4d9f4f2e41e64e9ab5cf5ff65a6fa",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/FrontendTool/CMakeLists.txt" : {
+      "ObjectId" : "4a713e5902b2a2c1648601f7046a02d69213902b",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Headers/CMakeLists.txt" : {
+      "ObjectId" : "e444c9c8706f70a2f55cf2514198c1488d2818e9",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Generate arm_neon.h\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generate arm_fp16.h\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# don't add this for IDE's.\n",
+        "Line" : 181,
+        "CharPositionInLine" : 35
+      },
+      "CommentCount" : 3
+    },
+    "lib/Index/CMakeLists.txt" : {
+      "ObjectId" : "ff30c74e803e33a210511ca2254c9cc408bb8461",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/IndexDataStore/CMakeLists.txt" : {
+      "ObjectId" : "35c8dc05631fded9296b7aab2a7811c3dfd5a9f3",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Lex/CMakeLists.txt" : {
+      "ObjectId" : "7888b15cb66e68bf0842a032bfeae71318185ba3",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: Add -maltivec when ARCH is PowerPC.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/Parse/CMakeLists.txt" : {
+      "ObjectId" : "b868696eb6bb3c6b4c5c8a505e6b9ed934ceebf7",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Rewrite/CMakeLists.txt" : {
+      "ObjectId" : "16550b1b710ef9f0dc4d863ddca69eabdb1425da",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Sema/CMakeLists.txt" : {
+      "ObjectId" : "2556b153485719f88a93ef48ab905a509b75aaab",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Serialization/CMakeLists.txt" : {
+      "ObjectId" : "3d24c571f315ed08f1838b38690292760bfc2f4e",
+      "LastModified" : "2019-03-20T16:58:05Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/StaticAnalyzer/CMakeLists.txt" : {
+      "ObjectId" : "3d1509254f52ff5f442a091cd462be57b6760c65",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/StaticAnalyzer/Checkers/CMakeLists.txt" : {
+      "ObjectId" : "db2d0e76e4c17980b2be82729b5f549a539c7e3c",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/StaticAnalyzer/Core/CMakeLists.txt" : {
+      "ObjectId" : "80047f49087aa8dc38278aad1a1f279add4094e5",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Link Z3 if the user wants to build it.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "lib/StaticAnalyzer/Frontend/CMakeLists.txt" : {
+      "ObjectId" : "5e7dd8f18cd7318ebee05082f75d079054613a16",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Tooling/ASTDiff/CMakeLists.txt" : {
+      "ObjectId" : "578d8ca0cbc11c7ab360f3c56203fa554b20a76d",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Tooling/CMakeLists.txt" : {
+      "ObjectId" : "d09930b7df9ce676a9c71f458c9f32ece604c573",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Tooling/Core/CMakeLists.txt" : {
+      "ObjectId" : "f7f423c5222851b2764462de2222de758ad6b30d",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Tooling/Inclusions/CMakeLists.txt" : {
+      "ObjectId" : "00afb50f3a69088c3829011d7f0aeee568216812",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Tooling/Refactor/CMakeLists.txt" : {
+      "ObjectId" : "8871e1da091a4ae90b60f1f66f8d773ba534dd62",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "lib/Tooling/Refactoring/CMakeLists.txt" : {
+      "ObjectId" : "db889d2a06b5b2360db8b7a1a4527c8e3ed98190",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "runtime/CMakeLists.txt" : {
+      "ObjectId" : "0bb0a0aea39802cefdf26e127c6b7232cca9c62c",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: Set the install directory.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use special command for Makefiles to support parallelism.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Fallback to the external path, if the other one isn't available.\n\n# This is the same behavior (try \"internal\", then check the LLVM_EXTERNAL_...\n\n# variable) as in add_llvm_external_project\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We don't want to set it if LLVM_EXTERNAL_COMPILER_RT_SOURCE_DIR is \"\"\n",
+        "Line" : 30,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Add compiler-rt as an external project.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Find all variables that start with COMPILER_RT and populate a variable with\n\n# them.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Add top-level targets that build specific compiler-rt runtimes.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Add binaries that compiler-rt tests depend on.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Add top-level targets for various compiler-rt test suites.\n",
+        "Line" : 132,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Add special target to run all compiler-rt test suites.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Add special target to run all compiler-rt test suites.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 11
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "2044b12adf1a18d9cb51c2a17af648d4410f97b1",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test runner infrastructure for Clang. This configures the Clang test trees\n\n# for use by Lit, and delegates to LLVM's lit test handlers.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set HAVE_LIBZ according to recorded LLVM_ENABLE_ZLIB value. This\n\n# value is forced to 0 if zlib was not found, so it is fine to use it\n\n# instead of HAVE_LIBZ (not recorded).\n",
+        "Line" : 13,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "#LIT ${LLVM_LIT}\n",
+        "Line" : 130,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# check-all would launch those tests via check-clang.\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Add a legacy target spelling: clang-test\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# FIXME: This logic can be removed once all buildbots have moved\n\n# debuginfo-test from clang/test to llvm/projects or monorepo.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "tools/CMakeLists.txt" : {
+      "ObjectId" : "df7de9b9063c7db830c2a93c7df65ac9b57f98b0",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# We support checking out the clang-tools-extra repository into the 'extra'\n\n# subdirectory. It contains tools developed as part of the Clang/LLVM project\n\n# on top of the Clang tooling platform. We keep them in a separate repository\n\n# to keep the primary Clang repository small and focused.\n\n# It also may be included by LLVM_EXTERNAL_CLANG_TOOLS_EXTRA_SOURCE_DIR.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# libclang may require clang-tidy in clang-tools-extra.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Support building the TAPI project as Clang tool.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "tools/IndexStore/CMakeLists.txt" : {
+      "ObjectId" : "1bcfc0734785db825e9cbbccd992295a8ce043d9",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/arcmt-test/CMakeLists.txt" : {
+      "ObjectId" : "c4c1463241b489eddc2cbeab978e9eab736ae708",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/c-arcmt-test/CMakeLists.txt" : {
+      "ObjectId" : "08ac93c176db1295c328cc90d2a7ae42ae59caff",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/c-index-test/CMakeLists.txt" : {
+      "ObjectId" : "2992da6117d1b762dcebfa0b0cfce43e6d55c825",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# If libxml2 is available, make it available for c-index-test.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# don't add this for IDE's.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 37
+      },
+      "CommentCount" : 2
+    },
+    "tools/clang-check/CMakeLists.txt" : {
+      "ObjectId" : "527c530a6846cbe5f280c425bcca4f51ca503bef",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-diff/CMakeLists.txt" : {
+      "ObjectId" : "ab9a5bbbe916458dcfbc7061ce87f88bd83fb988",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-extdef-mapping/CMakeLists.txt" : {
+      "ObjectId" : "6c81689a831adb5b25578c2c435621faea0749e1",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-format-vs/CMakeLists.txt" : {
+      "ObjectId" : "1d44a47a3137bebd28e4b8b5417ab5f320ca3337",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build number added to Clang version to ensure that new VSIX can be upgraded\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 1
+    },
+    "tools/clang-format/CMakeLists.txt" : {
+      "ObjectId" : "a295e8cd0b2ac01de7ff67db1c17535c4a115164",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-format/fuzzer/CMakeLists.txt" : {
+      "ObjectId" : "87ae05b62d1977716335845e3dbd2f6dbd9170c2",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-fuzzer/CMakeLists.txt" : {
+      "ObjectId" : "5f07e66fe6754634f2f2ca280de4ea59c6d1c6c3",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Needed by LLVM's CMake checks because this file defines multiple targets.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create protobuf .h and .cc files, and put them in a library for use by\n\n# clang-proto-fuzzer components.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Build and include libprotobuf-mutator\n",
+        "Line" : 47,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Build the protobuf->C++ translation library and driver.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Build the protobuf->LLVM IR translation library and driver.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Build the fuzzer initialization library.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Build the protobuf fuzzer\n",
+        "Line" : 60,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Build the loop protobuf fuzzer\n",
+        "Line" : 66,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Build the llvm protobuf fuzzer\n",
+        "Line" : 72,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 9
+    },
+    "tools/clang-fuzzer/fuzzer-initialize/CMakeLists.txt" : {
+      "ObjectId" : "c149fb3d4b36cca3ebaecfe03c99d40c99430cb3",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-fuzzer/handle-cxx/CMakeLists.txt" : {
+      "ObjectId" : "6d62421d9a69a9419ea6d4edc28d972b7ac0f35b",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-fuzzer/handle-llvm/CMakeLists.txt" : {
+      "ObjectId" : "47f9fdf68f409c6cc80d300ec0360203703e6116",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Depend on LLVM IR intrinsic generation.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/clang-fuzzer/proto-to-cxx/CMakeLists.txt" : {
+      "ObjectId" : "339959b81af0ce759b345a8f2e8e13ae3982151f",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Needed by LLVM's CMake checks because this file defines multiple targets.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/clang-fuzzer/proto-to-llvm/CMakeLists.txt" : {
+      "ObjectId" : "ae58523f2274f03c75955edc7862f9126ea27fda",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Needed by LLVM's CMake checks because this file defines multiple targets.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tools/clang-import-test/CMakeLists.txt" : {
+      "ObjectId" : "ee1bdab64a5da48bdad41609375253d8a3171149",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-offload-bundler/CMakeLists.txt" : {
+      "ObjectId" : "8718015be76a274f7bb4d9b5b5e9d6a09852ae1a",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-refactor-test/CMakeLists.txt" : {
+      "ObjectId" : "1817ed00addbb863f2b088fec85dff72a35e1e29",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-refactor/CMakeLists.txt" : {
+      "ObjectId" : "2c7d0f2cf261afba806c8ad206f5abb994c8fa04",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/clang-rename/CMakeLists.txt" : {
+      "ObjectId" : "a950e8033728fd32dc458ac5dd34ddd3dec979ad",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/diagtool/CMakeLists.txt" : {
+      "ObjectId" : "96d1c390249c3ca43c2a67c63370401869a95aff",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/driver/CMakeLists.txt" : {
+      "ObjectId" : "e990a57c2fc5e750794295401b88734224549700",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Support plugins. This must be before add_clang_executable as it reads\n\n# LLVM_NO_DEAD_STRIP.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prevent versioning if the buildhost is targeting for Win32.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Support plugins.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Configure plist creation for OS X.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This is a test to ensure the actual order file works with the linker.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Passing an empty order file disables some linker layout optimizations.\n\n# To work around this and enable workflows for re-linking when the order file\n\n# changes we check during configuration if the file is empty, and make it a\n\n# configuration dependency.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "tools/libclang/CMakeLists.txt" : {
+      "ObjectId" : "6cc6051ca91fef14f44c7701ba2cad195365d019",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Avoid LNK4197 by not specifying libclang.exports here.\n\n# Each functions is exported as \"dllexport\" in include/clang-c.\n\n# KB835326\n",
+        "Line" : 75,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# FIXME: _CINDEX_LIB_ affects dllexport/dllimport on Win32.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# LLVM_DISTRIBUTION_COMPONENTS requires that each component have both a\n\n# component and an install-component target, so add a dummy libclang-headers\n\n# target to allow using it in LLVM_DISTRIBUTION_COMPONENTS.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# don't add this for IDE's.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 35
+      },
+      "4" : {
+        "Text" : "# Create a target to install the python bindings to make them easier to\n\n# distribute.  Since the bindings are over libclang, which is installed\n\n# unbundled to the clang version, follow suit.\n",
+        "Line" : 160,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "tools/scan-build-py/tests/functional/exec/CMakeLists.txt" : {
+      "ObjectId" : "42ee1d11db828a41a8ee43725b90f6d3434262ca",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/scan-build-py/tests/functional/src/build/Makefile" : {
+      "ObjectId" : "a8c0aafd0e5e61678c6be3e8166619a914e21779",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "tools/scan-build/CMakeLists.txt" : {
+      "ObjectId" : "380379300b099d4d5553440e5633cc1b1ddf2337",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tools/scan-view/CMakeLists.txt" : {
+      "ObjectId" : "b305ca562a72b9797df5cfcbed0abdb9b4a359ca",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/AST/CMakeLists.txt" : {
+      "ObjectId" : "c416e5b996b4245d901bfd529a565b3ff5af42ea",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/ASTMatchers/CMakeLists.txt" : {
+      "ObjectId" : "4e44c795f894ebeb763f3859c2f5d673554e2644",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# By default MSVC has a 2^16 limit on the number of sections in an object file,\n\n# and this needs more than that.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "unittests/ASTMatchers/Dynamic/CMakeLists.txt" : {
+      "ObjectId" : "07742caef658f8ed207831f0b25213dec45c5e28",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Analysis/CMakeLists.txt" : {
+      "ObjectId" : "c760ae2d82b7e83ee3fdc8150f0ca26d53351024",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Basic/CMakeLists.txt" : {
+      "ObjectId" : "d883c362e288d22b930167faa2b0767e9dfd6b5c",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/CMakeLists.txt" : {
+      "ObjectId" : "9a41000cf438baf872ab067f071403d79b726b00",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add_clang_unittest(test_dirname file1.cpp file2.cpp)\n\n#\n\n# Will compile the list of files together and link against the clang\n\n# Produces a binary named 'basename(test_dirname)'.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME: libclang unit tests are disabled on Windows due\n\n# to failures, mostly in libclang.VirtualFileOverlay_*.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "unittests/CodeGen/CMakeLists.txt" : {
+      "ObjectId" : "e4e7588a93275446a3ba1976d6ba90c94080806b",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/CrossTU/CMakeLists.txt" : {
+      "ObjectId" : "73047b739a4ac68942aad3a825ef4e8223e44424",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/DirectoryWatcher/CMakeLists.txt" : {
+      "ObjectId" : "c96424e298663eec21884d929638fa6194e59deb",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Driver/CMakeLists.txt" : {
+      "ObjectId" : "82dc0ff4bd2ac9425cd4034c6eb7d6ea4dd1d38c",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Format/CMakeLists.txt" : {
+      "ObjectId" : "015c25ee6b96ff49583087fb71bb3241811123e1",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Frontend/CMakeLists.txt" : {
+      "ObjectId" : "c7851bb394eee5023218a71bd519694d853221ca",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Index/CMakeLists.txt" : {
+      "ObjectId" : "2756fad906a3a25ecdc9694849df1ef09253c6ce",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Lex/CMakeLists.txt" : {
+      "ObjectId" : "679f7f7a11299ab79814228b915b3eb9e58f699b",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Rename/CMakeLists.txt" : {
+      "ObjectId" : "76e29cb87b4bbf1a411f7e9465c01f397180c13a",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# We'd like clang/unittests/Tooling/RewriterTestContext.h in the test.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "unittests/Rewrite/CMakeLists.txt" : {
+      "ObjectId" : "8edd9ba8f830ed9380a9ea0e462e85507301141d",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Sema/CMakeLists.txt" : {
+      "ObjectId" : "78601046dcd44606833d37bfed0e2a8ab8176ec0",
+      "LastModified" : "2019-03-07T17:02:49Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Serialization/CMakeLists.txt" : {
+      "ObjectId" : "c7ec9a4f070567e42a33c64e248f2af5d8fc3d9a",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/StaticAnalyzer/CMakeLists.txt" : {
+      "ObjectId" : "8afc670f89c00de1ab615e69cc7f3b092ef84393",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "unittests/Tooling/CMakeLists.txt" : {
+      "ObjectId" : "8f91d970b95257e71ec583c5fd8f0604f8085a6f",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# By default MSVC has a 2^16 limit on the number of sections in an object file,\n\n# and this needs more than that.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "unittests/libclang/CMakeLists.txt" : {
+      "ObjectId" : "36f6089787d26cdcda6e35e8dfdef947181ed1d5",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/ABITest/layout/Makefile" : {
+      "ObjectId" : "0520625fcf29f850a47fe9e095adfabd2ced6810",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Usage: make test.N.report \n\n#\n\n# COUNT can be over-ridden to change the number of tests generated per\n\n# file, and TESTARGS is used to change the type generation. Make sure\n\n# to 'make clean' after changing either of these parameters.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "utils/ABITest/return-types-32/Makefile" : {
+      "ObjectId" : "df1c53f1a16685ef1e8c5a9c54e1847030cde915",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "utils/ABITest/return-types-64/Makefile" : {
+      "ObjectId" : "9616e45cba949cfbdfa6a6c5d3cc70ed1e06bca2",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "utils/ABITest/single-args-32/Makefile" : {
+      "ObjectId" : "9ff417fc29e592d5448b669262b9e83bd66c1642",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "utils/ABITest/single-args-64/Makefile" : {
+      "ObjectId" : "b8acb70c1354dd00f2a33a964637480e8486e3e9",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Usage: make test.N.report \n\n#\n\n# COUNT can be over-ridden to change the number of tests generated per\n\n# file, and TESTARGS is used to change the type generation. Make sure\n\n# to 'make clean' after changing either of these parameters.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "utils/ClangVisualizers/CMakeLists.txt" : {
+      "ObjectId" : "16d118a421bad824bcf3433cce3457e6ffdc7860",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Do this by hand instead of using add_llvm_utilities(), which\n\n# tries to create a corresponding executable, which we don't want.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "utils/TableGen/CMakeLists.txt" : {
+      "ObjectId" : "dba0c94ac0e427551e0bd145b4a0ceaaeb72523f",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/hmaptool/CMakeLists.txt" : {
+      "ObjectId" : "5573009d343a99ad70fb5c7812f0a775617d2fb2",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/perf-training/CMakeLists.txt" : {
+      "ObjectId" : "39f9a4ca3c130f2dcf72923d696a45d42e27c880",
+      "LastModified" : "2019-03-20T23:42:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# All test suites added here should be excuded from check-all\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 126,
+    "CMAKESOURCE" : 1,
+    "MAKEFILE" : 6
+  },
+  "ElapsedTime" : 14075
+}

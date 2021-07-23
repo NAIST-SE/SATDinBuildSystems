@@ -1,0 +1,84 @@
+{
+  "Repository" : "52687",
+  "Revision" : "HEAD",
+  "ObjectId" : "d028e7841419d177561d20bc03db3b070f29dad6",
+  "CommitTime" : "2017-04-03T11:00:22Z",
+  "Files" : {
+    "registry/Makefile" : {
+      "ObjectId" : "6eb709fd08f29a6ac1a1a1f8652b20929c6a1f4d",
+      "LastModified" : "2012-06-05T12:20:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# some things eyeball reports missing, even though they actually exist\n",
+        "Line" : 13,
+        "CharPositionInLine" : 39
+      },
+      "1" : {
+        "Text" : "# Eyeball must be last, as it usually fails\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# validate RDF with Eyeball\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Registry TBox (the OWL ontology that defines the vocabulary of the graph) and ABox (the actual graph) combined, for the purpose of validating (manually, known to work with HermiT in Protégé 4.1) whether the ABox is consistent wrt. the TBox.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# 1. apply the N3 ruleset to expand the core dataset to the expanded dataset; in detail:\n\n#    cwm --n3 $<                      # parse the input as N3 (a superset of Turtle)\n\n#    --rdf $(BASE)/syntax/dol-rdf.owl # parse the ontology as RDF/XML\n\n#    --n3 $(DOL_INFERENCES)           # load DOL-specific inference rules (particularly those that can't be represented in OWL, but only in FOL)\n\n#    $(OWL_INFERENCES)                # load general OWL (and RDFS and RDF) inference rules (just a relevant subset of the actual rules, implemented ad hoc according to our needs)\n\n#    --think                          # apply the inference rules until they lead to no more expansions\n\n#    --ntriples                       # create N-Triples output for easy linewise post-processing\n\n#    $(CWM_DEFAULT_ARGS)\n\n# 2. remove leading whilespace\n\n# 3. filter out any triples whose subjects are not from the namespace of this dataset.  This includes blank nodes, which are just used for editorial comments so far\n\n# 4. filter out triples containing blank nodes in any component.  Many blank nodes are not relevant for the dataset (e.g. artifacts from the RDF serialization of the OWL ontology, editorial comments, etc.), and those, that are, are not supported by our approach.\n\n# 5. filter out triples with certain annotation properties (here: editorial comments)\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# convert expanded N-Triples datasets to Turtle\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Output all distinct subject URIs (and blank node IDs) that occur in the dataset.\n\n# Omit any namespaces we are not interested in deploying.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Make sure that all directories exist in whose paths we have resources.\n\n# We use one directory path as a representative for generating all of them.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Use the URI of one resource as a representative for generating all split files\n\n# For each resource, …\n\n# 1. read all triples having this resource as a subject\n\n# 2. output them to a self-contained RDF/XML file named after the resource\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#$(REGISTRY_NS)} ; \\\n\t\tif [[ -d $$out_file ]]; then out_file=$${out_file}/index; fi ; \\\n\t\tgrep \"$${resource_pattern}\" $(EXPANDED_DATASET) \\\n\t\t| cwm --n3 --rdf $(CWM_DEFAULT_ARGS) \\\n\t\t> $$out_file ; \\\n\t} ; \\\n\twhile read resource ; do \\\n\t\techo $$resource ; \\\n\t\tdo_split \"^<$$resource>\" $$resource ; \\\n\t  done < $< ; \\\n\n",
+        "Line" : 88,
+        "CharPositionInLine" : 41
+      },
+      "CommentCount" : 10
+    },
+    "syntax/Makefile" : {
+      "ObjectId" : "15e5d2ed37bfadac98bf85a4d9c006278197dda9",
+      "LastModified" : "2012-06-05T12:24:50Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# TODO consistency check of an OWL ontology with Hets\n\n# $ hets -I -i owl file.omn\n\n# > nodes  // this needs to be automated\n\n# > dg basic NODE-NAME\n\n# > cons-checker Pellet  // or Fact\n\n# > check-consistency\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 1. expand some OWL entailments\n\n# 2. remove leading whilespace\n\n# 3. filter out any triples with subjects from namespaces that are not part of the dataset:\n\n#    * blank nodes: not used in the subgraph that we are interested in\n\n#    * local N3 rules\n\n#    * OWL, RDFS, and annotation vocabularies\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 2
+  },
+  "ElapsedTime" : 3771
+}

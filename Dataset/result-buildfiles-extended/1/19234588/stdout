@@ -1,0 +1,3464 @@
+{
+  "Repository" : "19234588",
+  "Revision" : "HEAD",
+  "ObjectId" : "c40ecfcb8d2b2441b17807109848b966c0ad7e45",
+  "CommitTime" : "2017-04-20T14:41:13Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "0dd7c4faa9cfddb3375810a537d9e520b8a933d9",
+      "LastModified" : "2015-05-20T23:03:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################################################\n\n#\n\n#               FOEDUS super-build CMake script\n\n#\n\n# This CMake project is used by the developers of FOEDUS.\n\n# It is NOT an intended use to include this CMake project from user CMake project.\n\n# Rather, users should include CMakeLists.txt in foedus-core.\n\n# All sub-projects other than foedus-core are not intended to be compiled with\n\n# user programs. They are utility programs, performance experiments, and unit\n\n# test cases. Users shouldn't have to include such projects.\n\n#\n\n#############################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# No in-source build please. Terminate it as soon as possible if it happens.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# A few projects other than foedus-core refer to foedus-core. Give a global variable for them.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# All executables should explicitly link to libpthreads, not just relying on implicit linking.\n\n# http://www.jimmo.org/threads-blocked-in-pthread_cond_signal-on-linux/\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Further, all modules should be compiled with -pthread\n\n# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58929\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We do assume C++11.\n\n# However, external projects can link to our shared library even if they use C++98.\n\n# Our public header files do the switching (hides some API if C++11 is disabled).\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Yes, we are serious about watching and addressing compiler warnings.\n\n# However, as different versions of compilers have slight differences in rules, \"-Werror\" would\n\n# cause much more harm than good. So, we enable them just as warnings, not errors.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We need this for gperftools. If you see \"0000fa1234\" or something like that instead of function\n\n# names, most likely it's an issue in gperftools.\n\n# https://code.google.com/p/gperftools/issues/detail?id=562\n\n# https://code.google.com/p/gperftools/issues/detail?id=586\n\n# Disabling pie solved the issue for 90% of methods in libfoedus-core.so, but still some methods\n\n# show only function addresses.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We don't use exceptions, but we hesitate to actually turn it off with -fno-exceptions.\n\n# If the client program expects exceptions, and if libstdc throws an exception, kaboom.\n\n# set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -fno-exceptions\")\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Always 64-bit file offsets\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# These optional modules are linked in all projects.\n\n# We might be using something other than the ones in /usr/lib, so don't let cmake automatically pick\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# We use cpplint to conform to Google C++ style guide.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# A unittest is not run if it's expensive AND it's not essential. If it's an essential test case,\n\n# we should make it run fast! So far only header-dependency tests fall into this category.\n\n# The expensive tests are run on jenkins or manually by developers.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Find valgrind executable. prefer in the following order:\n\n#  <home_folder>/local/bin/valgrind  (if needed, install a latest version of valgrind to here)\n\n#  /usr/local/bin/valgrind (or here)\n\n#  /usr/bin/valgrind  (probably you have this by standard package manager)\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Note 2014 May: The following setting for \"ctest -D ExperimentalMemCheck\" is obsolete,\n\n# although still left for future use when ctest supports valgrind-style xml output.\n\n# We now use \"ctest -R valgrind\" (run our own valgrind-version targets) for this purpose.\n\n# See https://issues.jenkins-ci.org/browse/JENKINS-23178?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel\n\n# for why we switched to roll-our-own solution.\n\n# we use CTest in tests-xxx. run \"make test\" or \"ctest\" after cmake\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Configurations for ctest\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# or: valgrind --leak-check=full --show-leak-kinds=all --gen-suppressions=all --suppressions=../../../valgrind.supp ./hoge\n\n# or: ctest -D ExperimentalMemCheck\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The core library. This project is also compilable by itself.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Assorted utility programs for FOEDUS users.\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# google-test and google-flags.\n\n# we also use google-logging, but it's placed under foedus-core to make it self-contained.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# experiments and unit tests.\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# exclude third party code and build folder. sloccount is a bit inflexible for this.\n",
+        "Line" : 139,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# for jenkins Cppcheck plugin, also provide a command to write out xml.\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# For convenience\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "experiments-core/CMakeLists.txt" : {
+      "ObjectId" : "0c1ecbd6b1c1f07660de6fd6eb386623e86ee858",
+      "LastModified" : "2015-05-20T23:03:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Performance experiment project for foedus-core\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To avoid CMAKE picking a wrong one, explicitly specify\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Also PAPI with same cautions.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Experiments code might be exempted from cpplint later when we think it's too tedious,\n\n# but fow now we enable cpplint to experiments code, too.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "experiments-core/src/CMakeLists.txt" : {
+      "ObjectId" : "38b41ad7f50a9a2883d182826d61b9d0be0b83a6",
+      "LastModified" : "2014-06-20T02:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/CMakeLists.txt" : {
+      "ObjectId" : "d64814a9e27e4ae9c7e7fd529cc6561e5af1a640",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/assorted/CMakeLists.txt" : {
+      "ObjectId" : "4352899a9ab763dba35cf735b7bf8ef430752fba",
+      "LastModified" : "2015-05-20T23:03:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This experiment causes a long compilation time. So, not built usually (EXCLUDE_FROM_ALL).\n\n# Run \"make imiss_experiment\" to build this.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "experiments-core/src/foedus/graphlda/CMakeLists.txt" : {
+      "ObjectId" : "848cab135130b0943cccc8e419398991e650a545",
+      "LastModified" : "2015-05-20T23:03:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This code uses boost::math for gamma distribution. It's header-only.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "experiments-core/src/foedus/nvdimm/CMakeLists.txt" : {
+      "ObjectId" : "3e37e938ccc25cdbed6d03798ce06857b581a2a3",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/snapshot/CMakeLists.txt" : {
+      "ObjectId" : "893d0b08ac192c74b26ed88f422db4b0ed480519",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/storage/CMakeLists.txt" : {
+      "ObjectId" : "07fba1106ea435b0f974dfec5e08620ada836565",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/storage/array/CMakeLists.txt" : {
+      "ObjectId" : "eceea7280e286ac5c4f0ee76018faa598f6fea83",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/storage/hash/CMakeLists.txt" : {
+      "ObjectId" : "0189132e3c2dd913c6df721e775f307017130948",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/storage/masstree/CMakeLists.txt" : {
+      "ObjectId" : "a3d8f5e8dc79702d756c78ef61c060328bc7bf4d",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/storage/sequential/CMakeLists.txt" : {
+      "ObjectId" : "78f2921656c7bf1f032c5f2124ece3142b8eaa14",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/tpcc/CMakeLists.txt" : {
+      "ObjectId" : "b677421b0b96e0b1d267d4d11e039a41661e6df1",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# \"OLAP version\" of the TPC-C benchmark.\n\n# It runs only stock-level and order-status.\n\n# Also, the max number of orderlines per order is 100x higher (750 on average).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copy the scripts to build folders. this is just for convenience\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For main-memory experiments, but with logs on NVM\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# For OLAP experiments\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# For NVM experiments\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# For HCC experiments\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# SILO scripts are not meant to be used from build folder. Just copy-paste them to your console.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "experiments-core/src/foedus/tpcc/hstore_related/CMakeLists.txt" : {
+      "ObjectId" : "ffe45aabb37090c9d1824e8cf23d6e7fb647d0d6",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# For H-store experiments.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# For H-store NVM experiments.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "experiments-core/src/foedus/tpce/CMakeLists.txt" : {
+      "ObjectId" : "a84793bf0e9fbd1a22a3c4b0a4aa73462d4aab68",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "experiments-core/src/foedus/ycsb/CMakeLists.txt" : {
+      "ObjectId" : "8e009be2ebc862a367fa2809a5860626119f0ead",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The \"normal\" version that uses Masstree for storage\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The variant that uses hash table instead of Masstree to store data.\n\n# It doesn't support scan(), i.e., cannot run workload E.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Copy the scripts to build folders. this is just for convenience\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "foedus-core/CMakeLists.txt" : {
+      "ObjectId" : "74a6f61f6dea47159b6022ac27eab1e6260a6107",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################################################\n\n#\n\n#               libfoedus-core CMake script\n\n#\n\n# This CMake project is a bit special because we expect user programs to\n\n# directly include this cmake script to build together as a possible use case.\n\n# Therefore, this CMake script must be compilable even if it was NOT invoked\n\n# by the super build.\n\n#\n\n# Output library: foedus-core\n\n#\n\n# Parameters:\n\n#\n\n# FOEDUS_BUILD_STATIC_LIBS, ON/OFF (Default OFF), Whether to build foedus-core as a static library.\n\n# We recommend building the shared version. It saves space, and you won't save more than\n\n# a few CPU cycles per non-inlined function call, which is probably negligible.\n\n# We avoid overloading cmake's standard params, BUILD_SHARED_LIBS etc, because they are used in\n\n# other libraries we link to.\n\n#\n\n#############################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIRST, prohibit in-source build.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Pointers to the root folders of this project.\n\n# These are used in a few places of the following cmake scripts, so we define them here.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#############################################################################\n\n#\n\n#               Compiler Options  : BEGIN\n\n#\n\n#############################################################################\n\n# We crucially need libnuma, so it's a required dependency.\n\n# We considered static linking, but statically linking such a low-level library is a bit risky.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We also need pthread. Note that linking against libstdc with C++11 flag is not enough.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# google-perftools is optional. We use it only for performance experiments.\n\n# Every such code should be within #ifdef HAVE_GOOGLEPERFTOOLS.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Also PAPI with same cautions.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We do assume C++11.\n\n# However, external projects can link to this library even if they use C++98.\n\n# Our public header files do the switching (hides some API if C++11 is disabled).\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# this set(CMAKE_CXX_FLAGS) is directory-wide, so it does not affect external projects\n",
+        "Line" : 87,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We need to make sure -pthread compiler option is specified\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# We anyway use 64-bit file offsets, but ideally should be consistent with client program's.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# In an ideal world, our code should be free from bugs caused by careless aliasing.\n\n# gcc gives some warning to achieve that, but in reality far from enough to be safe.\n\n# Hence, we prohibit compilers from assuming strict alising rule.\n\n# If it has a significant performance impact, probably something is anyway wrong..\n\n#   http://stackoverflow.com/questions/1225741/performance-impact-of-fno-strict-aliasing\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# We need gcc's libatomic.so for AArch64. It's not required on x86.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# gcc-aarch64 doesn't support -mcx16. We use gcc's libatomic instead.\n\n# You must make sure you have libatomic.so.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Enable GCC's built-in 128bit CAS via -mcx16. We don't need libatomic.so on x86.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "#############################################################################\n\n#\n\n#               Build Target Libraries  : BEGIN\n\n#\n\n#############################################################################\n\n# include files\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# our main include folder\n",
+        "Line" : 132,
+        "CharPositionInLine" : 57
+      },
+      "17" : {
+        "Text" : "# libnuma\n",
+        "Line" : 134,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# libbacktrace\n",
+        "Line" : 136,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# tinyxml2\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# We also include the BINARY folder of glog as glog generates config.h\n",
+        "Line" : 141,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# xxhash\n",
+        "Line" : 144,
+        "CharPositionInLine" : 53
+      },
+      "22" : {
+        "Text" : "# gperftools is optional for this library\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# same above\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# This project contains glog so that it can compile by itself.\n\n# We also use gflags and gtest, but this core library itself is a pure data processing library\n\n# without executables nor unit tests. So, we don't contain them in her and instead have them\n\n# in one above.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Collect all cpp files in the main source folder.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Link to libbacktrace, libglog, libnuma, libgperftools (if found)\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# we use dynamic library of PAPI mainly because of fPIC issue.\n\n# in terms of license, it's okay to statically link (BSD-style).\n",
+        "Line" : 183,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Invoke CPPLINT (if ENABLE_CPPLINT is given)\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "#############################################################################\n\n#\n\n#               Install headers/libraries/documents  : BEGIN\n\n#\n\n#############################################################################\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Cheatsheet:\n\n# http://schneide.wordpress.com/2013/02/11/build-a-rpm-package-using-cmake/\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "#############################################################################\n\n#\n\n#               Doxygen: BEGIN\n\n#\n\n#############################################################################\n\n# Doxygen commands (not mandatory)\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# include other dependencies if it's worth doing. Most of them are not.\n\n# set(DOXYGEN_TARGETS \"${DOXYGEN_TARGETS} ${CMAKE_CURRENT_BINARY_DIR}/third_party/glog/src\") # too big\n",
+        "Line" : 255,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# Doxygen until ver 1.8.6 had a bug; it allowed only a filename in USE_MDFILE_AS_MAINPAGE,\n\n# not a full path. see https://bugzilla.gnome.org/show_bug.cgi?id=720092\n\n# To work it around, we copy the file to bin folder and use only the file name\n",
+        "Line" : 258,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# set(DOXYGEN_MAINPAGE_MARKDOWN \"${CMAKE_CURRENT_SOURCE_DIR}/README.markdown\")\n",
+        "Line" : 263,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# I recommend \"yum install texlive texlive-*\" to make this work. it requires a few\n\n# additional sty files.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# sudo yum install texlive-eps*\n",
+        "Line" : 276,
+        "CharPositionInLine" : 27
+      },
+      "37" : {
+        "Text" : "# sudo yum install texlive\n",
+        "Line" : 277,
+        "CharPositionInLine" : 32
+      },
+      "38" : {
+        "Text" : "#############################################################################\n\n#\n\n#               Setting environment: BEGIN\n\n#\n\n#############################################################################\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "foedus-core/cmake/CpplintWrapper.cmake" : {
+      "ObjectId" : "5b206777a235349016475adf538312806d370465",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# We use Google's cpplint for style checking.\n\n# This is optional and graceful; meaning we do not quit building even if there are warnings.\n\n# We are not that pedantic. However, we will keep an eye on the count of warnings.\n\n# Related parameters:\n\n#   Setting variable ENABLE_CPPLINT to true will enable cpplint.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Prefer Python-2\n",
+        "Line" : 6,
+        "CharPositionInLine" : 48
+      },
+      "2" : {
+        "Text" : "# Followings are our coding convention.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# basically everything Google C++ Style recommends. Except...\n",
+        "Line" : 26,
+        "CharPositionInLine" : 17
+      },
+      "4" : {
+        "Text" : "# This the only rule cpplint.py disables by default. Enable it.\n\n# However, the default implementation of build/include_alpha in cpplint.py is a bit sloppy.\n\n# It doesn't correctly take care of \"/\" in include.\n\n# Thus we changed cpplint.py for this.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# for logging and debug printing, we do need streams\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We use C++11 with some restrictions.\n\n# set(LINT_FILTER ${LINT_FILTER},-build/c++11)\n\n# \n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Consider disabling them if they cause too many false positives.\n\n# set(LINT_FILTER ${LINT_FILTER},-build/include_what_you_use)\n\n# set(LINT_FILTER ${LINT_FILTER},-build/include_order)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# 100 chars per line, which is suggested as an option in the style guide\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Registers a CMake target to run cpplint over all files in the given folder.\n\n# Parameters:\n\n#  target_name:\n\n#    The name of the target to define. Your program should depend on it to invoke cpplint.\n\n#  src_folder:\n\n#    The folder to recursively run cpplint.\n\n#  root_folder:\n\n#    The root folder used to determine desired include-guard comments.\n\n#  bin_folder:\n\n#    The temporary build folder to store a cpplint history file.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "foedus-core/cmake/FindGccAtomic.cmake" : {
+      "ObjectId" : "b0f8f90164aa254c2498df4afedeb1c62ee5595d",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This scripts finds gcc's built-in atomic shared library (libatomic.so).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# When/Why you need this.\n\n# There are a few libraries with similar names (eg libatomic-ops), so do not be confused.\n\n# It's the shared library that is a part of newer gcc, and required to execute gcc methods like:\n\n# \"__atomic_compare_exchange_16\". You can use the 16-byte cas without linking to libatomic\n\n# on x86 (as far as you give -mcx16), but on AArch64 you have to link to it and gcc doesn't allow\n\n# -mcx16.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# In Fedora 19-x86, you typically find it at: /lib64/libatomic.so.1\n\n# In Ubuntu-AArch64, you typically find it at: /usr/lib/aarch64-linux-gnu/libatomic.so.1\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# In Fedora 19-x86, you have to separately install it (yum install libatomic).\n\n# In Ubuntu-AArch64, seems like it's automatically installed with gcc. (To check, apt-get install libatomic1).\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Note that this is a shared library. Every atomic operation now causes some overhead to\n\n# go through another module, but hopefully it's negligible.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Output variables (as the methods are gcc-builtin, no includes):\n\n#  GCCLIBATOMIC_LIBRARY   : Library path of libatomic.so\n\n#  GCCLIBATOMIC_FOUND     : True if found.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# I'm also putting \"atomic.so.1\" because at least FC19 and Ubuntu's repo don't create\n\n# \"libatomic.so\" symlink. They only have libatomic.so.1.0.0 and libatomic.so.1 symlink. No idea why.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "foedus-core/cmake/FindGooglePerftools.cmake" : {
+      "ObjectId" : "b88c733daa54519f7f8b4979ab95d6ab713fa110",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find GooglePerftools headers and libraries\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(GooglePerftools)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  GooglePerftools_ROOT_DIR  Set this variable to the root installation of\n\n#                            GooglePerftools if the module has problems finding\n\n#                            the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  GOOGLEPERFTOOLS_FOUND              System has GooglePerftools libs/headers\n\n#  GooglePerftools_LIBRARIES          The GooglePerftools libraries\n\n#  GooglePerftools_INCLUDE_DIR        The location of GooglePerftools headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# tcmalloc\n",
+        "Line" : 26,
+        "CharPositionInLine" : 19
+      },
+      "CommentCount" : 2
+    },
+    "foedus-core/cmake/FindNuma.cmake" : {
+      "ObjectId" : "157b2b793878653291395b87a1a4a18e2753adc6",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the numa policy library.\n\n# Output variables:\n\n#  NUMA_INCLUDE_DIR : e.g., /usr/include/.\n\n#  NUMA_LIBRARY     : Library path of numa library\n\n#  NUMA_FOUND       : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "foedus-core/cmake/FindPapi.cmake" : {
+      "ObjectId" : "72d401b9b33417f9ae4ba6df1c9b6673988765b1",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find the PAPI library.\n\n# Output variables:\n\n#  PAPI_INCLUDE_DIR : e.g., /usr/include/.\n\n##  PAPI_STATIC_LIBRARY     : Library path of PAPI static library\n\n#  PAPI_DYNAMIC_LIBRARY    : Library path of PAPI dynamic library\n\n#  PAPI_FOUND       : True if found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#FIND_LIBRARY(PAPI_STATIC_LIBRARY NAME libpapi.a\n\n#  HINTS $ENV{HOME}/local/lib64 $ENV{HOME}/local/lib /usr/local/lib64 /usr/local/lib /usr/lib64 /usr/lib\n\n#)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# IF (PAPI_INCLUDE_DIR AND PAPI_STATIC_LIBRARY AND PAPI_DYNAMIC_LIBRARY)\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# MESSAGE(STATUS \"Found PAPI library: inc=${PAPI_INCLUDE_DIR}, static=${PAPI_STATIC_LIBRARY}, dynamic=${PAPI_DYNAMIC_LIBRARY}\")\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "foedus-core/cmake/WarnInSrcBuild.cmake" : {
+      "ObjectId" : "871ea7159fdbaca900db755ef33f4a56b49e7b8b",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This cmake scripts gives a warning or possibly a error if you are doing in-source build.\n\n# See http://www.cmake.org/Wiki/CMake_FAQ#Out-of-source_build_trees for why we do so.\n\n# This is essentially just CMAKE_DISABLE_SOURCE_CHANGES and CMAKE_DISABLE_IN_SOURCE_BUILD.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Note that these do not prohibit building in a directory under the source. For example,\n\n# \"ccmake . && make\" is prohibited, but \"mkdir build && cd build && ccmake ../ && make\" is ok.\n\n# The true out-of-source would be to build it in a completely remote place, say ~/tmp/build.\n\n# We don't demand that far.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "foedus-core/rpm.spec.cmake" : {
+      "ObjectId" : "276490b484406dc939f336f8d49cfe7bd70743f5",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Requires:\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This is a shortcutted spec file generated by CMake RPM generator\n\n# we skip _install step because CPack does that for us.\n\n# We do only save CPack installed tree in _prepr\n\n# and then restore it in build.\n\n# %prep\n\n# %build\n\n# %install\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "foedus-core/src/CMakeLists.txt" : {
+      "ObjectId" : "38b41ad7f50a9a2883d182826d61b9d0be0b83a6",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/CMakeLists.txt" : {
+      "ObjectId" : "83fe2cfaed215912c4ad0db0ac025fc4c0f8bfcd",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/assorted/CMakeLists.txt" : {
+      "ObjectId" : "10a84af8dc97ff0c78c3d56026414ce816bfccf1",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/cache/CMakeLists.txt" : {
+      "ObjectId" : "1801a1a0a163c29c0472ebc21b9943b3b183234c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/debugging/CMakeLists.txt" : {
+      "ObjectId" : "7b2b7463fd302987123efece72fd7b6d24b77cfe",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/externalize/CMakeLists.txt" : {
+      "ObjectId" : "3f5ceb3528af9d738559b4704e57708b4b9773a7",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/fs/CMakeLists.txt" : {
+      "ObjectId" : "83ca2ceefea6e408f3682864715860b5b813d4f7",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/log/CMakeLists.txt" : {
+      "ObjectId" : "089478ad246cc8c26af489b42fef559f8e30be94",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/memory/CMakeLists.txt" : {
+      "ObjectId" : "9dbaf107da1a0b1a0409f3895ed3676702252830",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/proc/CMakeLists.txt" : {
+      "ObjectId" : "7d7f7452c78bbcf62fbf79de873bbc97e7cc765c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/restart/CMakeLists.txt" : {
+      "ObjectId" : "fdf854877722734a214fe69e0f9d68ca645978d0",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/savepoint/CMakeLists.txt" : {
+      "ObjectId" : "054d95300c35ed16b9535fd23dd01975bb40fffa",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/snapshot/CMakeLists.txt" : {
+      "ObjectId" : "800bb2b7e4caa92b93b30ea0aa909fb623c64769",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/soc/CMakeLists.txt" : {
+      "ObjectId" : "856d538ea3fadc9dc51822d81f98e40f6dfa19dc",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/storage/CMakeLists.txt" : {
+      "ObjectId" : "c66eb4831cf75e1c2eb88e9eed18ff6960f82475",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/storage/array/CMakeLists.txt" : {
+      "ObjectId" : "8e10b2403953af8758fa2090d21c1a7ac84cbde1",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/storage/hash/CMakeLists.txt" : {
+      "ObjectId" : "80abe56c4a8cdcf7df2ec6d5b5010348ed261565",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/storage/masstree/CMakeLists.txt" : {
+      "ObjectId" : "71ab94d7d7c434a9db66ca4f10caaa536022e90f",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/storage/sequential/CMakeLists.txt" : {
+      "ObjectId" : "1bfe7abb811b74669c997a11b8ba494a44fe7509",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/thread/CMakeLists.txt" : {
+      "ObjectId" : "4b2c47c73dd7025bea7882986dcef6a22374bb70",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/src/foedus/xct/CMakeLists.txt" : {
+      "ObjectId" : "6ffad102e95980c833daf6a775a73a43d96a8f3c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-core/third_party/CMakeLists.txt" : {
+      "ObjectId" : "391819025472cea91262d457b83993a4f74a065a",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Google logging has no CMakeLists.txt. So, directly call the configure/make tool chain.\n\n# This is very troublesome and undesired. I hope they will move on to CMake asap.\n\n#set(GLOG_DIR \"${CMAKE_CURRENT_SOURCE_DIR}/glog-0.3.3\")\n\n#set(GLOG_BIN_DIR \"${CMAKE_CURRENT_BINARY_DIR}/glog\")\n\n#set(GLOG_STATIC_LIB_LOCAL \"${GLOG_BIN_DIR}/.libs/libglog.a\")\n\n#mark_as_advanced(GLOG_DIR GLOG_BIN_DIR GLOG_STATIC_LIB_LOCAL)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We invoke make in build folder to keep the glog's source folder clean.\n\n#file(MAKE_DIRECTORY ${GLOG_BIN_DIR})\n\n#add_custom_command(OUTPUT ${GLOG_STATIC_LIB_LOCAL}\n\n#    COMMAND ${CMAKE_COMMAND} -E copy_directory ${GLOG_DIR} ${CMAKE_CURRENT_BINARY_DIR}/glog\n\n#    # fPIC is needed to build libglog friendly to shared library (libfoedus-core).\n\n#    COMMAND ${GLOG_BIN_DIR}/configure 'CXXFLAGS=-fPIC -w' # also ignore warnings from glog\n\n#    COMMAND ${CMAKE_MAKE_PROGRAM} -j\n\n#    COMMENT [Build-GLOG]\n\n#    WORKING_DIRECTORY \"${GLOG_BIN_DIR}\"\n\n#    DEPENDS ${GLOG_DIR}/ChangeLog # just to see if it has been overwritten\n\n#)\n\n# we use add_custom_command for the build itself because otherwise we have to build it\n\n# every time. the following add_custom_target gives a name for the output.\n\n#add_custom_target(glog_build ALL DEPENDS ${GLOG_STATIC_LIB_LOCAL})\n\n#set(GLOG_STATIC_LIB ${GLOG_STATIC_LIB_LOCAL} PARENT_SCOPE)\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# oh, lovely tinyxml2. It's a CMake project.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# this creates tinyxml2static library\n",
+        "Line" : 25,
+        "CharPositionInLine" : 26
+      },
+      "4" : {
+        "Text" : "# same as glog\n",
+        "Line" : 26,
+        "CharPositionInLine" : 51
+      },
+      "5" : {
+        "Text" : "# Glog is now also a CMake project.\n\n# add_subdirectory(glog-0.3.3)\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We contain valgrind folder here, but we use it just as a header-only library.\n\n# We only need RUNNING_ON_VALGRIND macro from it.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We use a variant of libbacktrace to get rich stacktrace information.\n\n# This was retrieved from https://github.com/apitrace/apitrace\n\n# which adds CMake script to the original libbacktrace in gcc.\n\n# All files under libbacktrace folder are under BSD license of the original\n\n# libbacktrace (see README), except cmake-related files under the following\n\n# license (BSD).\n\n## Copyright 2007-2012 VMware, Inc.\n\n## Copyright 2011 Intel Corporation\n\n## Copyright 2011 LunarG, Inc.\n\n## Copyright 2011 Zack Rusin\n\n## Copyright 2011-2012 Jose Fonseca\n\n##\n\n## All Rights Reserved.\n\n##\n\n## Permission is hereby granted, free of charge, to any person obtaining a copy\n\n## of this software and associated documentation files (the \"Software\"), to deal\n\n## in the Software without restriction, including without limitation the rights\n\n## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n## copies of the Software, and to permit persons to whom the Software is\n\n## furnished to do so, subject to the following conditions:\n\n##\n\n## The above copyright notice and this permission notice shall be included in\n\n## all copies or substantial portions of the Software.\n\n##\n\n## THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n## IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n## AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n\n## THE SOFTWARE.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# to statically link from libfoedus.so\n",
+        "Line" : 66,
+        "CharPositionInLine" : 47
+      },
+      "9" : {
+        "Text" : "# This is the latest version in https://github.com/gcc-mirror/gcc/tree/master/libbacktrace\n\n# of 2014/10/02.\n\n# I had to apply at least this patch:\n\n#   https://gcc.gnu.org/ml/gcc-patches/2013-10/msg01445.html\n\n# Without this, I got sigsegv in read_uint32() just like this:\n\n#   https://groups.google.com/forum/#!topic/golang-nuts/hSEBs6Blo8U\n\n# In case of other issues happening later, I applied the latest from gcc.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# xxHash library for hash function\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# this creates xxhashstatic library\n",
+        "Line" : 77,
+        "CharPositionInLine" : 26
+      },
+      "12" : {
+        "Text" : "# to statically link from libfoedus.so\n",
+        "Line" : 78,
+        "CharPositionInLine" : 47
+      },
+      "CommentCount" : 13
+    },
+    "foedus-core/third_party/glog-0.3.3/CMakeLists.txt" : {
+      "ObjectId" : "59441645a4303b00040bfc371f0c6878d81b22b4",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Yes, I'm lazy. check_library_exists doesn't work for c++ lib.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 38
+      },
+      "1" : {
+        "Text" : "# TODO HAVE_LIB_GMOCK, HAVE_LIB_GTEST\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check if the compiler supports using ::operator<<\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Lookg for __sync_val_compare_and_swap.\n\n# check_symbol_exists/check_function_exists don't work for this.\n\n# Check if the compiler supports using ::operator<<\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configure glog/config.h\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# This doubles the build time if both shared and static lib are build.\n\n# Although obj-file feature is added in CMake recently, probably it is not worth\n\n# demanding CMake 2.8 for this code size.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "foedus-core/third_party/glog-0.3.3/Makefile.am" : {
+      "ObjectId" : "cff3352ada196ec2df79871b9c0224c0f17c741c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## Process this file with automake to produce Makefile.in\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make sure that when we re-make ./configure, we get the macros we need\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This is so we can #include <glog/foo>\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This is mostly based on configure options\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# These are good warnings to turn on by default\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# These are x86-specific, having to do with frame-pointers\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# TODO(csilvers): check if -fomit-frame-pointer might be in $(CXXFLAGS),\n\n#                 before setting this.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "## The .h files you want to install (that is, .h files that people\n\n## who install this package can include in their own applications.)\n\n## We have to include both the .h and .h.in forms.  The latter we\n\n## put in noinst_HEADERS.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## This is for HTML and other documentation you want to install.\n\n## Add your documentation files (in doc/) in addition to these\n\n## top-level boilerplate files.  Also add a TODO file if you have one.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## The libraries (.so's) you want to install\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# The libraries libglog depends on.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Compile switches for our unittest.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Libraries for our unittest.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "## unittests you want to run when people type 'make check'.\n\n## TESTS is for binary unittests, check_SCRIPTS for script-based unittests.\n\n## TESTS_ENVIRONMENT sets environment variables for when you run unittest,\n\n## but it only seems to take effect for *binary* unittests (argh!)\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Every time you add a unittest to check_SCRIPTS, add it here too\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Binaries used for script-based unittests.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# force to create lt-demangle_unittest\n",
+        "Line" : 88,
+        "CharPositionInLine" : 32
+      },
+      "17" : {
+        "Text" : "# force to create lt-signalhandler_unittest\n",
+        "Line" : 94,
+        "CharPositionInLine" : 37
+      },
+      "18" : {
+        "Text" : "## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "## The location of the windows project file for each binary we make\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "## ^^^^ END OF RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "## This should always include $(TESTS), but may also include other\n\n## binaries that you compile but don't want automatically installed.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Windows wants write permission to .vcproj files and maybe even sln files.\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Add pkgconfig file\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "foedus-core/third_party/glog-0.3.3/src/glog/config.h.cmake" : {
+      "ObjectId" : "27348c73d4465442c2a26356eeb59a15a6df233d",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKESOURCE",
+      "0" : {
+        "Text" : "/* Generated from config.h.cmake during build configuration using CMake. */",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "// Note: This header file is only used internally. It is not part of public interface!",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// TODOs",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "// TODO: WHAT's THIS???",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "// TODO: WHAT's THIS???",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// System checks",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "// Define if you build this library for a MS Windows OS.",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "// Define if you have dladdr().",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "// Define if you have execinfo.h.",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "// Define if you have fcntl().",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "// Define if you have glob.h.",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "// Define if you have gmock library.",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "// Define if you have gtest library.",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "// Define if you have the gflags library.",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "// Define if you have the <gflags/gflags.h> header file.",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "// Define if you have the <inttypes.h> header file.",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "// Define if you have the <pthread.h> header file.",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "// Define if you have the <pwd.h> header file.",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "// Define if your pthread library defines the type pthread_rwlock_t",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "// Define if you have the <shlwapi.h> header file (Windows 2000/XP).",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "// Define if you have sigaltstack().",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "// Define if you have the <stdint.h> header file.",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "// Define if you have the <syscall.h> header file.",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "// Define if you have the <syslog.h> header file.",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "// Define if you have the <sys/stat.h> header file.",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "// Define if you have the <sys/syscall.h> header file.",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "// Define if you have the <sys/types.h> header file.",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "// Define if you have the <sys/time.h> header file.",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "// Define if you have sys/ucontext.h.",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "// Define if you have the <sys/utsname.h> header file.",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "// Define if you have ucontext.h.",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "// Define if you have the <unistd.h> header file.",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "// Define if you have unwind.h.",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "// Define if you have libunwind.",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// Type checks",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "// Define if you have the __uint16 builtin type.",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "// Define if you have the u_int16_t builtin type.",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "// Define if you have the uint16_t builtin type.",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// Compiler checks",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "// Define if you have __sync_val_compare_and_swap()",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "// Define if the compiler supports using ::operator<<",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// Package information",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "// Name of package.",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "// Define to the full name of this package.",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "// Define to the full name and version of this package.",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "// Define to the one symbol short name of this package.",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "// Define to the version of this package.",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "// Version number of package.",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "// Define to the address where bug reports for this package should be sent.",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "// Namespace of glog library symbols.",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "/* Stops putting the code inside the Google namespace */",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "/* Puts following code inside the Google namespace */",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 52
+    },
+    "foedus-core/third_party/glog-0.3.4/CMakeLists.txt" : {
+      "ObjectId" : "c0de67d354bc65f7acdc911d3a2766107222e524",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Yes, I'm lazy. check_library_exists doesn't work for c++ lib.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 38
+      },
+      "1" : {
+        "Text" : "# TODO HAVE_LIB_GMOCK, HAVE_LIB_GTEST\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check if the compiler supports using ::operator<<\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Lookg for __sync_val_compare_and_swap.\n\n# check_symbol_exists/check_function_exists don't work for this.\n\n# Check if the compiler supports using ::operator<<\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configure glog/config.h\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# This doubles the build time if both shared and static lib are build.\n\n# Although obj-file feature is added in CMake recently, probably it is not worth\n\n# demanding CMake 2.8 for this code size.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "foedus-core/third_party/glog-0.3.4/Makefile.am" : {
+      "ObjectId" : "cff3352ada196ec2df79871b9c0224c0f17c741c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "## Process this file with automake to produce Makefile.in\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make sure that when we re-make ./configure, we get the macros we need\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This is so we can #include <glog/foo>\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This is mostly based on configure options\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# These are good warnings to turn on by default\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# These are x86-specific, having to do with frame-pointers\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# TODO(csilvers): check if -fomit-frame-pointer might be in $(CXXFLAGS),\n\n#                 before setting this.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "## The .h files you want to install (that is, .h files that people\n\n## who install this package can include in their own applications.)\n\n## We have to include both the .h and .h.in forms.  The latter we\n\n## put in noinst_HEADERS.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## This is for HTML and other documentation you want to install.\n\n## Add your documentation files (in doc/) in addition to these\n\n## top-level boilerplate files.  Also add a TODO file if you have one.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## The libraries (.so's) you want to install\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# The libraries libglog depends on.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Compile switches for our unittest.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Libraries for our unittest.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "## unittests you want to run when people type 'make check'.\n\n## TESTS is for binary unittests, check_SCRIPTS for script-based unittests.\n\n## TESTS_ENVIRONMENT sets environment variables for when you run unittest,\n\n## but it only seems to take effect for *binary* unittests (argh!)\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Every time you add a unittest to check_SCRIPTS, add it here too\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Binaries used for script-based unittests.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# force to create lt-demangle_unittest\n",
+        "Line" : 88,
+        "CharPositionInLine" : 32
+      },
+      "17" : {
+        "Text" : "# force to create lt-signalhandler_unittest\n",
+        "Line" : 94,
+        "CharPositionInLine" : 37
+      },
+      "18" : {
+        "Text" : "## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "## The location of the windows project file for each binary we make\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "## ^^^^ END OF RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "## This should always include $(TESTS), but may also include other\n\n## binaries that you compile but don't want automatically installed.\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Windows wants write permission to .vcproj files and maybe even sln files.\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Add pkgconfig file\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "foedus-core/third_party/glog-0.3.4/src/glog/config.h.cmake" : {
+      "ObjectId" : "35d91ee201fdf5b7cd54bf0c72700823f9c5b238",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKESOURCE",
+      "0" : {
+        "Text" : "/* Generated from config.h.cmake during build configuration using CMake. */",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "// Note: This header file is only used internally. It is not part of public interface!",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// TODOs",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "// TODO: WHAT's THIS???",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "// TODO: WHAT's THIS???",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// System checks",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "// Define if you build this library for a MS Windows OS.",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "// Define if you have dladdr().",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "// Define if you have execinfo.h.",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "// Define if you have fcntl().",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "// Define if you have glob.h.",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "// Define if you have gmock library.",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "// Define if you have gtest library.",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "// Define if you have the gflags library.",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "// Define if you have the <gflags/gflags.h> header file.",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "// Define if you have the <inttypes.h> header file.",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "// Define if you have pread().",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "// Define if you have prwrite().",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "// Define if you have the <pthread.h> header file.",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "// Define if you have the <pwd.h> header file.",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "// Define if your pthread library defines the type pthread_rwlock_t",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "// Define if you have the <shlwapi.h> header file (Windows 2000/XP).",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "// Define if you have sigaction().",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "// Define if you have sigaltstack().",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "// Define if you have the <stdint.h> header file.",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "// Define if you have the <syscall.h> header file.",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "// Define if you have the <syslog.h> header file.",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "// Define if you have the <sys/stat.h> header file.",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "// Define if you have the <sys/syscall.h> header file.",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "// Define if you have the <sys/types.h> header file.",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "// Define if you have the <sys/time.h> header file.",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "// Define if you have sys/ucontext.h.",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "// Define if you have the <sys/utsname.h> header file.",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "// Define if you have ucontext.h.",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "// Define if you have the <unistd.h> header file.",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "// Define if you have unwind.h.",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "// Define if you have libunwind.",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// Type checks",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "// Define if you have the __uint16 builtin type.",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "// Define if you have the u_int16_t builtin type.",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "// Define if you have the uint16_t builtin type.",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// Compiler checks",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "// Define if you have __sync_val_compare_and_swap()",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "// Define if the compiler supports using ::operator<<",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "// ---------------------------------------------------------------------------\n// Package information",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "// Name of package.",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "// Define to the full name of this package.",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "// Define to the full name and version of this package.",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "// Define to the one symbol short name of this package.",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "// Define to the version of this package.",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "// Version number of package.",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "// Define to the address where bug reports for this package should be sent.",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "// Namespace of glog library symbols.",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "/* Stops putting the code inside the Google namespace */",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "/* Puts following code inside the Google namespace */",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 55
+    },
+    "foedus-core/third_party/libbacktrace/CMakeLists.txt" : {
+      "ObjectId" : "b0fd0492007d30b2a77f440c5d6e884b3ef2e362",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#    CMakeLists.txt -- libbacktrace CMake build script\n\n#    Contributed by Alexander Monakov, ISP RAS\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions are\n\n# met:\n\n#\n\n#     (1) Redistributions of source code must retain the above copyright\n\n#     notice, this list of conditions and the following disclaimer.\n\n#\n\n#     (2) Redistributions in binary form must reproduce the above copyright\n\n#     notice, this list of conditions and the following disclaimer in\n\n#     the documentation and/or other materials provided with the\n\n#     distribution.\n\n#\n\n#     (3) The name of the author may not be used to\n\n#     endorse or promote products derived from this software without\n\n#     specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR\n\n# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,\n\n# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\n\n# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)\n\n# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,\n\n# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING\n\n# IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n\n# POSSIBILITY OF SUCH DAMAGE.  */\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Adjust warnings\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "foedus-core/third_party/libbacktrace/config.h.in.cmake" : {
+      "ObjectId" : "4ac13266d7f9bced2a52018f588b44c7a27fce40",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#define BACKTRACE_ELF_SIZE @BACKTRACE_ELF_SIZE@\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#cmakedefine HAVE_DECL_STRNLEN 1\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#cmakedefine HAVE_DL_ITERATE_PHDR 1\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#cmakedefine HAVE_FCNTL 1\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#cmakedefine HAVE_GETEXECNAME 1\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#cmakedefine HAVE_GETIPINFO 1\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#cmakedefine HAVE_SYNC_FUNCTIONS 1\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#cmakedefine HAVE_LIBDWARF_DWARF_H 1\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "foedus-core/third_party/tinyxml2-2.1.0/CMakeLists.txt" : {
+      "ObjectId" : "422d513ccdaf36f43fab7ffb8284ba74a416c69e",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#enable_testing()\r\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#CMAKE_BUILD_TOOL\r\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "################################\r\n\n# set lib version here\r\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "################################\r\n\n# Add common source \r\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "################################\r\n\n# Add custom target to copy all data\r\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "################################\r\n\n# Add definitions\r\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "################################\r\n\n# Add targets\r\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#add_library(tinyxml2 SHARED tinyxml2.cpp tinyxml2.h)\r\n\n#set_target_properties(tinyxml2 PROPERTIES\r\n\n#        COMPILE_DEFINITIONS \"TINYXML2_EXPORT\"\r\n\n#\tVERSION \"${GENERIC_LIB_VERSION}\"\r\n\n#\tSOVERSION \"${GENERIC_LIB_SOVERSION}\")\r\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#add_executable(test xmltest.cpp)\r\n\n#add_dependencies(test tinyxml2)\r\n\n#add_dependencies(test ${TARGET_DATA_COPY})\r\n\n#target_link_libraries(test tinyxml2)\r\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Disabled install\r\n\n#if(BUILD_STATIC_LIBS)\r\n\n#\tinstall(TARGETS tinyxml2 tinyxml2static\r\n\n#\t\tRUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}\r\n\n#\t\tLIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}\r\n\n#\t\tARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})\r\n\n#else(BUILD_STATIC_LIBS)\r\n\n#\tinstall(TARGETS tinyxml2\r\n\n#\t\tRUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}\r\n\n#\t\tLIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})\r\n\n#endif(BUILD_STATIC_LIBS)\r\n\n#install(FILES tinyxml2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})\r\n\n#\r\n\n#foreach(p LIB INCLUDE)\r\n\n#\tset(var CMAKE_INSTALL_${p}DIR)\r\n\n#\tif(NOT IS_ABSOLUTE \"${${var}}\")\r\n\n#\t\tset(${var} \"${CMAKE_INSTALL_PREFIX}/${${var}}\")\r\n\n#\tendif()\r\n\n#endforeach()\r\n\n#\r\n\n#configure_file(tinyxml2.pc.in tinyxml2.pc @ONLY)\r\n\n#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tinyxml2.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)\r\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#add_test(test ${SAMPLE_NAME} COMMAND $<TARGET_FILE:${SAMPLE_NAME}>)\r\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "foedus-core/third_party/tinyxml2-2.1.0/Makefile" : {
+      "ObjectId" : "aab62932e2efaf44fe561add4324b3fe779daf12",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "foedus-core/third_party/xxHash-r39/CMakeLists.txt" : {
+      "ObjectId" : "57b3bfedbcb8071e25e846d2c230e50fba50cd3f",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# I don't find xxHash's release version info. Let's say r39 means 0.39.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "foedus-util/CMakeLists.txt" : {
+      "ObjectId" : "ca585e5a9ea9a89363a82d1b26494131e3111abd",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################################################\n\n#\n\n#               foedus-util CMake script\n\n#\n\n# This CMake project compiles a couple of utility programs to help FOEDUS users.\n\n# These are executables, not libraries. So, no programming API provided.\n\n#\n\n#############################################################################\n\n# Performance experiment project for foedus-core\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "foedus-util/src/CMakeLists.txt" : {
+      "ObjectId" : "38b41ad7f50a9a2883d182826d61b9d0be0b83a6",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-util/src/foedus/CMakeLists.txt" : {
+      "ObjectId" : "0370346d81a559107166396ad02e56cdb2e31ee7",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "foedus-util/src/foedus/util/CMakeLists.txt" : {
+      "ObjectId" : "779cee47f72e2cb26db4d5f1164f67dbd3d885bf",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "general_projects.cmake" : {
+      "ObjectId" : "9996d44440006360e9d6f28fe1320a1b7f30d77b",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################################################\n\n# CMake script used by sub-projects other than foedus-core.\n\n# Those projects are NOT intended to be included from user programs.\n\n#############################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests-core/CMakeLists.txt" : {
+      "ObjectId" : "928ed0728ce8c500748071cdf3571c552d4754e0",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Unit test project for foedus-core\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Not used any more.\n\n# CMake function to add compile target, linking, add_test directives.\n\n#function (add_foedus_test targetname)\n\n#   add_executable(${targetname} ${CMAKE_CURRENT_SOURCE_DIR}/${targetname}.cpp)\n\n#   target_link_libraries(${targetname} foedus-core gtest_main test_common)\n\n#\n\n#   add_test(\n\n#        NAME ${targetname}\n\n#        COMMAND ${targetname} --gtest_output=xml:test-reports/result_${targetname}.xml)\n\n#endfunction()\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This one adds individual tests as individual add_test entity, thus showing up nicely in\n\n# results. You should prefer this one. However, you have to list individual tests.\n\n# Automating this is possible, but tricky and I wouldn't rely on it.\n\n#  param: individual_tests a _list_ variable to contain names of individual tests\n\n# Related efforts:\n\n#   http://baoilleach.blogspot.com/2013/06/using-ctest-with-multiple-tests-in.html\n\n#   http://smspillaz.wordpress.com/2012/07/05/unit-test-autodiscovery-with-cmake-and-google-test/\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# To pick up test report xml files from Jenkins,\n\n# Set \"test-reports/*.xml\" as the report file filter.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# also add valgrind version. This version takes long, so you might want to exclude\n\n# them from ctest by \"ctest -E valgrind\".\n\n# To pick up valgrind report xml files from Jenkins,\n\n# Set \"valgrind-reports/*.xml\" as the valgrind plugin filter.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# removed --show-leak-kinds=all, which is supported only by valgrind 3.9 and later\n",
+        "Line" : 58,
+        "CharPositionInLine" : 10
+      },
+      "6" : {
+        "Text" : "# also add valgrind version. This version takes long, so you might want to exclude\n\n# them from ctest by \"ctest -E valgrind\".\n\n# To pick up valgrind report xml files from Jenkins,\n\n# Set \"valgrind-reports/*.xml\" as the valgrind plugin filter.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# removed --show-leak-kinds=all, which is supported only by valgrind 3.9 and later\n",
+        "Line" : 80,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Testcases probably should have cpplint enabled. So, all codes here are lint-checked.\n\n# But, we might revisit this decision.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "tests-core/cmake/FindValgrind.cmake" : {
+      "ObjectId" : "792fdc960cfc797bf38aac26d1bde72cc655ed19",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find valgrind binary and get its version\n\n# Output variables:\n\n#\n\n#  VALGRIND_FOUND         True if system has valgrind installed\n\n#  VALGRIND_DIR           Full path of root folder (eg. /usr) that contains valgrind executable\n\n#  VALGRIND_EXEC          Full path of valgrind executable\n\n#  VALGRIND_VERSION       Version of the valgrind (eg \"valgrind-3.8.1\". what \"valgrind --version\" returns)\n\n#  VALGRIND_VERSION_MAJOR Numerical major version of the valgrind (eg 3.8.1 => 3)\n\n#  VALGRIND_VERSION_MINOR Numerical minor version of the valgrind (eg 3.8.1 => 8)\n\n#  VALGRIND_VERSION_PATCH Numerical patch version of the valgrind (eg 3.8.1 => 1)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# parse it\n\n# Examples. \"valgrind-3.9.0\", \"valgrind-3.10.0.SVN\", etc\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "tests-core/src/CMakeLists.txt" : {
+      "ObjectId" : "38b41ad7f50a9a2883d182826d61b9d0be0b83a6",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/CMakeLists.txt" : {
+      "ObjectId" : "54a73e747a525d2e70cb15aae34ca9c97b04cbf4",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# all test case programas link to this library\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# header-dependency testcase is not so essential, and it takes long time.\n\n# so, we run it only on jenkins.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tests-core/src/foedus/assorted/CMakeLists.txt" : {
+      "ObjectId" : "e2d584cf70df5fcb510b0af66dc2f8f5b00be93b",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/cache/CMakeLists.txt" : {
+      "ObjectId" : "226459de0a520baa1445eaca05e60c8f39c3c739",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/debugging/CMakeLists.txt" : {
+      "ObjectId" : "98f9c8974ea036374bc8e9649392a24633e0190c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/fs/CMakeLists.txt" : {
+      "ObjectId" : "9d1d656783746168b1e78610b63a651292211666",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/log/CMakeLists.txt" : {
+      "ObjectId" : "190b2b6c7d2f6c29042795dfd5313cb7cc828aa1",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/memory/CMakeLists.txt" : {
+      "ObjectId" : "6ef0b3b512658cf1fb009950bc7fd79e64dcef34",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# because we do fork/exec and exit(), we can't run valgrind on this test.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests-core/src/foedus/restart/CMakeLists.txt" : {
+      "ObjectId" : "1820f1a3fd44e9f4cea4533a4156d122ff4d4d42",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/snapshot/CMakeLists.txt" : {
+      "ObjectId" : "786a4e8cecda3ef249c9438896c154bc1a3805db",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Mmm, there is a weird test failure (infinite loop) that happens only when\n\n# this testcase is run on concurrent valgrinds. Quite difficult to debug.\n\n# For now disabled valgrind. Let's fix it when we get more easily reproducible situation.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests-core/src/foedus/soc/CMakeLists.txt" : {
+      "ObjectId" : "5f52b82da6627270430d31ba7355d670b1defc1a",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/storage/CMakeLists.txt" : {
+      "ObjectId" : "725e47a210caaae11046a2255ff75c801b0e55bb",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/storage/array/CMakeLists.txt" : {
+      "ObjectId" : "948a45a91a031af986cbbf04a8151039588496d8",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/storage/hash/CMakeLists.txt" : {
+      "ObjectId" : "330f04f3ba3a6809af3a93604744a98a0924a4fa",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#  RandomNoCollision\n\n#  RandomCollision\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "tests-core/src/foedus/storage/masstree/CMakeLists.txt" : {
+      "ObjectId" : "38464621baf422cdb9074d55aa4531fad09ba42e",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/storage/sequential/CMakeLists.txt" : {
+      "ObjectId" : "3c3f4ccbe1efc4e169f856c49276e4e6d86527fc",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/thread/CMakeLists.txt" : {
+      "ObjectId" : "bd768985f078f08e5653fcd5a182105af2659c2b",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "tests-core/src/foedus/xct/CMakeLists.txt" : {
+      "ObjectId" : "3ce616b5807deed3faaa7a9feec044def782b38c",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "third_party/CMakeLists.txt" : {
+      "ObjectId" : "f344efa5948df7d6dee878bd96d59ad773de04a8",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# these are third party code, we don't care warning.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Disable testcases in these third party libraries\n",
+        "Line" : 4,
+        "CharPositionInLine" : 23
+      },
+      "2" : {
+        "Text" : "# We use gflags for command line argument parsing.\n\n# boost::program_options provides equivalent functionalities, but it's not header-only!\n\n# Rather, we statically link to gflags. So far, we are boost-free.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# we use gflags as static library only\n",
+        "Line" : 9,
+        "CharPositionInLine" : 27
+      },
+      "4" : {
+        "Text" : "# For testing, we use Google-testing. It's active, provides more functionalities,\n\n# and has no linking issues.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# To reduce linking time, we now use shared-library version of gtest,\n",
+        "Line" : 15,
+        "CharPositionInLine" : 26
+      },
+      "6" : {
+        "Text" : "# which requires fPIC as usual. duh.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 48
+      },
+      "CommentCount" : 7
+    },
+    "third_party/gflags-2.1.1/CMakeLists.txt" : {
+      "ObjectId" : "6f3198713e93357f0f757634a2beecbc525c75cf",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# includes\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# package information\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# options\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# system checks\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# used by CheckTypeSize module\n",
+        "Line" : 85,
+        "CharPositionInLine" : 27
+      },
+      "5" : {
+        "Text" : "# the following are used in #if directives not #ifdef\n",
+        "Line" : 98,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# use of special characters in strings to circumvent bug #0008226\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# source files - excluding root subdirectory and/or .in suffix\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# configure source files\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# whenever we build a shared library (DLL on Windows), configure the public\n\n# headers of the API for use of this library rather than the optionally\n\n# also build statically linked library; users can override GFLAGS_DLL_DECL\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# output directories\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# add library targets\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# static vs. shared\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# whether or not targets are a DLL\n",
+        "Line" : 238,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# multi-threaded vs. single-threaded\n",
+        "Line" : 245,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# installation\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#file (RELATIVE_PATH INSTALL_PREFIX_REL2CONFIG_DIR \"${CMAKE_INSTALL_PREFIX}/${CONFIG_INSTALL_DIR}\" \"${CMAKE_INSTALL_PREFIX}\")\n\n#configure_file (cmake/config.cmake.in  \"${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-install.cmake\" @ONLY)\n\n#configure_file (cmake/version.cmake.in \"${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake\" @ONLY)\n\n#\n\n#install (TARGETS ${TARGETS} DESTINATION ${LIBRARY_INSTALL_DIR} EXPORT gflags-lib)\n\n#if (INSTALL_HEADERS)\n\n#  install (FILES ${PUBLIC_HDRS} DESTINATION ${INCLUDE_INSTALL_DIR}/${GFLAGS_INCLUDE_DIR})\n\n#  install (\n\n#    FILES \"${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-install.cmake\"\n\n#    RENAME ${PACKAGE_NAME}-config.cmake\n\n#    DESTINATION ${CONFIG_INSTALL_DIR}\n\n#  )\n\n#  install (\n\n#    FILES \"${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake\"\n\n#    DESTINATION ${CONFIG_INSTALL_DIR}\n\n#  )\n\n#  install (EXPORT gflags-lib DESTINATION ${CONFIG_INSTALL_DIR} FILE ${PACKAGE_NAME}-export.cmake)\n\n#  if (UNIX)\n\n#    install (PROGRAMS src/gflags_completions.sh DESTINATION ${RUNTIME_INSTALL_DIR})\n\n#  endif ()\n\n#endif ()\n",
+        "Line" : 288,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# support direct use of build tree\n",
+        "Line" : 310,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# testing - MUST follow the generation of the build tree config file\n",
+        "Line" : 317,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# packaging\n",
+        "Line" : 325,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# default package generators\n",
+        "Line" : 341,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# used package generators\n",
+        "Line" : 353,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# common package information\n",
+        "Line" : 358,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# RPM package information -- used in cmake/package.cmake.in also for DEB\n",
+        "Line" : 375,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# system/architecture\n",
+        "Line" : 387,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# source package settings\n",
+        "Line" : 420,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# default binary package settings\n",
+        "Line" : 425,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# generator specific configuration file\n\n#\n\n# allow package maintainers to use their own configuration file\n\n# $ cmake -DCPACK_PROJECT_CONFIG_FILE:FILE=/path/to/package/config\n",
+        "Line" : 432,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# BUILD_PACKAGING\n",
+        "Line" : 446,
+        "CharPositionInLine" : 9
+      },
+      "CommentCount" : 29
+    },
+    "third_party/gflags-2.1.1/cmake/CMakeCXXInformation.cmake" : {
+      "ObjectId" : "4d0a14aaa5c683961f9dc1a07bfad884073dafe7",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copied from master branch of CMake (commit SHA 34a49dea) before release of\n\n# this newer version which seems to fix a bug of the one coming with CMake 2.8-12.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2004-2011 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file sets the basic flags for the C++ language in CMake.\n\n# It also loads the available platform file for the system-compiler\n\n# if it exists.\n\n# It also loads a system - compiler - processor (or target hardware)\n\n# specific file, which is mainly useful for crosscompiling and embedded systems.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# some compilers use different extensions (e.g. sdcc uses .rel)\n\n# so set the extension here first so it can be overridden by the compiler specific file\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Load compiler-specific information.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# since the gnu compiler has several names force g++\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# load a hardware specific file, mostly useful for embedded compilers\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# load the system- and compiler specific files\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We specify the compiler information in the system file for some\n\n# platforms, but this language may not have been enabled when the file\n\n# was first included.  Include it again to get the language info.\n\n# Remove this when all compiler info is removed from system files.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# This should be included before the _INIT variables are\n\n# used to initialize the cache.  Since the rule variables\n\n# have if blocks on them, users can still define them here.\n\n# But, it should still be after the platform file so changes can\n\n# be made to those values.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Save the full path of the file so try_compile can use it.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Save the full path of the file so try_compile can use it.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Create a set of shared library variable specific to C++\n\n# For 90% of the systems, these are the same flags as the C versions\n\n# so if these are not set just copy the flags from the c version\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# for most systems a module is the same as a shared library\n\n# so unless the variable CMAKE_MODULE_EXISTS is set just\n\n# copy the values from the LIBRARY variables\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# repeat for modules\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Initialize CXX link type selection flags from C versions.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# add the flags to the cache based\n\n# on the initial values computed in the platform/*.cmake files\n\n# use _INIT variables so that this only happens the first time\n\n# and you can set these flags in the cmake cache\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# avoid just having a space as the initial value for the cache\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# now define the following rules:\n\n# CMAKE_CXX_CREATE_SHARED_LIBRARY\n\n# CMAKE_CXX_CREATE_SHARED_MODULE\n\n# CMAKE_CXX_COMPILE_OBJECT\n\n# CMAKE_CXX_LINK_EXECUTABLE\n",
+        "Line" : 230,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# variables supplied by the generator at use time\n\n# <TARGET>\n\n# <TARGET_BASE> the target without the suffix\n\n# <OBJECTS>\n\n# <OBJECT>\n\n# <LINK_LIBRARIES>\n\n# <FLAGS>\n\n# <LINK_FLAGS>\n",
+        "Line" : 236,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# CXX compiler information\n\n# <CMAKE_CXX_COMPILER>\n\n# <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS>\n\n# <CMAKE_CXX_SHARED_MODULE_CREATE_FLAGS>\n\n# <CMAKE_CXX_LINK_FLAGS>\n",
+        "Line" : 245,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Static library tools\n\n# <CMAKE_AR>\n\n# <CMAKE_RANLIB>\n",
+        "Line" : 251,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# create a shared C++ library\n",
+        "Line" : 256,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# create a c++ shared module copy the shared library rule by default\n",
+        "Line" : 262,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Create a static archive incrementally for large object file counts.\n\n# If CMAKE_CXX_CREATE_STATIC_LIBRARY is set it will override these.\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# compile a C++ file into an object file\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "third_party/gflags-2.1.1/cmake/CheckCXXLibraryExists.cmake" : {
+      "ObjectId" : "0d1747db7d089cf8562b4c400b4352befbb261ac",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# CheckLibraryExists\n\n# ------------------\n\n#\n\n# Check if the function exists.\n\n#\n\n# CHECK_LIBRARY_EXISTS (LIBRARY FUNCTION LOCATION VARIABLE)\n\n#\n\n# ::\n\n#\n\n#   LIBRARY  - the name of the library you are looking for\n\n#   FUNCTION - the name of the function\n\n#   LOCATION - location where the library should be found\n\n#   VARIABLE - variable to store the result\n\n#\n\n#\n\n#\n\n# The following variables may be set before calling this macro to modify\n\n# the way the check is run:\n\n#\n\n# ::\n\n#\n\n#   CMAKE_REQUIRED_FLAGS = string of compile command line flags\n\n#   CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)\n\n#   CMAKE_REQUIRED_LIBRARIES = list of libraries to link\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2002-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "third_party/gflags-2.1.1/cmake/CheckTypeSize.cmake" : {
+      "ObjectId" : "a4376705fdf0a990ff05b09b4282600d33664e18",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copied from master branch of CMake (commit SHA 34a49dea) and\n\n# modified to use CheckIncludeFileCXX instead of CheckIncludeFile\n\n# when the LANGUAGE is CXX. Modified the try_compile call to\n\n# not pass any LINK_LIBRARIES as this option is only supported by\n\n# CMake since version 2.8.11\n\n# -andreas\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# CheckTypeSize\n\n# -------------\n\n#\n\n# Check sizeof a type\n\n#\n\n# ::\n\n#\n\n#   CHECK_TYPE_SIZE(TYPE VARIABLE [BUILTIN_TYPES_ONLY]\n\n#                                 [LANGUAGE <language>])\n\n#\n\n# Check if the type exists and determine its size.  On return,\n\n# \"HAVE_${VARIABLE}\" holds the existence of the type, and \"${VARIABLE}\"\n\n# holds one of the following:\n\n#\n\n# ::\n\n#\n\n#    <size> = type has non-zero size <size>\n\n#    \"0\"    = type has arch-dependent size (see below)\n\n#    \"\"     = type does not exist\n\n#\n\n# Furthermore, the variable \"${VARIABLE}_CODE\" holds C preprocessor code\n\n# to define the macro \"${VARIABLE}\" to the size of the type, or leave\n\n# the macro undefined if the type does not exist.\n\n#\n\n# The variable \"${VARIABLE}\" may be \"0\" when CMAKE_OSX_ARCHITECTURES has\n\n# multiple architectures for building OS X universal binaries.  This\n\n# indicates that the type size varies across architectures.  In this\n\n# case \"${VARIABLE}_CODE\" contains C preprocessor tests mapping from\n\n# each architecture macro to the corresponding type size.  The list of\n\n# architecture macros is stored in \"${VARIABLE}_KEYS\", and the value for\n\n# each key is stored in \"${VARIABLE}-${KEY}\".\n\n#\n\n# If the BUILTIN_TYPES_ONLY option is not given, the macro checks for\n\n# headers <sys/types.h>, <stdint.h>, and <stddef.h>, and saves results\n\n# in HAVE_SYS_TYPES_H, HAVE_STDINT_H, and HAVE_STDDEF_H.  The type size\n\n# check automatically includes the available headers, thus supporting\n\n# checks of types defined in the headers.\n\n#\n\n# If LANGUAGE is set, the specified compiler will be used to perform the\n\n# check. Acceptable values are C and CXX\n\n#\n\n# Despite the name of the macro you may use it to check the size of more\n\n# complex expressions, too.  To check e.g.  for the size of a struct\n\n# member you can do something like this:\n\n#\n\n# ::\n\n#\n\n#   check_type_size(\"((struct something*)0)->member\" SIZEOF_MEMBER)\n\n#\n\n#\n\n#\n\n# The following variables may be set before calling this macro to modify\n\n# the way the check is run:\n\n#\n\n# ::\n\n#\n\n#   CMAKE_REQUIRED_FLAGS = string of compile command line flags\n\n#   CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)\n\n#   CMAKE_REQUIRED_INCLUDES = list of include directories\n\n#   CMAKE_EXTRA_INCLUDE_FILES = list of extra headers to include\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2002-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Helper function.  DO NOT CALL DIRECTLY.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Include header files.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Perform the check.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# The check compiled.  Load information from the binary.\n",
+        "Line" : 134,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Parse the information strings.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Get the type size.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Get the architecture map key.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Update the architecture-to-size map.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# The check failed to compile.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# parse arguments\n",
+        "Line" : 194,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# change to MATCHES for more keys\n",
+        "Line" : 200,
+        "CharPositionInLine" : 43
+      },
+      "15" : {
+        "Text" : "# Optionally check for standard headers.\n",
+        "Line" : 222,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Compute or load the size or size map.\n",
+        "Line" : 240,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Create preprocessor code.\n",
+        "Line" : 250,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 267,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "third_party/gflags-2.1.1/cmake/FindThreadsCXX.cmake" : {
+      "ObjectId" : "91c795c390798de0cb27c128d1cce4bda5d6cdfa",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# FindThreads\n\n# -----------\n\n#\n\n# This module determines the thread library of the system.\n\n#\n\n# The following variables are set\n\n#\n\n# ::\n\n#\n\n#   CMAKE_THREAD_LIBS_INIT     - the thread library\n\n#   CMAKE_USE_SPROC_INIT       - are we using sproc?\n\n#   CMAKE_USE_WIN32_THREADS_INIT - using WIN32 threads?\n\n#   CMAKE_USE_PTHREADS_INIT    - are we using pthreads\n\n#   CMAKE_HP_PTHREADS_INIT     - are we using hp pthreads\n\n#\n\n# For systems with multiple thread libraries, caller can set\n\n#\n\n# ::\n\n#\n\n#   CMAKE_THREAD_PREFER_PTHREAD\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2002-2009 Kitware, Inc.\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Do we have sproc?\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We have sproc\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Do we have pthreads?\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#\n\n# We have pthread.h\n\n# Let's check for the library now.\n\n#\n",
+        "Line" : 55,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Check if pthread functions are in normal C library\n",
+        "Line" : 61,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# Do we have -lpthreads\n",
+        "Line" : 70,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Ok, how about -lpthread\n",
+        "Line" : 78,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# On sun also check for -lthread\n",
+        "Line" : 87,
+        "CharPositionInLine" : 10
+      },
+      "10" : {
+        "Text" : "# If we did not found -lpthread, -lpthreads, or -lthread, look for -pthread\n",
+        "Line" : 99,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# Use libcma if it exists and can be used.  It provides more\n\n# symbols than the plain pthread library.  CMA threads\n\n# have actually been deprecated:\n\n#   http://docs.hp.com/en/B3920-90091/ch12s03.html#d0e11395\n\n#   http://docs.hp.com/en/947/d8.html\n\n# but we need to maintain compatibility here.\n\n# The CMAKE_HP_PTHREADS setting actually indicates whether CMA threads\n\n# are available.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 12
+    },
+    "third_party/gflags-2.1.1/cmake/execute_test.cmake" : {
+      "ObjectId" : "df008cf465e442459f78817b4394890960d3f991",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# sanitize string stored in variable for use in regular expression.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# script arguments\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# set a few environment variables (useful for --tryfromenv)\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# execute test command\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# check test result\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "third_party/gflags-2.1.1/cmake/utils.cmake" : {
+      "ObjectId" : "97c9a66eeb58260134590e0ea98e54396984ece5",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## Utility CMake functions.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n## Convert boolean value to 0 or 1\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n## Extract version numbers from version string.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n## Configure public header files\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n## Configure source files with .in suffix\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n## Add usage test\n\n#\n\n# Using PASS_REGULAR_EXPRESSION and FAIL_REGULAR_EXPRESSION would\n\n# do as well, but CMake/CTest does not allow us to specify an\n\n# expected exit status. Moreover, the execute_test.cmake script\n\n# sets environment variables needed by the --fromenv/--tryfromenv tests.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "third_party/gflags-2.1.1/test/CMakeLists.txt" : {
+      "ObjectId" : "ff074740cf434b494b61ff6f5f3286bbef133a47",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## gflags tests\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# output directories\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# set working directory of test commands\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# common include directories and link libraries\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# STRIP_FLAG_HELP\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Make sure the --help output doesn't print the stripped text.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Make sure the stripped text isn't in the binary at all.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# unit tests\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# First, just make sure the  gflags_unittest  works as-is\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# --help should show all flags, including flags from gflags_reporting\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Make sure that --help prints even very long helpstrings.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Make sure --help reflects flag changes made before flag-parsing\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# And on the command-line, too\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# --nohelp and --help=false should be as if we didn't say anything\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# --helpfull is the same as help\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# --helpshort should show only flags from the  gflags_unittest  itself\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# --helpshort should show the tldflag we created in the  gflags_unittest  dir\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# --helpshort should work if the main source file is suffixed with [_-]main\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# --helpon needs an argument\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# --helpon argument indicates what file we'll show args from\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# another way of specifying the argument\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# test another argument\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# helpmatch is like helpon but takes substrings\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# if no flags are found with helpmatch or helpon, suggest --help\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# helppackage shows all the flags in the same dir as this unittest\n\n# --help should show all flags, including flags from google.cc\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# xml!\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# just print the version info and exit\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# --undefok is a fun flag...\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# If you say foo is ok to be undefined, we'll accept --nofoo as well\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# It's ok if the foo is in the middle\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# But the spelling has to be just right...\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# See if we can successfully load our flags from the flagfile\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Also try to load flags from the environment\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Here, the --version overrides the fromenv\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Make sure -- by itself stops argv processing\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# And we should die if the flag value doesn't pass the validator\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# And if locking in validators fails\n\n# TODO(andreas): Worked on Windows 7 Release configuration, but causes\n\n#                debugger abort() intervention in case of Debug configuration.\n\n#add_gflags_test(deadlock_if_cant_lock 0 \"PASS\" \"\"  gflags_unittest  --deadlock_if_cant_lock)\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# use gflags_declare.h\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# ----------------------------------------------------------------------------\n\n# (negative) compilation tests\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 39
+    },
+    "third_party/gflags-2.1.1/test/gflags_strip_flags_test.cmake" : {
+      "ObjectId" : "bd419c4f0f4b644f679f0824bf975ff59389a28f",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "third_party/gflags-2.1.1/test/nc/CMakeLists.txt" : {
+      "ObjectId" : "823fc674cd1f99cfa080a88c1df57d403a772bb5",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## gflags negative compilation tests\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "third_party/gtest-1.7.0/CMakeLists.txt" : {
+      "ObjectId" : "57470c84f3af0772c411bbb8bbbb41b515747ecd",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "########################################################################\n\n# CMake build script for Google Test.\n\n#\n\n# To run the tests for Google Test itself on Linux, use 'make test' or\n\n# ctest.  You can select which tests to run using 'ctest -R regex'.\n\n# For more options, run 'ctest --help'.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to\n\n# make it prominent in the GUI.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# When other libraries are using a shared version of runtime libraries,\n\n# Google Test also has to use one.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Defines pre_project_set_up_hermetic_build() and set_up_hermetic_build().\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "########################################################################\n\n#\n\n# Project-wide settings\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Name of the project.\n\n#\n\n# CMake files in this project can refer to the root source directory\n\n# as ${gtest_SOURCE_DIR} and to the root binary directory as\n\n# ${gtest_BINARY_DIR}.\n\n# Language \"C\" is required for find_package(Threads).\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Define helper functions and macros used by Google Test.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Defined in internal_utils.cmake.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 30
+      },
+      "8" : {
+        "Text" : "# Where Google Test's .h files can be found.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Where Google Test's libraries can be found.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "########################################################################\n\n#\n\n# Defines the gtest & gtest_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Google Test libraries.  We build them using more strict warnings than what\n\n# are used for other targets, to ensure that gtest can be compiled by a user\n\n# aggressive about warnings.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "########################################################################\n\n#\n\n# Samples on how to link user tests with gtest or gtest_main.\n\n#\n\n# They are not built by default.  To build them, set the\n\n# gtest_build_samples option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgtest_build_samples=ON flag when running cmake.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "########################################################################\n\n#\n\n# Google Test's own tests.\n\n#\n\n# You can skip this section if you aren't interested in testing\n\n# Google Test itself.\n\n#\n\n# The tests are not built by default.  To build them, set the\n\n# gtest_build_tests option to ON.  You can do it by running ccmake\n\n# or specifying the -Dgtest_build_tests=ON flag when running cmake.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# This must be set in the root directory for the tests to be run by\n\n# 'make test' or ctest.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "############################################################\n\n# C++ tests built with standard compiler flags.\n",
+        "Line" : 111,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "############################################################\n\n# C++ tests built with non-standard compiler flags.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 145,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# The C++ Standard specifies tuple_element<int, class>.\n\n# Yet MSVC 10's <utility> declares tuple_element<size_t, class>.\n\n# That declaration conflicts with our own standard-conforming\n\n# tuple implementation.  Therefore using our own tuple with\n\n# MSVC 10 doesn't compile.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "############################################################\n\n# Python tests.\n",
+        "Line" : 191,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 197,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# MSVC 7.1 does not support STL with exceptions disabled.\n",
+        "Line" : 234,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 22
+    },
+    "third_party/gtest-1.7.0/Makefile.am" : {
+      "ObjectId" : "9c96b42572ca943d5fb4d4303842f12a545e8523",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Automake file\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Nonstandard package files for distribution\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gtest source files that we don't compile directly.  They are\n\n# #included by gtest-all.cc.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Sample files that we don't compile.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# C++ test files that we don't compile directly.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Python tests that we don't run.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CMake script\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# MSVC project files\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# xcode project files\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# xcode sample files\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# C++Builder project files\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Distribute and install M4 macro\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# We define the global AM_CPPFLAGS as everything we compile includes from these\n\n# directories.\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Modifies compiler and linker flags for pthreads compatibility.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Build rules for libraries.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Bulid rules for samples and tests. Automake's naming for some of\n\n# these variables isn't terribly obvious, so this is a brief\n\n# reference:\n\n#\n\n# TESTS -- Programs run automatically by \"make check\"\n\n# check_PROGRAMS -- Programs built by \"make check\" but not necessarily run\n",
+        "Line" : 215,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# A simple sample on using gtest.\n",
+        "Line" : 238,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Another sample.  It also verifies that libgtest works.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# This tests most constructs of gtest and verifies that libgtest_main\n\n# and libgtest work.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Tests that fused gtest files compile and work.\n",
+        "Line" : 260,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Build rules for putting fused Google Test files into the distribution\n\n# package. The user can also create those files by manually running\n\n# scripts/fuse_gtest_files.py.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Death tests may produce core dumps in the build directory. In case\n\n# this happens, clean them to keep distcleancheck happy.\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Disables 'make install' as installing a compiled version of Google\n\n# Test can lead to undefined behavior due to violation of the\n\n# One-Definition Rule.\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "third_party/gtest-1.7.0/cmake/internal_utils.cmake" : {
+      "ObjectId" : "8cb21894cebacd5bdfb598c8663a5be50325d70f",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Defines functions and macros useful for building Google Test and\n\n# Google Mock.\n\n#\n\n# Note:\n\n#\n\n# - This file will be run twice when building Google Mock (once via\n\n#   Google Test's CMakeLists.txt, and once via Google Mock's).\n\n#   Therefore it shouldn't have any side effects other than defining\n\n#   the functions and macros.\n\n#\n\n# - The functions/macros defined in this file may depend on Google\n\n#   Test and Google Mock's option() definitions, and thus must be\n\n#   called *after* the options have been defined.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tweaks CMake's default compiler/linker settings to suit Google Test's needs.\n\n#\n\n# This must be a macro(), as inside a function string() can only\n\n# update variables in the function scope.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# For MSVC, CMake sets certain flags to defaults we want to override.\n\n# This replacement code is taken from sample in the CMake Wiki at\n\n# http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# When Google Test is built as a shared library, it should also use\n\n# shared runtime libraries.  Otherwise, it may end up with multiple\n\n# copies of runtime library data in different modules, resulting in\n\n# hard-to-find crashes. When it is built as a static library, it is\n\n# preferable to use CRT as static libraries, as we don't have to rely\n\n# on CRT DLLs being available. CMake always defaults to using shared\n\n# CRT libraries, so we override that default here.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# We prefer more strict warning checking for building Google Test.\n\n# Replaces /W3 with /W4 in defaults.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 6
+      },
+      "5" : {
+        "Text" : "# Defines the compiler/linker flags used to build Google Test and\n\n# Google Mock.  You can tweak these definitions to suit your need.  A\n\n# variable's value is empty before it's explicitly assigned to.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Defines CMAKE_USE_PTHREADS_INIT and CMAKE_THREAD_LIBS_INIT.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Newlines inside flags variables break CMake's NMake generator.\n\n# TODO(vladl@google.com): Add -RTCs and -RTCu to debug builds.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Suppress spurious warnings MSVC 7.1 sometimes issues.\n\n# Forcing value to bool.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 6
+      },
+      "9" : {
+        "Text" : "# Copy constructor and assignment operator could not be generated.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 6
+      },
+      "10" : {
+        "Text" : "# Compatibility warnings not applicable to Google Test.\n\n# Resolved overload was found by argument-dependent lookup.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 6
+      },
+      "11" : {
+        "Text" : "# Until version 4.3.2, GCC doesn't define a macro to indicate\n\n# whether RTTI is enabled.  Therefore we define GTEST_HAS_RTTI\n\n# explicitly.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Sun Pro doesn't provide macros to indicate whether exceptions and\n\n# RTTI are enabled, so we define GTEST_HAS_* explicitly.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# CMake 2.8 changes Visual Age's compiler ID to \"XL\".\n",
+        "Line" : 92,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Until version 9.0, Visual Age doesn't define a macro to indicate\n\n# whether RTTI is enabled.  Therefore we define GTEST_HAS_RTTI\n\n# explicitly.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# RTTI can not be disabled in HP aCC compiler.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# The pthreads library is available and allowed.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 32
+      },
+      "17" : {
+        "Text" : "# For building gtest's own tests and samples.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# For building the gtest libraries.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Defines the gtest & gtest_main libraries.  User tests should link\n\n# with one of them.\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# type can be either STATIC or SHARED to denote a static or shared library.\n\n# ARGN refers to additional arguments after 'cxx_flags'.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "########################################################################\n\n#\n\n# Helper functions for creating build targets.\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# cxx_executable_with_flags(name cxx_flags libs srcs...)\n\n#\n\n# creates a named C++ executable that depends on the given libraries and\n\n# is built from the given source files with the given compiler flags.\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# To support mixing linking in static and dynamic libraries, link each\n\n# library in with an extra call to target_link_libraries.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# cxx_executable(name dir lib srcs...)\n\n#\n\n# creates a named target that depends on the given libs and is built\n\n# from the given source files.  dir/name.cc is implicitly included in\n\n# the source file list.\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Sets PYTHONINTERP_FOUND and PYTHON_EXECUTABLE.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# cxx_test_with_flags(name cxx_flags libs srcs...)\n\n#\n\n# creates a named C++ test that depends on the given libs and is built\n\n# from the given source files with the given compiler flags.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# cxx_test(name libs srcs...)\n\n#\n\n# creates a named test target that depends on the given libs and is\n\n# built from the given source files.  Unlike cxx_test_with_flags,\n\n# test/name.cc is already implicitly included in the source file list.\n",
+        "Line" : 201,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# py_test(name)\n\n#\n\n# creates a Python test with the given name whose main module is in\n\n# test/name.py.  It does nothing if Python is not installed.\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# We are not supporting Python tests on Linux yet as they consider\n\n# all Linux environments to be google3 and try to use google3 features.\n",
+        "Line" : 216,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# ${CMAKE_BINARY_DIR} is known at configuration time, so we can\n\n# directly bind it from cmake. ${CTEST_CONFIGURATION_TYPE} is known\n\n# only at ctest runtime (by calling ctest -c <Configuration>), so\n\n# we have to escape $ to delay variable substitution here.\n",
+        "Line" : 219,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 31
+    },
+    "third_party/gtest-1.7.0/make/Makefile" : {
+      "ObjectId" : "9ac74493ba55246597e90b898fae847ae358eab5",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A sample Makefile for building Google Test and using it in user\n\n# tests.  Please tweak it to suit your environment and project.  You\n\n# may want to move it to your project's root directory.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Please tweak the following variable definitions as needed by your\n\n# project, except GTEST_HEADERS, which you can use in your own targets\n\n# but shouldn't modify.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Points to the root of Google Test, relative to where this file is.\n\n# Remember to tweak this if you move this file.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to find user code.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# Set Google Test's header directory as a system directory, such that\n\n# the compiler doesn't generate warnings in Google Test headers.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# All tests produced by this Makefile.  Remember to add new tests you\n\n# created to the list.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# All Google Test headers.  Usually you shouldn't change this\n\n# definition.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# House-keeping build targets.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Builds gtest.a and gtest_main.a.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Usually you shouldn't tweak such internal variables, indicated by a\n\n# trailing _.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# For simplicity and to avoid depending on Google Test's\n\n# implementation details, the dependencies specified below are\n\n# conservative and not optimized.  This is fine as Google Test\n\n# compiles fast and for ordinary users its source rarely changes.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Builds a sample test.  A test should link with either gtest.a or\n\n# gtest_main.a, depending on whether it defines its own main()\n\n# function.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "third_party/gtest-1.7.0/scripts/test/Makefile" : {
+      "ObjectId" : "cdff584637b7a6e9df1fa43ce8f588c43815e561",
+      "LastModified" : "2016-06-09T22:15:48Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# A Makefile for fusing Google Test and building a sample test against it.\n\n#\n\n# SYNOPSIS:\n\n#\n\n#   make [all]  - makes everything.\n\n#   make TARGET - makes the given target.\n\n#   make check  - makes everything and runs the built sample test.\n\n#   make clean  - removes all files generated by make.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Points to the root of fused Google Test, relative to where this file is.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Paths to the fused gtest files.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where to find the sample test.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Where to find gtest_main.cc.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Flags passed to the preprocessor.\n\n# We have no idea here whether pthreads is available in the system, so\n\n# disable its use.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Flags passed to the C++ compiler.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 91,
+    "CMAKESOURCE" : 2,
+    "MAKEFILE" : 3,
+    "AUTOMAKE" : 3
+  },
+  "ElapsedTime" : 1930
+}

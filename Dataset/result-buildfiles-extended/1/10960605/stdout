@@ -1,0 +1,2080 @@
+{
+  "Repository" : "10960605",
+  "Revision" : "HEAD",
+  "ObjectId" : "302f75aaa0dc7606f6a1d248537074e526b57d2e",
+  "CommitTime" : "2019-04-15T10:39:35Z",
+  "Files" : {
+    "Makefile.am" : {
+      "ObjectId" : "86d1653fb9bc4f6460b80f19a1ad5cb5a09f2034",
+      "LastModified" : "2019-03-11T15:11:24Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# ^^^^^^^^ This has to be the first line and cannot come later in this\n\n# Makefile.am due to some bork in some versions of autotools.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We now build doc after src/, because docgen, a tool to generate API\n\n# documentation requires libkea-exceptions and libkea-cc.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# When running distcheck target, do not install the configurations\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Use same --with-gtest flag if set\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Keep the crypto backend config\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Keep the Boost configuration which becomes sensible\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Keep the log4cplus path too\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Keep perfdhcp if enabled\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Keep kea-shell if enabled\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Keep the premium config\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Keep the contrib config\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# keerp the sysrepo config\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# for c++ test coverage\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# for static C++ check using cppcheck (when available)\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# These steps are necessary during installation\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#### include external sources in the distributed tarball:\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# config.h may be included by headers supplied for building user-written\n\n# hooks libraries, so we need to include it in the distribution.\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17,
+      "Errorlog" : "line 112:7 token recognition error at: '\\e'\n"
+    },
+    "compatcheck/Makefile.am" : {
+      "ObjectId" : "6cc403616124d34219d096ebed02096499fb25f3",
+      "LastModified" : "2012-06-11T20:54:06Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# We're going to abuse install-data-local for a pre-install check.  This may\n\n# not be the cleanest way to do this type of job, but that's the least ugly\n\n# one we've found.\n\n#\n\n# Note also that if any test needs to examine some file that has possibly\n\n# been installed before (e.g., older DB or configuration file), it should be\n\n# referenced with the prefix of DESTDIR.  Otherwise\n\n# 'make DESTDIR=/somewhere install' may not work.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "doc/Makefile.am" : {
+      "ObjectId" : "c884546ea5d886afcb009f32467316069ff94410",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# These are files that document our APIs. They're not really needed as the\n\n# content is included in the api.xml, but may be useful for people who\n\n# want to document the API.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# There are several steps needed to document new API command:\n\n#\n\n# 1. edit docgen/cmds-list and add the new command\n\n# 2. ./configure --enable-generate-docs\n\n# 3. make - you need to build the sources first, am afraid. The reason why you\n\n#    need to do this is that the tool kea-docgen depends on libkea-cc as it\n\n#    loads JSON files. This means that the libs need to be built first.\n\n# 4. (optional) run: make templates\n\n#    This will go through the list of commands listed in cmds-list\n\n#    and will check if there are corresponding JSON files in api/name.json\n\n#    If the file is missing, a new JSON will be created using template.\n\n#    If you dislike this generator, you can always use api/_template.json\n\n#    and copy it over under the name of a new command.\n\n# 5. Edit api/command-name.json. If the command is provided by the daemon\n\n#    out of its own (and not via hook), simply delete the hook entry.\n\n#    If you don't want to provide command syntax (cmd-syntax key),\n\n#    any comments about the syntax (cmd-comment key) or response syntax\n\n#    (resp-syntax) or any comment about response (resp-comment), simply\n\n#    remove those unused keys. The generator will attempt to generate\n\n#    boilerplates for it.\n\n# 6. Generate api.xml: make api\n\n# 7. Rebuild User's Guide as usual: make guide\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This target will generate templates. There's no need to run it, unless\n\n# new commands have been added or there are existing commands that are\n\n# still not documented.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This will generate the api.xml file using docgen generator. It will\n\n# read the JSON files from api/ directory. Make sure they're up to date.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This convenience target makes sure the docgen tool is built properly\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# That's a bit of a hack, but we are making sure that devel target\n\n# is always valid. The alternative is to make devel depend on all\n\n# *.cc *.h files in the whole tree.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "doc/docgen/Makefile.am" : {
+      "ObjectId" : "129c5c57eff95ec68d99d5cea3e088c9cbab3afb",
+      "LastModified" : "2018-12-12T17:50:51Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "doc/guide/Makefile.am" : {
+      "ObjectId" : "46945c4176b48c046a14875e9a6bc51d7beb7310",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# generated documentation\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This is not a \"man\" manual, but reuse this for now for docbook.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "ext/Makefile.am" : {
+      "ObjectId" : "6cfbdee32f7d5667525e4c0f7a60f88a0319ff22",
+      "LastModified" : "2018-12-12T17:50:51Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "ext/coroutine/Makefile.am" : {
+      "ObjectId" : "4851d93bf4cd93cbb4c4ff46ce37ba3089248ae8",
+      "LastModified" : "2018-12-12T17:50:51Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "ext/gtest/Makefile.am" : {
+      "ObjectId" : "f8f8536d7c7a25dad441fb2592406baa1e6b1f4e",
+      "LastModified" : "2014-10-29T16:36:39Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "m4macros/Makefile.am" : {
+      "ObjectId" : "79d06030439ccac4077b1fe987f094ae5eabbc99",
+      "LastModified" : "2017-04-24T19:29:15Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/Makefile.am" : {
+      "ObjectId" : "2cde2d5275dda99b08e9884dc3267f0f1c888d27",
+      "LastModified" : "2017-04-24T19:29:15Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/bin/Makefile.am" : {
+      "ObjectId" : "d93cbf452fc4a9dac494a2038090b5207862313d",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The following build order must be maintained.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/admin/Makefile.am" : {
+      "ObjectId" : "e96ec9e7b3c23b24d9ec9e886a481ae37d968f20",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Install kea-admin in sbin.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/admin/tests/Makefile.am" : {
+      "ObjectId" : "8092f27bd9e9e4d2fa429179a007b2892c140e19",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Execute all test scripts.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/admin/tests/data/Makefile.am" : {
+      "ObjectId" : "2d3812f6973e85e9b9b56b982acd1c96d76c9ead",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/bin/agent/Makefile.am" : {
+      "ObjectId" : "c9ec900515aecd47a18b5746f2c831aed8d6fd46",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# --- Flex/Bison stuff below --------------------------------------------------\n\n# When debugging grammar issues, it's useful to add -v to bison parameters.\n\n# bison will generate parser.output file that explains the whole grammar.\n\n# It can be used to manually follow what's going on in the parser.\n\n# This is especially useful if yydebug_ is set to 1 as that variable\n\n# will cause parser to print out its internal state.\n\n# Call flex with -s to check that the default rule can be suppressed\n\n# Call bison with -W to get warnings like unmarked empty rules\n\n# Note C++11 deprecated register still used by flex < 2.6.0\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/bin/agent/tests/Makefile.am" : {
+      "ObjectId" : "eb8c89849e67ce80e5a258523d6c0f60740895db",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The test of dynamic reconfiguration based on signals will work only\n\n# if we are using file based configuration approach.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The basic callout library - contains standard callouts\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/bin/d2/Makefile.am" : {
+      "ObjectId" : "e2f972353f8b6a649e3de54a76546ea6ed26508f",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# --- Flex/Bison stuff below --------------------------------------------------\n\n# When debugging grammar issues, it's useful to add -v to bison parameters.\n\n# bison will generate parser.output file that explains the whole grammar.\n\n# It can be used to manually follow what's going on in the parser.\n\n# This is especially useful if yydebug_ is set to 1 as that variable\n\n# will cause parser to print out its internal state.\n\n# Call flex with -s to check that the default rule can be suppressed\n\n# Call bison with -W to get warnings like unmarked empty rules\n\n# Note C++11 deprecated register still used by flex < 2.6.0\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/bin/d2/tests/Makefile.am" : {
+      "ObjectId" : "168f50c7b8ef65a5f8837fcef632a82ee00a9525",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The test of dynamic reconfiguration based on signals will work only\n\n# if we are using file based configuration approach.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/bin/dhcp4/Makefile.am" : {
+      "ObjectId" : "23f2d0ccb9374f379c5ec86e05ad61c3271c98b7",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# --- Flex/Bison stuff below --------------------------------------------------\n\n# When debugging grammar issues, it's useful to add -v to bison parameters.\n\n# bison will generate parser.output file that explains the whole grammar.\n\n# It can be used to manually follow what's going on in the parser.\n\n# This is especially useful if yydebug_ is set to 1 as that variable\n\n# will cause parser to print out its internal state.\n\n# Call flex with -s to check that the default rule can be suppressed\n\n# Call bison with -W to get warnings like unmarked empty rules\n\n# Note C++11 deprecated register still used by flex < 2.6.0\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/bin/dhcp4/tests/Makefile.am" : {
+      "ObjectId" : "717e749af7199e9a4dd9464708bceaca95c3009d",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The test of dynamic reconfiguration based on signals will work only\n\n# if we are using file based configuration approach.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build shared libraries for testing. The libtool way to create a shared library\n\n# is to specify \"-avoid-version -export-dynamic -module\" in the library LDFLAGS\n\n# (see http://www.gnu.org/software/libtool/manual/html_node/Link-mode.html).\n\n# Use of these switches will guarantee that the .so files are created in the\n\n# .libs folder and they can be dlopened.\n\n# Note that the shared libraries with callouts should not be used together with\n\n# the --enable-static-link option. With this option, the bind10 libraries are\n\n# statically linked with the program and if the callout invokes the methods\n\n# which belong to these libraries, the library with the callout will get its\n\n# own copy of the static objects (e.g. logger, ServerHooks) and that will lead\n\n# to unexpected errors. For this reason, the --enable-static-link option is\n\n# ignored for unit tests built here.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# -rpath /nowhere is a hack to trigger libtool to not create a\n\n# convenience archive, resulting in shared modules\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Use this target if you want to rebuild the get-config unit-tests.\n\n#\n\n# TODO: We could also automate the replacement step with some variation\n\n# of this: https://stackoverflow.com/questions/6790631\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/bin/dhcp6/Makefile.am" : {
+      "ObjectId" : "4730182bf2eb88731a43533a5a151acf765ae2bf",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# --- Flex/Bison stuff below --------------------------------------------------\n\n# When debugging grammar issues, it's useful to add -v to bison parameters.\n\n# bison will generate parser.output file that explains the whole grammar.\n\n# It can be used to manually follow what's going on in the parser.\n\n# This is especially useful if yydebug_ is set to 1 as that variable\n\n# will cause parser to print out its internal state.\n\n# Call flex with -s to check that the default rule can be suppressed\n\n# Call bison with -W to get warnings like unmarked empty rules\n\n# Note C++11 deprecated register still used by flex < 2.6.0\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/bin/dhcp6/tests/Makefile.am" : {
+      "ObjectId" : "15ad57b9de82df10269b7ab1ccd2be8261776acb",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The test of dynamic reconfiguration based on signals will work only\n\n# if we are using file based configuration approach.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build shared libraries for testing. The libtool way to create a shared library\n\n# is to specify \"-avoid-version -export-dynamic -module\" in the library LDFLAGS\n\n# (see http://www.gnu.org/software/libtool/manual/html_node/Link-mode.html).\n\n# Use of these switches will guarantee that the .so files are created in the\n\n# .libs folder and they can be dlopened.\n\n# Note that the shared libraries with callouts should not be used together with\n\n# the --enable-static-link option. With this option, the bind10 libraries are\n\n# statically linked with the program and if the callout invokes the methods\n\n# which belong to these libraries, the library with the callout will get its\n\n# own copy of the static objects (e.g. logger, ServerHooks) and that will lead\n\n# to unexpected errors. For this reason, the --enable-static-link option is\n\n# ignored for unit tests built here.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# -rpath /nowhere is a hack to trigger libtool to not create a\n\n# convenience archive, resulting in shared modules\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# This list is ordered alphabetically. When adding new files, please maintain\n\n# this order.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Use this target if you want to rebuild the get-config unit-tests.\n\n#\n\n# TODO: We could also automate the replacement step with some variation\n\n# of this: https://stackoverflow.com/questions/6790631\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/bin/keactrl/Makefile.am" : {
+      "ObjectId" : "9851f58f5ecd9ddc09f066ee2ee9b48845a2d93f",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Install keactrl in sbin and the keactrl.conf required by the keactrl\n\n# in etc. keactrl will look for its configuration file in the etc folder.\n\n# If the default location needs to be changed it may be achieved by\n\n# setting KEACTRL_CONF environment variable.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# *.conf files are not really sources used for building other targets, but we need\n\n# these files to be generated before make install is called.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Since Kea 1.3.0 release we have 4 different Kea configuration files\n\n# instead of one, i.e. kea-dhcp4.conf, kea-dhcp6.conf, kea-dhcp-ddns.conf\n\n# and kea-ctrl-agent.conf. To facilitate the use of these new files\n\n# the keactrl.conf has been updated in Kea 1.3.0 release. Therefore,\n\n# we install new version of thea keactrl.conf file unconditionally.\n\n# To preserve any user modifications to the old version of the file,\n\n# this old file is backed up as keactrl.conf.bak.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/bin/keactrl/tests/Makefile.am" : {
+      "ObjectId" : "234f7d160c2d3e6ab971c1b80469c80babf30b04",
+      "LastModified" : "2017-04-24T19:29:15Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Execute all test scripts.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/lfc/Makefile.am" : {
+      "ObjectId" : "460f83e3dc23da6371be02feecdfe54e41f37275",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/bin/lfc/tests/Makefile.am" : {
+      "ObjectId" : "0a11ec4b9b449d0be249e9a4adbe009bf011a0c1",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/netconf/Makefile.am" : {
+      "ObjectId" : "e7eb403df0c061a8cefbd7592c13f29806642b99",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#EXTRA_DIST += netconf.dox netconf_hooks.dox\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# --- Flex/Bison stuff below --------------------------------------------------\n\n# When debugging grammar issues, it's useful to add -v to bison parameters.\n\n# bison will generate parser.output file that explains the whole grammar.\n\n# It can be used to manually follow what's going on in the parser.\n\n# This is especially useful if yydebug_ is set to 1 as that variable\n\n# will cause parser to print out its internal state.\n\n# Call flex with -s to check that the default rule can be suppressed\n\n# Call bison with -W to get warnings like unmarked empty rules\n\n# Note C++11 deprecated register still used by flex < 2.6.0\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/bin/netconf/tests/Makefile.am" : {
+      "ObjectId" : "321a5ff577898ae9db8a1a336a568805069d76c9",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#netconf_unittests_LDADD += $(top_builddir)/src/lib/dhcpsrv/libkea-dhcpsrv.la\n\n#netconf_unittests_LDADD += $(top_builddir)/src/lib/dhcpsrv/testutils/libdhcpsrvtest.la\n\n#netconf_unittests_LDADD += $(top_builddir)/src/lib/eval/libkea-eval.la\n\n#netconf_unittests_LDADD += $(top_builddir)/src/lib/dhcp_ddns/libkea-dhcp_ddns.la\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#netconf_unittests_LDADD += $(top_builddir)/src/lib/stats/libkea-stats.la\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#netconf_unittests_LDADD += $(top_builddir)/src/lib/dhcp/tests/libdhcptest.la\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The basic callout library - contains standard callouts\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/bin/netconf/tests/shtests/Makefile.am" : {
+      "ObjectId" : "4d68ba40e5d59256c5d03ba3a5c737aa09aa098a",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/perfdhcp/Makefile.am" : {
+      "ObjectId" : "973ff3e581df4aa759bd4349566a0d685ef107f9",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# ... and the documentation\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/bin/perfdhcp/tests/Makefile.am" : {
+      "ObjectId" : "848492bc98d1eaa6c146bab142853b5fdbd23579",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The test[1-5].hex are created by the TestControl.PacketTemplates\n\n# unit tests and have to be removed.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/perfdhcp/tests/testdata/Makefile.am" : {
+      "ObjectId" : "30c3329de6c7a0146ff662afd4ae8e967139da47",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/bin/shell/Makefile.am" : {
+      "ObjectId" : "021d8d2be375c7154a014c088197d1a56fcb65ec",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/bin/shell/tests/Makefile.am" : {
+      "ObjectId" : "c3e6777aacd6dc0788b986b51041da801873af81",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# test using command-line arguments, so use check-local target instead of TESTS\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/sockcreator/Makefile.am" : {
+      "ObjectId" : "f5b1f7f49256fdbc5b5f43ee5b58fb467500de39",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/bin/sockcreator/tests/Makefile.am" : {
+      "ObjectId" : "6b6a9dbc74daf5c755a4e09b897d826089bd8bfb",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/hooks/Makefile.am" : {
+      "ObjectId" : "815beed70b2c810998e72b9b4c854d341d31ee5a",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/hooks/dhcp/Makefile.am" : {
+      "ObjectId" : "0bb9b878e379bd8f9e83b35ec3ee00e1d8810154",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/hooks/dhcp/high_availability/Makefile.am" : {
+      "ObjectId" : "baf203f934ced7506f2cbab2b1b6f25237889a59",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install the shared object into $(libdir)/kea/hooks\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/hooks/dhcp/high_availability/tests/Makefile.am" : {
+      "ObjectId" : "c2eb24213b63d9c121c643542c04ca62e5b09c7d",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Unit test data files need to get installed.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/hooks/dhcp/lease_cmds/Makefile.am" : {
+      "ObjectId" : "ded680e4a20c25047a70d5ff991e7172d9f820cb",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file and doxygen file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install the shared object into $(libdir)/kea/hooks\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/hooks/dhcp/lease_cmds/tests/Makefile.am" : {
+      "ObjectId" : "1795ee953ee625684a17a7a721e24e58b4a81e6b",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Unit test data files need to get installed.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TESTS_ENVIRONMENT = $(LIBTOOL) --mode=execute $(VALGRIND_COMMAND)\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/hooks/dhcp/mysql_cb/Makefile.am" : {
+      "ObjectId" : "f09469216ca8af078802cab05cb41a4637e7274b",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install the shared object into $(libdir)/kea/hooks\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/hooks/dhcp/mysql_cb/tests/Makefile.am" : {
+      "ObjectId" : "251575aeec7ce3f29048ba03f3d4d5c7e9fdd990",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Unit test data files need to get installed.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/hooks/dhcp/stat_cmds/Makefile.am" : {
+      "ObjectId" : "b054e936b374317de20ad1559a66efeede92ab52",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file and doxygen file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install the shared object into $(libdir)/kea/hooks\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/hooks/dhcp/stat_cmds/tests/Makefile.am" : {
+      "ObjectId" : "fa87d653ad1a18f95c0002d90e1ef6dde4f3e7bc",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Unit test data files need to get installed.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TESTS_ENVIRONMENT = $(LIBTOOL) --mode=execute $(VALGRIND_COMMAND)\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/hooks/dhcp/user_chk/Makefile.am" : {
+      "ObjectId" : "4f6ae80af24c8ede74589da70b8bbe8b1677fbf7",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# -rpath /nowhere is a hack to trigger libtool to not create a\n\n# convenience archive, resulting in shared modules\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/hooks/dhcp/user_chk/tests/Makefile.am" : {
+      "ObjectId" : "f2c7073bea12841bf91471f8991e76575cf28dd8",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Unit test data files need to get installed.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/Makefile.am" : {
+      "ObjectId" : "9cecf356c390c6bc47e02c6077b8e91598b6b960",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The following build order must be maintained.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/asiodns/Makefile.am" : {
+      "ObjectId" : "be1f7d81dc3c7f201010bc0a1dcbc24c6a9bb842",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Note: the ordering matters: -Wno-... must follow -Wextra (defined in\n\n# KEA_CXXFLAGS)\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/lib/asiodns/tests/Makefile.am" : {
+      "ObjectId" : "5befee90f0054854d2e891cf75023c252e051097",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Note: the ordering matters: -Wno-... must follow -Wextra (defined in\n\n# KEA_CXXFLAGS)\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/asiolink/Makefile.am" : {
+      "ObjectId" : "72fc1077811e8032a309f9231290aa62376f0920",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# This is a wrapper library.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The ASIO header files have some code fragments that would hit\n\n# gcc's unused-parameter warning, which would make the build fail\n\n# with -Werror (our default setting).\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Note: the ordering matters: -Wno-... must follow -Wextra (defined in\n\n# KEA_CXXFLAGS)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/lib/asiolink/tests/Makefile.am" : {
+      "ObjectId" : "51c6e984223843ed5fc04dea0416391abc07b932",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Note: the ordering matters: -Wno-... must follow -Wextra (defined in\n\n# KEA_CXXFLAGS)\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/asiolink/testutils/Makefile.am" : {
+      "ObjectId" : "ec4d1815b811e3cc3e8cef90691514f817c75546",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/cc/Makefile.am" : {
+      "ObjectId" : "134b62c5d0630ef178c5670d59ec2b173c8075d6",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/cc/tests/Makefile.am" : {
+      "ObjectId" : "31a5d5e25d956ff7a97c905e271164a3f4758cc7",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/cfgrpt/Makefile.am" : {
+      "ObjectId" : "44b2d3ae84c3cecfa4ee2e5ef757705614a01ea4",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Get rid of generated message files on a clean\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# config_report.cc is generated below\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# convenience archive\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# set pathname to the input configuration report\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Generate config_report.cc\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree. The\n\n# following headers are anticipated to be useful for the user libraries.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/lib/cfgrpt/tests/Makefile.am" : {
+      "ObjectId" : "408dbadbe7c0cee59df0221f5d0672a753ef8ecb",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/config/Makefile.am" : {
+      "ObjectId" : "a358c89e45e6e99c63f42f3d8e75d6147b2eb312",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The message file should be in the distribution.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/lib/config/tests/Makefile.am" : {
+      "ObjectId" : "69e28545789d73f2e6a4a8af5a700695793eecc9",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/config/tests/testdata/Makefile.am" : {
+      "ObjectId" : "641a142632b08a223d22db6df40047c6a86f8f03",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/config_backend/Makefile.am" : {
+      "ObjectId" : "2b51675719a7f6434ab9595d99256cc17dc22abd",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# The message file should be in the distribution.\n\n#EXTRA_DIST += config_backend.dox\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/lib/config_backend/tests/Makefile.am" : {
+      "ObjectId" : "0ab44250c33b1e09aeb93cd7e953686c8b9cbaf4",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/cql/Makefile.am" : {
+      "ObjectId" : "7d04e4a286d7c4dcbcaa8fe17684fa3f6744c749",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/cql/tests/Makefile.am" : {
+      "ObjectId" : "f5b09062bf3093bcfdef99c877b58be039dd108c",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/cql/testutils/Makefile.am" : {
+      "ObjectId" : "81080726e1a4e71c8540f83a829c55c6736f5cf5",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/cryptolink/Makefile.am" : {
+      "ObjectId" : "23697e7de86006cafa1484c7bc6975aa391ce3a5",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/cryptolink/tests/Makefile.am" : {
+      "ObjectId" : "a18618e5ae9c8142e2352f09f46db4d439f951eb",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/database/Makefile.am" : {
+      "ObjectId" : "edbed76e5c5d93071a732a70dfe56243ab6642b2",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/lib/database/tests/Makefile.am" : {
+      "ObjectId" : "c05c29ce92d897d753b6de8b9bf65462fe778310",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/database/testutils/Makefile.am" : {
+      "ObjectId" : "1a368e88d17e6edcbae7c24361a90aa06cf11e06",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/dhcp/Makefile.am" : {
+      "ObjectId" : "5bd842bf93d1f1fa017879e8eeaf5e403524d8a4",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Utilize Linux Packet Filtering on Linux.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Utilize Berkeley Packet Filtering on BSD.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree. User-\n\n# written libraries may need access to all libdhcp++ headers.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/dhcp/tests/Makefile.am" : {
+      "ObjectId" : "bc162d84ad4593cdf243c20d8ff69a6ef90d2e22",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Creates a library which is shared by various unit tests which require\n\n# configuration of fake interfaces.\n\n# The libdhcp++ does not link with this library because this would cause\n\n# build failures being a result of concurrency between build of this\n\n# library and the unit tests when make -j option was used, as they\n\n# are built out of the same makefile. Instead, the libdhcp++ tests link to\n\n# files belonging to this library, directly.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Utilize Linux Packet Filtering on Linux.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Utilize Berkeley Packet Filtering on BSD.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/lib/dhcp_ddns/Makefile.am" : {
+      "ObjectId" : "be5f34a6b110db732dfde2b3b44a5d97887ebd4f",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/lib/dhcp_ddns/tests/Makefile.am" : {
+      "ObjectId" : "a75b3a44ab1191594793d3dda2f3cbcfe565419a",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/dhcpsrv/Makefile.am" : {
+      "ObjectId" : "2c590feeab4ed181fb83f9dad6dff38c38961c3f",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Set location of the kea-lfc binary.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The files in the subfolder must be explicitly specified here so\n\n# as they are copied to the distribution. The other option would\n\n# be to specify a whole 'parsers' folder here but that would also\n\n# copy all other files, e.g. gitignore, .git etc.\n\n# Whenever new file is added to the parsers folder, it must be\n\n# added here.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Devel guide diagrams\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Remove CSV files created by the CSVLeaseFile6 and CSVLeaseFile4 unit tests.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configuration parsers\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The message file should be in the distribution\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 228,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 239,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 249,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Distribute backend documentation\n\n# Database schema creation script moved to src/bin/admin\n",
+        "Line" : 273,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Specify parsers' headers for copying into installation directory tree.\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "src/lib/dhcpsrv/benchmarks/Makefile.am" : {
+      "ObjectId" : "c99b884fac97ad3359337559e59de43658dba45e",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/dhcpsrv/tests/Makefile.am" : {
+      "ObjectId" : "b5e3349d4aeb001cd1606ef64d52e58bdb138388",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Build shared libraries for testing. The libtool way to create a shared library\n\n# is to specify \"-avoid-version -export-dynamic -module\" in the library LDFLAGS\n\n# (see http://www.gnu.org/software/libtool/manual/html_node/Link-mode.html).\n\n# Use of these switches will guarantee that the .so files are created in the\n\n# .libs folder and they can be dlopened.\n\n# Note that the shared libraries with callouts should not be used together with\n\n# the --enable-static-link option. With this option, the bind10 libraries are\n\n# statically linked with the program and if the callout invokes the methods\n\n# which belong to these libraries, the library with the callout will get its\n\n# own copy of the static objects (e.g. logger, ServerHooks) and that will lead\n\n# to unexpected errors. For this reason, the --enable-static-link option is\n\n# ignored for unit tests built here.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# -rpath /nowhere is a hack to trigger libtool to not create a\n\n# convenience archive, resulting in shared modules\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/lib/dhcpsrv/testutils/Makefile.am" : {
+      "ObjectId" : "56ebaa2779e95939c3947ea4c2115c0488dc3270",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/dns/Makefile.am" : {
+      "ObjectId" : "01e604713136455dfed8a8428d35618e697da978",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# These two are created with rrtype/class.h, so not explicitly listed in\n\n# BUILT_SOURCES.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: double-check that this is the only way\n\n# NOTE: when an rdata file is added, please also add to this list:\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#EXTRA_DIST += rdata/template.cc\n\n#EXTRA_DIST += rdata/template.h\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# auto-generate by gen-rdatacode.py:\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The following files used to be generated, but they are now part of the git tree:\n\n# rrclass.h rrtype.h rrparamregistry.cc rdataclass.h rdataclass.cc\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# In ticket #3413 we removed the whole BIND10/Bundy framework. We also want\n\n# to not require Python3, hence instead of generating the code every time,\n\n# we added the generated files to our repo. It is still possible to regenerate\n\n# those files, but that step is no longer required for successful compilation.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#rrclass.h rrtype.h rrparamregistry.cc rdataclass.h rdataclass.cc: s-rdatacode\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Purposely not installing these headers:\n\n# name_internal.h: used only internally, and not actually DNS specific\n\n# rdata/*/detail/*.h: these are internal use only\n\n# rrclass-placeholder.h\n\n# rrtype-placeholder.h\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/lib/dns/tests/Makefile.am" : {
+      "ObjectId" : "445c9a39d3bfde04b5150ab2ccc74ba83dd22f1f",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/dns/tests/testdata/Makefile.am" : {
+      "ObjectId" : "17f9d9e1fb4443d3b8335243a179bfd75e6a53a0",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# NOTE: keep this in sync with real file listing\n\n# so is included in tarball\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generated .wire files\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We no longer use gen_wiredata.py during build process, so the\n\n# dependency is no longer needed. However, we'll keep this dependency\n\n# commented till the gen_wiredata.py script is removed.\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#.spec.wire:\n\n#\t$(PYTHON) $(top_builddir)/src/lib/util/python/gen_wiredata.py -o $@ $<\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/lib/eval/Makefile.am" : {
+      "ObjectId" : "a64ddb92efe604577008d87f823100b52d12a301",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# GCC 4.4 emits warning about breaking strict aliasing rule.\n\n# This warning is a result of a GCC bug:\n\n# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=41874\n\n# The warning is raised in the generated code in parser.h.\n\n# Disabling the strict aliasing rule suppresses this warning.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n\n#\n\n# If we want to get rid of all flex/bison generated files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required. To make it easy to rebuild flex/bison without going through\n\n# reconfigure, a new target parser-clean has been added.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate flex/bison files, one can do:\n\n#\n\n# make parser-clean\n\n# make parser\n\n#\n\n# This is needed only when the lexer.ll or parser.yy files are modified.\n\n# Make sure you have both flex and bison installed.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# --- Flex/Bison stuff below --------------------------------------------------\n\n# When debugging grammar issues, it's useful to add -v to bison parameters.\n\n# bison will generate parser.output file that explains the whole grammar.\n\n# It can be used to manually follow what's going on in the parser.\n\n# This is especially useful if yydebug_ is set to 1 as that variable\n\n# will cause parser to print out its internal state.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# does not include *.hh generated headers as they come with lexer and parser.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/lib/eval/tests/Makefile.am" : {
+      "ObjectId" : "e29351271d192762927f5a082f7e94c033432c54",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/exceptions/Makefile.am" : {
+      "ObjectId" : "656dd14f7f6dd7ed4ef35bae0f095b673963ce0c",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/exceptions/tests/Makefile.am" : {
+      "ObjectId" : "0e4d2293d5e280a9ef6155465acf377ac4797d49",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/hooks/Makefile.am" : {
+      "ObjectId" : "607d66408828fe20241e77dc212ab7c1e9747427",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Include developer's guide files\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include images used in Developer's guide\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/lib/hooks/tests/Makefile.am" : {
+      "ObjectId" : "74951c108c5958e515fd1239598a2d1929254366",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Kea libraries against which the test user libraries are linked.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Files to clean include the file created by testing.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Files generated by configure\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build shared libraries for testing. The libtool way to create a shared library\n\n# is to specify \"-avoid-version -export-dynamic -module\" in the library LDFLAGS\n\n# (see http://www.gnu.org/software/libtool/manual/html_node/Link-mode.html).\n\n# Use of these switches will guarantee that the .so files are created in the\n\n# .libs folder and they can be dlopened.\n\n#\n\n# Note that the shared libraries with callouts should not be used together with\n\n# the --enable-static-link option. With this option, the bind10 libraries are\n\n# statically linked with the program and if the callout invokes the methods\n\n# which belong to these libraries, the library with the callout will get its\n\n# own copy of the static objects (e.g. logger, ServerHooks) and that will lead\n\n# to unexpected errors. For this reason, the --enable-static-link option is\n\n# ignored for unit tests built here.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# -rpath /nowhere is a hack to trigger libtool to not create a\n\n# convenience archive, resulting in shared modules\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# No version function\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Incorrect version function\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# All framework functions throw an exception\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# The basic callout library - contains standard callouts\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# The load callout library - contains a load function\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# The load error callout library - contains a load function that returns\n\n# an error.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# The unload callout library - contains an unload function that\n\n# creates a marker file.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# The full callout library - contains all three framework functions.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# The parameters checking callout library - expects\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# The async callout library - parks object for asynchronous task\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# As noted in configure.ac, libtool doesn't work perfectly with Darwin: it\n\n# embeds the final install path in dynamic libraries and loadable modules refer\n\n# to that path even if its loaded within the source tree, so preventing tests\n\n# from working - but only when linking statically.  The solution used in other\n\n# Makefiles (setting the path to the dynamic libraries via an environment\n\n# variable) don't seem to work.  What does work is to run the unit test using\n\n# libtool and specifying paths via -dlopen switches.  So... If running in an\n\n# environment where we have to set the library path AND if linking statically,\n\n# override the \"check\" target and run the unit tests ourselves.\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "src/lib/http/Makefile.am" : {
+      "ObjectId" : "10d2bb9262410dc61c6e602b596069558c5e0532",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/lib/http/tests/Makefile.am" : {
+      "ObjectId" : "6aa79c6e45c5efbca3a41237d131886d6e61419e",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/log/Makefile.am" : {
+      "ObjectId" : "f34da4d2c00ab0256fd0452184ef3e6e9aa2c5cf",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Note: the ordering matters: -Wno-... must follow -Wextra (defined in\n\n# KEA_CXXFLAGS)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/lib/log/compiler/Makefile.am" : {
+      "ObjectId" : "acf2a245f9073379e07dd06e35021c385fcac7e8",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/log/interprocess/Makefile.am" : {
+      "ObjectId" : "676af42dab114edacd03b67bd3bc2a9088e67cfb",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/log/interprocess/tests/Makefile.am" : {
+      "ObjectId" : "5a53327338c6f2a29bcc17663392a0e7f5023769",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# XXX: we'll pollute the top builddir for creating a temporary test file\n\n# used to bind a UNIX domain socket so we can minimize the risk of exceeding\n\n# the limit of file name path size.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/log/tests/Makefile.am" : {
+      "ObjectId" : "83f78e31cb90d17b4c6ba18585866c5592cd4416",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Define the flags used in each set of tests\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set of unit tests for the general logging classes\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# logging initialization tests.  These are put in separate programs to\n\n# ensure that the initialization status at the start of each test is known,\n\n# and to prevent circumstances where the execution of one test affects the\n\n# starting conditions of the next.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Additional test using the shell.  These are principally tests\n\n# where the global logging environment is affected, and where the\n\n# output needs to be compared with stored output (where \"cut\" and\n\n# \"diff\" are useful utilities).\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/lib/mysql/Makefile.am" : {
+      "ObjectId" : "cec5fc97976461037506c91598ef449d83fe63d7",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/mysql/tests/Makefile.am" : {
+      "ObjectId" : "f2d6ed2142a5ffed2e727ef4908f90feba03556e",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/mysql/testutils/Makefile.am" : {
+      "ObjectId" : "64680e639f9958e6f496d513d4001b00abede2df",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/pgsql/Makefile.am" : {
+      "ObjectId" : "3f92c7f53e3448cf48d54be30e40c65ffa9c58a9",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/pgsql/tests/Makefile.am" : {
+      "ObjectId" : "f266ad2d39c1e218fd5dfc9856dfdae1e5e16104",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/pgsql/testutils/Makefile.am" : {
+      "ObjectId" : "c46de152e46be4a3d32df7a398abec65f31dcb36",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/process/Makefile.am" : {
+      "ObjectId" : "e2e6a2e48f243d7c7b9c53734c01be3075b6d43e",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Ensure that the message file is included in the distribution\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generated by configure files\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# If we want to get rid of all generated messages files, we need to use\n\n# make maintainer-clean. The proper way to introduce custom commands for\n\n# that operation is to define maintainer-clean-local target. However,\n\n# make maintainer-clean also removes Makefile, so running configure script\n\n# is required.  To make it easy to rebuild messages without going through\n\n# reconfigure, a new target messages-clean has been added.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# To regenerate messages files, one can do:\n\n#\n\n# make messages-clean\n\n# make messages\n\n#\n\n# This is needed only when a .mes file is modified.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Define rule to build logging source files from message file\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/lib/process/tests/Makefile.am" : {
+      "ObjectId" : "253a9c378c620031d8713eb931a667517696aed4",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/process/testutils/Makefile.am" : {
+      "ObjectId" : "42ed4dac5b3e6bb21836fdc32859927ebbaa6150",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/stats/Makefile.am" : {
+      "ObjectId" : "33afff528355fb61ee416e220de8eb6fd7e3bf87",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/stats/tests/Makefile.am" : {
+      "ObjectId" : "ba89d01436c5b306001976196c5d28069c524eb1",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/testutils/Makefile.am" : {
+      "ObjectId" : "4eeb3c7aa6c20e63e3ff5452f746b97f94b73082",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Include common libraries being used by shell-based tests.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/util/Makefile.am" : {
+      "ObjectId" : "c5ad6cad75a0e75b51f4b58f77058181d1593bf7",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/util/io/Makefile.am" : {
+      "ObjectId" : "b5659b92185b76200e1314128c0e34edeea9b992",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/util/python/Makefile.am" : {
+      "ObjectId" : "460bf1aa000ed5fb17dd91b896b4761c5426bcf4",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/util/tests/Makefile.am" : {
+      "ObjectId" : "b43f2f15a0b8f5b96e0eb80f2a4445789e475d32",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# XXX: we'll pollute the top builddir for creating a temporary test file\n\n# used to bind a UNIX domain socket so we can minimize the risk of exceeding\n\n# the limit of file name path size.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# CSV files are created by unit tests for CSVFile class.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/lib/util/threads/Makefile.am" : {
+      "ObjectId" : "14b5e76e595b786102473068bee978e5480265bc",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/util/threads/tests/Makefile.am" : {
+      "ObjectId" : "2975ab676454d01376878d64633570517aeb3919",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# XXX: we'll pollute the top builddir for creating a temporary test file\n\n# # used to bind a UNIX domain socket so we can minimize the risk of exceeding\n\n# # the limit of file name path size.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/util/unittests/Makefile.am" : {
+      "ObjectId" : "fc339a4882706b4f414e6d6c432f6394f7234344",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# For now, this isn't needed for libutil_unittests\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# $(top_builddir)/src/lib/util/io/libkea-util-io.la\n",
+        "Line" : 26,
+        "CharPositionInLine" : 31
+      },
+      "CommentCount" : 2
+    },
+    "src/lib/yang/Makefile.am" : {
+      "ObjectId" : "25c025acc69ffc0cf848631be2bfc46a5c643969",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Specify the headers for copying into the installation directory tree.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/lib/yang/pretests/Makefile.am" : {
+      "ObjectId" : "65e572592939441476223ad0f8c7137feea43757",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/yang/tests/Makefile.am" : {
+      "ObjectId" : "60cf09a6a13c1598bec66b57e2a8e59a368bf069",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/lib/yang/testutils/Makefile.am" : {
+      "ObjectId" : "aa0ac23b22e37b38d0090cddc272dbf4ff76976a",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/Makefile.am" : {
+      "ObjectId" : "16d61613378023e0834546faa25c603b36dfa02e",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/database/Makefile.am" : {
+      "ObjectId" : "7d7f88ab8a935ec10c81803911c10a43dcc70e1d",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/database/scripts/Makefile.am" : {
+      "ObjectId" : "fae380778fc36533c46dae2e96a1d1a5bf9329b9",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/database/scripts/cql/Makefile.am" : {
+      "ObjectId" : "c7c2388664db2087c0a968e86fb94e352ba3ff3c",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/database/scripts/mysql/Makefile.am" : {
+      "ObjectId" : "61263c38d2e58f8287b1abc14e7aab08c727d9e6",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/database/scripts/pgsql/Makefile.am" : {
+      "ObjectId" : "a940aa1d145713f32d6a64e189a4b724475c388c",
+      "LastModified" : "2019-04-10T18:01:56Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/yang/Makefile.am" : {
+      "ObjectId" : "c8c0085ff3080f777c15a5fe07aacf4d0521b1c0",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/yang/modules/Makefile.am" : {
+      "ObjectId" : "576ecbf920b4028c6e98574cedad008004f7a77c",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "tools/Makefile.am" : {
+      "ObjectId" : "b18bd4facd72e81bb5812e4915fe92660c6980e3",
+      "LastModified" : "2019-03-15T23:23:05Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# For bare distcheck\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Scripts for Cassandra support. Ultimately those scripts will have to be\n\n# incorporated in DataStax cpp-driver source tree, but until that happens,\n\n# let's keep them in Kea rpo\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    }
+  },
+  "FileTypes" : {
+    "AUTOMAKE" : 127
+  },
+  "ElapsedTime" : 6377
+}

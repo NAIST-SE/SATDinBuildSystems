@@ -1,0 +1,2928 @@
+{
+  "Repository" : "804235",
+  "Revision" : "HEAD",
+  "ObjectId" : "2d54c16a93a0b6ff83f37dc779b421a3ec18840c",
+  "CommitTime" : "2019-04-09T17:47:54Z",
+  "Files" : {
+    "ANTS.cmake" : {
+      "ObjectId" : "8cc6ef88f32a1aedfa88747f3b3a01a43af996bf",
+      "LastModified" : "2018-11-25T20:26:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Version information\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# CPACK Version\n\n#\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set up ITK\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Set up which ANTs apps to build\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Set up VTK\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# With MS compilers on Win64, we need the /bigobj switch, else generated\n\n# code results in objects with number of sections exceeding object file\n\n# format.\n\n# see http://msdn.microsoft.com/en-us/library/ms173499.aspx\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# These are configure time options that specify which\n\n# subset of tests should be run\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Set the global max TIMEOUT for CTest jobs.  This is very large for the moment\n\n#and should be revisted to reduce based on \"LONG/SHORT\" test times, set to 1 hr for now\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#Define where to find Boost includes\n",
+        "Line" : 133,
+        "CharPositionInLine" : 44
+      },
+      "10" : {
+        "Text" : "# message(\"${ITK_LIBRARIES}\")\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#----------------------------------------------------------------------------\n\n# Setup ants build environment\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#  ${CMAKE_CURRENT_SOURCE_DIR}/GraphTheory\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "CMake/ANTSExternalData.cmake" : {
+      "ObjectId" : "437c5d56b3011bfbe3c9501083c3fd2e48ab3f9f",
+      "LastModified" : "2013-01-18T01:31:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## The user can specify an environmental variable for shared locations of\n\n## of object files to prevent continous downloading of common objects.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Use ExternalData_OBJECT_STORES from environment as default.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Local data store populated by the ITK pre-commit hook\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Local data store populated by the ITK pre-commit hook\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Data published by Iowa Psychiatry web interface\n\n## The primary home for data\n",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Data published by MIDAS\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Data published by developers using git-gerrit-push.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Tell ExternalData commands to transform raw files to content links.\n\n# TODO: Condition this feature on presence of our pre-commit hook.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "CMake/ExternalData.cmake" : {
+      "ObjectId" : "b215c88283ba4f8c663fcafe7e88389816a863bf",
+      "LastModified" : "2013-07-09T17:25:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Manage data files stored outside source tree\n\n# Use this module to unambiguously reference data files stored outside the\n\n# source tree and fetch them at build time from arbitrary local and remote\n\n# content-addressed locations.  Functions provided by this module recognize\n\n# arguments with the syntax \"DATA{<name>}\" as references to external data,\n\n# replace them with full paths to local copies of those data, and create build\n\n# rules to fetch and update the local copies.\n\n#\n\n# The DATA{} syntax is literal and the <name> is a full or relative path\n\n# within the source tree.  The source tree must contain either a real data\n\n# file at <name> or a \"content link\" at <name><ext> containing a hash of the\n\n# real file using a hash algorithm corresponding to <ext>.  For example, the\n\n# argument \"DATA{img.png}\" may be satisfied by either a real \"img.png\" file in\n\n# the current source directory or a \"img.png.md5\" file containing its MD5 sum.\n\n#\n\n# The 'ExternalData_Expand_Arguments' function evaluates DATA{} references\n\n# in its arguments and constructs a new list of arguments:\n\n#  ExternalData_Expand_Arguments(\n\n#    <target>   # Name of data management target\n\n#    <outVar>   # Output variable\n\n#    [args...]  # Input arguments, DATA{} allowed\n\n#    )\n\n# It replaces each DATA{} reference in an argument with the full path of a\n\n# real data file on disk that will exist after the <target> builds.\n\n#\n\n# The 'ExternalData_Add_Test' function wraps around the CMake add_test()\n\n# command but supports DATA{} references in its arguments:\n\n#  ExternalData_Add_Test(\n\n#    <target>   # Name of data management target\n\n#    ...        # Arguments of add_test(), DATA{} allowed\n\n#    )\n\n# It passes its arguments through ExternalData_Expand_Arguments and then\n\n# invokes add_test() using the results.\n\n#\n\n# The 'ExternalData_Add_Target' function creates a custom target to manage\n\n# local instances of data files stored externally:\n\n#  ExternalData_Add_Target(\n\n#    <target>   # Name of data management target\n\n#    )\n\n# It creates custom commands in the target as necessary to make data files\n\n# available for each DATA{} reference previously evaluated by other functions\n\n# provided by this module.  A list of URL templates must be provided in the\n\n# variable ExternalData_URL_TEMPLATES using the placeholders \"%(algo)\" and\n\n# \"%(hash)\" in each template.  Data fetch rules try each URL template in order\n\n# by substituting the hash algorithm name for \"%(algo)\" and the hash value for\n\n# \"%(hash)\".\n\n#\n\n# The following hash algorithms are supported:\n\n#    %(algo)     <ext>     Description\n\n#    -------     -----     -----------\n\n#    MD5         .md5      Message-Digest Algorithm 5, RFC 1321\n\n# Note that the hashes are used only for unique data identification and\n\n# download verification.  This is not security software.\n\n#\n\n# Example usage:\n\n#   include(ExternalData)\n\n#   set(ExternalData_URL_TEMPLATES \"file:///local/%(algo)/%(hash)\"\n\n#                                  \"http://data.org/%(algo)/%(hash)\")\n\n#   ExternalData_Add_Test(MyData\n\n#     NAME MyTest\n\n#     COMMAND MyExe DATA{MyInput.png}\n\n#     )\n\n#   ExternalData_Add_Target(MyData)\n\n# When test \"MyTest\" runs the \"DATA{MyInput.png}\" argument will be replaced by\n\n# the full path to a real instance of the data file \"MyInput.png\" on disk.  If\n\n# the source tree contains a content link such as \"MyInput.png.md5\" then the\n\n# \"MyData\" target creates a real \"MyInput.png\" in the build tree.\n\n#\n\n# The DATA{} syntax can be told to fetch a file series using the form\n\n# \"DATA{<name>,:}\", where the \":\" is literal.  If the source tree contains a\n\n# group of files or content links named like a series then a reference to one\n\n# member adds rules to fetch all of them.  Although all members of a series\n\n# are fetched, only the file originally named by the DATA{} argument is\n\n# substituted for it.  The default configuration recognizes file series names\n\n# ending with \"#.ext\", \"_#.ext\", \".#.ext\", or \"-#.ext\" where \"#\" is a sequence\n\n# of decimal digits and \".ext\" is any single extension.  Configure it with a\n\n# regex that parses <number> and <suffix> parts from the end of <name>:\n\n#  ExternalData_SERIES_PARSE = regex of the form (<number>)(<suffix>)$\n\n# For more complicated cases set:\n\n#  ExternalData_SERIES_PARSE = regex with at least two () groups\n\n#  ExternalData_SERIES_PARSE_PREFIX = <prefix> regex group number, if any\n\n#  ExternalData_SERIES_PARSE_NUMBER = <number> regex group number\n\n#  ExternalData_SERIES_PARSE_SUFFIX = <suffix> regex group number\n\n# Configure series number matching with a regex that matches the\n\n# <number> part of series members named <prefix><number><suffix>:\n\n#  ExternalData_SERIES_MATCH = regex matching <number> in all series members\n\n# Note that the <suffix> of a series does not include a hash-algorithm\n\n# extension.\n\n#\n\n# The DATA{} syntax can alternatively match files associated with the named\n\n# file and contained in the same directory.  Associated files may be specified\n\n# by options using the syntax DATA{<name>,<opt1>,<opt2>,...}.  Each option may\n\n# specify one file by name or specify a regular expression to match file names\n\n# using the syntax REGEX:<regex>.  For example, the arguments\n\n#   DATA{MyData/MyInput.mhd,MyInput.img}                   # File pair\n\n#   DATA{MyData/MyFrames00.png,REGEX:MyFrames[0-9]+\\\\.png} # Series\n\n# will pass MyInput.mha and MyFrames00.png on the command line but ensure\n\n# that the associated files are present next to them.\n\n#\n\n# The DATA{} syntax may reference a directory using a trailing slash and a\n\n# list of associated files.  The form DATA{<name>/,<opt1>,<opt2>,...} adds\n\n# rules to fetch any files in the directory that match one of the associated\n\n# file options.  For example, the argument DATA{MyDataDir/,REGEX:.*} will pass\n\n# the full path to a MyDataDir directory on the command line and ensure that\n\n# the directory contains files corresponding to every file or content link in\n\n# the MyDataDir source directory.\n\n#\n\n# The variable ExternalData_LINK_CONTENT may be set to the name of a supported\n\n# hash algorithm to enable automatic conversion of real data files referenced\n\n# by the DATA{} syntax into content links.  For each such <file> a content\n\n# link named \"<file><ext>\" is created.  The original file is renamed to the\n\n# form \".ExternalData_<algo>_<hash>\" to stage it for future transmission to\n\n# one of the locations in the list of URL templates (by means outside the\n\n# scope of this module).  The data fetch rule created for the content link\n\n# will use the staged object if it cannot be found using any URL template.\n\n#\n\n# The variable ExternalData_OBJECT_STORES may be set to a list of local\n\n# directories that store objects using the layout <dir>/%(algo)/%(hash).\n\n# These directories will be searched first for a needed object.  If the object\n\n# is not available in any store then it will be fetched remotely using the URL\n\n# templates and added to the first local store listed.  If no stores are\n\n# specified the default is a location inside the build tree.\n\n#\n\n# The variable ExternalData_SOURCE_ROOT may be set to the highest source\n\n# directory containing any path named by a DATA{} reference.  The default is\n\n# CMAKE_SOURCE_DIR.  ExternalData_SOURCE_ROOT and CMAKE_SOURCE_DIR must refer\n\n# to directories within a single source distribution (e.g. they come together\n\n# in one tarball).\n\n#\n\n# The variable ExternalData_BINARY_ROOT may be set to the directory to hold\n\n# the real data files named by expanded DATA{} references.  The default is\n\n# CMAKE_BINARY_DIR.  The directory layout will mirror that of content links\n\n# under ExternalData_SOURCE_ROOT.\n\n#\n\n# Variables ExternalData_TIMEOUT_INACTIVITY and ExternalData_TIMEOUT_ABSOLUTE\n\n# set the download inactivity and absolute timeouts, in seconds.  The defaults\n\n# are 60 seconds and 300 seconds, respectively.  Set either timeout to 0\n\n# seconds to disable enforcement.  The inactivity timeout is enforced only\n\n# with CMake >= 2.8.5.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2010-2013 Kitware, Inc.\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n#\n\n# * Redistributions of source code must retain the above copyright\n\n#   notice, this list of conditions and the following disclaimer.\n\n#\n\n# * Redistributions in binary form must reproduce the above copyright\n\n#   notice, this list of conditions and the following disclaimer in the\n\n#   documentation and/or other materials provided with the distribution.\n\n#\n\n# * Neither the names of Kitware, Inc., the Insight Software Consortium,\n\n#   nor the names of their contributors may be used to endorse or promote\n\n#   products derived from this software without specific prior written\n\n#   permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\n# \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n\n# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n\n# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n\n# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n\n# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n\n# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\n# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#=============================================================================\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Expand all arguments as a single string to preserve escaped semicolons.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Set \"_ExternalData_FILE_${file}\" for each output file to avoid duplicate\n\n# rules.  Use local data first to prefer real files over content links.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Custom commands to copy or link local data.\n",
+        "Line" : 195,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Custom commands to fetch remote data.\n",
+        "Line" : 217,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Users care about the data file, so hide the hash/timestamp file.\n",
+        "Line" : 228,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# The hash/timestamp file is the output from the build perspective.\n\n# List the real file as a second output in case it is a broken link.\n\n# The files must be listed in this order so CMake can hide from the\n\n# make tool that a symlink target may not be newer than the input.\n",
+        "Line" : 230,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Run the data fetch/update script.\n",
+        "Line" : 235,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Update whenever the object hash changes.\n",
+        "Line" : 241,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Custom target to drive all update commands.\n",
+        "Line" : 248,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Replace DATA{} references with real arguments.\n",
+        "Line" : 253,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# This list expansion un-escapes semicolons in list element values so we\n\n# must re-escape them below anywhere a new list expansion will occur.\n",
+        "Line" : 257,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Re-escape in-value semicolons before expansion in foreach below.\n",
+        "Line" : 261,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# Split argument into DATA{}-pieces and other pieces.\n",
+        "Line" : 263,
+        "CharPositionInLine" : 6
+      },
+      "15" : {
+        "Text" : "# Compose output argument with DATA{}-pieces replaced.\n",
+        "Line" : 265,
+        "CharPositionInLine" : 6
+      },
+      "16" : {
+        "Text" : "# Replace this DATA{}-piece with a file path.\n",
+        "Line" : 269,
+        "CharPositionInLine" : 10
+      },
+      "17" : {
+        "Text" : "# No replacement needed for this piece.\n",
+        "Line" : 274,
+        "CharPositionInLine" : 10
+      },
+      "18" : {
+        "Text" : "# No replacements needed in this argument.\n",
+        "Line" : 279,
+        "CharPositionInLine" : 6
+      },
+      "19" : {
+        "Text" : "# Re-escape in-value semicolons in resulting list.\n",
+        "Line" : 282,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Private helper interface\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# TODO: Require CMake 2.8.7 to support other hashes with file(${algo} ...)\n",
+        "Line" : 299,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# Separate data path from the options.\n",
+        "Line" : 353,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# Interpret trailing slashes as directories.\n",
+        "Line" : 358,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Convert to full path.\n",
+        "Line" : 365,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Convert to relative path under the source tree.\n",
+        "Line" : 373,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Handle in-source builds gracefully.\n",
+        "Line" : 397,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Entries external to the source tree.\n\n# Entries internal to the source tree.\n",
+        "Line" : 406,
+        "CharPositionInLine" : 19
+      },
+      "28" : {
+        "Text" : "# Process options.\n",
+        "Line" : 410,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# Regular expression to match associated files.\n",
+        "Line" : 416,
+        "CharPositionInLine" : 6
+      },
+      "30" : {
+        "Text" : "# Activate series matching.\n",
+        "Line" : 420,
+        "CharPositionInLine" : 6
+      },
+      "31" : {
+        "Text" : "# Specific associated file.\n",
+        "Line" : 423,
+        "CharPositionInLine" : 6
+      },
+      "32" : {
+        "Text" : "# Load a whole file series.\n",
+        "Line" : 438,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# Load listed/matching associated files in the directory.\n",
+        "Line" : 442,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# Load the named data file.\n",
+        "Line" : 450,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# Load listed/matching associated files.\n",
+        "Line" : 453,
+        "CharPositionInLine" : 6
+      },
+      "36" : {
+        "Text" : "# Make the series available in the build tree.\n",
+        "Line" : 467,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "# The whole series is in the source tree.\n",
+        "Line" : 474,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# Associated files lie in the same directory.\n",
+        "Line" : 480,
+        "CharPositionInLine" : 2
+      },
+      "39" : {
+        "Text" : "# Find files named explicitly.\n",
+        "Line" : 491,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# Find files matching the given regular expressions.\n",
+        "Line" : 497,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "# Match only the named data by itself.\n",
+        "Line" : 508,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# Configure series parsing and matching.\n",
+        "Line" : 514,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Parse the base, number, and extension components of the series.\n",
+        "Line" : 547,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Glob files that might match the series.\n\n# Then match base, number, and extension.\n",
+        "Line" : 561,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Private script mode interface\n",
+        "Line" : 600,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Create a temporary file first.\n",
+        "Line" : 615,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "# Create a symbolic link.\n",
+        "Line" : 621,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "# Use relative path if files are close enough.\n",
+        "Line" : 624,
+        "CharPositionInLine" : 6
+      },
+      "49" : {
+        "Text" : "# Create a copy.\n",
+        "Line" : 634,
+        "CharPositionInLine" : 4
+      },
+      "50" : {
+        "Text" : "# Atomically create/replace the real destination.\n",
+        "Line" : 642,
+        "CharPositionInLine" : 2
+      },
+      "51" : {
+        "Text" : "# Search all object stores for an existing object.\n",
+        "Line" : 691,
+        "CharPositionInLine" : 2
+      },
+      "52" : {
+        "Text" : "# Download object to the first store.\n",
+        "Line" : 701,
+        "CharPositionInLine" : 2
+      },
+      "53" : {
+        "Text" : "# Verify downloaded object.\n",
+        "Line" : 718,
+        "CharPositionInLine" : 6
+      },
+      "54" : {
+        "Text" : "# Check if file already corresponds to the object.\n",
+        "Line" : 767,
+        "CharPositionInLine" : 2
+      },
+      "55" : {
+        "Text" : "#message(STATUS \"File already corresponds to object\")\n",
+        "Line" : 774,
+        "CharPositionInLine" : 6
+      },
+      "56" : {
+        "Text" : "# Touch the file to convince the build system it is up to date.\n",
+        "Line" : 780,
+        "CharPositionInLine" : 4
+      },
+      "57" : {
+        "Text" : "# Atomically update the hash/timestamp file to record the object referenced.\n",
+        "Line" : 786,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 58
+    },
+    "CMake/GetGitRevisionDescription.cmake" : {
+      "ObjectId" : "53a0a41c5735e868958bcffcc8754c906047fd76",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Returns a version string from Git\n\n#\n\n# These functions force a re-configure on each git commit so that you can\n\n# trust the values of the variables in your build system.\n\n#\n\n#  get_git_head_revision(<refvar> <hashvar> [<additonal arguments to git describe> ...])\n\n#\n\n# Returns the ref and sha hash of the current head revision\n\n#\n\n#  git_describe(<var> [<additonal arguments to git describe> ...])\n\n#\n\n# Returns the results of git describe on the source tree, and adjusting\n\n# the output so that it tests false if an error occurs.\n\n#\n\n#  git_get_exact_tag(<var> [<additonal arguments to git describe> ...])\n\n#\n\n# Returns the results of git describe --exact-match on the source tree,\n\n# and adjusting the output so that it tests false if there was no exact\n\n# matching tag.\n\n#\n\n# Requires CMake 2.6 or newer (uses the 'function' command)\n\n#\n\n# Original Author:\n\n# 2009-2010 Ryan Pavlik <rpavlik@iastate.edu> <abiryan@ryand.net>\n\n# http://academic.cleardefinition.com\n\n# Iowa State University HCI Graduate Program/VRAC\n\n#\n\n# Copyright Iowa State University 2009-2010.\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE_1_0.txt or copy at\n\n# http://www.boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We must run the following at \"include\" time, not at function call time,\n\n# to find the path to this module rather than the path to a calling list file\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# not in git\n",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# get the number of commits since the file has last been modified\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# TODO sanitize\n\n#if((${ARGN}\" MATCHES \"&&\") OR\n\n#\t(ARGN MATCHES \"||\") OR\n\n#\t(ARGN MATCHES \"\\\\;\"))\n\n#\tmessage(\"Please report the following error to the project!\")\n\n#\tmessage(FATAL_ERROR \"Looks like someone's doing something nefarious with git_describe! Passed arguments ${ARGN}\")\n\n#endif()\n",
+        "Line" : 135,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "#message(STATUS \"Arguments to execute_process: ${ARGN}\")\n",
+        "Line" : 143,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 6
+    },
+    "CMake/ITKSetStandardCompilerFlags.cmake" : {
+      "ObjectId" : "b79e2789f6eb766d77eb04234ebfc3e657e4c324",
+      "LastModified" : "2019-04-09T14:26:17Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# trict-null-sentinel Check the set of common warning flags supported by C and C++ compilers\n\n# check_compiler_warning_flags(<c_flags_var> <cxx_flags_var>)\n\n#  <c_flags_var> - variable to store valid C warning flags\n\n#  <cxx_flags_var> - variable to store valid CXX warning flags\n\n# This internally calls the check_c_compiler_flag and check_cxx_compiler_flag macros.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To create a portable build system, it is best to not\n\n# test for platforms, but to test for features.\n\n#\n\n# Instead of testing \"if Windows then do this\", test for\n\n# \"if the -Wno-invalid-offsetof flag works then use it\".\n\n#\n\n# Typical use of this module is:\n\n#\n\n#  include(CheckCompilerWarningFlags)\n\n#  check_compiler_warning_flags(C_WARNING_FLAGS CXX_WARNING_FLAGS)\n\n#  set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} ${C_WARNING_FLAGS}\")\n\n#  set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} ${CXX_WARNING_FLAGS}\")\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check this list on C compiler only\n",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "## On windows, the most verbose compiler options\n\n## is reporting 1000's of wanings in windows\n\n## header files, for now, limit the number of\n\n## warnings to level 3\n",
+        "Line" : 67,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "## A better solution would be to use -Wall,\n\n## and then disable warnings one by one\n\n## set(VerboseWarningsFlag -Wall -wd4820 -wd4682 )\n",
+        "Line" : 73,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "## with Intel compiler, the -Wall compiler options\n\n## is reporting 1000's of remarks of trivial items\n\n## that will only slow day-to-day operations\n\n## specify -w2 to restrict to only warnings and errors\n",
+        "Line" : 77,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# NOTE -w2 is close to gcc's -Wall warning level, -w5 is intels -Wall warning level, and it is too verbose.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "#-wd424  #Needed for Intel compilers with remarki  #424: extra \";\" ignored\n\n#-wd383  #Needed for Intel compilers with remark   #383: value copied to temporary, reference to temporary used\n\n#-wd981  #Needed for Intel compilers with remark   #981: operands are evaluated in unspecified order\n\n#-wd1418 #Needed for Intel compilers with remark  #1418: external function definition with no prior declaration\n\n#-wd1419 #Needed for Intel compilers with remark  #1419: external declaration in primary source file\n\n#-wd1572 #Needed for Intel compilers with remark  #1572: floating-point equality and inequality comparisons are unreliable\n\n#-wd2259 #Needed for Intel compilers with remark  #2259: non-pointer conversion from \"itk::SizeValueType={unsigned long}\" to \"double\" may lose significant bits\n\n#-wd1268 #Needed for Intel compliers with warning #1268: support for exported templates is disabled\n",
+        "Line" : 90,
+        "CharPositionInLine" : 6
+      },
+      "8" : {
+        "Text" : "# Check this list on both C and C++ compilers\n",
+        "Line" : 103,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "#Needed on APPLE\n",
+        "Line" : 106,
+        "CharPositionInLine" : 28
+      },
+      "10" : {
+        "Text" : "# Check this list on C++ compiler only\n",
+        "Line" : 121,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# suppress invalid warning when explicitly instantiated in another translation unit\n",
+        "Line" : 125,
+        "CharPositionInLine" : 33
+      },
+      "12" : {
+        "Text" : "##-Wno-c++0x-static-nonintegral-init\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "## Clang compiler likes to warn about this feature that is technically only in\n\n## c++0x, but works on many compilers, and if it fails, then alternate methods are used\n",
+        "Line" : 130,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# https://docs.microsoft.com/en-us/cpp/build/reference/arch-x64?view=vs-2015\n",
+        "Line" : 147,
+        "CharPositionInLine" : 9
+      },
+      "15" : {
+        "Text" : "# /arch:/AVX2 AVX2 circa 2013\n",
+        "Line" : 148,
+        "CharPositionInLine" : 55
+      },
+      "16" : {
+        "Text" : "# Check this list on C compiler only\n",
+        "Line" : 162,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Check this list on C++ compiler only\n",
+        "Line" : 165,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Check this list on both C and C++ compilers\n",
+        "Line" : 168,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# https://gcc.gnu.org/onlinedocs/gcc-4.8.0/gcc/i386-and-x86_002d64-Options.html\n\n# NOTE the corei7 release date was 2008\n",
+        "Line" : 170,
+        "CharPositionInLine" : 7
+      },
+      "20" : {
+        "Text" : "# Tune the code for the computer used to compile this package, but allow running on generic cpu archetectures defined by -march\n",
+        "Line" : 172,
+        "CharPositionInLine" : 21
+      },
+      "21" : {
+        "Text" : "# Use ABI settings to support corei7 (circa 2008 ABI feature sets, corei7-avx circa 2013)\n",
+        "Line" : 173,
+        "CharPositionInLine" : 25
+      },
+      "22" : {
+        "Text" : "# On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security\n\n# warnings\n",
+        "Line" : 187,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# With MS compilers on Win64, we need the /bigobj switch, else generated\n\n# code results in objects with number of sections exceeding object file\n\n# format.\n\n# see http://msdn.microsoft.com/en-us/library/ms173499.aspx\n",
+        "Line" : 205,
+        "CharPositionInLine" : 9
+      },
+      "24" : {
+        "Text" : "# Some libraries (e.g. vxl libs) have no dllexport markup, so we can\n\n# build full shared libraries only with the GNU toolchain. For non\n\n# gnu compilers on windows, only a few libraries are built shared.\n\n# This is controlled with ITK_LIBRARY_BUILD_TYPE used in the add_library\n\n# call. This allows for plugin type applications to use a dll for\n\n# ITKCommon which will contain the static for Modified time.\n",
+        "Line" : 216,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# CMake adds --enable-all-exports on Cygwin (since Cygwin is\n\n# supposed to be UNIX-like), but we need to add it explicitly for\n\n# a native windows build with the MinGW tools.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 6
+      },
+      "26" : {
+        "Text" : "# if CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS is on, then\n\n# BUILD_SHARED_LIBS works as it would on other systems\n",
+        "Line" : 234,
+        "CharPositionInLine" : 6
+      },
+      "27" : {
+        "Text" : "# turn off BUILD_SHARED_LIBS as ITK_LIBRARY_BUILD_TYPE\n\n# is used on the libraries that have markup.\n",
+        "Line" : 242,
+        "CharPositionInLine" : 8
+      },
+      "28" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n#ITK requires special compiler flags on some platforms.\n",
+        "Line" : 248,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# GCC's -Warray-bounds has been shown to throw false positives with -O3 on 4.8.\n",
+        "Line" : 251,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "# The gold linker is approximately 3X faster.\n",
+        "Line" : 272,
+        "CharPositionInLine" : 8
+      },
+      "31" : {
+        "Text" : "# -fopenmp breaks compiling the HDF5 library in shared library mode\n\n# on the OS X platform -- at least with gcc 4.2 from Xcode.\n",
+        "Line" : 288,
+        "CharPositionInLine" : 5
+      },
+      "32" : {
+        "Text" : "# gcc must have -msse2 option to enable sse2 support\n",
+        "Line" : 304,
+        "CharPositionInLine" : 3
+      },
+      "33" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 310,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# for the gnu compiler a -D_PTHREADS is needed on sun\n\n# for the native compiler a -mt flag is needed on the sun\n",
+        "Line" : 312,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# Add flags for the SUN compiler to provide all the methods for std::allocator.\n\n#\n",
+        "Line" : 322,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# mingw thread support\n",
+        "Line" : 333,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Set the compiler-specific flag for disabling optimization.\n",
+        "Line" : 340,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "#End the platform check function\n",
+        "Line" : 350,
+        "CharPositionInLine" : 10
+      },
+      "39" : {
+        "Text" : "# Only check once if not explicitly set on command line\n",
+        "Line" : 352,
+        "CharPositionInLine" : 82
+      },
+      "40" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n#Check the set of warning flags the compiler supports\n",
+        "Line" : 353,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "#Not set on cmake command line option -D${PROJECT_NAME}_C_WARNING_FLAGS:STRING=\"\"\n",
+        "Line" : 358,
+        "CharPositionInLine" : 40
+      },
+      "42" : {
+        "Text" : "#Not set on cmake command line option -D${PROJECT_NAME}_CXX_WARNING_FLAGS:STRING=\"\"\n",
+        "Line" : 363,
+        "CharPositionInLine" : 42
+      },
+      "43" : {
+        "Text" : "# Only check once if not explicitly set on command line\n",
+        "Line" : 374,
+        "CharPositionInLine" : 92
+      },
+      "44" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n#Check the set of warning flags the compiler supports\n",
+        "Line" : 375,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "#Not set on cmake command line option -D${PROJECT_NAME}_C_OPTIMIZATION_FLAGS:STRING=\"\"\n",
+        "Line" : 379,
+        "CharPositionInLine" : 45
+      },
+      "46" : {
+        "Text" : "#Not set on cmake command line option -D${PROJECT_NAME}_CXX_OPTIMIZATION_FLAGS:STRING=\"\"\n",
+        "Line" : 384,
+        "CharPositionInLine" : 47
+      },
+      "47" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n#Check the set of platform flags the compiler supports\n",
+        "Line" : 394,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Append ITK warnings to the CMake flags.\n\n# We do not set them in ITK_REQUIRED FLAGS because all project which\n\n# use ITK don't require these flags .\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 49
+    },
+    "CMake/ITK_CheckCCompilerFlag.cmake" : {
+      "ObjectId" : "a531f92b59d9d9e8a9e0e01840804b0224aedeab",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Check whether the C compiler supports a given flag.\n\n# CHECK_C_COMPILER_FLAG(<flag> <var>)\n\n#  <flag> - the compiler flag\n\n#  <var>  - variable to store the result\n\n# This internally calls the check_c_source_compiles macro.\n\n# See help for CheckCSourceCompiles for a listing of variables\n\n# that can modify the build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2006-2010 Kitware, Inc.\n\n# Copyright 2006 Alexander Neundorf <neundorf@kde.org>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Some compilers do not fail with a bad flag\n",
+        "Line" : 29,
+        "CharPositionInLine" : 5
+      },
+      "3" : {
+        "Text" : "# Apple gcc\n\n# GNU\n\n# Clang\n\n# MSVC\n\n# MSVC, any lang\n\n# HP\n\n# SunPro\n\n# XL\n",
+        "Line" : 31,
+        "CharPositionInLine" : 60
+      },
+      "4" : {
+        "Text" : "# INTEL compilers\n",
+        "Line" : 39,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 5
+    },
+    "CMake/ITK_CheckCXXCompilerFlag.cmake" : {
+      "ObjectId" : "1d6e755c76cf12d205fe661b954960bae73ef9bf",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Check whether the CXX compiler supports a given flag.\n\n# CHECK_CXX_COMPILER_FLAG(<flag> <var>)\n\n#  <flag> - the compiler flag\n\n#  <var>  - variable to store the result\n\n# This internally calls the check_cxx_source_compiles macro.  See help\n\n# for CheckCXXSourceCompiles for a listing of variables that can\n\n# modify the build.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2006-2010 Kitware, Inc.\n\n# Copyright 2006 Alexander Neundorf <neundorf@kde.org>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Some compilers do not fail with a bad flag\n",
+        "Line" : 29,
+        "CharPositionInLine" : 5
+      },
+      "3" : {
+        "Text" : "# GNU\n\n# Clang\n\n# MSVC\n\n# MSVC, any lang\n\n# HP\n\n# SunPro\n\n# XL\n",
+        "Line" : 30,
+        "CharPositionInLine" : 60
+      },
+      "4" : {
+        "Text" : "# AIX\n",
+        "Line" : 37,
+        "CharPositionInLine" : 69
+      },
+      "5" : {
+        "Text" : "# PGI\n",
+        "Line" : 38,
+        "CharPositionInLine" : 60
+      },
+      "6" : {
+        "Text" : "# INTEL compilers\n",
+        "Line" : 39,
+        "CharPositionInLine" : 56
+      },
+      "CommentCount" : 7
+    },
+    "CMake/PreventInBuildInstalls.cmake" : {
+      "ObjectId" : "e693f1b27c34c217e6ec817137bd2f8e3ed47b72",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Adapated from ITKv4/CMake/PreventInBuildInstalls.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMake/PreventInSourceBuilds.cmake" : {
+      "ObjectId" : "07bace5ad9ef821f8945bfc455f4542082bdbe91",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Adapated from ITKv4/CMake/PreventInSourceBuilds.cmake\n\n#\n\n# This function will prevent in-source builds\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make sure the user doesn't play dirty with symlinks\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# disallow in-source builds\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "CMake/ProjectSourceVersion.cmake" : {
+      "ObjectId" : "93a0a5f4fad9ea4a175792ab50fb1e1ab9e27707",
+      "LastModified" : "2018-02-13T02:43:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# This CMake code extracts the information from the git repository,\n\n# and automatically causes a reconfigure if the git HEAD changes. The\n\n# following variable may be defined after execution:\n\n#\n\n# _GIT_VERSION_HASH - the SHA1 hash of the current HEAD\n\n#\n\n# Based on the most recent tag starting with the letter \"v\" for\n\n# version, which is expected to be of the form\n\n# vN.N[.N[.N][(a|b|c|rc[N])] the following is extracted or undefined:\n\n#\n\n# _GIT_VERSION_MAJOR\n\n# _GIT_VERSION_MINOR\n\n# _GIT_VERSION_PATCH\n\n# _GIT_VERSION_TWEAK\n\n# _GIT_VERSION_RC\n\n#\n\n# If the current project's version ( defiend by\n\n# ${CMAKE_PROJECT_NAME}_VERSION_MAJOR and MINOR and PATCH and TWEAK\n\n# match that of the tag, then it'll be considered that the project is\n\n# in post release mode otherwise it's considered underdevelopment.\n\n#\n\n# Only one of the following variables will be defined.\n\n# _GIT_VERSION_DEV is defined as number of commits\n\n# since the projects Version.cmake file has been modified. While\n\n# _GIT_VERSION_POST is defined as the number of commits since the tag.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# if there is not git directory we should be in a distributed package\n\n# we will use version provided in Version.cmake\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# find the closest anotated tag with the v prefix for version\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# a,b,rc01 etc\n",
+        "Line" : 67,
+        "CharPositionInLine" : 43
+      },
+      "4" : {
+        "Text" : "#trim leading '-'\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#ignore if 0\n",
+        "Line" : 103,
+        "CharPositionInLine" : 21
+      },
+      "6" : {
+        "Text" : "# The first commit after a tag should increase the project version\n\n# number in Version.cmake and be \"dev1\"\n",
+        "Line" : 107,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# save variable in a configuration file in case we have no git directory\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "CMake/SlicerMacroCheckExternalProjectDependency.cmake" : {
+      "ObjectId" : "173b8ee2436540755d9377b164f90fe91f02e7dc",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "################################################################################\n\n#\n\n#  Program: 3D Slicer\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  See COPYRIGHT.txt\n\n#  or http://www.slicer.org/copyright/copyright.txt for details.\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.\n\n#  and was partially funded by NIH grant 3P41RR013218-12S1\n\n#\n\n################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#message(STATUS \"PUSHING ${VALUE} onto ${CACHE_LIST}:  --> ${${CACHE_LIST}}\")\n",
+        "Line" : 28,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#message(STATUS \"POPING ${${TVAR}} from ${CACHE_LIST}:  --> ${${CACHE_LIST}}\")\n",
+        "Line" : 34,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Set indent variable if needed\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Display dependency of project being processed\n",
+        "Line" : 50,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Include dependencies\n",
+        "Line" : 65,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# If project being process has dependencies, indicates it has also been added.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Update indent variable\n",
+        "Line" : 87,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 10
+    },
+    "CMake/SlicerMacroEmptyExternalProject.cmake" : {
+      "ObjectId" : "122a3403a2e74fdc8c61a1f8934fa08de788a346",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "###########################################################################\n\n#\n\n#  Library:   CTK\n\n#\n\n#  Copyright (c) Kitware Inc.\n\n#\n\n#  Licensed under the Apache License, Version 2.0 (the \"License\");\n\n#  you may not use this file except in compliance with the License.\n\n#  You may obtain a copy of the License at\n\n#\n\n#      http://www.commontk.org/LICENSE\n\n#\n\n#  Unless required by applicable law or agreed to in writing, software\n\n#  distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#  See the License for the specific language governing permissions and\n\n#  limitations under the License.\n\n#\n\n###########################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# See http://github.com/commontk/CTK/blob/master/CMake/ctkMacroEmptyExternalProject.cmake\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Convenient macro allowing to define a \"empty\" project in case an external one is provided\n\n# using for example <proj>_DIR.\n\n# Doing so allows to keep the external project dependency system happy.\n\n#\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "CMake/itkCheckSourceTree.cmake" : {
+      "ObjectId" : "100e15f3468c3b796abbe2ca9acc0838433d178b",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Install a pre-commit hook to bootstrap commit hooks.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Silently ignore the error if the hooks directory is read-only.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "7080be9cae38c7a117da9c4b7c087e70c508f92d",
+      "LastModified" : "2019-04-09T14:26:17Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####\n\n##  Set the default target properties for ITK\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Supported values are ``11``, ``14``, and ``17``.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 29
+      },
+      "2" : {
+        "Text" : "## Only policies introduced after the cmake_minimum_required\n\n## version need to explicitly be set to NEW.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "#3.10.0 Define ``file(GENERATE)`` behavior for relative paths.\n\n#3.10.0 Let ``AUTOMOC`` and ``AUTOUIC`` process ``GENERATED`` files.\n\n#3.12.0 `find_package()`` uses ``<PackageName>_ROOT`` variables.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 12
+      },
+      "4" : {
+        "Text" : "## NOTE THERE SHOULD BE NO PROJECT STATEMENT HERE!\n\n## This file acts as a simple switch to initiate\n\n## two completely independant CMake build environments.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Superbuild Option - Enabled by default\n\n#                   Phase I:  ${LOCAL_PROJECT_NAME}_SUPERBUILD is set to ON, and the\n\n#                             supporting packages defined in \"SuperBuild.cmake\"\n\n#                             are built.  The last package in \"SuperBuild.cmake\"\n\n#                             to be built is a recursive call to this\n\n#                             file with ${LOCAL_PROJECT_NAME}_SUPERBUILD explicitly\n\n#                             set to \"OFF\" to initiate Phase II\n\n#\n\n#                   Phase II: Build the ${LOCAL_PROJECT_NAME}, referencing the support\n\n#                             packages built in Phase I.\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Superbuild script\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# This must always be last!\n",
+        "Line" : 80,
+        "CharPositionInLine" : 19
+      },
+      "8" : {
+        "Text" : "# This must always be last!\n",
+        "Line" : 88,
+        "CharPositionInLine" : 19
+      },
+      "CommentCount" : 9
+    },
+    "CTestConfig.cmake" : {
+      "ObjectId" : "822f6f053b6bd6767a9b15d65380c503afffba4c",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## This file should be placed in the root directory of your project.\n\n## Then modify the CMakeLists.txt file in the root directory of your\n\n## project to incorporate the testing dashboard.\n\n## # The following are required to uses Dart and the Cdash dashboard\n\n##   enable_testing()\n\n##   include(CTest)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CTestCustom.cmake" : {
+      "ObjectId" : "24967d62c4d7a7ed34c97c2b61fb42648aff4171",
+      "LastModified" : "2018-06-05T10:58:17Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-- #NOTES from http: // www.cmake.org/Wiki/CMake_Testing_With_CTest\n\n#set(CTEST_CUSTOM_MEMCHECK_IGNORE\n\n#    $ {CTEST_CUSTOM_MEMCHECK_IGNORE}\n\n#    DummyExcludeMemcheckIgnoreTestSetGet\n\n#    )\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-- #set(CTEST_CUSTOM_WARNING_MATCH\n\n#-- #${CTEST_CUSTOM_WARNING_MATCH}\n\n#-- #\"{standard input}:[0-9][0-9]*: Warning: \"\n\n#-- #)\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# For further details regarding this file,\n\n# see http://www.cmake.org/Wiki/CMake_Testing_With_CTest#Customizing_CTest\n\n#\n\n# and\n\n# http://www.kitware.com/blog/home/post/27\n\n#\n\n#----------------------------------------------------------------------\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-- #Reset maximum number of warnings so that they all show up.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The following tests should not be run under valgrind\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Exclude try_compile sources from coverage results:\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Exclude files generated by the moc pre-compiler\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Exclude files generated by the uic pre-compiler\n",
+        "Line" : 46,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Exclude files generated by the resource pre-compiler\n",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Exclude files from the Testing directories\n",
+        "Line" : 52,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Exclude generated python files\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Exclude Qt Designer plugins\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Exclude generated cpp files\n",
+        "Line" : 62,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "#\"vtkparse.tab.c\"\n",
+        "Line" : 69,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Ignore 'detached HEAD' warnings\n",
+        "Line" : 73,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# NIPYPE warnings:\n",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# PCRE warnings:\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# JPEG warnings:\n",
+        "Line" : 90,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Swig warnings:\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Open-CV warnings:\n",
+        "Line" : 105,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# FFTW warnings:\n",
+        "Line" : 110,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Numpy warnings\n",
+        "Line" : 113,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "# C4244: 'conversion' conversion from 'type1' to 'type2', possible loss of data\n\n# C4028: formal parameter 'number' different from declaration\n\n# C4996: 'function': was declared deprecated\n\n# C4133: '=' : incompatible types - from 'PyArray_Descr *' to 'PyObject *'\n\n# C4146: unary minus operator applied to unsigned type, result still unsigned\n\n# C4716: function '...' : must return a value\n\n# C4723: Potential divide by zero\n",
+        "Line" : 115,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# warning: assignment from incompatible pointer type\n\n# warning: ‘...’ defined but not used\n\n# warning: ‘...’ may be used uninitialized in this function\n",
+        "Line" : 123,
+        "CharPositionInLine" : 2
+      },
+      "24" : {
+        "Text" : "# Mac\n",
+        "Line" : 128,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Tcl\n",
+        "Line" : 131,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "#  warning: '...' is deprecated (declared at ...)\n",
+        "Line" : 133,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Tk\n",
+        "Line" : 137,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# incrTcl\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# qt suppressions from vtk...\n\n# Some Slicer dashboards include building bits of Qt which produce lots of\n\n# the following warnings when built with the MS compilers. Qt guys should\n\n# fix their code. Until they do, keep the Qt chatter off the Slicer dashboard\n\n# results:\n",
+        "Line" : 146,
+        "CharPositionInLine" : 2
+      },
+      "30" : {
+        "Text" : "# Tiger / 4.6.2 warning\n",
+        "Line" : 154,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# Snowleopard / 4.6.2 warning\n",
+        "Line" : 157,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# Suppress warning caused when QT 'foreach' loops are combined\n",
+        "Line" : 160,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# STL - Tiger\n",
+        "Line" : 163,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# Make\n",
+        "Line" : 166,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# Suppressing warnings about GL_GLEXT_LEGACY, the link reported below\n\n# report a similar problem with GL_GLEXT_PROTOTYPE.\n\n# http://lists.apple.com/archives/mac-opengl/2009/Dec/msg00081.html\n\n# That problem could be solved installing a newer version of X11 SDK\n\n# See http://xquartz.macosforge.org/trac/changeset/343\n",
+        "Line" : 169,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# ITK suppressions\n",
+        "Line" : 176,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# VTK suppressions\n",
+        "Line" : 188,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# exception specific to Mac/Carbon\n",
+        "Line" : 201,
+        "CharPositionInLine" : 2
+      },
+      "39" : {
+        "Text" : "# exception specific to Mac/X11\n",
+        "Line" : 203,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# CTK - log4qt\n",
+        "Line" : 206,
+        "CharPositionInLine" : 2
+      },
+      "41" : {
+        "Text" : "# CTK - dcmtk\n",
+        "Line" : 212,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# Libs/OpenIGTLink\n",
+        "Line" : 219,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Batchmake\n",
+        "Line" : 222,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Libs/tclap\n",
+        "Line" : 225,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# Teem\n\n# Mac - teem/src/nrrd/superset.c:433: warning: format '%d' expects type 'int', but argument 6 has type 'ptrdiff_t'\n",
+        "Line" : 228,
+        "CharPositionInLine" : 2
+      },
+      "46" : {
+        "Text" : "# Python - Windows\n",
+        "Line" : 232,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "# Python - Linux\n",
+        "Line" : 238,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# Python - Mac\n",
+        "Line" : 244,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "# About redefinition of symbols\n",
+        "Line" : 254,
+        "CharPositionInLine" : 2
+      },
+      "50" : {
+        "Text" : "# curl suppressions\n",
+        "Line" : 258,
+        "CharPositionInLine" : 2
+      },
+      "51" : {
+        "Text" : "# C4701: potentially uninitialized local variable '...' used\n\n# C4057: 'function' : '...' differs in indirection to slightly different base types from '...'\n\n# C4245: '=' : conversion from '...' to '...', signed/unsigned mismatch\n\n# C4706: assignment within conditional expression\n\n# C4232: nonstandard extension used : '...' : address of dllimport '...' is not static, identity not guaranteed\n",
+        "Line" : 261,
+        "CharPositionInLine" : 2
+      },
+      "52" : {
+        "Text" : "# C4131: uses old-style declarator\n\n# C4244: conversion from '...' to '...', possible loss of data\n\n# C4127: conditional expression is constant\n",
+        "Line" : 267,
+        "CharPositionInLine" : 2
+      },
+      "53" : {
+        "Text" : "# C4100: unreferenced formal parameter\n",
+        "Line" : 271,
+        "CharPositionInLine" : 2
+      },
+      "54" : {
+        "Text" : "# Mac\n",
+        "Line" : 273,
+        "CharPositionInLine" : 2
+      },
+      "55" : {
+        "Text" : "#PythonQt\n",
+        "Line" : 278,
+        "CharPositionInLine" : 2
+      },
+      "56" : {
+        "Text" : "#Libarchive\n",
+        "Line" : 281,
+        "CharPositionInLine" : 2
+      },
+      "57" : {
+        "Text" : "# Visual studio spurious warnings...\n",
+        "Line" : 285,
+        "CharPositionInLine" : 2
+      },
+      "58" : {
+        "Text" : "# Since NUMPY has test that return build errors, let's add the following exception\n",
+        "Line" : 288,
+        "CharPositionInLine" : 2
+      },
+      "59" : {
+        "Text" : "## HACK: THIS SHOULD NOT BE SUPPRESSED, NEED TO FIX OPENCV!!\n",
+        "Line" : 292,
+        "CharPositionInLine" : 2
+      },
+      "60" : {
+        "Text" : "## HACK: THIS SHOULD NOT BE SUPPRESSED, NEED TO FIX IN ANTS\n",
+        "Line" : 297,
+        "CharPositionInLine" : 2
+      },
+      "61" : {
+        "Text" : "## External Packages\n",
+        "Line" : 299,
+        "CharPositionInLine" : 2
+      },
+      "62" : {
+        "Text" : "#\"CMake Warning[ :]\"\n",
+        "Line" : 320,
+        "CharPositionInLine" : 2
+      },
+      "63" : {
+        "Text" : "# Suppressing warnings about duplicate libraries in Darwin\n\n# At some point this may be addressed by CMake feature request:\n\n# http://public.kitware.com/Bug/view.php?id=10179\n",
+        "Line" : 328,
+        "CharPositionInLine" : 2
+      },
+      "64" : {
+        "Text" : "# Numpy errors\n",
+        "Line" : 342,
+        "CharPositionInLine" : 2
+      },
+      "65" : {
+        "Text" : "#SWIG\n",
+        "Line" : 348,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 66
+    },
+    "Common.cmake" : {
+      "ObjectId" : "05d02680b8b9ccf2427a5e9b5cb833fc8b1784b3",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Update CMake module path\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Sanity checks\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#include(itkCheckSourceTree)\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Build option(s)\n\n#-----------------------------------------------------------------------------\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "######################################################################################################\n\n# BA - add this stuff to help installation of ANTsR\n\n# set(CMAKE_SKIP_BUILD_RPATH  FALSE)\n\n# set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)\n\n# set(CMAKE_INSTALL_RPATH \"${CMAKE_INSTALL_PREFIX}/lib\")\n\n# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)\n\n# list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES \"${CMAKE_INSTALL_PREFIX}/lib\" isSystemDir)\n\n# if(\"${isSystemDir}\" STREQUAL \"-1\")\n\n#   set(CMAKE_INSTALL_RPATH \"${CMAKE_INSTALL_PREFIX}/lib\")\n\n# endif()\n\n#####################################################################################################\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Set the possible values of ITK major version for cmake-gui\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Note: Since ITKv3 doesn't include a ITKConfigVersion.cmake file, let's check the version\n\n#       explicitly instead of passing the version as an argument to find_package() command.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Set a default build type if none was specified\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Set the possible values of build type for cmake-gui\n",
+        "Line" : 62,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# CMake Function(s) and Macro(s)\n\n#-----------------------------------------------------------------------------\n\n# With CMake 2.8.9 or later, the UPDATE_COMMAND is required for updates to occur.\n\n# For earlier versions, we nullify the update state to prevent updates and\n\n# undesirable rebuild.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Platform check\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# See CMake/Modules/Platform/Darwin.cmake)\n\n#   6.x == Mac OSX 10.2 (Jaguar)\n\n#   7.x == Mac OSX 10.3 (Panther)\n\n#   8.x == Mac OSX 10.4 (Tiger)\n\n#   9.x == Mac OSX 10.5 (Leopard)\n\n#  10.x == Mac OSX 10.6 (Snow Leopard)\n",
+        "Line" : 89,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#-------------------------------------------------------------------------\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#-------------------------------------------------------------------------\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#-------------------------------------------------------------------------\n\n# Augment compiler flags\n\n#-------------------------------------------------------------------------\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Release, or anything else\n",
+        "Line" : 144,
+        "CharPositionInLine" : 9
+      },
+      "19" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Add needed flag for gnu on linux like enviroments to build static common libs\n\n# suitable for linking with shared object libs.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 20
+    },
+    "Examples/CMakeLists.txt" : {
+      "ObjectId" : "c26a972c90bae94a0360ecf05786ab5598366e7f",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## Note that the antsUtilities can always be built static.  It will then be linked\n\n## Directly into the other libraries.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#set(PROG_WITH_NO_FLAG simpleSynRegistration)\n\n#add_executable(${PROG_WITH_NO_FLAG} ${PROG_WITH_NO_FLAG}.cxx)\n\n#target_link_libraries(${PROG_WITH_NO_FLAG} antsUtilities ${ITK_LIBRARIES})\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ConvertVectorFieldToVTK\n",
+        "Line" : 175,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# FLATFEM\n\n# ConformalMapping\n\n# ANTSConformalMapping\n",
+        "Line" : 181,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "## Build test option\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# This must always be last!\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "Examples/TestSuite/ANTS_CC_1_test.cmake" : {
+      "ObjectId" : "c4c58585529ea0c026153125b22262d450be8b6a",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.4451 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.996429 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -0.00038593 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_CC_2_test.cmake" : {
+      "ObjectId" : "c48288121a82252c3027feb685b158ac5870d0b3",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.3283 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.996771 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -0.000461792 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_CC_3_test.cmake" : {
+      "ObjectId" : "c006b74cc0504da4799876862319f5371d947aa3",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.3283 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.996796 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -1.2204 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_ELASTIC_test.cmake" : {
+      "ObjectId" : "e375c7725c3c08de99318fa3ef488608535abfc5",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.6829 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.989737 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -1.01828 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Examples/TestSuite/ANTS_EXP_test.cmake" : {
+      "ObjectId" : "fc325b678f571aca56862fb10b1c5959ca2d1366",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.3283 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.996139 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -1.14716 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_GSYN_test.cmake" : {
+      "ObjectId" : "f68fbae213375f9590d54f8c650175c529b99b88",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.2847 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  9.996276 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -1.19298 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_MI_1_test.cmake" : {
+      "ObjectId" : "d21fd0e7012e9dfb60afe1205435b949f8b733ce",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.5927 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.996429 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -0.00038593 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_MI_2_test.cmake" : {
+      "ObjectId" : "c954babc6c8e0f2d8c59128d178a96ab03d9b993",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.545 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.9936 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.07288 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_MSQ_test.cmake" : {
+      "ObjectId" : "377af69a352eee55cbabdca26281af2895941939",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.3426 0.2)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.997077 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -1.18658 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.379897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_PSE_MSQ_IMG_test.cmake" : {
+      "ObjectId" : "8d91d1164e085e98734016f2a64d70a931f6aadc",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${DEVIL_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.0116083 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${DEVIL_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.991658 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${DEVIL_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -0.000710551 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${ANGEL_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.0109054 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${ANGEL_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.990979 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${ANGEL_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -0.000704717 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_PSE_MSQ_TXT_test.cmake" : {
+      "ObjectId" : "c7a4c74cdf121554aed8b2dea7f732dd48eef360",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Examples/TestSuite/ANTS_PSE_MSQ_VTK_test.cmake" : {
+      "ObjectId" : "f0de5d0039ac43984b7458945365060c63e906a2",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Examples/TestSuite/ANTS_ROT_EXP_test.cmake" : {
+      "ObjectId" : "141ce51db3c0d9a1c20a87538161bf383c8d2b5d",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 3 0\n\n#  ${ROT_REF_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  36.3928 0.5)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP2_METRIC_0_2 COMMAND MeasureImageSimilarity 3 0 ${ROT_REF_IMAGE}\n\n#  ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz 36.3928 0.5)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP2_METRIC_0_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP2)\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 3 0 ${ROT_MOV_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  34.8184 0.5)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP2_METRIC_0_2 COMMAND MeasureImageSimilarity 3 0 ${ROT_MOV_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  34.8184 0.5)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP2_METRIC_0_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "Examples/TestSuite/ANTS_ROT_GSYN_test.cmake" : {
+      "ObjectId" : "c2a78621dd2561779d65b158fcad044eb9bd803a",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 3 0\n\n#  ${ROT_REF_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  35.4473 0.5)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 3 0\n\n#  ${ROT_MOV_IMAGE} ${INVERSEWARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  35.5439 0.5)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/ANTS_SYN_WITH_TIME_test.cmake" : {
+      "ObjectId" : "e82dc6fed6f2539bd164cb8525d66717561095a5",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${CHALF_IMAGE} ${OUTPUT_PREFIX}.nii.gz\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.0943736 0.1)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Examples/TestSuite/ANTS_SYN_test.cmake" : {
+      "ObjectId" : "96ca8904fbb70ae62b6ea089bc77fdce86d97504",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#####################################################################################\n\n#####################################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0\n\n#  ${R16_IMAGE} ${WARP_IMAGE}\n\n#  ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  14.3283 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.99559 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_WARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2\n\n#  ${R16_IMAGE} ${WARP_IMAGE} ${OUTPUT_PREFIX}log.txt\n\n#  ${OUTPUT_PREFIX}metric.nii.gz\n\n#  -1.18658 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_WARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_WARP)\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 COMMAND MeasureImageSimilarity 2 0 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  50.4483 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_0 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 COMMAND MeasureImageSimilarity 2 1 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  1.0 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_1 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n\n#\n\n# add_test(NAME ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 COMMAND MeasureImageSimilarity 2 2 ${R64_IMAGE}\n\n#  ${INVERSEWARP_IMAGE} ${OUTPUT_PREFIX}log.txt ${OUTPUT_PREFIX}metric.nii.gz\n\n#  0.37897 0.05)\n\n# set_property(TEST ${THIS_TEST_NAME}_INVERSEWARP_METRIC_2 APPEND PROPERTY DEPENDS ${THIS_TEST_NAME}_INVERSEWARP)\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "Examples/TestSuite/APOC_OTSU_INIT_test.cmake" : {
+      "ObjectId" : "a9c76a8858653e5906e811bd8ae9388519b1e8b2",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "##\n\n# Apocrita tests\n\n##\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#add_test(NAME APOC_OTSU_INIT COMMAND Apocrita 2 -i otsu[${R16_IMAGE},3] -x ${R16_MASK} -n 10 -m [0.3,1x1,0.2,0.1] -o ${OUTPUT_PREFIX}.nii.gz )\n\n#add_test(NAME APOC_OTSU_INIT_RADIUS_2x2 COMMAND Apocrita 2 -i otsu[${R16_IMAGE},3] -x ${R16_MASK} -n 10 -m [0.3,2,0.2,0.1] -o ${OUTPUT_PREFIX}.nii.gz )\n\n#add_test(NAME APOC_KMEANS_INIT COMMAND Apocrita 2 -i kmeans[${R16_IMAGE},3] -x ${R16_MASK} -n 10 -m [0.3,1x1,0.2,0.1] -o [${OUTPUT_PREFIX}.nii.gz,${OUTPUT_PREFIX}_posteriors%d.nii.gz])\n\n#add_test(NAME APOC_PRIORLABELIMAGE_INIT COMMAND Apocrita 2 -i priorlabelimage[${R16_IMAGE},5,${R16_PRIORS},0.5] -x ${R16_MASK} -n 10 -m [0.3,1x1,0.2,0.1] -o [${OUTPUT_PREFIX}.nii.gz,${OUTPUT_PREFIX}_posteriors%d.nii.gz] -l 1[1,0.75] -l 2[1,1.0] -l 3[0.5,0.5] -l 4[1,1])\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "Examples/TestSuite/CMakeLists.txt" : {
+      "ObjectId" : "a93cafaadae76e12661d09823a73fda3bb7f82d9",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "###############################################################################\n\n###############################################################################\n\n## MakeTestDriverFromANTSbinary\n\n## For tools made with the slicer execution model,\n\n## This macro will build a test driver that adds the\n\n## --compare\n\n## --compareIntensityTolerance\n\n## --compareRadiusTolerance\n\n## --compareNumberOfPixelsTolerance\n\n## to the SEM tools.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------\n\n# Setup locations to find externally maintained test data.\n\n#-----------------------------------------------------------------------\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tell ExternalData commands to transform raw files to content links.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Set testing environment\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "## Test antsRegistration\n\n##\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "###\n\n#  Perform testing\n\n###\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "###\n\n# PSE sub-tests:  Check to see if .txt files and .vtk files also run correctly\n\n###\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#ExternalData_expand_arguments(${PROJECT_NAME}FetchData SEG_IMAGE DATA{${SMALL_DATA_DIR}/nslice.nii.gz})\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "## A work around for the crazy ANTS command line that is not compatible\n\n## with the testing framework of external tests\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#numberOfIterations 2500\n",
+        "Line" : 108,
+        "CharPositionInLine" : 24
+      },
+      "10" : {
+        "Text" : "#costMetric & fixedVolume & movingVolume & metricWeight? & numberOfHistogramBins & samplingStrategy? & samplingPercentage(numberOfSamples)\n",
+        "Line" : 111,
+        "CharPositionInLine" : 80
+      },
+      "11" : {
+        "Text" : "#transformType & minimumStepLength\n",
+        "Line" : 112,
+        "CharPositionInLine" : 30
+      },
+      "12" : {
+        "Text" : "#fixedBinaryVolume & movingBinaryVolume\n",
+        "Line" : 114,
+        "CharPositionInLine" : 52
+      },
+      "13" : {
+        "Text" : "#transformType & minimumStepLength\n",
+        "Line" : 134,
+        "CharPositionInLine" : 30
+      },
+      "14" : {
+        "Text" : "# set(antsRegistrationTestName antsRegistrationTest_SimilarityRotationNoMasks)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${antsRegistrationTestName}\n\n#   COMMAND ${LAUNCH_EXE} antsRegistrationTestDriver\n\n#   --compare DATA{${TestDataMD5_DIR}/${antsRegistrationTestName}.result.nii.gz}\n\n#             ${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz\n\n#   --compareIntensityTolerance 11\n\n#   --compareRadiusTolerance 0\n\n#   --compareNumberOfPixelsTolerance 1000\n\n#\n\n#   antsRegistrationTest\n\n#   -v --dimensionality 3\n\n#   --convergence 25x20x5\n\n#   --shrink-factors 3x2x1\n\n#   --smoothing-sigmas 0x0x0\n\n#   --metric Mattes[${test_image_VAR},${rotation_test_image_VAR},1,200,Regular,0.20]\n\n#   --transform \"Similarity[0.001]\"\n\n#   --initial-moving-transform DATA{${TestDataMD5_DIR}/Initializer_0.05_${antsRegistrationTestName}.mat}\n\n#   --output [${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName},${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz]\n\n# )\n",
+        "Line" : 430,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# set(antsRegistrationTestName antsRegistrationTest_SimilarityScaleMasks)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${antsRegistrationTestName}\n\n#   COMMAND ${LAUNCH_EXE} antsRegistrationTestDriver\n\n#   --compare DATA{${TestDataMD5_DIR}/${antsRegistrationTestName}.result.nii.gz}\n\n#             ${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz\n\n#   --compareIntensityTolerance 9\n\n#   --compareRadiusTolerance 0\n\n#   --compareNumberOfPixelsTolerance 1200\n\n#\n\n#   antsRegistrationTest\n\n#   -v --dimensionality 3\n\n#   --convergence 25x20x5\n\n#   --shrink-factors 3x2x1\n\n#   --smoothing-sigmas 0x0x0\n\n#   --metric Mattes[${test_image_VAR},${scale_test_image_VAR},1,200,Regular,0.20]\n\n#   --transform \"Similarity[0.001]\"\n\n#   --initial-moving-transform DATA{${TestDataMD5_DIR}/Initializer_0.05_antsRegistrationTest_AffineScaleMasks.mat}\n\n#   --masks [${test_mask_VAR},${scale_test_mask_VAR}]\n\n#   --output [${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName},${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz]\n\n# )\n",
+        "Line" : 450,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# set(antsRegistrationTestName antsRegistrationTest_SimilarityScaleNoMasks)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${antsRegistrationTestName}\n\n#   COMMAND ${LAUNCH_EXE} antsRegistrationTestDriver\n\n#   --compare DATA{${TestDataMD5_DIR}/${antsRegistrationTestName}.result.nii.gz}\n\n#             ${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz\n\n#   --compareIntensityTolerance 9\n\n#   --compareRadiusTolerance 0\n\n#   --compareNumberOfPixelsTolerance 1000\n\n#\n\n#   antsRegistrationTest\n\n#   -v --dimensionality 3\n\n#   --convergence 25x20x5\n\n#   --shrink-factors 3x2x1\n\n#   --smoothing-sigmas 0x0x0\n\n#   --metric Mattes[${test_image_VAR},${scale_test_image_VAR},1,200,Regular,0.20]\n\n#   --transform \"Similarity[0.001]\"\n\n#   --initial-moving-transform DATA{${TestDataMD5_DIR}/Initializer_0.05_${antsRegistrationTestName}.mat}\n\n#   --output [${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName},${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz]\n\n# )\n",
+        "Line" : 471,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# set(antsRegistrationTestName antsRegistrationTest_SimilarityTranslationRescaleNoMasks)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${antsRegistrationTestName}\n\n#   COMMAND ${LAUNCH_EXE} antsRegistrationTestDriver\n\n#   --compare DATA{${TestDataMD5_DIR}/${antsRegistrationTestName}.result.nii.gz}\n\n#             ${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz\n\n#   --compareIntensityTolerance 7\n\n#   --compareRadiusTolerance 0\n\n#   --compareNumberOfPixelsTolerance 777\n\n#\n\n#   antsRegistrationTest\n\n#   -v --dimensionality 3\n\n#   --convergence 25x20x5\n\n#   --shrink-factors 3x2x1\n\n#   --smoothing-sigmas 0x0x0\n\n#   --metric Mattes[${test_image_VAR},${translation_rescale_test_image_VAR},1,200,Regular,0.20]\n\n#   --transform \"Similarity[0.001]\"\n\n#   --initial-moving-transform DATA{${TestDataMD5_DIR}/Initializer_antsRegistrationTest_TranslationRescaleHeadMasks.mat}\n\n#   --output [${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName},${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz]\n\n# )\n",
+        "Line" : 491,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# set(antsRegistrationTestName antsRegistrationTest_SimilarityTranslationRescaleNoMasks_Float)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${antsRegistrationTestName}\n\n#   COMMAND ${LAUNCH_EXE} antsRegistrationTestDriver\n\n#   --compare DATA{${TestDataMD5_DIR}/${antsRegistrationTestName}.result.nii.gz}\n\n#             ${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz\n\n#   --compareIntensityTolerance 7\n\n#   --compareRadiusTolerance 0\n\n#   --compareNumberOfPixelsTolerance 777\n\n#\n\n#   antsRegistrationTest\n\n#   -v --dimensionality 3\n\n#   --float 1\n\n#   --convergence 25x20x5\n\n#   --shrink-factors 3x2x1\n\n#   --smoothing-sigmas 0x0x0\n\n#   --metric Mattes[${test_image_VAR},${translation_rescale_test_image_VAR},1,200,Regular,0.20]\n\n#   --transform \"Similarity[0.001]\"\n\n#   --initial-moving-transform DATA{${TestDataMD5_DIR}/Initializer_antsRegistrationTest_TranslationRescaleHeadMasks_Float.mat}\n\n#   --output [${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName},${CMAKE_CURRENT_BINARY_DIR}/${antsRegistrationTestName}.test.nii.gz]\n\n# )\n",
+        "Line" : 511,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "## Test initializing stages at each iteration, ensure that only 2 stages result.\n\n## This test is not very robust.  It ensures that the command line options\n\n## can be accepted without failure, but no real testing of results is done.\n\n## The output transform should have 2 levels (1 affine, 1 SyN)\n\n## The next test uses \"compareTwoTransforms\" to compare the output transform to the baseline.\n",
+        "Line" : 717,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Compare the output transform of the antsRegistrationTest_initialize_transforms_per_stage with the baseline file\n",
+        "Line" : 755,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "###############\n\n#TEST Development SHOULD BE CONTINUED FROM HERE\n\n###############\n",
+        "Line" : 767,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "### checks that simpleSynRegistration runs without failure ####\n",
+        "Line" : 772,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "### antsApplyTransforms test #####\n",
+        "Line" : 784,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#{moving image}\n",
+        "Line" : 796,
+        "CharPositionInLine" : 29
+      },
+      "25" : {
+        "Text" : "#{fix image}\n",
+        "Line" : 797,
+        "CharPositionInLine" : 23
+      },
+      "26" : {
+        "Text" : "#{interpolation type}\n",
+        "Line" : 798,
+        "CharPositionInLine" : 12
+      },
+      "27" : {
+        "Text" : "#{Warp transform}\n",
+        "Line" : 799,
+        "CharPositionInLine" : 87
+      },
+      "28" : {
+        "Text" : "#{Affine Transform}\n",
+        "Line" : 800,
+        "CharPositionInLine" : 89
+      },
+      "29" : {
+        "Text" : "#{output file name}\n",
+        "Line" : 801,
+        "CharPositionInLine" : 76
+      },
+      "30" : {
+        "Text" : "### compare the outputs of the antsRegistration and simpleSynRegistration\n\n# This needs four steps:\n\n# 1- make the output SyN warp transform from antsRegistration\n\n# 2- make the output Syn warp transform from simpleSynRegistration\n\n# 3- apply the produced transforms to antsApplyTransforms\n\n# 4- compare the results of step 3\n",
+        "Line" : 804,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# we use the results of the previous tests for steps 1 and 2.\n\n# step 3 is done as follows:\n",
+        "Line" : 811,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "#{moving image}\n",
+        "Line" : 820,
+        "CharPositionInLine" : 29
+      },
+      "33" : {
+        "Text" : "#{fix image}\n",
+        "Line" : 821,
+        "CharPositionInLine" : 23
+      },
+      "34" : {
+        "Text" : "#{interpolation type}\n",
+        "Line" : 822,
+        "CharPositionInLine" : 12
+      },
+      "35" : {
+        "Text" : "#{Warp transform}\n",
+        "Line" : 823,
+        "CharPositionInLine" : 82
+      },
+      "36" : {
+        "Text" : "#{Affine Transform}\n",
+        "Line" : 824,
+        "CharPositionInLine" : 89
+      },
+      "37" : {
+        "Text" : "#{output file name}\n",
+        "Line" : 825,
+        "CharPositionInLine" : 76
+      },
+      "38" : {
+        "Text" : "#{moving image}\n",
+        "Line" : 835,
+        "CharPositionInLine" : 29
+      },
+      "39" : {
+        "Text" : "#{fix image}\n",
+        "Line" : 836,
+        "CharPositionInLine" : 23
+      },
+      "40" : {
+        "Text" : "#{interpolation type}\n",
+        "Line" : 837,
+        "CharPositionInLine" : 12
+      },
+      "41" : {
+        "Text" : "#{Warp transform}\n",
+        "Line" : 838,
+        "CharPositionInLine" : 73
+      },
+      "42" : {
+        "Text" : "#{Affine Transform}\n",
+        "Line" : 839,
+        "CharPositionInLine" : 89
+      },
+      "43" : {
+        "Text" : "#{output file name}\n",
+        "Line" : 840,
+        "CharPositionInLine" : 76
+      },
+      "44" : {
+        "Text" : "# step 4: finally the results are compared together\n",
+        "Line" : 845,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "############ End of four step compare tests#################\n",
+        "Line" : 860,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "### checks that CompositeTransformUtil runs without failure using --assemble flag####\n\n# set(CompositeTransformUtilTestName CompositeTransformUtilTest)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${CompositeTransformUtilTestName}\n\n#  COMMAND ${LAUNCH_EXE} CompositeTransformUtilTestDriver\n",
+        "Line" : 862,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "#  CompositeTransformUtilTest\n\n#  --assemble ${CMAKE_CURRENT_BINARY_DIR}/${CompositeTransformUtilTestName}.test.h5\n\n#  DATA{${TestDataMD5_DIR}/${CompositeTransformUtilTestName}_RigidTransform.mat}\n\n#  DATA{${TestDataMD5_DIR}/${CompositeTransformUtilTestName}_AffineTransform.mat}\n\n#  DATA{${TestDataMD5_DIR}/${CompositeTransformUtilTestName}_SyNTransform.nii.gz}\n\n#  )\n",
+        "Line" : 867,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Compare the results of the CompositeTransformUtil with the baseline file\n\n#set(CompositeTransformUtilTestName CompositeTransformUtil_ComparisonTesting)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${CompositeTransformUtilTestName}\n\n#  COMMAND ${LAUNCH_EXE} compareTwoTransformsTestDriver\n",
+        "Line" : 874,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "#  compareTwoTransformsTest\n\n#  ${CMAKE_CURRENT_BINARY_DIR}/CompositeTransformUtilTest.test.h5\n\n#  DATA{${TestDataMD5_DIR}/CompositeTransformUtilTest.result.h5}\n\n#  )\n\n# set_property(TEST ${CompositeTransformUtilTestName} APPEND PROPERTY\n\n#  DEPENDS CompositeTransformUtilTest)\n",
+        "Line" : 879,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Tests CompositeTransformUtil when it is run by --disassemble flag\n\n# set(CompositeTransformUtilTestName CompositeTransformUtilTest_disassemble)\n\n# ExternalData_add_test( ${PROJECT_NAME}FetchData NAME ${CompositeTransformUtilTestName}\n\n#  COMMAND ${LAUNCH_EXE} CompositeTransformUtilTestDriver\n\n#  --compare\n\n#  DATA{${TestDataMD5_DIR}/CompositeTransformUtilTest_SyNTransform.nii.gz}\n\n#  ${CMAKE_CURRENT_BINARY_DIR}/02_${CompositeTransformUtilTestName}_DisplacementFieldTransform.nii.gz\n\n#  --compareIntensityTolerance 9\n\n#  --compareRadiusTolerance 1\n\n#  --compareNumberOfPixelsTolerance 1000\n",
+        "Line" : 886,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "#  CompositeTransformUtilTest\n\n#  --disassemble DATA{${TestDataMD5_DIR}/CompositeTransformUtilTest.result.h5}\n\n#  ${CompositeTransformUtilTestName}\n\n#  )\n",
+        "Line" : 897,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "## Based on conversations with Nick and Brian, it is strange that\n\n## these ToItself functions fail.  It is likely in the ITK scales estimators\n\n## that the problem exists.  It will be addressed later.\n",
+        "Line" : 902,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#HACK -- REMOVING THESE TWO FAILING TEST\n",
+        "Line" : 905,
+        "CharPositionInLine" : 6
+      },
+      "54" : {
+        "Text" : "############ End of CompositeTransformUtil tests#################\n",
+        "Line" : 944,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "##############################################################\n\n##############################################################\n\n##############################################################\n\n##############################################################\n",
+        "Line" : 948,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "###\n\n#  ANTS metric testing\n\n###\n",
+        "Line" : 953,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "## Just print the help screen\n",
+        "Line" : 1027,
+        "CharPositionInLine" : 74
+      },
+      "58" : {
+        "Text" : "## Just print the help screen\n",
+        "Line" : 1029,
+        "CharPositionInLine" : 74
+      },
+      "59" : {
+        "Text" : "###\n\n#  ANTS transform testing\n\n###\n\n# include(ANTS_CC_1_test.cmake)\n\n# include(ANTS_CC_2_test.cmake)\n\n# include(ANTS_CC_3_test.cmake)\n\n# include(ANTS_MSQ_test.cmake)\n\n# include(ANTS_MI_1_test.cmake)\n\n# include(ANTS_MI_2_test.cmake)\n\n# include(ANTS_ELASTIC_test.cmake)\n\n# include(ANTS_GSYN_test.cmake)\n\n# include(ANTS_EXP_test.cmake)\n\n# include(ANTS_SYN_test.cmake)\n",
+        "Line" : 1033,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "###\n\n#  ANTS labeled data testing\n\n###\n",
+        "Line" : 1047,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "#   include(ANTS_PSE_MSQ_IMG_test.cmake)\n",
+        "Line" : 1051,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "###\n\n#  ANTS images with non-trival rotation header test\n\n###\n\n#ExternalData_expand_arguments(${PROJECT_NAME}FetchData ROT_REF_IMAGE DATA{${SMALL_DATA_DIR}/ref2.nii.gz})\n\n#ExternalData_expand_arguments(${PROJECT_NAME}FetchData ROT_MOV_IMAGE DATA{${SMALL_DATA_DIR}/mov2.nii.gz})\n",
+        "Line" : 1053,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "#add_test(NAME ANTS_ROT_EXP_CLEAN COMMAND rm ${ROT_WARP_FILES})\n\n###\n\n#  Test SyN with time\n\n###\n",
+        "Line" : 1063,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# include(ANTS_PSE_MSQ_TXT_test.cmake)\n\n# include(ANTS_PSE_MSQ_VTK_test.cmake)\n",
+        "Line" : 1074,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# Name of data management target\n",
+        "Line" : 1079,
+        "CharPositionInLine" : 53
+      },
+      "CommentCount" : 66
+    },
+    "SuperBuild.cmake" : {
+      "ObjectId" : "5a0faa148d0c2c6688ab5e2c788a4bb523041f7a",
+      "LastModified" : "2018-11-08T00:00:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Git protocol option\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# I don't know who removed the Find_Package for QT, but it needs to be here\n\n# in order to build VTK if ${LOCAL_PROJECT_NAME}_USE_QT is set.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Enable and setup External project global properties\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Compute -G arg for configuring external projects with the same CMake generator:\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# With CMake 2.8.9 or later, the UPDATE_COMMAND is required for updates to occur.\n\n# For earlier versions, we nullify the update state to prevent updates and\n\n# undesirable rebuild.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Platform check\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# See CMake/Modules/Platform/Darwin.cmake)\n\n#   6.x == Mac OSX 10.2 (Jaguar)\n\n#   7.x == Mac OSX 10.3 (Panther)\n\n#   8.x == Mac OSX 10.4 (Tiger)\n\n#   9.x == Mac OSX 10.5 (Leopard)\n\n#  10.x == Mac OSX 10.6 (Snow Leopard)\n",
+        "Line" : 68,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Superbuild option(s)\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# ${LOCAL_PROJECT_NAME} dependency list\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Define Superbuild global variables\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# This variable will contain the list of CMake variable specific to each external project\n\n# that should passed to ${CMAKE_PROJECT_NAME}.\n\n# The item of this list should have the following form: <EP_VAR>:<TYPE>\n\n# where '<EP_VAR>' is an external project variable and TYPE is either BOOL, STRING, PATH or FILEPATH.\n\n# TODO Variable appended to this list will be automatically exported in ${LOCAL_PROJECT_NAME}Config.cmake,\n\n# prefix '${LOCAL_PROJECT_NAME}_' will be prepended if it applies.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The macro '_expand_external_project_vars' can be used to expand the list of <EP_VAR>.\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# List of CMake args to configure BRAINS\n",
+        "Line" : 144,
+        "CharPositionInLine" : 46
+      },
+      "18" : {
+        "Text" : "# List of CMake variable names\n",
+        "Line" : 145,
+        "CharPositionInLine" : 50
+      },
+      "19" : {
+        "Text" : "# Convenient macro allowing to expand the list of EP_VAR listed in ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARS\n\n# The expanded arguments will be appended to the list ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_ARGS\n\n# Similarly the name of the EP_VARs will be appended to the list ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARNAMES.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Common external projects CMake variables\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Set CMake OSX variable to pass down the external project\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Add external project CMake args\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Configure and build\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# HACK Only expected variables should be passed down.\n",
+        "Line" : 280,
+        "CharPositionInLine" : 25
+      },
+      "25" : {
+        "Text" : "## Force rebuilding of the main subproject every time building from super structure\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "SuperBuild/External_Cppcheck.cmake" : {
+      "ObjectId" : "c9595a42eecdf5c1051f5f5bb057b622837bbf02",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure this file is included only once by creating globally unique varibles\n\n# based on the name of this included file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## External_${extProjName}.cmake files can be recurisvely included,\n\n## and cmake variables are global, so when including sub projects it\n\n## is important make the extProjName and proj variables\n\n## appear to stay constant in one of these files.\n\n## Store global variables before overwriting (then restore at end of this file.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure that the ExtProjName/IntProjName variables are unique globally\n\n# even if other External_${ExtProjName}.cmake files are sourced by\n\n# SlicerMacroCheckExternalProjectDependency\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The find_package known name\n\n#This local name\n",
+        "Line" : 20,
+        "CharPositionInLine" : 27
+      },
+      "4" : {
+        "Text" : "#If a required version is necessary, then set this, else leave blank\n",
+        "Line" : 22,
+        "CharPositionInLine" : 41
+      },
+      "5" : {
+        "Text" : "#if(${USE_SYSTEM_${extProjName}})\n\n#  unset(${extProjName}_DIR CACHE)\n\n#endif()\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#message(STATUS \"${__indent}Adding project ${proj}\")\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Set CMake OSX variable to pass down the external project\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "### --- Project specific additions here\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "### --- End Project specific additions\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Wrap configure in script to ignore log output from dashboards\n\n# Wrap build in script to to ignore log output from dashboards\n\n# Wrap test in script to to ignore log output from dashboards\n\n# Wrap install in script to to ignore log output from dashboards\n",
+        "Line" : 61,
+        "CharPositionInLine" : 21
+      },
+      "14" : {
+        "Text" : "# The project is provided using ${extProjName}_EXE, nevertheless since other\n\n# project may depend on ${extProjName}, let's add an 'empty' one\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "SuperBuild/External_ITKv5.cmake" : {
+      "ObjectId" : "b67c6cc6bc5e5dc850f863eeefa45644b11eafbb",
+      "LastModified" : "2019-04-08T16:33:05Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure this file is included only once by creating globally unique varibles\n\n# based on the name of this included file.\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## External_${extProjName}.cmake files can be recurisvely included,\n\n## and cmake variables are global, so when including sub projects it\n\n## is important make the extProjName and proj variables\n\n## appear to stay constant in one of these files.\n\n## Store global variables before overwriting (then restore at end of this file.)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure that the ExtProjName/IntProjName variables are unique globally\n\n# even if other External_${ExtProjName}.cmake files are sourced by\n\n# SlicerMacroCheckExternalProjectDependency\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The find_package known name\n\n#This local name\n",
+        "Line" : 21,
+        "CharPositionInLine" : 21
+      },
+      "4" : {
+        "Text" : "#If a required version is necessary, then set this, else leave blank\n",
+        "Line" : 23,
+        "CharPositionInLine" : 70
+      },
+      "5" : {
+        "Text" : "#if(${USE_SYSTEM_${extProjName}})\n\n#  unset(${extProjName}_DIR CACHE)\n\n#endif()\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#message(STATUS \"${__indent}Adding project ${proj}\")\n",
+        "Line" : 44,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Set CMake OSX variable to pass down the external project\n",
+        "Line" : 46,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "### --- Project specific additions here\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#if(foo)\n",
+        "Line" : 85,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "#set(${proj}_WRAP_ARGS\n\n#  -DINSTALL_WRAP_ITK_COMPATIBILITY:BOOL=OFF\n\n#  -DWRAP_float:BOOL=ON\n\n#  -DWRAP_unsigned_char:BOOL=ON\n\n#  -DWRAP_signed_short:BOOL=ON\n\n#  -DWRAP_unsigned_short:BOOL=ON\n\n#  -DWRAP_complex_float:BOOL=ON\n\n#  -DWRAP_vector_float:BOOL=ON\n\n#  -DWRAP_covariant_vector_float:BOOL=ON\n\n#  -DWRAP_rgb_signed_short:BOOL=ON\n\n#  -DWRAP_rgb_unsigned_char:BOOL=ON\n\n#  -DWRAP_rgb_unsigned_short:BOOL=ON\n\n#  -DWRAP_ITK_TCL:BOOL=OFF\n\n#  -DWRAP_ITK_JAVA:BOOL=OFF\n\n#  -DWRAP_ITK_PYTHON:BOOL=ON\n\n#  -DPYTHON_EXECUTABLE:PATH=${${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE}\n\n#  -DPYTHON_INCLUDE_DIR:PATH=${${CMAKE_PROJECT_NAME}_PYTHON_INCLUDE}\n\n#  -DPYTHON_LIBRARY:FILEPATH=${${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY}\n\n#  )\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "#endif()\n",
+        "Line" : 105,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# HACK This code fixes a loony problem with HDF5 -- it doesn't\n\n#      link properly if -fopenmp is used.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "#      -DITK_MODULE_Core:BOOL=ON\n\n#      -DITK_MODULE_IO:BOOL=ON\n\n#      -DITK_MODULE_Filtering:BOOL=ON\n\n#      -DITK_MODULE_Registration:BOOL=ON\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#-DITK_INSTALL_NO_DEVELOPMENT:BOOL=ON\n",
+        "Line" : 126,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Required by SlicerExecutionModel\n\n#${BUILD_SHARED_LIBS} ## HACK:  QUICK CHANGE\n",
+        "Line" : 127,
+        "CharPositionInLine" : 30
+      },
+      "19" : {
+        "Text" : "### --- End Project specific additions\n",
+        "Line" : 150,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# set(${proj}_REPOSITORY ${git_protocol}://github.com/stnava/ITK.git)\n",
+        "Line" : 152,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "## 20190408 SpatialObjeects updates for new ITKv5 API\n",
+        "Line" : 153,
+        "CharPositionInLine" : 65
+      },
+      "22" : {
+        "Text" : "### NOTE: When updating GIT_TAG, also update ITK_VERSION_ID\n",
+        "Line" : 154,
+        "CharPositionInLine" : 30
+      },
+      "23" : {
+        "Text" : "# Wrap configure in script to ignore log output from dashboards\n\n# Wrap build in script to to ignore log output from dashboards\n\n# Wrap test in script to to ignore log output from dashboards\n\n# Wrap install in script to to ignore log output from dashboards\n",
+        "Line" : 161,
+        "CharPositionInLine" : 21
+      },
+      "24" : {
+        "Text" : "## We really do want to install in order to limit # of include paths INSTALL_COMMAND \"\"\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# The project is provided using ${extProjName}_DIR, nevertheless since other\n\n# project may depend on ${extProjName}, let's add an 'empty' one\n",
+        "Line" : 186,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 26
+    },
+    "SuperBuild/External_KWStyle.cmake" : {
+      "ObjectId" : "9e46cbdffa418975d4b9f8c16e75299f9374acd5",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure this file is included only once by creating globally unique varibles\n\n# based on the name of this included file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## External_${extProjName}.cmake files can be recurisvely included,\n\n## and cmake variables are global, so when including sub projects it\n\n## is important make the extProjName and proj variables\n\n## appear to stay constant in one of these files.\n\n## Store global variables before overwriting (then restore at end of this file.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure that the ExtProjName/IntProjName variables are unique globally\n\n# even if other External_${ExtProjName}.cmake files are sourced by\n\n# SlicerMacroCheckExternalProjectDependency\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The find_package known name\n\n#This local name\n",
+        "Line" : 20,
+        "CharPositionInLine" : 25
+      },
+      "4" : {
+        "Text" : "#If a required version is necessary, then set this, else leave blank\n",
+        "Line" : 22,
+        "CharPositionInLine" : 41
+      },
+      "5" : {
+        "Text" : "#if(${USE_SYSTEM_${extProjName}})\n\n#  unset(${extProjName}_DIR CACHE)\n\n#endif()\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#message(STATUS \"${__indent}Adding project ${proj}\")\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Set CMake OSX variable to pass down the external project\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "### --- Project specific additions here\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "### --- End Project specific additions\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Wrap configure in script to ignore log output from dashboards\n\n# Wrap build in script to to ignore log output from dashboards\n\n# Wrap test in script to to ignore log output from dashboards\n\n# Wrap install in script to to ignore log output from dashboards\n",
+        "Line" : 61,
+        "CharPositionInLine" : 21
+      },
+      "14" : {
+        "Text" : "# The project is provided using ${extProjName}_EXE, nevertheless since other\n\n# project may depend on ${extProjName}, let's add an 'empty' one\n",
+        "Line" : 86,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "SuperBuild/External_SlicerExecutionModel.cmake" : {
+      "ObjectId" : "06369a4ea376a3102b20de56a1161b5fc72baeda",
+      "LastModified" : "2018-11-08T02:07:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure this file is included only once by creating globally unique varibles\n\n# based on the name of this included file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## External_${extProjName}.cmake files can be recurisvely included,\n\n## and cmake variables are global, so when including sub projects it\n\n## is important make the extProjName and proj variables\n\n## appear to stay constant in one of these files.\n\n## Store global variables before overwriting (then restore at end of this file.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure that the ExtProjName/IntProjName variables are unique globally\n\n# even if other External_${ExtProjName}.cmake files are sourced by\n\n# SlicerMacroCheckExternalProjectDependency\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The find_package known name\n\n#This local name\n",
+        "Line" : 20,
+        "CharPositionInLine" : 38
+      },
+      "4" : {
+        "Text" : "#If a required version is necessary, then set this, else leave blank\n",
+        "Line" : 22,
+        "CharPositionInLine" : 41
+      },
+      "5" : {
+        "Text" : "#if(${USE_SYSTEM_${extProjName}})\n\n#  unset(${extProjName}_DIR CACHE)\n\n#endif()\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#message(STATUS \"${__indent}Adding project ${proj}\")\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Set CMake OSX variable to pass down the external project\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "### --- Project specific additions here\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#-DSlicerExecutionModel_LIBRARY_PROPERTIES:STRING=${Slicer_LIBRARY_PROPERTIES}\n\n#-DSlicerExecutionModel_INSTALL_BIN_DIR:PATH=bin\n\n#-DSlicerExecutionModel_INSTALL_LIB_DIR:PATH=lib\n\n#-DSlicerExecutionModel_INSTALL_SHARE_DIR:PATH=${Slicer_INSTALL_ROOT}share/${SlicerExecutionModel}\n\n#-DSlicerExecutionModel_INSTALL_NO_DEVELOPMENT:BOOL=${Slicer_INSTALL_NO_DEVELOPMENT}\n",
+        "Line" : 62,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "### --- End Project specific additions\n",
+        "Line" : 68,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Wrap configure in script to ignore log output from dashboards\n\n# Wrap build in script to to ignore log output from dashboards\n\n# Wrap test in script to to ignore log output from dashboards\n\n# Wrap install in script to to ignore log output from dashboards\n",
+        "Line" : 76,
+        "CharPositionInLine" : 21
+      },
+      "15" : {
+        "Text" : "# The project is provided using ${extProjName}_DIR, nevertheless since other\n\n# project may depend on ${extProjName}, let's add an 'empty' one\n",
+        "Line" : 101,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 16
+    },
+    "SuperBuild/External_Uncrustify.cmake" : {
+      "ObjectId" : "ecad1d79912910c4562b9762dbf7d6eca5f24573",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure this file is included only once by creating globally unique varibles\n\n# based on the name of this included file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## External_${extProjName}.cmake files can be recurisvely included,\n\n## and cmake variables are global, so when including sub projects it\n\n## is important make the extProjName and proj variables\n\n## appear to stay constant in one of these files.\n\n## Store global variables before overwriting (then restore at end of this file.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure that the ExtProjName/IntProjName variables are unique globally\n\n# even if other External_${ExtProjName}.cmake files are sourced by\n\n# SlicerMacroCheckExternalProjectDependency\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The find_package known name\n\n#This local name\n",
+        "Line" : 20,
+        "CharPositionInLine" : 28
+      },
+      "4" : {
+        "Text" : "#If a required version is necessary, then set this, else leave blank\n",
+        "Line" : 22,
+        "CharPositionInLine" : 41
+      },
+      "5" : {
+        "Text" : "#if(${USE_SYSTEM_${extProjName}})\n\n#  unset(${extProjName}_EXE CACHE)\n\n#endif()\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#message(STATUS \"${__indent}Adding project ${proj}\")\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Set CMake OSX variable to pass down the external project\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "### --- Project specific additions here\n",
+        "Line" : 51,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "### --- End Project specific additions\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Wrap configure in script to ignore log output from dashboards\n\n# Wrap build in script to to ignore log output from dashboards\n\n# Wrap test in script to to ignore log output from dashboards\n\n# Wrap install in script to to ignore log output from dashboards\n",
+        "Line" : 63,
+        "CharPositionInLine" : 21
+      },
+      "14" : {
+        "Text" : "# The project is provided using ${extProjName}_EXE, nevertheless since other\n\n# project may depend on ${extProjName}, let's add an 'empty' one\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "SuperBuild/External_VTK.cmake" : {
+      "ObjectId" : "cb97f23ae656737c1d11c3b563cfba1d5f007b9f",
+      "LastModified" : "2019-01-31T22:45:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure this file is included only once by creating globally unique varibles\n\n# based on the name of this included file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "## External_${extProjName}.cmake files can be recurisvely included,\n\n## and cmake variables are global, so when including sub projects it\n\n## is important make the extProjName and proj variables\n\n## appear to stay constant in one of these files.\n\n## Store global variables before overwriting (then restore at end of this file.)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make sure that the ExtProjName/IntProjName variables are unique globally\n\n# even if other External_${ExtProjName}.cmake files are sourced by\n\n# SlicerMacroCheckExternalProjectDependency\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#The find_package known name\n\n#This local name\n",
+        "Line" : 20,
+        "CharPositionInLine" : 21
+      },
+      "4" : {
+        "Text" : "# set(${extProjName}_REQUIRED_VERSION \"6.2\")  #If a required version is necessary, then set this, else leave blank\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#if(${USE_SYSTEM_${extProjName}})\n\n#  unset(${extProjName}_DIR CACHE)\n\n#endif()\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Sanity checks\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set dependency list\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Include dependent projects if any\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#message(STATUS \"${__indent}Adding project ${proj}\")\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Set CMake OSX variable to pass down the external project\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "### --- Project specific additions here\n",
+        "Line" : 55,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#-DDESIRED_QT_VERSION:STRING=4 # Unused\n",
+        "Line" : 77,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed\n",
+        "Line" : 86,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "#-DVTK_USE_RPATH:BOOL=ON # Unused\n\n#-DDESIRED_QT_VERSION:STRING=4 # Unused\n",
+        "Line" : 89,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# Disable Tk when Python wrapping is enabled\n",
+        "Line" : 105,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "#-DVTK_USE_RPATH:BOOL=ON # Unused\n",
+        "Line" : 154,
+        "CharPositionInLine" : 6
+      },
+      "17" : {
+        "Text" : "### --- End Project specific additions\n",
+        "Line" : 162,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Wrap configure in script to ignore log output from dashboards\n\n# Wrap build in script to to ignore log output from dashboards\n\n# Wrap test in script to to ignore log output from dashboards\n\n# Wrap install in script to to ignore log output from dashboards\n",
+        "Line" : 171,
+        "CharPositionInLine" : 21
+      },
+      "19" : {
+        "Text" : "## We really do want to install in order to limit # of include paths INSTALL_COMMAND \"\"\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#  set(VTKPatchScript ${CMAKE_CURRENT_LIST_DIR}/External_VTK_patch.cmake)\n\n#  ExternalProject_Add_Step(${proj} VTKPatch\n\n#    COMMENT \"get rid of obsolete C/CXX flags\"\n\n#    DEPENDEES download\n\n#    DEPENDERS configure\n\n#    COMMAND ${CMAKE_COMMAND}\n\n#    -DVTKSource=<SOURCE_DIR>\n\n#    -P ${VTKPatchScript}\n\n#    )\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# The project is provided using ${extProjName}_DIR, nevertheless since other\n\n# project may depend on ${extProjName}, let's add an 'empty' one\n",
+        "Line" : 205,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 22
+    },
+    "SuperBuild/External_VTK_patch.cmake" : {
+      "ObjectId" : "d1d5dedb940554a118fb0ab0c4b92dd8648d7dc3",
+      "LastModified" : "2018-11-08T02:07:00Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Version.cmake" : {
+      "ObjectId" : "c5bac93d4017d0c6accd3a08cf6857b14a4ff8f1",
+      "LastModified" : "2019-01-31T22:45:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# ONLY MODIFY TO CHANGE VERSION\n\n#\n\n# The number of commits since last this file has changed it used to\n\n# define \"dev\" and \"post\", modification of this file will reset that\n\n# version.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Version info\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# pre-release codes are defined based on suffix of most recent tags.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# a[N]+<b[N]+<c[N]+=rc[N]+\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The hash is the current git sha1 hash tag of the HEAD.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# DEV or POST is set to the number of commits since this file has been\n\n# changed. If the MAJOR.MINOR.[PATCH[.TWEAK]] matches \"closest\"\n\n# version tag then its consider in the release branch and POST is set\n\n# while DEV is undefined, otherwise we are considered under\n\n# development and DEV is set and POST is undefined.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "antsRegistrationCLP/CMakeLists.txt" : {
+      "ObjectId" : "67a872b6c86ee62d7c86dd0bf87dda3786adae8b",
+      "LastModified" : "2015-01-16T15:39:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 46
+  },
+  "ElapsedTime" : 2402
+}

@@ -1,0 +1,2260 @@
+{
+  "Repository" : "11101735",
+  "Revision" : "HEAD",
+  "ObjectId" : "7f93082bd84d8998f17219bec78878cdb8aa55b9",
+  "CommitTime" : "2019-04-13T09:58:53Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "7e8bdbde9605667505c9eaf7e63e44ef66374736",
+      "LastModified" : "2019-03-27T10:45:54Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#additional cmake modules for loading libraries\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# some basic and important variables\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#needed by doxygen\n",
+        "Line" : 26,
+        "CharPositionInLine" : 26
+      },
+      "3" : {
+        "Text" : "# disable install and build of shared libs for fallback subproject\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# if our static code lands inside a shared lib, we need -fPIC\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# coverage testing\n",
+        "Line" : 92,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Add /usr/local/include to search path\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# detect top level projects\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# build static libs of fallback subproject\n",
+        "Line" : 221,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "#now add all directories\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "cmake/CMakeLists.txt" : {
+      "ObjectId" : "98e4eebc2288f0b9fc9f3f3ed9adf1a2ed0b224f",
+      "LastModified" : "2017-11-21T02:04:45Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Target installation folders\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/FindX11.cmake" : {
+      "ObjectId" : "b8e99fb05bee1bfe7b8bb4579415ee2132c55451",
+      "LastModified" : "2012-12-07T15:31:18Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/Modules/CodeCoverage.cmake" : {
+      "ObjectId" : "07725866655d577b3659113ba6f561fbb2174626",
+      "LastModified" : "2016-11-17T23:49:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2012 - 2015, Lars Bilke\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n# 1. Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#\n\n# 2. Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#\n\n# 3. Neither the name of the copyright holder nor the names of its contributors\n\n#    may be used to endorse or promote products derived from this software without\n\n#    specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n\n# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n#\n\n#\n\n# 2012-01-31, Lars Bilke\n\n# - Enable Code Coverage\n\n#\n\n# 2013-09-17, Joakim Söderberg\n\n# - Added support for Clang.\n\n# - Some additional usage instructions.\n\n#\n\n# USAGE:\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 0. (Mac only) If you use Xcode 5.1 make sure to patch geninfo as described here:\n\n#      http://stackoverflow.com/a/22404544/80480\n\n#\n\n# 1. Copy this file into your cmake modules path.\n\n#\n\n# 2. Add the following line to your CMakeLists.txt:\n\n#      INCLUDE(CodeCoverage)\n\n#\n\n# 3. Set compiler flags to turn off optimization and enable coverage:\n\n#    SET(CMAKE_CXX_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\t SET(CMAKE_C_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\n\n# 3. Use the function SETUP_TARGET_FOR_COVERAGE to create a custom make target\n\n#    which runs your test executable and produces a lcov code coverage report:\n\n#    Example:\n\n#\t SETUP_TARGET_FOR_COVERAGE(\n\n#\t\t\t\tmy_coverage_target  # Name for custom target.\n\n#\t\t\t\ttest_driver         # Name of the test driver executable that runs the tests.\n\n#\t\t\t\t\t\t\t\t\t# NOTE! This should always have a ZERO as exit code\n\n#\t\t\t\t\t\t\t\t\t# otherwise the coverage generation will not complete.\n\n#\t\t\t\tcoverage            # Name of output directory.\n\n#\t\t\t\t)\n\n#\n\n# 4. Build a Debug build:\n\n#\t cmake -DCMAKE_BUILD_TYPE=Debug ..\n\n#\t make\n\n#\t make my_coverage_target\n\n#\n\n#\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NOT GCOV_PATH\n",
+        "Line" : 78,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Clang version 3.0.0 and greater now supports gcov as well.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# NOT CMAKE_COMPILER_IS_GNUCXX\n",
+        "Line" : 87,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 113,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests.\n\n#\t\t\t\t\t\tMUST return ZERO always, even on errors.\n\n#\t\t\t\t\t\tIf not, no coverage report will be created!\n\n# Param _outputname     lcov output is generated as _outputname.info\n\n#                       HTML report is generated in _outputname/index.html\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 128,
+        "CharPositionInLine" : 9
+      },
+      "9" : {
+        "Text" : "# NOT GENHTML_PATH\n",
+        "Line" : 132,
+        "CharPositionInLine" : 9
+      },
+      "10" : {
+        "Text" : "# Setup target\n",
+        "Line" : 134,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 137,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Run tests\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 143,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 153,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE\n",
+        "Line" : 159,
+        "CharPositionInLine" : 14
+      },
+      "16" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests\n\n# Param _outputname     cobertura output is generated as _outputname.xml\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# NOT PYTHON_EXECUTABLE\n",
+        "Line" : 170,
+        "CharPositionInLine" : 9
+      },
+      "18" : {
+        "Text" : "# NOT GCOVR_PATH\n",
+        "Line" : 174,
+        "CharPositionInLine" : 9
+      },
+      "19" : {
+        "Text" : "# Run tests\n",
+        "Line" : 178,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Running gcovr\n",
+        "Line" : 181,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 187,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_COBERTURA\n",
+        "Line" : 193,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 23
+    },
+    "cmake/Modules/FindCUPS.cmake" : {
+      "ObjectId" : "4218d34ebdf9f5f363497993392b036c62c594c0",
+      "LastModified" : "2017-10-02T07:31:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2017, Kai-Uwe Behrmann, ku.b@gmx.de\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# use cmake default\n\n# not here, as some systems do not differenciate between letter cases\n\n#FIND_PACKAGE( Cups )\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# fix the variable handling\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set CUPS_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindCairo.cmake" : {
+      "ObjectId" : "c46f9903e4e79e34d9c33d133512db92a44df5f5",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Cairo\n\n# Once done this will define\n\n#\n\n#  CAIRO_FOUND - system has Cairo\n\n#  CAIRO_INCLUDE_DIR - the Cairo include directory\n\n#  CAIRO_LIBRARIES - Link these to use Cairo\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file is based on cmake-2.6/Modules/FindBZip2.cmake\n\n# Copyright (c) 2010, Yiannis Belias, <jonnyb@hol.gr>\n\n# modify for Cairo\n\n# Copyright (c) 2012, Kai-Uwe Behrmann, <ku.b@gmx.de>\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set CAIRO_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindDBus.cmake" : {
+      "ObjectId" : "f227cc29779828c809e9b1053904d29300d64356",
+      "LastModified" : "2012-12-07T15:31:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find the low-level D-Bus library\n\n# Once done this will define\n\n#\n\n#  DBUS_FOUND - system has D-Bus\n\n#  DBUS_INCLUDE_DIR - the D-Bus include directory\n\n#  DBUS_ARCH_INCLUDE_DIR - the D-Bus architecture-specific include directory\n\n#  DBUS_LIBRARIES - the libraries needed to use D-Bus\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Kevin Kofler, <kevin.kofler@chello.at>\n\n# modeled after FindLibArt.cmake:\n\n# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# in cache already\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 26,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindDL.cmake" : {
+      "ObjectId" : "17352dfaac29c8e560fd34993c82a9eb778fe125",
+      "LastModified" : "2012-12-07T15:31:18Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find dynamic linker library. Does nothing on Windows\n\n# Once done, this will define\n\n#\n\n#  DL_FOUND - system has dl (always set on Windows)\n\n#  DL_INCLUDE_DIRS - dlfcn.h include dir\n\n#  DL_LIBRARIES - link these to use dl\n\n#\n\n# See documentation on how to write CMake scripts at\n\n# http://www.cmake.org/Wiki/CMake:How_To_Find_Libraries\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindELEKTRA.cmake" : {
+      "ObjectId" : "375a021c28d5d5eb9dad3e6bbd27c2c04d3e9a36",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find ELEKTRA\n\n# This module defines\n\n#  ELEKTRA_INCLUDE_DIR, where to find kdb.h\n\n#  ELEKTRA_LIBRARIES, the libraries needed to use ELEKTRA.\n\n#  ELEKTRA_DOT_VERSION, The version number of the ELEKTRA library, e.g. \"0.8\"\n\n#  ELEKTRA_VERSION, Similar to ELEKTRA_DOT_VERSION, but without the dots, e.g. \"22\"\n\n#  ELEKTRA_FOUND, If false, do not try to use ELEKTRA.\n\n#\n\n# The minimum required version of ELEKTRA can be specified using the\n\n# standard syntax, e.g. find_package(ELEKTRA 0.8)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Adrian Page, <adrian@pagenet.plus.com>\n\n# Copyright (c) 2009, Cyrille Berger, <cberger@cberger.net>\n\n# Copyright (c) 2012-2014, Kai-Uwe Behrmann, <ku.b@gmx.de>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Store the ELEKTRA version number in the cache, so we don't have to search everytime again\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# query pkg-config asking for Elektra >= 0.7.0\n",
+        "Line" : 67,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindExif2.cmake" : {
+      "ObjectId" : "cdaf726c6b8cf94f9898a049edfc33b3ea4a6c1a",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Exiv2\n\n# Once done this will define\n\n#\n\n#  EXIV2_FOUND - system has Exiv2\n\n#  EXIV2_INCLUDE_DIR - the Exiv2 include directory\n\n#  EXIV2_LIBRARIES - Link these to use Exiv2\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file is based on cmake-2.6/Modules/FindBZip2.cmake\n\n# Copyright (c) 2010, Yiannis Belias, <jonnyb@hol.gr>\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Turned into a Exiv2 detector.\n\n# Copyright (c) 2012, Kai-Uwe Behrmann, <ku.b@gmx.de>\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set EXIV2_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/Modules/FindGetText.cmake" : {
+      "ObjectId" : "7e7cdc39837b422c8e4b1a080fe73daa27e2d718",
+      "LastModified" : "2019-02-26T14:05:15Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find GNU gettext tools\n\n# This module looks for the GNU gettext tools. This module defines the\n\n# following values:\n\n#  GETTEXT_MSGMERGE_EXECUTABLE: the full path to the msgmerge tool.\n\n#  GETTEXT_MSGFMT_EXECUTABLE: the full path to the msgfmt tool.\n\n#  GETTEXT_FOUND: True if gettext has been found.\n\n#  GETTEXT_VERSION_STRING: the version of gettext found (since CMake 2.8.8)\n\n#\n\n# Additionally it provides the following macros:\n\n# GETTEXT_CREATE_TRANSLATIONS ( outputFile [ALL] file1 ... fileN )\n\n#    This will create a target \"translations\" which will convert the\n\n#    given input po files into the binary output mo file. If the\n\n#    ALL option is used, the translations will also be created when\n\n#    building the default target. GETTEXT_TRANSLATIONS_TARGET_PREFIX will be\n\n#    used as prefix for the \"translations\" target name.\n\n# GETTEXT_PROCESS_POT( <potfile> [ALL] [INSTALL_DESTINATION <destdir>] LANGUAGES <lang1> <lang2> ... )\n\n#     Process the given pot file to mo files.\n\n#     If INSTALL_DESTINATION is given then automatically install rules will be created,\n\n#     the language subdirectory will be taken into account (by default use share/locale/).\n\n#     If ALL is specified, the pot file is processed when building the all traget.\n\n#     It creates a custom target \"potfile\".\n\n# GETTEXT_PROCESS_PO_FILES( <lang> [ALL] [INSTALL_DESTINATION <dir>] PO_FILES <po1> <po2> ... )\n\n#     Process the given po files to mo files for the given language.\n\n#     If INSTALL_DESTINATION is given then automatically install rules will be created,\n\n#     the language subdirectory will be taken into account (by default use share/locale/).\n\n#     If ALL is specified, the po files are processed when building the all traget.\n\n#     It creates a custom target \"pofiles\".\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2007-2009 Kitware, Inc.\n\n# Copyright 2007      Alexander Neundorf <neundorf@kde.org>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET( MSGMERGE_OPTS --quiet )\n\n#IF( CMAKE_VERBOSE_MAKEFILE )\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#UNSET( MSGMERGE_OPTS )\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#ENDIF()\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#UNSET(gettext_version)\n",
+        "Line" : 61,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "#INCLUDE(CMakeParseArguments)\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# make it a real variable, so we can modify it here\n",
+        "Line" : 83,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 8
+    },
+    "cmake/Modules/FindLCMS.cmake" : {
+      "ObjectId" : "6cbbb42f59445b026ffbe60d140e0ac21a179d11",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find LCMS\n\n# Find the LCMS (Little Color Management System) library and includes and\n\n# This module defines\n\n#  LCMS_INCLUDE_DIR, where to find lcms.h\n\n#  LCMS_LIBRARIES, the libraries needed to use LCMS.\n\n#  LCMS_DOT_VERSION, The version number of the LCMS library, e.g. \"1.19\"\n\n#  LCMS_VERSION, Similar to LCMS_DOT_VERSION, but without the dots, e.g. \"119\"\n\n#  LCMS_FOUND, If false, do not try to use LCMS.\n\n#\n\n# The minimum required version of LCMS can be specified using the\n\n# standard syntax, e.g. find_package(LCMS 1.10)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Adrian Page, <adrian@pagenet.plus.com>\n\n# Copyright (c) 2009, Cyrille Berger, <cberger@cberger.net>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Store the LCMS version number in the cache, so we don't have to search everytime again\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindLCMS2.cmake" : {
+      "ObjectId" : "c45c14f65c91419d582a90897a9b85bc458bc510",
+      "LastModified" : "2017-10-02T07:31:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find LCMS 2\n\n# Find the LCMS (Little Color Management System) library version 2 \n\n# and includes and\n\n# This module defines\n\n#  LCMS2_INCLUDE_DIR, where to find lcms2.h\n\n#  LCMS2_LIBRARIES, the libraries needed to use LCMS2.\n\n#  LCMS2_DOT_VERSION, The version number of the LCMS2 library, e.g. \"2.1\"\n\n#  LCMS2_VERSION, Similar to LCMS2_DOT_VERSION, but without the dots, e.g. \"22\"\n\n#  LCMS2_FOUND, If false, do not try to use LCMS2.\n\n#\n\n# The minimum required version of LCMS 2 can be specified using the\n\n# standard syntax, e.g. find_package(LCMS2 2.4)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Adrian Page, <adrian@pagenet.plus.com>\n\n# Copyright (c) 2009, Cyrille Berger, <cberger@cberger.net>\n\n# Copyright (c) 2012-2014, Kai-Uwe Behrmann, <ku.b@gmx.de>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#PATH_SUFFIXES lcms2\n",
+        "Line" : 39,
+        "CharPositionInLine" : 3
+      },
+      "4" : {
+        "Text" : "# Store the LCMS2 version number in the cache, so we don't have to search everytime again\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindLibPNG.cmake" : {
+      "ObjectId" : "57f9600dbd7c145db5ce39e9ecaeef0595bd5c0b",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find LibPNG\n\n# Once done this will define\n\n#\n\n#  LIBPNG_FOUND - system has LibPNG\n\n#  LIBPNG_INCLUDE_DIR - the LibPNG include directory\n\n#  LIBPNG_LIBRARIES - Link these to use LibPNG\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file is based on cmake-2.6/Modules/FindBZip2.cmake\n\n# Copyright (c) 2010, Yiannis Belias, <jonnyb@hol.gr>\n\n# modify for libpng\n\n# Copyright (c) 2012, Kai-Uwe Behrmann, <ku.b@gmx.de>\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBPNG_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindLibRaw.cmake" : {
+      "ObjectId" : "75365a5197e1aad123cde18dce573d495be02370",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find LibRaw\n\n# Once done this will define\n\n#\n\n#  LIBRAW_FOUND - system has LibRaw\n\n#  LIBRAW_INCLUDE_DIR - the LibRaw include directory\n\n#  LIBRAW_LIBRARIES - Link these to use LibRaw\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file is based on cmake-2.6/Modules/FindBZip2.cmake\n\n# Copyright (c) 2010, Yiannis Belias, <jonnyb@hol.gr>\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBRAW_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindLibXML2.cmake" : {
+      "ObjectId" : "fe8ac046895be7ccd40fdab5a8e25e92b2369ee4",
+      "LastModified" : "2017-11-30T08:36:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# FindLibXml2\n\n# -----------\n\n#\n\n# Try to find the LibXml2 xml processing library\n\n#\n\n# Once done this will define\n\n#\n\n# ::\n\n#\n\n#   LIBXML2_FOUND - System has LibXml2\n\n#   LIBXML2_INCLUDE_DIR - The LibXml2 include directory\n\n#   LIBXML2_LIBRARIES - The libraries needed to use LibXml2\n\n#   LIBXML2_DEFINITIONS - Compiler switches required for using LibXml2\n\n#   LIBXML2_XMLLINT_EXECUTABLE - The XML checking tool xmllint coming with LibXml2\n\n#   LIBXML2_VERSION_STRING - the version of LibXml2 found (since CMake 2.8.8)\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the find_path() and find_library() calls\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# for backwards compat. with KDE 4.0.x:\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindSane.cmake" : {
+      "ObjectId" : "3d6f9aea0007a35660d1f2fa4938fa5a2d93f771",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cmake macro to test if we use sane\n\n#\n\n#  SANE_FOUND - system has SANE libs\n\n#  SANE_INCLUDE_DIR - the SANE include directory\n\n#  SANE_LIBRARIES - The libraries needed to use SANE\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Marcus Hufgard <hufgardm@hufgard.de> 2006\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindXRandR.cmake" : {
+      "ObjectId" : "ec09c0096688aff4d06502dd174f1f5ea35d85dd",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/Modules/FindXfixes.cmake" : {
+      "ObjectId" : "2124e5463f7b6f38f5ce9054d3649e952df4b759",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/Modules/FindXinerama.cmake" : {
+      "ObjectId" : "fade5970ecf0fcb2c07e7f3a2633d072a3f28207",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/Modules/FindXmu.cmake" : {
+      "ObjectId" : "e332b99ccb098f6be640a10c88af263d4a78dca0",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Redistribution and use is allowed according to the terms of the BSD license.\n\n# Copyright (c) 2012-2014, Kai-Uwe Behrmann, <ku.b@gmx.de>\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindXxf86vm.cmake" : {
+      "ObjectId" : "c58a8ccc637878497b57ae749db68cbb3fdfa481",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/Modules/LibAddMacros.cmake" : {
+      "ObjectId" : "7444ade5d73ebb82496d3a2393bc3774aacfc786",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copy a file from source dir to binary dir\n\n#\n\n# copy_file name\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Create a symlink\n\n#create_symlink old new    - create a symbolic link new -> old\n\n#\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Make a directory\n\n#\n\n# mkdir dir\n\n#\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add a test for a plugin\n\n#\n\n# will include the common tests.h file + its source file\n\n# additional source files can be added as additional arguments\n\n#\n\n# links the executeable (only if build_full)\n\n# and adds a test\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Add a test for a script\n\n#\n\n# The the given testname is blah.sh\n\n#   the script file must be called blah.sh\n\n#   it will be installed on the system as blah.sh\n\n#   the test will be called testscr_blah\n\n#   and the script file for the test will be testscr_blah.sh\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#- Adds all headerfiles of global include path to the given variable\n\n#\n\n#  ADD_HEADERS (variable)\n\n#\n\n# example:\n\n#add_headers (SOURCES)\n\n#SOURCES now contain the names of all global header files\n\n#\n\n# thus the necessary directories are also included within the macro\n\n# don't execute this within a loop.\n\n#\n\n# The added files will be always the same anyway. Example see in\n\n# tests/CMakeLists.txt\n\n#\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Add all headers needed for cpp bindings\n\n#\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#- Removes a plugin from the global cache\n\n#\n\n#  REMOVE_PLUGIN (name reason)\n\n#\n\n# example:\n\n#remove_plugin (fstab \"mntent is missing\")\n\n#\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#- Add sources for a target\n\n#\n\n#  ADD_SOURCES (<target> <source1> [<source2> ...])\n\n#\n\n# The target should add the sources using:\n\n#\n\n#get_property (elektra_SRCS GLOBAL PROPERTY elektra_SRCS)\n\n#list (APPEND SRC_FILES ${elektra_SRCS})\n\n#\n\n## descend into sub-directories\n\n#add_subdirectory(a)\n\n#add_subdirectory(b)\n\n#\n\n#get_property(super_SRCS GLOBAL PROPERTY super_SRCS)\n\n#\n\n#add_library(super STATIC ${super_SRCS})\n\n################\n\n#\n\n#a/CMakeLists.txt:\n\n##################\n\n#add_sources(super\n\n#  a1.f\n\n#  a2.f\n\n#  a3.f\n\n#  )\n\n##################\n\n#\n\n#b/CMakeLists.txt:\n\n##################\n\n#add_sources(super\n\n#  b1.f\n\n#  b2.f\n\n#  )\n\n##################\n\n#\n\n#Thank to Michael Wild\n\n#\n\n#\n\n# elektra...        are the sources for all elektra targets\n\n# elektra-shared... are the additional sources\n\n#                   for elektra SHARED only (excludes elektra-full)\n\n# elektra-full...   are the additional sources for the versions\n\n#                   with all plugins built-in (excludes elektra-shared)\n\n#\n",
+        "Line" : 259,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# define the <target>_SRCS properties if necessary\n",
+        "Line" : 304,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# create list of sources (absolute paths)\n",
+        "Line" : 311,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# append to global property\n",
+        "Line" : 319,
+        "CharPositionInLine" : 1
+      },
+      "12" : {
+        "Text" : "#- Add includes for a target\n\n#\n\n#  ADD_INCLUDES (<target> <source1> [<source2> ...])\n\n#\n\n# The target should do:\n\n#\n\n#get_property (elektra_INCLUDES GLOBAL PROPERTY elektra_INCLUDES)\n\n#include_directories (${elektra_INCLUDES})\n\n#\n",
+        "Line" : 323,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# define the <target>_INCLUDES properties if necessary\n",
+        "Line" : 333,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "# create list of sources (absolute paths)\n",
+        "Line" : 340,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# append to global property\n",
+        "Line" : 345,
+        "CharPositionInLine" : 1
+      },
+      "16" : {
+        "Text" : "#- Add libraries for a target\n\n#\n\n#  ADD_LIBRARIES (<target> <source1> [<source2> ...])\n\n#\n\n# The target should do:\n\n#\n\n#get_property (elektra_LIBRARIES GLOBAL PROPERTY elektra_LIBRARIES)\n\n#target_link_libraries (elektra ${elektra_LIBRARIES})\n\n#\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# define the <target>_LIBRARIES properties if necessary\n",
+        "Line" : 360,
+        "CharPositionInLine" : 1
+      },
+      "18" : {
+        "Text" : "# create list of sources (absolute paths)\n",
+        "Line" : 367,
+        "CharPositionInLine" : 1
+      },
+      "19" : {
+        "Text" : "# append to global property\n",
+        "Line" : 372,
+        "CharPositionInLine" : 1
+      },
+      "20" : {
+        "Text" : "#- Wrapper of add_library to allow for static modules\n\n#\n\n#  MY_ADD_LIBRARY(<name> [STATIC|SHARED|MODULE]\n\n#                 [EXCLUDE_FROM_ALL]\n\n#                 [STATIC_NAME <static_name>]\n\n#                 <source1> ... <sourceN>)\n\n#\n\n# If STATIC_NAME <static_name> is given, the sources will be appended to\n\n# the global property MY_STATIC_MODULES_<static_name>_SOURCES which can\n\n# then be used with MY_ADD_STATIC_MODULE() to create a static module from\n\n# all of the sources.\n\n#\n\n#Thanks to Michael Wild <themiwi@gmail.com>\n\n#\n",
+        "Line" : 377,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# parse arguments\n",
+        "Line" : 392,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# ensure that sources are absolute paths\n",
+        "Line" : 408,
+        "CharPositionInLine" : 3
+      },
+      "23" : {
+        "Text" : "# require at least one source file\n",
+        "Line" : 415,
+        "CharPositionInLine" : 1
+      },
+      "24" : {
+        "Text" : "# if we have a STATIC_NAME, append the sources to the global property\n",
+        "Line" : 419,
+        "CharPositionInLine" : 1
+      },
+      "25" : {
+        "Text" : "# finally, create the normal library\n",
+        "Line" : 430,
+        "CharPositionInLine" : 1
+      },
+      "26" : {
+        "Text" : "#- Create a static library from sources collected by MY_ADD_LIBRARY\n\n#\n\n#  MY_ADD_STATIC_MODULE(<name>)\n\n#\n\n# Compiles a static library <name> from the sources defined in\n\n# MY_STATIC_MODULES_<name>_SOURCES by MY_ADD_LIBRARY(). This\n\n# function must be called after all calls to MY_ADD_LIBRARY()\n\n# contributing sources to this static module.\n\n#\n\n#Thanks to Michael Wild <themiwi@gmail.com>\n\n#\n",
+        "Line" : 435,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 27
+    },
+    "cmake/Modules/LibFindMacros.cmake" : {
+      "ObjectId" : "83b68b5b4bf1363da69e11cd647b55ca3a1f86a1",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Works the same as find_package, but forwards the \"REQUIRED\" argument used for\n\n# the current package and always uses the \"QUIET\" flag. For this to work, the\n\n# first parameter must be the prefix of the current package, then the prefix of\n\n# the new package etc, which are passed to find_package.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Damn CMake developers made the UsePkgConfig system deprecated in the same release (2.6)\n\n# where they added pkg_check_modules. Consequently I need to support both in my scripts\n\n# to avoid those deprecated warnings. Here's a helper that does just that.\n\n# Works identically to pkg_check_modules, except that no checks are needed prior to use.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Do the final processing once the paths have been detected.\n\n# If include dirs are needed, ${PREFIX}_PROCESS_INCLUDES should be set to contain\n\n# all the variables, each of which contain one include directory.\n\n# Ditto for ${PREFIX}_PROCESS_LIBS and library files.\n\n# Will set ${PREFIX}_FOUND, ${PREFIX}_INCLUDE_DIRS and ${PREFIX}_LIBRARIES.\n\n# Also handles errors in case library detection was required, etc.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Skip processing if already processed during this run\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Start with the assumption that the library was found\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Process all includes and set _FOUND to false if any are missing\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Process all libraries and set _FOUND to false if any are missing\n",
+        "Line" : 51,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Print message and/or exit on fatal error\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 8
+    },
+    "color/CMakeLists.txt" : {
+      "ObjectId" : "d47aca0f5d1a8a68d03e420fb51200038aedddf8",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "color/rank-map/CMakeLists.txt" : {
+      "ObjectId" : "a6ba0de766fa2c3b00f1a171d366789dd9282880",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "color/settings/CMakeLists.txt" : {
+      "ObjectId" : "747ad78c847d320e990e941012db5d25e666602b",
+      "LastModified" : "2017-03-31T15:08:50Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "doc/CMakeLists.txt" : {
+      "ObjectId" : "777a0ab86ae724fcea0b3e739e4e7436f0f10f56",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "extras/CMakeLists.txt" : {
+      "ObjectId" : "0d215e9c88b6dbab931083d9e19d59509a79f47a",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#cmake settings for use by find_package\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# KDE has problems rendering SVG blur\n\n#INSTALL( FILES icons/oyranos_logo.svg DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps )\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# needs to go to the autostart directory - hack hack hack\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#pkg-config files\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "libxcm/CMakeLists.txt" : {
+      "ObjectId" : "ea5fe63a4e6659d79f76698a4627738e4e158a9f",
+      "LastModified" : "2017-11-30T08:36:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# disable install and build of shared libs for fallback subproject\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# dependencies\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# debug\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#MESSAGE( \"-- INCLUDE_DIRECTORIES: ${inc_dirs}\" )\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "libxcm/src/CMakeLists.txt" : {
+      "ObjectId" : "0c417f9fa5e71a8dde46691de1b2dab970d6ec08",
+      "LastModified" : "2017-11-30T08:41:56Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "openicc/CMakeLists.txt" : {
+      "ObjectId" : "0ebabc81839f86d0927f83217454d1b8bd78cdbb",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#additional cmake modules for loading libraries\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# some basic and important variables\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#needed by doxygen\n",
+        "Line" : 33,
+        "CharPositionInLine" : 26
+      },
+      "3" : {
+        "Text" : "# disable install and build of shared libs for fallback subproject\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# if our static code lands inside a shared lib, we need -fPIC\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# detect top level projects\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#now add all directories\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#ADD_SUBDIRECTORY( settings )\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# DEB source package\n",
+        "Line" : 178,
+        "CharPositionInLine" : 32
+      },
+      "CommentCount" : 9
+    },
+    "openicc/cmake/CMakeLists.txt" : {
+      "ObjectId" : "072db1e0d46d5227c6d0ae5fdc86d4c00a07e477",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Target installation folders\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Misc.\n\n#\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#cmake settings for use by find_package\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "openicc/cmake/Modules/CodeCoverage.cmake" : {
+      "ObjectId" : "07725866655d577b3659113ba6f561fbb2174626",
+      "LastModified" : "2018-07-29T11:41:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2012 - 2015, Lars Bilke\n\n# All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n# 1. Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#\n\n# 2. Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#\n\n# 3. Neither the name of the copyright holder nor the names of its contributors\n\n#    may be used to endorse or promote products derived from this software without\n\n#    specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n\n# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n#\n\n#\n\n# 2012-01-31, Lars Bilke\n\n# - Enable Code Coverage\n\n#\n\n# 2013-09-17, Joakim Söderberg\n\n# - Added support for Clang.\n\n# - Some additional usage instructions.\n\n#\n\n# USAGE:\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# 0. (Mac only) If you use Xcode 5.1 make sure to patch geninfo as described here:\n\n#      http://stackoverflow.com/a/22404544/80480\n\n#\n\n# 1. Copy this file into your cmake modules path.\n\n#\n\n# 2. Add the following line to your CMakeLists.txt:\n\n#      INCLUDE(CodeCoverage)\n\n#\n\n# 3. Set compiler flags to turn off optimization and enable coverage:\n\n#    SET(CMAKE_CXX_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\t SET(CMAKE_C_FLAGS \"-g -O0 -fprofile-arcs -ftest-coverage\")\n\n#\n\n# 3. Use the function SETUP_TARGET_FOR_COVERAGE to create a custom make target\n\n#    which runs your test executable and produces a lcov code coverage report:\n\n#    Example:\n\n#\t SETUP_TARGET_FOR_COVERAGE(\n\n#\t\t\t\tmy_coverage_target  # Name for custom target.\n\n#\t\t\t\ttest_driver         # Name of the test driver executable that runs the tests.\n\n#\t\t\t\t\t\t\t\t\t# NOTE! This should always have a ZERO as exit code\n\n#\t\t\t\t\t\t\t\t\t# otherwise the coverage generation will not complete.\n\n#\t\t\t\tcoverage            # Name of output directory.\n\n#\t\t\t\t)\n\n#\n\n# 4. Build a Debug build:\n\n#\t cmake -DCMAKE_BUILD_TYPE=Debug ..\n\n#\t make\n\n#\t make my_coverage_target\n\n#\n\n#\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check prereqs\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NOT GCOV_PATH\n",
+        "Line" : 78,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Clang version 3.0.0 and greater now supports gcov as well.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# NOT CMAKE_COMPILER_IS_GNUCXX\n",
+        "Line" : 87,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\"\n",
+        "Line" : 113,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests.\n\n#\t\t\t\t\t\tMUST return ZERO always, even on errors.\n\n#\t\t\t\t\t\tIf not, no coverage report will be created!\n\n# Param _outputname     lcov output is generated as _outputname.info\n\n#                       HTML report is generated in _outputname/index.html\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOT LCOV_PATH\n",
+        "Line" : 128,
+        "CharPositionInLine" : 9
+      },
+      "9" : {
+        "Text" : "# NOT GENHTML_PATH\n",
+        "Line" : 132,
+        "CharPositionInLine" : 9
+      },
+      "10" : {
+        "Text" : "# Setup target\n",
+        "Line" : 134,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Cleanup lcov\n",
+        "Line" : 137,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Run tests\n",
+        "Line" : 140,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Capturing lcov counters and generating report\n",
+        "Line" : 143,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 153,
+        "CharPositionInLine" : 1
+      },
+      "15" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE\n",
+        "Line" : 159,
+        "CharPositionInLine" : 14
+      },
+      "16" : {
+        "Text" : "# Param _targetname     The name of new the custom make target\n\n# Param _testrunner     The name of the target which runs the tests\n\n# Param _outputname     cobertura output is generated as _outputname.xml\n\n# Optional fourth parameter is passed as arguments to _testrunner\n\n#   Pass them in list form, e.g.: \"-j;2\" for -j 2\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# NOT PYTHON_EXECUTABLE\n",
+        "Line" : 170,
+        "CharPositionInLine" : 9
+      },
+      "18" : {
+        "Text" : "# NOT GCOVR_PATH\n",
+        "Line" : 174,
+        "CharPositionInLine" : 9
+      },
+      "19" : {
+        "Text" : "# Run tests\n",
+        "Line" : 178,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Running gcovr\n",
+        "Line" : 181,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Show info where to find the report\n",
+        "Line" : 187,
+        "CharPositionInLine" : 1
+      },
+      "22" : {
+        "Text" : "# SETUP_TARGET_FOR_COVERAGE_COBERTURA\n",
+        "Line" : 193,
+        "CharPositionInLine" : 14
+      },
+      "CommentCount" : 23
+    },
+    "openicc/cmake/Modules/FindDBus.cmake" : {
+      "ObjectId" : "f227cc29779828c809e9b1053904d29300d64356",
+      "LastModified" : "2018-07-29T11:41:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find the low-level D-Bus library\n\n# Once done this will define\n\n#\n\n#  DBUS_FOUND - system has D-Bus\n\n#  DBUS_INCLUDE_DIR - the D-Bus include directory\n\n#  DBUS_ARCH_INCLUDE_DIR - the D-Bus architecture-specific include directory\n\n#  DBUS_LIBRARIES - the libraries needed to use D-Bus\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Kevin Kofler, <kevin.kofler@chello.at>\n\n# modeled after FindLibArt.cmake:\n\n# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# in cache already\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 26,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 4
+    },
+    "openicc/cmake/Modules/FindDL.cmake" : {
+      "ObjectId" : "17352dfaac29c8e560fd34993c82a9eb778fe125",
+      "LastModified" : "2018-07-29T11:41:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find dynamic linker library. Does nothing on Windows\n\n# Once done, this will define\n\n#\n\n#  DL_FOUND - system has dl (always set on Windows)\n\n#  DL_INCLUDE_DIRS - dlfcn.h include dir\n\n#  DL_LIBRARIES - link these to use dl\n\n#\n\n# See documentation on how to write CMake scripts at\n\n# http://www.cmake.org/Wiki/CMake:How_To_Find_Libraries\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "openicc/cmake/Modules/FindGetText.cmake" : {
+      "ObjectId" : "7e7cdc39837b422c8e4b1a080fe73daa27e2d718",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find GNU gettext tools\n\n# This module looks for the GNU gettext tools. This module defines the\n\n# following values:\n\n#  GETTEXT_MSGMERGE_EXECUTABLE: the full path to the msgmerge tool.\n\n#  GETTEXT_MSGFMT_EXECUTABLE: the full path to the msgfmt tool.\n\n#  GETTEXT_FOUND: True if gettext has been found.\n\n#  GETTEXT_VERSION_STRING: the version of gettext found (since CMake 2.8.8)\n\n#\n\n# Additionally it provides the following macros:\n\n# GETTEXT_CREATE_TRANSLATIONS ( outputFile [ALL] file1 ... fileN )\n\n#    This will create a target \"translations\" which will convert the\n\n#    given input po files into the binary output mo file. If the\n\n#    ALL option is used, the translations will also be created when\n\n#    building the default target. GETTEXT_TRANSLATIONS_TARGET_PREFIX will be\n\n#    used as prefix for the \"translations\" target name.\n\n# GETTEXT_PROCESS_POT( <potfile> [ALL] [INSTALL_DESTINATION <destdir>] LANGUAGES <lang1> <lang2> ... )\n\n#     Process the given pot file to mo files.\n\n#     If INSTALL_DESTINATION is given then automatically install rules will be created,\n\n#     the language subdirectory will be taken into account (by default use share/locale/).\n\n#     If ALL is specified, the pot file is processed when building the all traget.\n\n#     It creates a custom target \"potfile\".\n\n# GETTEXT_PROCESS_PO_FILES( <lang> [ALL] [INSTALL_DESTINATION <dir>] PO_FILES <po1> <po2> ... )\n\n#     Process the given po files to mo files for the given language.\n\n#     If INSTALL_DESTINATION is given then automatically install rules will be created,\n\n#     the language subdirectory will be taken into account (by default use share/locale/).\n\n#     If ALL is specified, the po files are processed when building the all traget.\n\n#     It creates a custom target \"pofiles\".\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2007-2009 Kitware, Inc.\n\n# Copyright 2007      Alexander Neundorf <neundorf@kde.org>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET( MSGMERGE_OPTS --quiet )\n\n#IF( CMAKE_VERBOSE_MAKEFILE )\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#UNSET( MSGMERGE_OPTS )\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#ENDIF()\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#UNSET(gettext_version)\n",
+        "Line" : 61,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "#INCLUDE(CMakeParseArguments)\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# make it a real variable, so we can modify it here\n",
+        "Line" : 83,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 8
+    },
+    "openicc/cmake/Modules/FindLCMS.cmake" : {
+      "ObjectId" : "1a25bc2e1b26a5f98eae7617c83545f55a40bc52",
+      "LastModified" : "2018-07-29T11:41:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find LCMS\n\n# Find the LCMS (Little Color Management System) library and includes and\n\n# This module defines\n\n#  LCMS_INCLUDE_DIR, where to find lcms.h\n\n#  LCMS_LIBRARIES, the libraries needed to use LCMS.\n\n#  LCMS_DOT_VERSION, The version number of the LCMS library, e.g. \"1.19\"\n\n#  LCMS_VERSION, Similar to LCMS_DOT_VERSION, but without the dots, e.g. \"119\"\n\n#  LCMS_FOUND, If false, do not try to use LCMS.\n\n#\n\n# The minimum required version of LCMS can be specified using the\n\n# standard syntax, e.g. find_package(LCMS 1.10)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Adrian Page, <adrian@pagenet.plus.com>\n\n# Copyright (c) 2009, Cyrille Berger, <cberger@cberger.net>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Store the LCMS version number in the cache, so we don't have to search everytime again\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "openicc/cmake/Modules/FindLCMS2.cmake" : {
+      "ObjectId" : "c490d02b0c2c0b591deb9276d3f21f9d6f359d94",
+      "LastModified" : "2018-07-29T11:41:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find LCMS 2\n\n# Find the LCMS (Little Color Management System) library version 2 \n\n# and includes and\n\n# This module defines\n\n#  LCMS2_INCLUDE_DIR, where to find lcms2.h\n\n#  LCMS2_LIBRARIES, the libraries needed to use LCMS2.\n\n#  LCMS2_DOT_VERSION, The version number of the LCMS2 library, e.g. \"2.1\"\n\n#  LCMS2_VERSION, Similar to LCMS2_DOT_VERSION, but without the dots, e.g. \"22\"\n\n#  LCMS2_FOUND, If false, do not try to use LCMS2.\n\n#\n\n# The minimum required version of LCMS 2 can be specified using the\n\n# standard syntax, e.g. find_package(LCMS2 2.4)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2008, Adrian Page, <adrian@pagenet.plus.com>\n\n# Copyright (c) 2009, Cyrille Berger, <cberger@cberger.net>\n\n# Copyright (c) 2012-2014, Kai-Uwe Behrmann, <ku.b@gmx.de>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#PATH_SUFFIXES lcms2\n",
+        "Line" : 41,
+        "CharPositionInLine" : 3
+      },
+      "4" : {
+        "Text" : "# Store the LCMS2 version number in the cache, so we don't have to search everytime again\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "openicc/cmake/Modules/FindYajl.cmake" : {
+      "ObjectId" : "d0cda1ae957cbf61a1498a01f25912249b7593e7",
+      "LastModified" : "2018-07-29T11:41:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find YAJL\n\n# Once done this will define\n\n#\n\n#  YAJL_FOUND - system has YAJL\n\n#  YAJL_INCLUDE_DIR - the YAJL include directory\n\n#  YAJL_LIBRARIES - Link these to use YAJL\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file is based on cmake-2.6/Modules/FindBZip2.cmake\n\n# Copyright (c) 2010, Yiannis Belias, <jonnyb@hol.gr>\n\n# modify for YAJL\n\n# Copyright (c) 2012, Kai-Uwe Behrmann, <ku.b@gmx.de>\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set YAJL_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "openicc/extras/CMakeLists.txt" : {
+      "ObjectId" : "3dfa34ed2887d98c0591d93964ada78d322e1b1d",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#pkg-config files\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "openicc/oyjl/CMakeLists.txt" : {
+      "ObjectId" : "1affda1c6083241ba61f7ced4dbfd7ac494e43cf",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# disable install and build of shared libs for fallback subproject\n",
+        "Line" : 30,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# if our static code lands inside a shared lib, we need -fPIC\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Target installation folders\n\n#\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# additional cmake modules for loading libraries\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# yajl2 should come with yajl_version.h, the included yajl is version 1.0.x\n",
+        "Line" : 90,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "#include(ExternalProject)\n\n#ExternalProject_Add( yajl\n\n#SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/yajl\n\n#CONFIGURE_COMMAND cmake ${CMAKE_CURRENT_SOURCE_DIR}/yajl\n\n#BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/yajl\n\n#BUILD_COMMAND ${MAKE}\n\n# skip installation\n\n#INSTALL_COMMAND echo )\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "## library \n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# needs libyaml\n\n# dependencies\n",
+        "Line" : 327,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# needs libxml2\n",
+        "Line" : 337,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# i18n\n",
+        "Line" : 386,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#SET( _xgettext_option_list --language=C --keyword=_ --keyword=N_ --keyword=C_:1c,2 --keyword=NC_:1c,2 -s --package-name=${PROJECT_DOWN_NAME} --package-version=${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION} )\n",
+        "Line" : 389,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# compile translations always to have them ready for installation\n",
+        "Line" : 407,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "#\n\n# Misc.\n\n#\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#cmake settings for use by find_package\n",
+        "Line" : 424,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "openicc/oyjl/cmake/modules/FindGetText.cmake" : {
+      "ObjectId" : "7e7cdc39837b422c8e4b1a080fe73daa27e2d718",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find GNU gettext tools\n\n# This module looks for the GNU gettext tools. This module defines the\n\n# following values:\n\n#  GETTEXT_MSGMERGE_EXECUTABLE: the full path to the msgmerge tool.\n\n#  GETTEXT_MSGFMT_EXECUTABLE: the full path to the msgfmt tool.\n\n#  GETTEXT_FOUND: True if gettext has been found.\n\n#  GETTEXT_VERSION_STRING: the version of gettext found (since CMake 2.8.8)\n\n#\n\n# Additionally it provides the following macros:\n\n# GETTEXT_CREATE_TRANSLATIONS ( outputFile [ALL] file1 ... fileN )\n\n#    This will create a target \"translations\" which will convert the\n\n#    given input po files into the binary output mo file. If the\n\n#    ALL option is used, the translations will also be created when\n\n#    building the default target. GETTEXT_TRANSLATIONS_TARGET_PREFIX will be\n\n#    used as prefix for the \"translations\" target name.\n\n# GETTEXT_PROCESS_POT( <potfile> [ALL] [INSTALL_DESTINATION <destdir>] LANGUAGES <lang1> <lang2> ... )\n\n#     Process the given pot file to mo files.\n\n#     If INSTALL_DESTINATION is given then automatically install rules will be created,\n\n#     the language subdirectory will be taken into account (by default use share/locale/).\n\n#     If ALL is specified, the pot file is processed when building the all traget.\n\n#     It creates a custom target \"potfile\".\n\n# GETTEXT_PROCESS_PO_FILES( <lang> [ALL] [INSTALL_DESTINATION <dir>] PO_FILES <po1> <po2> ... )\n\n#     Process the given po files to mo files for the given language.\n\n#     If INSTALL_DESTINATION is given then automatically install rules will be created,\n\n#     the language subdirectory will be taken into account (by default use share/locale/).\n\n#     If ALL is specified, the po files are processed when building the all traget.\n\n#     It creates a custom target \"pofiles\".\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2007-2009 Kitware, Inc.\n\n# Copyright 2007      Alexander Neundorf <neundorf@kde.org>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET( MSGMERGE_OPTS --quiet )\n\n#IF( CMAKE_VERBOSE_MAKEFILE )\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#UNSET( MSGMERGE_OPTS )\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#ENDIF()\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#UNSET(gettext_version)\n",
+        "Line" : 61,
+        "CharPositionInLine" : 3
+      },
+      "6" : {
+        "Text" : "#INCLUDE(CMakeParseArguments)\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# make it a real variable, so we can modify it here\n",
+        "Line" : 83,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 8
+    },
+    "openicc/oyjl/cmake/modules/FindLibXML2.cmake" : {
+      "ObjectId" : "fe8ac046895be7ccd40fdab5a8e25e92b2369ee4",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# FindLibXml2\n\n# -----------\n\n#\n\n# Try to find the LibXml2 xml processing library\n\n#\n\n# Once done this will define\n\n#\n\n# ::\n\n#\n\n#   LIBXML2_FOUND - System has LibXml2\n\n#   LIBXML2_INCLUDE_DIR - The LibXml2 include directory\n\n#   LIBXML2_LIBRARIES - The libraries needed to use LibXml2\n\n#   LIBXML2_DEFINITIONS - Compiler switches required for using LibXml2\n\n#   LIBXML2_XMLLINT_EXECUTABLE - The XML checking tool xmllint coming with LibXml2\n\n#   LIBXML2_VERSION_STRING - the version of LibXml2 found (since CMake 2.8.8)\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the find_path() and find_library() calls\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# for backwards compat. with KDE 4.0.x:\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "openicc/oyjl/cmake/modules/FindYajl.cmake" : {
+      "ObjectId" : "d0cda1ae957cbf61a1498a01f25912249b7593e7",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find YAJL\n\n# Once done this will define\n\n#\n\n#  YAJL_FOUND - system has YAJL\n\n#  YAJL_INCLUDE_DIR - the YAJL include directory\n\n#  YAJL_LIBRARIES - Link these to use YAJL\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>\n\n#\n\n# Redistribution and use is allowed according to the terms of the BSD license.\n\n# For details see the accompanying COPYING-CMAKE-SCRIPTS file.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This file is based on cmake-2.6/Modules/FindBZip2.cmake\n\n# Copyright (c) 2010, Yiannis Belias, <jonnyb@hol.gr>\n\n# modify for YAJL\n\n# Copyright (c) 2012, Kai-Uwe Behrmann, <ku.b@gmx.de>\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# use pkg-config to get the directories and then use these values\n\n# in the FIND_PATH() and FIND_LIBRARY() calls\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set YAJL_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "openicc/oyjl/docs/CMakeLists.txt" : {
+      "ObjectId" : "a78b1e04bded6a4c808eb3d2b216acb482d4b935",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "openicc/oyjl/libxml2/CMakeLists.txt" : {
+      "ObjectId" : "abffc5741d95c106aed37002df1be28c6f91d325",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "openicc/oyjl/oyjl-args-qml/CMakeLists.txt" : {
+      "ObjectId" : "f2fc1a9bdff356d0e4759e974a59f016f4ab8c28",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Json Ui renderer in Qt's QML+JavaScript\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#    MESSAGE( \"${PROJECT_NAME}_SOURCES: \" ${${PROJECT_NAME}_SOURCES} )\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#    MESSAGE( \"${PROJECT_NAME}_QML: \" ${${PROJECT_NAME}_QML} )\n\n#    MESSAGE( \"${PROJECT_NAME}_TS: \" ${${PROJECT_NAME}_TS} )\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#SET_PROPERTY(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "openicc/oyjl/yajl/CMakeLists.txt" : {
+      "ObjectId" : "791841013406cd96ebbfb0752649b2b5dc95a093",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "openicc/src/CMakeLists.txt" : {
+      "ObjectId" : "ccd10f544c076aa8a46a16b6051592eba94f54de",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# if our static code lands inside a shared lib, we need -fPIC\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# coverage testing\n",
+        "Line" : 13,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# dependencies\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# debug\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#MESSAGE( \"-- INCLUDE_DIRECTORIES: ${inc_dirs}\" )\n",
+        "Line" : 138,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# versions for libraries\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# i18n\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#SET( _xgettext_option_list --language=C --keyword=_ --keyword=N_ --keyword=C_:1c,2 --keyword=NC_:1c,2 -s --package-name=${PROJECT_DOWN_NAME} --package-version=${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION} )\n",
+        "Line" : 174,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# compile translations always to have them ready for installation\n",
+        "Line" : 191,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 9
+    },
+    "openicc/src/examples/CMakeLists.txt" : {
+      "ObjectId" : "ff9f547f038dd08264d7f285c0a4b7f4fd785997",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Device listing\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#INSTALL (TARGETS openicc-config-read DESTINATION bin)\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "openicc/src/include/CMakeLists.txt" : {
+      "ObjectId" : "7cfc185677cc2bb7a5b5e5766ea8000ab4c78727",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "openicc/src/libopenicc/CMakeLists.txt" : {
+      "ObjectId" : "d0a0dcab08c93ffa62dc52ee353424fddf1f4d3a",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# if our static code lands inside a shared lib, we need -fPIC\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "openicc/src/tests/CMakeLists.txt" : {
+      "ObjectId" : "2816f69c333214b0b2b256adc2b7022114040db7",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Name for custom target.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 14
+      },
+      "1" : {
+        "Text" : "# Name of the test driver executable that runs the tests.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 24
+      },
+      "2" : {
+        "Text" : "# NOTE! This should always have a ZERO as exit code\n\n# otherwise the coverage generation will not complete.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 9
+      },
+      "3" : {
+        "Text" : "# Name of output directory.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 4
+    },
+    "openicc/src/tools/CMakeLists.txt" : {
+      "ObjectId" : "9a595dd4bf9285193c86e6c27ddaa6f5bf5bc06f",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Device listing\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "86022f2a83ecdd01e58322e7b57334337aaa3977",
+      "LastModified" : "2019-04-04T14:01:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# dependencies\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The second dirent.h test catches on Android\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# A GNU extension for debugging the call stack.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#  TRY_COMPILE(\n\n#    HAVE_LIBRAW_REALLY\n\n#    ${CMAKE_BINARY_DIR}/src/tests\n\n#    ${CMAKE_SOURCE_DIR}/src/tests/libraw_test.cxx\n\n#    CMAKE_FLAGS \"-DCMAKE_CXX_FLAGS=-I${LIBRAW_INCLUDE_DIR} -DCMAKE_EXE_LINKER_FLAGS=${LIBRAW_LIBRARY_DIRS}\"\n\n#    COMPILE_DEFINITIONS -shared\n\n#    OUTPUT_VARIABLE TRY_COMPILE_OUTPUT\n\n#    )\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# debug\n",
+        "Line" : 312,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# each framework header directory is named here\n\n# otherwise user would need to include the framework name before the header name,\n\n# which would not be consistent with other platforms\n",
+        "Line" : 327,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# versions for libraries\n",
+        "Line" : 372,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# i18n\n",
+        "Line" : 435,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#SET( _xgettext_option_list --language=C --keyword=_ --keyword=N_ --keyword=C_:1c,2 --keyword=NC_:1c,2 -s --package-name=${PROJECT_NAME} --package-version=${OYRANOS_VERSION_MAJOR}.${OYRANOS_VERSION_MINOR} )\n",
+        "Line" : 438,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# set to be generated source target\n",
+        "Line" : 461,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# compile translations always to have them ready for installation\n",
+        "Line" : 474,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# code generation\n",
+        "Line" : 488,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "src/examples/CMakeLists.txt" : {
+      "ObjectId" : "a57a033c6bbcce9f52a569c251d71491156de7fc",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# example filter module\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#INSTALL (TARGETS ${OY_MODULE_LIB} DESTINATION ${CMAKE_INSTALL_LIBDIR}/${OY_CMMSUBPATH})\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# example device module\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#INSTALL (TARGETS ${OY_MODULE_LIB} DESTINATION ${CMAKE_INSTALL_LIBDIR}/${OY_CMMSUBPATH})\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ICC profile hash calculation\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# CamerRaw file handling\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#INSTALL (TARGETS oyranos-file DESTINATION ${CMAKE_INSTALL_BINDIR})\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Taxi DB tool for central hosted ICC profile distribution\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#INSTALL (TARGETS taxi DESTINATION ${CMAKE_INSTALL_BINDIR})\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# primitive picture montage with ICC support\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# simple image viewer\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# OS X: fltk-1.3.3 with Cocoa is assumed\n\n# Remove incompatible settings.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Tutorial 1\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Tutorial Taxi\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Tutorial JSON Options\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "src/generator/CMakeLists.txt" : {
+      "ObjectId" : "5f08e8feec4be3d6a68bd23c61f2e11195b1ddce",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#FIND_PACKAGE(Qt4 COMPONENTS QtCore REQUIRED)\n\n#INCLUDE(${QT_USE_FILE})\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#Setup MOC\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ... Application sources etc.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/generator/config.h.cmake" : {
+      "ObjectId" : "0617a8f819abe87e2b66fb753a026cf8a13d59f4",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKESOURCE",
+      "CommentCount" : 0
+    },
+    "src/generator/grantlee_extensions/CMakeLists.txt" : {
+      "ObjectId" : "dcd18a88c682a4c8cbfbc8cd387e8b651c2c5424",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/include/CMakeLists.txt" : {
+      "ObjectId" : "817b412edd73804c23251ba32a8ed369e1ca301d",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/include_private/CMakeLists.txt" : {
+      "ObjectId" : "191e1612a2495e5bebcd0108eec5878c5089c76b",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/liboyranos/CMakeLists.txt" : {
+      "ObjectId" : "88b2bd7cb46ff84caa4a131c3d7b9f4fb380756c",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# OS X Framework\n",
+        "Line" : 78,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "#  INSTALL_NAME_DIR \"@executable_path/../../../../${FRAMEWORK_DIR}\"\n\n#  DEBUG_POSTFIX -d\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# install for all but app bundles\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/liboyranos_config/CMakeLists.txt" : {
+      "ObjectId" : "cc877dc72e602690d0347c566da4df7497cba23a",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# OS X Framework\n",
+        "Line" : 88,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "#  INSTALL_NAME_DIR \"@executable_path/../../../../${FRAMEWORK_DIR}\"\n\n#  DEBUG_POSTFIX -d\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/liboyranos_core/CMakeLists.txt" : {
+      "ObjectId" : "fa58bfd22911c2f8b4a7d56ee8ac271494864131",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# OS X Framework\n",
+        "Line" : 44,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "#  INSTALL_NAME_DIR \"@executable_path/../../../../${FRAMEWORK_DIR}\"\n\n#  DEBUG_POSTFIX -d\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/liboyranos_modules/CMakeLists.txt" : {
+      "ObjectId" : "3e381ab296487a57001d573ee247104297b951a9",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# OS X Framework\n",
+        "Line" : 125,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "#  INSTALL_NAME_DIR \"@executable_path/../../../../${FRAMEWORK_DIR}\"\n\n#  DEBUG_POSTFIX -d\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/liboyranos_object/CMakeLists.txt" : {
+      "ObjectId" : "5a76892c962f2dc94ccfee72cb0dd4e82c38d1fb",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# OS X Framework\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "#  INSTALL_NAME_DIR \"@executable_path/../../../../${FRAMEWORK_DIR}\"\n\n#  DEBUG_POSTFIX -d\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/modules/CMakeLists.txt" : {
+      "ObjectId" : "6275543b022847f591cfba721d2722346e9bb86c",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# --- dependencies ---\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# --- variables ---\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# --- normal modules ---\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# --- meta modules ---\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#TARGET_LINK_LIBRARIES ( ${OY_MODULE_LIB}\n\n#         ${OY_MODULE_STATIC}\n\n#         ${OY_MODULE_LIBRARIES} )\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "src/modules/color/modules/CMakeLists.txt" : {
+      "ObjectId" : "e5e1664305d3d2af0624b148f95f012c0df6098d",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# --- dependencies ---\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# --- variables ---\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# --- helpers ---\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#ADD_LIBRARY( ${OY_MODULE_LIB}-static STATIC ${SOURCES} )\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "#SET_TARGET_PROPERTIES( ${OY_MODULE_LIB}-static PROPERTIES COMPILE_DEFINITIONS ${MODULE_DEFS} )\n\n#TARGET_LINK_LIBRARIES ( ${OY_MODULE_LIB}-static ${PACKAGE_NAME}-static ${MODULE_EXTRA_LIBS} )\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# add translations to the declaration JSON\n",
+        "Line" : 40,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# --- normal modules ---\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# lcms 1 and lcms 2 APIs are too close to handle safely in a static library; just use the later\n",
+        "Line" : 77,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# ${LCMS_LIBRARIES}\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#ADD_LIBRARY( ${OY_MODULE_LIB}-static STATIC ${SOURCES} )\n",
+        "Line" : 87,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "#TARGET_LINK_LIBRARIES ( ${OY_MODULE_LIB}-static ${PACKAGE_NAME}-static ${MODULE_EXTRA_LIBS} )\n",
+        "Line" : 90,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# threads handler\n",
+        "Line" : 159,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# DB handlers\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# currently (Elektra-0.8.9) only a statically linked elektra works for Oyranos\n",
+        "Line" : 180,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# --- device modules ---\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "src/modules/color/modules/devices/CMakeLists.txt" : {
+      "ObjectId" : "d55f624288f8d3a2caa860d91a345d45aa801d88",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# --- dependencies ---\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# --- variables ---\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# --- helpers ---\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# --- normal modules ---\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SANE\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/modules/color/modules/lcms2/CMakeLists.txt" : {
+      "ObjectId" : "e9ba4bb815096baab6477d2a2a51b1a66b5ca845",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/modules/oyranos-meta/CMakeLists.txt" : {
+      "ObjectId" : "98c3481eefd5847d09542a8041bf6aa39158eaef",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# --- meta modules ---\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#SET( EXTRA_LIBS ${EXTRA_LIBS} ${YAJL_LIBRARIES} )\n",
+        "Line" : 11,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "#  ADD_LIBRARY( ${OY_MODULE_LIB}-static STATIC ${SOURCES} )\n",
+        "Line" : 20,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#  TARGET_LINK_LIBRARIES ( ${OY_MODULE_LIB}-static ${PACKAGE_NAME}-static ${MODULE_EXTRA_LIBS} )\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "src/tests/CMakeLists.txt" : {
+      "ObjectId" : "d76bb0863d41a953e3a39d40fd0969953a2fab93",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test for liboyranos_core\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Name for custom target.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 14
+      },
+      "2" : {
+        "Text" : "# Name of the test driver executable that runs the tests.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 18
+      },
+      "3" : {
+        "Text" : "# NOTE! This should always have a ZERO as exit code\n\n# otherwise the coverage generation will not complete.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 9
+      },
+      "4" : {
+        "Text" : "# Name of output directory.\n",
+        "Line" : 107,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 5
+    },
+    "src/tests/RunTest.cmake" : {
+      "ObjectId" : "fa1459b5243cf6e1a6c2431cc3c922566bb24b8b",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tests/RunTest2.cmake" : {
+      "ObjectId" : "864ff243b7ddd52b6b9c5c8978797e7498dc2581",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tests/libraw_test/CMakeLists.txt" : {
+      "ObjectId" : "66a2c98798836eb3f1fa9e6d8331d7c5500e930c",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tools/CMakeLists.txt" : {
+      "ObjectId" : "92c8b751dc72da26a8e21921c64603e31ecd8fb5",
+      "LastModified" : "2019-04-04T18:10:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#        COMMENT \"Extract manual page to ${TOOL}.1\"\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#        COMMENT \"Extract markdown formated manual page to ${TOOL}.md\"\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# add translations\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "#    FOREACH( _lang ${OY_LINGUAS_TOOL} )\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#        COMMENT \"Extract ${_lang} manual page to ${CMAKE_SOURCE_DIR}/doc/man/${short_lang}/${TOOL}.1\"\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#        COMMENT \"Extract markdown formated ${_lang} manual page to ${TOOL}-${short_lang}.md\"\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#    ENDFOREACH( _lang )\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ICC profiles listing\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# ICC profile information and manipulations\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Oyranos settings and config DB\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Oyranos policy / grouping for easy switching, export, import of default settings\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# automatic monitor profile selection, information, Taxi DB, EDID fallback\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Oyranos monitor white point handling\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Device listing\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# still beta quality; needs more testing and man page\n\n#INSTALL (TARGETS oyranos-device DESTINATION ${CMAKE_INSTALL_BINDIR})\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# 2D grapher for ICC profiles\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# oFORMS for a Oyranos CLI renderer and parser\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# oFORMS for a Oyranos FLTK renderer and parser\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# oFORMS for a Oyranos module generation\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# color conversion\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# compatibility tools\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 21
+    },
+    "src/tools/oforms/CMakeLists.txt" : {
+      "ObjectId" : "97e49a3bac98e6f61c28f70ab13f76628a8ab2fe",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#oFORMS basics\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/tools/qcmsevents/CMakeLists.txt" : {
+      "ObjectId" : "937a1adf621b4a7ad5179e8bd827846009cdff52",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# X Color Management event observer\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/tools/qcmsevents/qcmsevents.pro" : {
+      "ObjectId" : "640e90806d1f45017d29e995992fbee9f877e7e9",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "QMAKE",
+      "CommentCount" : 0
+    },
+    "src/tools/qcmsevents/qt4/CMakeLists.txt" : {
+      "ObjectId" : "b8f8c78d303d9e6f5df21d21ebc7bc1200a24b59",
+      "LastModified" : "2019-03-27T10:53:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# X Color Management event observer\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 79,
+    "CMAKESOURCE" : 1,
+    "QMAKE" : 1
+  },
+  "ElapsedTime" : 3863
+}

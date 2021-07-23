@@ -1,0 +1,639 @@
+{
+  "Repository" : "18218629",
+  "Revision" : "HEAD",
+  "ObjectId" : "50762623a0cf7263db7b03ef29944f24a6613953",
+  "CommitTime" : "2019-04-17T02:39:55Z",
+  "Files" : {
+    "crawl-ref/source/Makefile" : {
+      "ObjectId" : "555762b7e32ccd989118aedf7613d12e507a489b",
+      "LastModified" : "2019-04-04T13:29:12Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# vim:set ts=8 sw=4 noexpandtab:\n\n#\n\n# Dungeon Crawl Stone Soup\n\n# GNU Makefile\n\n#\n\n# largely written by Steven Noonan <steven@uplinklabs.net>\n\n#    (if something breaks, blame him.)\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Typical targets:\n\n#    make\n\n#    make debug\n\n#    make debug-lite    # Like \"make debug\", but without all the spew.\n\n#    make install\n\n#    make debug install\n\n#    -- note, unlike most programs, you need to specify build type when\n\n#       installing even if you just built it.\n\n# Typical parameters:\n\n#    TILES         -- set to anything to enable tiles build\n\n#\n\n#    SOUND         -- set to anything to enable sound; note that you will need to\n\n#                     uncomment some lines in sound.h if not building tiles\n\n#\n\n#    CROSSHOST     -- target system, eg, i386-pc-msdosdjgpp or i586-mingw32msvc\n\n#\n\n#    prefix        -- installation base.  Specify eg. /usr/local on Unix systems.\n\n#    DESTDIR       -- installation staging area (the dir you intend to pack)\n\n#    DATADIR       -- place to hold immutable files.  Can be either relative to\n\n#                     \"prefix\" or absolute.\n\n#    SAVEDIR       -- place to hold writeable data (saves, database, morgue\n\n#                     dumps).  Can be relative to \"prefix\", absolute or placed\n\n#                     in the user's home dir (~).  Remember to protect the ~\n\n#                     from your shell!\n\n#                     Warning, as of 0.8, directories shared between\n\n#                     multiple system users are no longer supported.\n\n#    SHAREDDIR     -- place to hold writeable data common to multiple\n\n#                     versions of Crawl (scores, the logfile, ghosts).  Will\n\n#                     be placed inside the SAVEDIR if not specified.\n\n#       Layout examples:\n\n#         prefix=~/crawl DATADIR=data/ SAVEDIR=saves/\n\n#                  -- everything under ~/crawl\n\n#         prefix=/usr/local\n\n#                  -- system-wide installation\n\n#\n\n#    V             -- set to anything to enable verbose build\n\n#\n\n#    USE_ICC       -- set to use Intel's compiler\n\n#    LTO           -- set for better optimization but slower compilation,\n\n#                     requires gcc4.6+\n\n#    NO_TRY_GOLD   -- if set don't try to detect a working gold linker\n\n#    NOASSERTS     -- set to disable assertion checks (ignored in debug mode)\n\n#    NOWIZARD      -- set to disable wizard mode.  Use if you have untrusted\n\n#                     remote players without DGL.\n\n#\n\n#    PROPORTIONAL_FONT -- set to a .ttf file you want to use for a proportional\n\n#                         font; if not set, a copy of Bitstream Vera Sans\n\n#                         shipped with Crawl will be used\n\n#    MONOSPACED_FONT   -- monospaced font; Bitstream Vera Mono Sans\n\n#    COPY_FONTS    -- force installing fonts\n\n#\n\n#    WEBTILES      -- set to anything to compile for Webtiles\n\n#    WEBDIR        -- place to hold the Webtiles client data. Can be either\n\n#                     relative to prefix or absolute.\n\n#\n\n#    ANDROID       -- perform an Android build (see docs/develop/android.txt)\n\n#    TOUCH_UI      -- enable UI behaviour more compatible with touch-screens\n\n#\n\n#\n\n# Requirements:\n\n#    For tile builds, you need pkg-config.\n\n#    You also need libpng, sdl2, sdl2-image, sdl2-mixer and libfreetype -- if\n\n#    you got your source from git, you can 'git submodule update' to fetch\n\n#    them; you can also ask for a package with convenience libraries instead --\n\n#    we'll try to provide them somewhere in the near future.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Disable GNU Make implicit rules and variables. Leaving them enabled will slow\n\n# down MinGW and Cygwin builds by a very VERY noticeable degree. Besides, we have\n\n# _explicit_ rules defined for everything. So we don't need them.\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This only works for recursive makes, i.e. contribs ...\n\n# ... so zap the suffix list to neutralize most predifined rules, too\n",
+        "Line" : 81,
+        "CharPositionInLine" : 17
+      },
+      "4" : {
+        "Text" : "#\n\n# Compiler Flags\n\n#\n\n# The compiler flag variables are separated into their individual\n\n# purposes, making it easier to deal with the various tools involved\n\n# in a compile.\n\n#\n\n# These are also divided into global vs. local flags. So for instance,\n\n# CFOPTIMIZE affects Crawl, Lua, and SQLite, while CFOPTIMIZE_L only\n\n# affects Crawl.\n\n#\n\n# The variables are as follows:\n\n# CFOPTIMIZE(_L) - Optimization flags\n\n# CFWARN(_L) - Warning flags\n\n# CFOTHERS(_L) - Anything else\n\n#\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Which C++ standard to support\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Build with FORCE_SSE=y to get better seed stability on 32 bit x86 builds. It\n\n# is not recommended to do this unless you are building with contrib lua.\n\n# On any 64bit  builds where the arch supports it, (at least) sse2 is implied.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#\n\n# The GCC and GXX variables are set later.\n\n#\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# Platform Detection\n\n#\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# If needed, override uname_S so we get the appropriate\n\n# things compiled.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# newlib doesn't provide Posix functions with c++11\n",
+        "Line" : 259,
+        "CharPositionInLine" : 1
+      },
+      "11" : {
+        "Text" : "# Should be the first rule, but must come after $(GAME) is set.\n",
+        "Line" : 279,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# FreeBSD keeps all of its userland includes in /usr/local so\n\n# look there\n",
+        "Line" : 297,
+        "CharPositionInLine" : 1
+      },
+      "13" : {
+        "Text" : "# This is totally wrong, works only with some old-style setups, and\n\n# on some architectures of Debian/new FHS multiarch -- excluding, for\n\n# example, i386.  Fortunately, i386 is rarely cross-compiled to.\n\n# There's no support for /usr/local/ too, without thorough handholding.\n\n# It's still an improvement over Crawl 0.8 which had no cross-compiling\n\n# to non-win32 at all.\n\n#\n\n# Needs to be replaced by compile checks.  Guessing the paths is fragile,\n\n# while the compiler knows them already.\n",
+        "Line" : 305,
+        "CharPositionInLine" : 1
+      },
+      "14" : {
+        "Text" : "#\n\n# Set up the TILES variant\n\n#\n",
+        "Line" : 318,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# used by build-rltiles sub-make\n",
+        "Line" : 333,
+        "CharPositionInLine" : 25
+      },
+      "16" : {
+        "Text" : "#\n\n# Check for an Apple-released compiler.\n\n#\n",
+        "Line" : 341,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# To get stack trace symbols.\n\n# Note that MinGW doesn't support -rdynamic.\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Permissions to set on the game executable.\n",
+        "Line" : 380,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Permissions to set on the save directory.\n",
+        "Line" : 383,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# The user:group to install the game as.\n",
+        "Line" : 387,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# If you're installing Crawl for multiple users, you *must* set this to a\n\n# valid path before building Crawl. This is not necessary if you are building\n\n# Crawl for a single user.\n\n# If you're installing to /usr, /usr/local or /opt, we have sane defaults.\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# SAVEDIR := saves/\n\n# DATADIR := data/\n",
+        "Line" : 408,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# [ds] 10.4 SDK g++-4.0 + x86_64 runs into SDL compile issues.\n",
+        "Line" : 426,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Don't need a universal build of host tools, so use DEPCC.\n",
+        "Line" : 446,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# MacOS\n",
+        "Line" : 453,
+        "CharPositionInLine" : 6
+      },
+      "26" : {
+        "Text" : "# We do this in a separate variable because if we\n\n# specify GCC_VER on the make command-line, the\n\n# variable is immutable, and we can't add the dash.\n",
+        "Line" : 458,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Attempt to use a full compiler name, to make\n\n# distcc builds work nicely.\n",
+        "Line" : 464,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Cross-compiling is a weird case.\n",
+        "Line" : 492,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# If you have a Core 2 processor, this _really_ makes things fly:\n\n#CFOPTIMIZE := -O2 -parallel -xT\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Optionally enable the 'ipo' feature, to facilitate inlining\n\n# across object file bounds.\n\n#CFOPTIMIZE_L := -ipo\n",
+        "Line" : 506,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Some very good optimization flags.\n",
+        "Line" : 510,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# OS X uses a buggy ancient version of gcc without fixes from even\n\n# subsequent point releases of 4.2.\n",
+        "Line" : 515,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# Define this to automatically generate code optimized for your machine\n\n# (GCC only as of now).\n\n#\n\n# NOTE: Don't use this with a release build, since the generated code\n\n# won't work for all machines.\n",
+        "Line" : 523,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# FIXME: this check is fragile, and should be done via a full compile test.\n",
+        "Line" : 541,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# Okay, we have to assume we're on something else that\n\n# uses standard UNIX-like methods for finding libs.\n\n#\n\n# For instance, on Linux and most other UNIX-likes,\n\n# the app pkg-config can provide the appropriate\n\n# CFLAGS and LDFLAGS.\n\n#\n",
+        "Line" : 550,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# You can override the Lua package search with \"make LUA_PACKAGE=lua-5-1\".\n\n# pkg-config is still required.\n",
+        "Line" : 584,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# INCLUDES_L += -isystem $(SQLITE_INCLUDE_DIR)\n",
+        "Line" : 634,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "#ANDROID\n",
+        "Line" : 649,
+        "CharPositionInLine" : 6
+      },
+      "39" : {
+        "Text" : "#\n\n# Tiles build stuff\n\n#\n",
+        "Line" : 659,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# If pkg-config is available, it's the surest way to find where\n\n# the contributing libraries are located.\n\n#\n",
+        "Line" : 686,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# pkg-config\n",
+        "Line" : 709,
+        "CharPositionInLine" : 6
+      },
+      "42" : {
+        "Text" : "# TILES\n",
+        "Line" : 724,
+        "CharPositionInLine" : 6
+      },
+      "43" : {
+        "Text" : "# On clang, unknown -Wfoo is merely a warning, thus -Werror.\n\n# For `no-` options, gcc will only emit an error if there are other errors, so\n\n# we need to check positive forms (applies to array-bounds, format-zero-length,\n\n# and tautological-unsigned-enum-zero-compare.)\n",
+        "Line" : 730,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Avoid warnings about safety checks that might be necessary on other compilers\n\n# where the same enum is assigned a signed underlying type.\n",
+        "Line" : 738,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "#\n\n# Figure out the build settings for this type of build\n\n#\n",
+        "Line" : 756,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Debug\n\n# No optimization, full debugging.\n",
+        "Line" : 760,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Debug-Lite\n\n# No optimization, but little/no debugging spew.\n",
+        "Line" : 768,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Profile\n\n# Optimized, with full debugging.\n",
+        "Line" : 775,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Follow the suggestions in ccache(1)\n",
+        "Line" : 804,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# ... for everything but version.cc, which uses __DATE__ and __TIME__\n",
+        "Line" : 807,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Just keep ccache blisfully ignorant of the precompiled header\n",
+        "Line" : 810,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Cygwin has a panic attack if we do this...\n",
+        "Line" : 819,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#relative DATADIR\n",
+        "Line" : 872,
+        "CharPositionInLine" : 4
+      },
+      "54" : {
+        "Text" : "#relative WEBDIR\n",
+        "Line" : 895,
+        "CharPositionInLine" : 4
+      },
+      "55" : {
+        "Text" : "# Fonts.\n",
+        "Line" : 909,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# Include path for (n)curses with Unicode support.\n",
+        "Line" : 966,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "# Your ncurses library may include Unicode support, and you may not have a\n\n# separate libncursesw; this is the case on Mac OS/Darwin.\n",
+        "Line" : 968,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Headers that need to exist before attempting to compile cc files\n",
+        "Line" : 1150,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# All other generated files will be created later\n",
+        "Line" : 1152,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Update .ver file if SRC_VERSION has changed\n",
+        "Line" : 1165,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# Webtiles data\n",
+        "Line" : 1183,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# There might not have been any goals passed on the commandline, so...\n",
+        "Line" : 1223,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Unless these are the only goals...\n",
+        "Line" : 1225,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "#\n\n# CFLAGS difference check\n\n#\n\n# Check for flag changes between the previous build and the current one,\n\n# because any CFLAGS change could result in an inconsistent build if the\n\n# person building it isn't careful.\n\n#\n\n# This should eliminate an annoying need to use 'make clean' every time.\n\n#\n",
+        "Line" : 1228,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# (stray ' for highlights)\n",
+        "Line" : 1239,
+        "CharPositionInLine" : 8
+      },
+      "66" : {
+        "Text" : "# (stray ' for highlights)\n",
+        "Line" : 1241,
+        "CharPositionInLine" : 8
+      },
+      "67" : {
+        "Text" : "##########################################################################\n\n# Dependencies\n",
+        "Line" : 1263,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# Any stale .d files are worse than useless, as they can break builds by\n\n# telling make a header or file no longer present is needed.  This is very\n\n# likely to happen if the compilation mode changes (normal vs debug, tiles\n\n# vs console vs webtiles) or if the compiler itself changes (gcc vs\n\n# gcc-snapshot vs clang, or x86_64-linux-gnu-gcc vs x86_64-w64-mingw32-g++).\n\n#\n\n# In such cases, the dependency forces a rebuild of that file. If the\n\n# dependency file referred to a non-existent header, as determined by\n\n# util/good-depfile, then replace it with a rule that forces a rebuild.\n\n# That rebuild will overwrite the stopgap .d file with a good one for\n\n# the next build.\n",
+        "Line" : 1268,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# This information is included in crash reports, and is printed with\n\n# \"crawl -version\"\n",
+        "Line" : 1294,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "##########################################################################\n\n# Documentation\n\n#\n",
+        "Line" : 1304,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# need abspath here because ldoc is fragile\n",
+        "Line" : 1323,
+        "CharPositionInLine" : 1
+      },
+      "72" : {
+        "Text" : "# need abspath here because ldoc is fragile\n",
+        "Line" : 1328,
+        "CharPositionInLine" : 1
+      },
+      "73" : {
+        "Text" : "##########################################################################\n\n# The level compiler\n\n#\n",
+        "Line" : 1332,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Pull the level-compiler stuff up from prebuilt/\n",
+        "Line" : 1356,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "##########################################################################\n",
+        "Line" : 1367,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "##########################################################################\n\n# The actual build targets\n\n#\n",
+        "Line" : 1370,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "# during build, data goes in a different directory to when crawl runs!\n",
+        "Line" : 1374,
+        "CharPositionInLine" : 2
+      },
+      "78" : {
+        "Text" : "# Only if we're being installed for real.  Installations to a staging dir\n\n# which are then packaged would trample existing files; these need to be\n\n# handled by packagers themselves.\n",
+        "Line" : 1451,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# Dependency generation\n\n#\n",
+        "Line" : 1537,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# See info node: (gcc) Preprocessor Options\n",
+        "Line" : 1540,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "# Precompiled headers\n\n#\n",
+        "Line" : 1546,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "# This needs -MD, not -MMD, lest we be haunted by the ghosts of stale\n\n# system headers.\n",
+        "Line" : 1551,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "# Plain old compilation\n\n#\n",
+        "Line" : 1558,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "# The \"|\" designates \"order-only\" dependancies. See: (make) Prerequisite Types.\n\n#\n\n# This ensures that we update these headers before building anything\n\n# that might depend on them without our knowing it yet, but lets the\n\n# .d files take care of *whether* or not to rebuild.\n\n#\n\n# This is kind of important when building without ccache.\n",
+        "Line" : 1566,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "#\n\n# Contribs\n\n#\n",
+        "Line" : 1592,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "#############################################################################\n\n# Build unrandart data\n",
+        "Line" : 1608,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# species-gen.py creates multiple files at once. Ensure Make doesn't run it once\n\n# per target file. https://stackoverflow.com/q/2973445\n",
+        "Line" : 1626,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# no-op\n",
+        "Line" : 1631,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "# no-op\n",
+        "Line" : 1635,
+        "CharPositionInLine" : 0
+      },
+      "90" : {
+        "Text" : "# no-op\n",
+        "Line" : 1639,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "#############################################################################\n\n# RLTiles\n\n#\n",
+        "Line" : 1651,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "#.PHONY: build-rltiles\n",
+        "Line" : 1655,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# force submake to run properly\n",
+        "Line" : 1658,
+        "CharPositionInLine" : 8
+      },
+      "94" : {
+        "Text" : "# prove that tiles were generated properly\n",
+        "Line" : 1660,
+        "CharPositionInLine" : 8
+      },
+      "95" : {
+        "Text" : "# ensure we don't use contrib libpng when cross-compiling - it won't work.\n",
+        "Line" : 1663,
+        "CharPositionInLine" : 0
+      },
+      "96" : {
+        "Text" : "#############################################################################\n\n# Packaging a source tarball for release\n\n#\n",
+        "Line" : 1696,
+        "CharPositionInLine" : 0
+      },
+      "97" : {
+        "Text" : "# To package, you *must* have lex and yacc to generate the intermediates.\n",
+        "Line" : 1700,
+        "CharPositionInLine" : 0
+      },
+      "98" : {
+        "Text" : "#############################################################################\n\n# Building the unified Windows package.\n\n#\n",
+        "Line" : 1741,
+        "CharPositionInLine" : 0
+      },
+      "99" : {
+        "Text" : "# You need to have NSIS installed.\n",
+        "Line" : 1745,
+        "CharPositionInLine" : 0
+      },
+      "100" : {
+        "Text" : "#############################################################################\n\n# Building Mac app bundles\n\n#\n",
+        "Line" : 1782,
+        "CharPositionInLine" : 0
+      },
+      "101" : {
+        "Text" : "#############################################################################\n\n# Building the Android package\n\n#\n",
+        "Line" : 1792,
+        "CharPositionInLine" : 0
+      },
+      "102" : {
+        "Text" : "#############################################################################\n\n# Canned tests\n\n#\n",
+        "Line" : 1808,
+        "CharPositionInLine" : 0
+      },
+      "103" : {
+        "Text" : "# Should be not needed, but the race condition in bug #6509 is hard to fix.\n",
+        "Line" : 1823,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 104,
+      "Errorlog" : "line 1160:82 token recognition error at: '\\1'\n"
+    },
+    "crawl-ref/source/android-project/build.xml" : {
+      "ObjectId" : "2ebbe5abf4f6d924025995250ee36e6689f8b44c",
+      "LastModified" : "2014-11-10T05:54:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " This should be changed to the name of your project ",
+        "Line" : 2,
+        "CharPositionInLine" : 60
+      },
+      "1" : {
+        "Text" : " The local.properties file is created and updated by the 'android' tool.\n         It contains the path to the SDK. It should *NOT* be checked into\n         Version Control Systems. ",
+        "Line" : 7,
+        "CharPositionInLine" : 38
+      },
+      "2" : {
+        "Text" : " The ant.properties file can be created by you. It is only edited by the\n         'android' tool to add properties to it.\n         This is the place to change some Ant specific build properties.\n         Here are some properties you may want to change/update:\n\n         source.dir\n             The name of the source directory. Default is 'src'.\n         out.dir\n             The name of the output directory. Default is 'bin'.\n\n         For other overridable properties, look at the beginning of the rules\n         files in the SDK, at tools/ant/build.xml\n\n         Properties related to the SDK location or the project target should\n         be updated using the 'android' tool with the 'update' action.\n\n         This file is an integral part of the build system for your\n         application and should be checked into Version Control Systems.\n\n         ",
+        "Line" : 29,
+        "CharPositionInLine" : 13
+      },
+      "3" : {
+        "Text" : " if sdk.dir was not set from one of the property file, then\n         get it from the ANDROID_HOME env var.\n         This must be done before we load project.properties since\n         the proguard config can use sdk.dir ",
+        "Line" : 35,
+        "CharPositionInLine" : 49
+      },
+      "4" : {
+        "Text" : " The project.properties file is created and updated by the 'android'\n         tool, as well as ADT.\n\n         This contains project specific properties such as project target, and library\n         dependencies. Lower level build properties are stored in ant.properties\n         (or in .classpath for Eclipse projects).\n\n         This file is an integral part of the build system for your\n         application and should be checked into Version Control Systems. ",
+        "Line" : 49,
+        "CharPositionInLine" : 77
+      },
+      "5" : {
+        "Text" : " quick check on sdk.dir ",
+        "Line" : 52,
+        "CharPositionInLine" : 36
+      },
+      "6" : {
+        "Text" : "\n        Import per project custom build rules if present at the root of the project.\n        This is the place to put custom intermediary targets such as:\n            -pre-build\n            -pre-compile\n            -post-compile (This is typically used for code obfuscation.\n                           Compiled code location: ${out.classes.absolute.dir}\n                           If this is not done in place, override ${out.dex.input.absolute.dir})\n            -post-package\n            -post-build\n            -pre-clean\n    ",
+        "Line" : 69,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : " Import the actual build file.\n\n         To customize existing targets, there are two options:\n         - Customize only one target:\n             - copy/paste the target into this file, *before* the\n               <import> task.\n             - customize it to your needs.\n         - Customize the whole content of build.xml\n             - copy/paste the content of the rules files (minus the top node)\n               into this file, replacing the <import> task.\n             - customize to your needs.\n\n         ***********************\n         ****** IMPORTANT ******\n         ***********************\n         In all cases you must update the value of version-tag below to read 'custom' instead of an integer,\n         in order to avoid having your file be overridden by tools such as \"android update project\"\n    ",
+        "Line" : 89,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : " version-tag: 1 ",
+        "Line" : 90,
+        "CharPositionInLine" : 28
+      },
+      "CommentCount" : 9
+    },
+    "crawl-ref/source/contrib/Makefile" : {
+      "ObjectId" : "8720a28b590eef5f10c1d58f10fd8bf415862a40",
+      "LastModified" : "2016-12-26T21:18:31Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "crawl-ref/source/rltiles/Makefile" : {
+      "ObjectId" : "df4c8ad623f29c59a61ee9d09a3d9a018045a941",
+      "LastModified" : "2017-02-11T17:43:06Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Note: since generation of tiles is done on the host, we don't care about\n\n# cross-compilation here.\n\n#\n\n# Also, cross-compilation with no system libraries for host rather than target\n\n# is not supported.  If host=target, contribs are enough.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Attempt to use a full compiler name, to make\n\n# distcc builds work nicely.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Keep coordinates fresh\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# CFLAGS difference check\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# (stray ' for highlights)\n",
+        "Line" : 105,
+        "CharPositionInLine" : 62
+      },
+      "5" : {
+        "Text" : "##########################################################################\n\n# Dependencies\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "crawl-ref/source/util/Makefile" : {
+      "ObjectId" : "a45ca62159d104ec5441ecbcdcb15ace4f4518d8",
+      "LastModified" : "2014-11-20T04:34:42Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 4,
+    "ANT" : 1
+  },
+  "ElapsedTime" : 23331
+}

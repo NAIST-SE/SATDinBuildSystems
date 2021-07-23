@@ -1,0 +1,2219 @@
+{
+  "Repository" : "13546",
+  "Revision" : "HEAD",
+  "ObjectId" : "19ec35acbeaf31cb114232e750ef923c160a541a",
+  "CommitTime" : "2016-10-17T20:11:07Z",
+  "Files" : {
+    "src/boss/CMakeLists.txt" : {
+      "ObjectId" : "b27da65cac77f516c4c5918e676dc64297ae74aa",
+      "LastModified" : "2016-06-15T20:13:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure we can find the shared files\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# So that we can use find_package commands\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# # A list of options that we do want\n\n# include( cmake/RobotConfig.cmake )\n\n# # A list of options for debugging various modules\n\n# include( ${SHARE_DIR}/cmake/DebugConfig.cmake)\n\n# # A list of options that should be advanced\n\n# include( cmake/Advanced.cmake )\n\n# # Compiler flags\n\n# include( cmake/Flags.cmake )\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# # Configure the robot options\n\n# configure_file(\n\n#   \"${CMAKE_CURRENT_LIST_DIR}/cmake/parameters.in\"\n\n#   \"${PROJECT_BINARY_DIR}/install/lib/parameters.json\"\n\n# )\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# # Configure the debug options\n\n# configure_file(\n\n#   \"${SHARE_DIR}/cmake/DebugConfig.in\"\n\n#   \"${PROJECT_BINARY_DIR}/DebugConfig.h\"\n\n# )\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Configure the copy script based on our settings\n\n# configure_file(\n\n#   \"${CMAKE_CURRENT_LIST_DIR}/cmake/upload.sh.in\"\n\n#   \"${PROJECT_BINARY_DIR}/upload.sh\"\n\n#   @ONLY # So cmake doesn't complaing about using ${VAR} in bash\n\n# )\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Option to turn rebuilding our protobuf libs on/off\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Only build them if the user wants to\n",
+        "Line" : 47,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Enable C++11 features for bhuman\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# testing set up\n\n# if ( OFFLINE )\n\n#   include ( ${SHARE_DIR}/cmake/BuildGTest.cmake )\n\n# endif()\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# For Aldebaran's headers\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# # For Python\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Our core includes come from here\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Compile logshare\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Make logshare available to everything\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Compile messages\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# And make sure generated pb.h files are visible\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# If protobuf libs don't exist yet, make sure they build before boss\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 18
+    },
+    "src/boss/Makefile" : {
+      "ObjectId" : "4a94f7c7755db34634d535acdca56a956c22aafd",
+      "LastModified" : "2015-05-28T18:01:18Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Main man makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Toolchain for cross-compiling for the robot\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Toolchain for building natively\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where the build output will be placed relative to here\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Here relative to the build dir\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Where the files will be installed\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Used to determine which kind of build\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Different flags depending on the type of build\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Name of the script that copies files to the robot\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Target for Serenity to build cross. Relies on default options being valid.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Target for Serenity to build straight. Relies of default options being valid.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "src/boss/led/CMakeLists.txt" : {
+      "ObjectId" : "4fab8b9edb3f34d208c6b1cfa286de3351bdff56",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/man/CMakeLists.txt" : {
+      "ObjectId" : "06019e240f8b80b4ac5b3c4e522faa4a3bd677ae",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make sure we can find the shared files\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# So that we can use find_package commands\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# A list of options that we do want\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# A list of options for debugging various modules\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# A list of options that should be advanced\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Compiler flags\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Configure the robot options\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Configure the debug options\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Configure the copy script based on our settings\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# So cmake doesn't complaing about using ${VAR} in bash\n",
+        "Line" : 36,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Option to turn rebuilding our protobuf libs on/off\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Only build them if the user wants to\n",
+        "Line" : 49,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# testing set up\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# For Aldebaran's headers (actually just for the cross-compiled boost lib)\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# For Python\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Our core includes come from here\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Compile portals, which is outside the source tree so specify a destination\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Make portals available to everything\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Compile logshare\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Make logshare available to everything\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Also messages\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# And make sure generated pb.h files are visible\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# If protobuf libs don't exist yet, make sure they build before man\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Actual subdirectories\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#include_directories( motion/bhwalk ) # @todo hack?\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Actual modules\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#add_subdirectory( led )\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "#bhwalk\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "#led\n",
+        "Line" : 148,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 29
+    },
+    "src/man/Makefile" : {
+      "ObjectId" : "c57b1602d25fc6337068979f9f3b698f2ae0a933",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Main man makefile\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Toolchain for cross-compiling for the robot\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Toolchain for building natively\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Where the build output will be placed relative to here\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Here relative to the build dir\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Where the files will be installed\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Used to determine which kind of build\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Different flags depending on the type of build\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Name of the script that copies files to the robot\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Target for Serenity to build cross. Relies on default options being valid.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Target for Serenity to build straight. Relies of default options being valid.\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "src/man/arms/CMakeLists.txt" : {
+      "ObjectId" : "7d89755b87d39ed63958e50ec7d0d2030679fa91",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/audio/CMakeLists.txt" : {
+      "ObjectId" : "eed204e77587628674981477961454ac95b7ef8a",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#${ALCOMMON_LIBRARIES}\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "src/man/balltrack/CMakeLists.txt" : {
+      "ObjectId" : "ee3f411666754515b9d653a67c54605d4d10ad64",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#                   NaiveBallFilter\n\n#\t\t   FakeBallTrackInput\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# GTEST\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/man/behaviors/CMakeLists.txt" : {
+      "ObjectId" : "c9316e2698aee08af878ff6ce2693930e44d80b8",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# required libraries for python\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# for configuring the player switch\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# CPP sources\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Python sources\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The switch file\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Python subdirectories\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# The CPP library\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# How to install the python files for rsync\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/man/behaviors/offline/Makefile" : {
+      "ObjectId" : "cedd64db856af9237ad1200362db12e921065a18",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#VLANDMARK_SRCS = ../../vision/VisualLandmark.h\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The faker tool\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# NBMath\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Vision utilities\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Vision stuff\n\n# Concrete Vision Stuff\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Visual Vision Stuff\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#VisualLandmark.o\n",
+        "Line" : 167,
+        "CharPositionInLine" : 28
+      },
+      "7" : {
+        "Text" : "#VisualLandmark.o\n",
+        "Line" : 169,
+        "CharPositionInLine" : 31
+      },
+      "8" : {
+        "Text" : "#VisualLandmark.o\n",
+        "Line" : 171,
+        "CharPositionInLine" : 34
+      },
+      "9" : {
+        "Text" : "# Localization stuff\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "src/man/cmake/Advanced.cmake" : {
+      "ObjectId" : "77e9f1775a152c11267dc9dbef33d081cfeebef4",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Marks all options that should be hidden when we \"make cross/straight\" as\n\n#  advanced so that the list is not overwhelming\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/man/cmake/Flags.cmake" : {
+      "ObjectId" : "f4b1290ac017ba1b89001f00b6988ec6d99186f0",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Flags for gcc\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Default (no release specific) build flags\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Release build flags\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Debug build flags\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Enable C++11 features for bhuman\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/man/cmake/RobotConfig.cmake" : {
+      "ObjectId" : "bcbe9a8ca0b40f9c8ca9698293fd38224f5fdcaa",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Build options\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/man/comm/CMakeLists.txt" : {
+      "ObjectId" : "a66ad822cebec6290213fdfc92b83a13ce3e4139",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/man/gamestate/CMakeLists.txt" : {
+      "ObjectId" : "015cbe03cfdb1fb0da352fa1f14c3eaa48519a84",
+      "LastModified" : "2016-06-28T12:41:48Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# GTEST\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/man/guardian/CMakeLists.txt" : {
+      "ObjectId" : "7ce3a977999341b031449d91d04481a0ee57f3c3",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/man/image/CMakeLists.txt" : {
+      "ObjectId" : "e3b12e6962a1fbbd5a7f974d42f398a82992ed77",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/jointenactor/CMakeLists.txt" : {
+      "ObjectId" : "cff816a10af2af69f3570d9bdbbffeed351f52f5",
+      "LastModified" : "2015-05-31T20:28:13Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/man/localization/CMakeLists.txt" : {
+      "ObjectId" : "6212f4040ecc60975e207bfef5e2b00af6c7e0ec",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Project name.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/man/logging/CMakeLists.txt" : {
+      "ObjectId" : "73c616fdb134d4716dea723ee82e57d005533214",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Enable C++11 features\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/man/logmodule/CMakeLists.txt" : {
+      "ObjectId" : "055d115c05900d6f24b56dedc26d423374141bb1",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/CMakeLists.txt" : {
+      "ObjectId" : "d4a8499cab4d3411527d490caea3369b13b30690",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#add_subdirectory( bhwalk )\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#  bhwalk\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/man/motion/bhwalk/CMakeLists.txt" : {
+      "ObjectId" : "a57096a3a67e975fb2d1c33786916d5e3b74490c",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#BHWalkProvider.cpp\n",
+        "Line" : 7,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# Install configs\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/man/motion/unswalk/CMakeLists.txt" : {
+      "ObjectId" : "6a43a0a6caae40a7efb393d9e8d6eeb40ea8fe25",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/CMakeLists.txt" : {
+      "ObjectId" : "3b59619b004e66904937f397d00d11404299d839",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Array/CMakeLists.txt" : {
+      "ObjectId" : "613bc94b7af96df0933afaf0d3ba77af472e6cf7",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/CMakeLists.txt" : {
+      "ObjectId" : "e6832e850742616364966fa93b7e11d4ad6d00fd",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Cholesky/CMakeLists.txt" : {
+      "ObjectId" : "fdde84add81744e326a8ddc00c41849915bf967f",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Core/CMakeLists.txt" : {
+      "ObjectId" : "761e8c3f5edc8f393f6f707f064b2f3fdccb6314",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Core/arch/AltiVec/CMakeLists.txt" : {
+      "ObjectId" : "dfb1d575b946177d42fe3252e0ec45c70cb7c017",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Core/arch/CMakeLists.txt" : {
+      "ObjectId" : "8ddba284eadce3aaaac8f6d5231c847a1f98ec11",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Core/arch/SSE/CMakeLists.txt" : {
+      "ObjectId" : "ee0d660cea16dd03f6ddfc573537463fcd10b93c",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Core/util/CMakeLists.txt" : {
+      "ObjectId" : "eb7b2b6ebd3bff88a04ea9d643a72cc1572f02bc",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Geometry/CMakeLists.txt" : {
+      "ObjectId" : "0dc0e927c81fd40b1a5a5284882cd28c3367fd91",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/LU/CMakeLists.txt" : {
+      "ObjectId" : "4af65430f52f6c8f188141e1286ec585b91ae527",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/LeastSquares/CMakeLists.txt" : {
+      "ObjectId" : "805d578bc025f5c6a6f107a1f6eef88ccb076c09",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/QR/CMakeLists.txt" : {
+      "ObjectId" : "fca336ae650a6efb0f78738a7e5dd76c40909668",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/SVD/CMakeLists.txt" : {
+      "ObjectId" : "f983a491d82850591231e75aacd4592eac8cbf24",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/Eigen/src/Sparse/CMakeLists.txt" : {
+      "ObjectId" : "aa14688129e9be5e78ffe601d2e8336ded0f87e4",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/FADBAD++/examples/Makefile" : {
+      "ObjectId" : "ce425817a2be361cf7bd3fe8edec62f5187638c4",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "src/man/motion/unswalk/FADBAD++/test/Makefile" : {
+      "ObjectId" : "52f467b505baa240bbad64ef6c71d725f8cf8ae9",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "src/man/naiveball/CMakeLists.txt" : {
+      "ObjectId" : "08edcf2979a55b3ad3422da3d5aaa2f90e537817",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/obstacle/CMakeLists.txt" : {
+      "ObjectId" : "5d15fdc0f097796c4b6222bcc1d584f4084022c9",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/sensors/CMakeLists.txt" : {
+      "ObjectId" : "e415b4c186303158e0fd48b5646f9c2e7a8478cd",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/man/sharedball/CMakeLists.txt" : {
+      "ObjectId" : "609ac0d195f2afb38a16bdbad72a5138173cad13",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/support/CMakeLists.txt" : {
+      "ObjectId" : "69b10d8610e0187436cacc05cfa5f17412ec71b8",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/CMakeLists.txt" : {
+      "ObjectId" : "ccc3b84322d02f4b5aef339ffe1dc7d18ab27eeb",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############################ PROJECT NAME\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "############################ PROJECT SOURCES FILES\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "############################ CHECK LIBRARY / EXECUTABLE OPTION\n\n# Add static library target\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "############################ SET LIBRARIES TO LINK WITH\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/man/vision/Eigen/CMakeLists.txt" : {
+      "ObjectId" : "a92dd6f6cafd2206f8be1a50f1294e2ae49feb5a",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/CMakeLists.txt" : {
+      "ObjectId" : "c326f374d9ee89c953dd9caefbfaffccb905511c",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Cholesky/CMakeLists.txt" : {
+      "ObjectId" : "d01488b41a826850277a918f555e3668167dd367",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/CholmodSupport/CMakeLists.txt" : {
+      "ObjectId" : "814dfa61313847c0f33538e11c4ac4557ec3e32e",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/CMakeLists.txt" : {
+      "ObjectId" : "2346fc2bbca4d9bd699efc4c366afd7abd400e3c",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/arch/AltiVec/CMakeLists.txt" : {
+      "ObjectId" : "9f8d2e9c46765f4253d6877d040e5c2a90612086",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/arch/CMakeLists.txt" : {
+      "ObjectId" : "8456dec1581554a4f7798ebe7d9d292369f21607",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/arch/Default/CMakeLists.txt" : {
+      "ObjectId" : "339c091d156100d46f3acbc67ad205749d8f4b3d",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/arch/NEON/CMakeLists.txt" : {
+      "ObjectId" : "fd4d4af50cb46dac7e6b29ef8654e70528e1f3ca",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/arch/SSE/CMakeLists.txt" : {
+      "ObjectId" : "46ea7cc623c62394c78425b15e100b84126b40a7",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/products/CMakeLists.txt" : {
+      "ObjectId" : "21fc94ae38a5574289ae4e304ce087f3ed6897f0",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Core/util/CMakeLists.txt" : {
+      "ObjectId" : "a1e2e521fc11124c92768621c4edf784bc10f51f",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Eigen2Support/CMakeLists.txt" : {
+      "ObjectId" : "7ae41b3cbe9c568f7efdaf45cd1a1ef874bf309b",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Eigen2Support/Geometry/CMakeLists.txt" : {
+      "ObjectId" : "c347a8f26228694dc67e0e89ff6d509152dac738",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Eigenvalues/CMakeLists.txt" : {
+      "ObjectId" : "193e0268599516e2515318ed04eb6dda37b2dd59",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Geometry/CMakeLists.txt" : {
+      "ObjectId" : "f8f728b84faf0e08d91fac04e2986260368b9063",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Geometry/arch/CMakeLists.txt" : {
+      "ObjectId" : "1267a79c78767c43d11c529cc84468cbdd1052a2",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Householder/CMakeLists.txt" : {
+      "ObjectId" : "ce4937db061bbadb0357ccc45547b141761a70e3",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/IterativeLinearSolvers/CMakeLists.txt" : {
+      "ObjectId" : "59ccc0072cc4ed78e6aa783bfab2486aac757fca",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/Jacobi/CMakeLists.txt" : {
+      "ObjectId" : "490dac626439ade5e05baaba504689366db22e6d",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/LU/CMakeLists.txt" : {
+      "ObjectId" : "e0d8d78c1720abb27432f41aa2ace29ef3f3794f",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/LU/arch/CMakeLists.txt" : {
+      "ObjectId" : "f6b7ed9ecc3a25e3885c7fece60428481e51c696",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/MetisSupport/CMakeLists.txt" : {
+      "ObjectId" : "2bad314163c5044265aa6ac14e3767308dd04ba6",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/OrderingMethods/CMakeLists.txt" : {
+      "ObjectId" : "9f4bb275808257ac71d6c04d9c602ce5c0b5be8d",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/PaStiXSupport/CMakeLists.txt" : {
+      "ObjectId" : "28c657e9bcf7d3e0ecc800f6d5a11d54020b58cc",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/PardisoSupport/CMakeLists.txt" : {
+      "ObjectId" : "a097ab401920ea1b7068f790edcfcf9086b3038b",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/QR/CMakeLists.txt" : {
+      "ObjectId" : "96f43d7f5b30fa024b9bd2d9e3a5dacb9d401ecb",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SPQRSupport/CMakeLists.txt" : {
+      "ObjectId" : "4968beaf2c59bcec07fe1861b5d72cb4d6723a6d",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SVD/CMakeLists.txt" : {
+      "ObjectId" : "55efc44b12970d5ec715393cb68cd061203ce941",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SparseCholesky/CMakeLists.txt" : {
+      "ObjectId" : "375a59d7a577877313a1ff2a6bf1c8fac138768b",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SparseCore/CMakeLists.txt" : {
+      "ObjectId" : "d860452a65cb20850a12a120ab1fd3e3fd83dccc",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SparseLU/CMakeLists.txt" : {
+      "ObjectId" : "69729ee8961aa7d4ef514e9f890de0d29f12161f",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SparseQR/CMakeLists.txt" : {
+      "ObjectId" : "f9ddf2bdb75878292267c18697d9dedbd69a6611",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/StlSupport/CMakeLists.txt" : {
+      "ObjectId" : "0f094f637acd51b0931e58a199c30f550beaa282",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/SuperLUSupport/CMakeLists.txt" : {
+      "ObjectId" : "b28ebe5839cf5c664abdb44c186547507ce688d3",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/UmfPackSupport/CMakeLists.txt" : {
+      "ObjectId" : "a57de00209d3bc746b050d1b8aa736bccc66f2bc",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/misc/CMakeLists.txt" : {
+      "ObjectId" : "a58ffb7457e06a7a69426a21a9d46d07a6a8ee91",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/man/vision/Eigen/src/plugins/CMakeLists.txt" : {
+      "ObjectId" : "1a1d3ffbd724d17e161c40c48ac56c8b1aeb2e1f",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/nbcross/CMakeLists.txt" : {
+      "ObjectId" : "0f23a68e0cc9b79feee8209de91f91e9363e456e",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Main CMake file for the Tool!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make sure we can find the shared files\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# So that we can use find_package commands\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Enable C++11 features for bhuman\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Option to turn rebuilding our protobuf libs on/off\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Only build them if the user wants to\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Configure the debug options\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Our core includes come from here\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Compile portals into portals folder\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Compile logshare into logshare folder\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Compile messages into messages folder\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# If protobuf libs don't exist yet, make sure they build before man\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Man modules that we need to use\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "## SOURCES ##\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "## EXECUTABLE ##\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "src/nbcross/Makefile" : {
+      "ObjectId" : "9a313e58efba8087d91c6e1561ac940adf9ed088",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The makefile!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#LOC_EXECUTABLE = loc_tool\n\n#BALL_EXECUTABLE = ball_tool\n\n#VISION_EXECUTABLE = vision_tool\n\n#CALIBRATE_EXECUTABLE = calibrate_tool\n\n#PLAYBOOK_EXECUTABLE = playbook_tool\n\n#SIM_EXECUTABLE = sim_tool\n\n#INSTALLER_EXECUTABLE = installer_tool\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/nbtool/Makefile" : {
+      "ObjectId" : "129ee64dbad0ffe231f5a1239b190cfbf548d811",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#this makefile is simply a make wrapper for the ant build.xml\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/nbtool/build.xml" : {
+      "ObjectId" : "ae8ff450cbe36ad181a719930905704368260906",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " ant build file for java nbtool ",
+        "Line" : 3,
+        "CharPositionInLine" : 40
+      },
+      "1" : {
+        "Text" : " allow access to environment vars if we want them ",
+        "Line" : 6,
+        "CharPositionInLine" : 62
+      },
+      "2" : {
+        "Text" : " must compile with java 1.7 (ubuntu support) ",
+        "Line" : 10,
+        "CharPositionInLine" : 57
+      },
+      "3" : {
+        "Text" : " include *.class and *.jar in classpath ",
+        "Line" : 14,
+        "CharPositionInLine" : 52
+      },
+      "4" : {
+        "Text" : " setup build dir, copy resources from src/nested/nbtool ",
+        "Line" : 43,
+        "CharPositionInLine" : 68
+      },
+      "5" : {
+        "Text" : " make clean! ",
+        "Line" : 55,
+        "CharPositionInLine" : 25
+      },
+      "6" : {
+        "Text" : " target for recompiling java protobuf files ",
+        "Line" : 63,
+        "CharPositionInLine" : 56
+      },
+      "7" : {
+        "Text" : " not a dependency of build-nbtool because protoc will always recompile ",
+        "Line" : 64,
+        "CharPositionInLine" : 83
+      },
+      "8" : {
+        "Text" : " get command-line style set of pathes ",
+        "Line" : 72,
+        "CharPositionInLine" : 54
+      },
+      "9" : {
+        "Text" : " include path must be absolute prefix of above (protoc requires this) ",
+        "Line" : 74,
+        "CharPositionInLine" : 86
+      },
+      "10" : {
+        "Text" : " bhuman has terrible package structure, compile them separately ",
+        "Line" : 85,
+        "CharPositionInLine" : 76
+      },
+      "11" : {
+        "Text" : " compile everything else!  ",
+        "Line" : 94,
+        "CharPositionInLine" : 39
+      },
+      "12" : {
+        "Text" : " in case you wanted to run nbtool with ant (not recommended) ",
+        "Line" : 103,
+        "CharPositionInLine" : 73
+      },
+      "CommentCount" : 13
+    },
+    "src/nbtool/gui-forms/build.xml" : {
+      "ObjectId" : "ac3bc48367e7907ec1782cc46590994ad031cb0e",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " You may freely edit this file. See commented blocks below for ",
+        "Line" : 2,
+        "CharPositionInLine" : 71
+      },
+      "1" : {
+        "Text" : " some examples of how to customize the build. ",
+        "Line" : 3,
+        "CharPositionInLine" : 54
+      },
+      "2" : {
+        "Text" : " (If you delete it and reopen the project it will be recreated.) ",
+        "Line" : 4,
+        "CharPositionInLine" : 73
+      },
+      "3" : {
+        "Text" : " By default, only the Clean and Build commands use this build script. ",
+        "Line" : 5,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : " Commands such as Run, Debug, and Test only use this build script if ",
+        "Line" : 6,
+        "CharPositionInLine" : 77
+      },
+      "5" : {
+        "Text" : " the Compile on Save feature is turned off for the project. ",
+        "Line" : 7,
+        "CharPositionInLine" : 68
+      },
+      "6" : {
+        "Text" : " You can turn off the Compile on Save (or Deploy on Save) setting ",
+        "Line" : 8,
+        "CharPositionInLine" : 74
+      },
+      "7" : {
+        "Text" : " in the project's Project Properties dialog box.",
+        "Line" : 9,
+        "CharPositionInLine" : 56
+      },
+      "8" : {
+        "Text" : "\n\n    There exist several targets which are by default empty and which can be \n    used for execution of your tasks. These targets are usually executed \n    before and after some main targets. They are: \n\n      -pre-init:                 called before initialization of project properties\n      -post-init:                called after initialization of project properties\n      -pre-compile:              called before javac compilation\n      -post-compile:             called after javac compilation\n      -pre-compile-single:       called before javac compilation of single file\n      -post-compile-single:      called after javac compilation of single file\n      -pre-compile-test:         called before javac compilation of JUnit tests\n      -post-compile-test:        called after javac compilation of JUnit tests\n      -pre-compile-test-single:  called before javac compilation of single JUnit test\n      -post-compile-test-single: called after javac compilation of single JUunit test\n      -pre-jar:                  called before JAR building\n      -post-jar:                 called after JAR building\n      -post-clean:               called after cleaning build products\n\n    (Targets beginning with '-' are not intended to be called on their own.)\n\n    Example of inserting an obfuscator after compilation could look like this:\n\n        <target name=\"-post-compile\">\n            <obfuscate>\n                <fileset dir=\"${build.classes.dir}\"/>\n            </obfuscate>\n        </target>\n\n    For list of available properties check the imported \n    nbproject/build-impl.xml file. \n\n\n    Another way to customize the build is by overriding existing main targets.\n    The targets of interest are: \n\n      -init-macrodef-javac:     defines macro for javac compilation\n      -init-macrodef-junit:     defines macro for junit execution\n      -init-macrodef-debug:     defines macro for class debugging\n      -init-macrodef-java:      defines macro for class execution\n      -do-jar:                  JAR building\n      run:                      execution of project \n      -javadoc-build:           Javadoc generation\n      test-report:              JUnit report generation\n\n    An example of overriding the target for project execution could look like this:\n\n        <target name=\"run\" depends=\"gui-forms-impl.jar\">\n            <exec dir=\"bin\" executable=\"launcher.exe\">\n                <arg file=\"${dist.jar}\"/>\n            </exec>\n        </target>\n\n    Notice that the overridden target depends on the jar target and not only on \n    the compile target as the regular run target does. Again, for a list of available \n    properties which you can use, check the target you are overriding in the\n    nbproject/build-impl.xml file. \n\n    ",
+        "Line" : 72,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 9
+    },
+    "src/nbtool/src/bhuman/libgamectrl/CMakeLists.txt" : {
+      "ObjectId" : "6e04e83ed5fda127f072f5b0186394dfa68eee04",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/share/cmake/BuildGTest.cmake" : {
+      "ObjectId" : "d0a269391ca46fb62f23d5b6057df6a117e117a7",
+      "LastModified" : "2016-10-14T21:04:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Download and build all of the GTEST crap\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Only update gtest if the user is missing it.\n\n# Make seperate processes because apparently commands are NOT executed sequentially.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Download gtest from Github\n",
+        "Line" : 6,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Rename the file to what our build process expects\n",
+        "Line" : 10,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Remove the directory if it already exists so we don't get overwriting problems\n",
+        "Line" : 12,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Unzip the zip file\n",
+        "Line" : 14,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Rename the folder that now exists\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Delete the zip file\n",
+        "Line" : 20,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Build GTest by adding as a subdirectory, but build it in gtest\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "## Macro for running our tests\n\n# testname will be the executable\n\n# testfile is the cpp file containing gtests\n\n# any other parameters will be linked to the executable\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#    ${GTEST_BOTH_LIBRARIES} Not working... don't know why...\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "src/share/cmake/BuildProtobuf.cmake" : {
+      "ObjectId" : "1f12f75fa3abe27d6ec73ee496157435328f8741",
+      "LastModified" : "2016-09-01T18:27:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Download, build, and install all of the PROTOBUF crap\n\n# Enable ExternalProject CMake module\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# http://stackoverflow.com/questions/9689183/cmake-googletest\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/share/cmake/DebugConfig.cmake" : {
+      "ObjectId" : "22ffc591f69ec5e957668e99aec67a96672217cf",
+      "LastModified" : "2016-09-01T18:27:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Configuration Options for Debugging\n\n# Definitions for the CMake configurable build options.  Defined here, they\n\n# are set at build/configure time.  Corresponding C/C++ MACRO definitions\n\n# should reside in the DebugConfig.in file.  The DebugConfig.h header\n\n# will be auto-generated my cmake and dependant file recompiled after a\n\n# build change.\n\n#\n\n# IF all else fails, just `make clean` and `make cross` or straight, configure\n\n# again, and you should be set.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/share/cmake/FindALCOMMON.cmake" : {
+      "ObjectId" : "f435556c4381fc47b7ef667c9d97fc4eb45864db",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Finds Aldebaran's libraries\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#set( AL_DIR $ENV{AL_DIR} )\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/share/cmake/FindNBITES_DIR.cmake" : {
+      "ObjectId" : "608d09fb9d4fc280afe35536e99ece08906efee7",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Uses the NBITES_DIR environment variable or otherwise makes an\n\n# educated guess.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/share/cmake/FindPROTOBUF.cmake" : {
+      "ObjectId" : "6fd42db8af88cbd274e906a47c5c136414bf397a",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Finding the protobuf stuff\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/share/cmake/atom.cmake" : {
+      "ObjectId" : "25d9936294fc486accf406659f560480f8d5696d",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set options that are constrained by building for atom\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Find the NBITES_DIR\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Cross compilation!\n\n# Set the variable for the cross-compilation directory, cmake variables\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# where should we look for libraries we need\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# search for programs in the build host directories\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# for libraries and headers in the target directories\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/share/cmake/generic.cmake" : {
+      "ObjectId" : "9911f2c05b1e9137d2e210c32926fcc501ef5f2e",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set options that are constrained by building straight\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Find the NBITES_DIR\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This is the version the robots use\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/share/logshare/CMakeLists.txt" : {
+      "ObjectId" : "d02537de042333905b74bc770d5746981c5c153e",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Enable C++11 features\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/share/messages/CMakeLists.txt" : {
+      "ObjectId" : "13cc0e4269098202d54332f44a18dd8f474199ec",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#protobuf input - finds all .proto files in the current dir\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#protobuf compiler\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#protobuf output\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#get the name of the file without extension\n",
+        "Line" : 17,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "#add the generated files\n",
+        "Line" : 19,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# add the custom command that will generate all the files\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Note that we only want to generate py messages if we're going to run\n\n# on the robot... we can't compile them offline for now\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Add static library target\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/share/messages/autowrap/Makefile" : {
+      "ObjectId" : "092de4a57060fff6edd0afd2f32287a8339c2828",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "src/share/messages/autowrap/test/Makefile" : {
+      "ObjectId" : "0ff892f96237b7fb8db09ce8d3974b3e76c5523a",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "src/share/portals/CMakeLists.txt" : {
+      "ObjectId" : "a36a0b0db1bcd534f337cdcfac6cf307410a9263",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/sound/Makefile" : {
+      "ObjectId" : "54d1e6705f53bbc8121008557989d2facc7d8222",
+      "LastModified" : "2016-09-01T18:27:43Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#####################\n\n#targets for whistle detection\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#####################\n\n#targets for nowifi\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/tool/CMakeLists.txt" : {
+      "ObjectId" : "835c2fcde659ee0a58bda346541f80fcf3065711",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Main CMake file for the Tool!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make sure we can find the shared files\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# So that we can use find_package commands\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Enable C++11 features for bhuman\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Option to turn rebuilding our protobuf libs on/off\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Only build them if the user wants to\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Configure the debug options\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Dependencies\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Our core includes come from here\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Compile portals into portals folder\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Compile logshare into logshare folder\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Compile messages into messages folder\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# If protobuf libs don't exist yet, make sure they build before man\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Man modules that we need to use\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Actual subdirectories!\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "## SOURCES ##\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Full QTool\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Needed for worldview\n",
+        "Line" : 136,
+        "CharPositionInLine" : 31
+      },
+      "18" : {
+        "Text" : "# LocTool\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Needed for worldview\n",
+        "Line" : 151,
+        "CharPositionInLine" : 31
+      },
+      "20" : {
+        "Text" : "# WorldviewTool\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Needed for worldview\n",
+        "Line" : 169,
+        "CharPositionInLine" : 31
+      },
+      "22" : {
+        "Text" : "# SharedviewTool\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#BallTool\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# VisionTool\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# CalibrationTool\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Playbook\n",
+        "Line" : 250,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# SimTool\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Qt4 goodness (aka moc the headers)\n",
+        "Line" : 287,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "## EXECUTABLES ##\n",
+        "Line" : 299,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# The QTool executable\n",
+        "Line" : 301,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# man image\n",
+        "Line" : 313,
+        "CharPositionInLine" : 8
+      },
+      "32" : {
+        "Text" : "# man vision\n",
+        "Line" : 314,
+        "CharPositionInLine" : 9
+      },
+      "33" : {
+        "Text" : "# man comm\n",
+        "Line" : 315,
+        "CharPositionInLine" : 7
+      },
+      "34" : {
+        "Text" : "# man sharedball\n",
+        "Line" : 316,
+        "CharPositionInLine" : 13
+      },
+      "35" : {
+        "Text" : "# The LocTool executable\n",
+        "Line" : 327,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# The WorldView executable\n",
+        "Line" : 348,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# sharedview\n",
+        "Line" : 361,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# The SharedView executable\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# The BallTool executable\n",
+        "Line" : 388,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# The VisionTool executable\n",
+        "Line" : 406,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# man image\n",
+        "Line" : 418,
+        "CharPositionInLine" : 8
+      },
+      "42" : {
+        "Text" : "# The CalibrationTool executable\n",
+        "Line" : 427,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# The PlaybookTool executable\n",
+        "Line" : 444,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# The SimTool executable\n",
+        "Line" : 456,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# The InstallerTool executable\n",
+        "Line" : 473,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 46
+    },
+    "src/tool/Makefile" : {
+      "ObjectId" : "f597d041a66d182489643e56718f8beb6367b0cf",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The makefile!\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/tool/ballview/CMakeLists.txt" : {
+      "ObjectId" : "6acdd5db74c5334cc7864324b0f16cc4acef954a",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/calibrator/CMakeLists.txt" : {
+      "ObjectId" : "7e095b4684ad86b2e01f4c0e3a7fbbd82790e83b",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/colorcreator/CMakeLists.txt" : {
+      "ObjectId" : "ce2503ecf602949c414100944486e777e31b80f5",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/common/CMakeLists.txt" : {
+      "ObjectId" : "a59700e5a3eff0e6c53adfc230d5ebc50c5184e0",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/data/CMakeLists.txt" : {
+      "ObjectId" : "2bf780fcc5bf9f1a7b76a6d30c63e41438faaa09",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############ data\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########### Dependencies\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "########### Sources\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "############ Qt4 goodness\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "src/tool/fieldview/CMakeLists.txt" : {
+      "ObjectId" : "2c31215e0d67b97e6ac3cd2044e1a088bd3647aa",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/image/CMakeLists.txt" : {
+      "ObjectId" : "7075f7cf1304976f8813331f7cb4140f0e457746",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/logview/CMakeLists.txt" : {
+      "ObjectId" : "a6637d53c78c85c5507eb1d1ea89d9370ae349c1",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/logview/treemodel/CMakeLists.txt" : {
+      "ObjectId" : "7b4bad02f75825ce5a5e06299d46baae0f63a0d7",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/offline/CMakeLists.txt" : {
+      "ObjectId" : "ca595d4932c9e23885a8b8c7e158896ae19f2aea",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############ offline\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########### Dependencies\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "########### Sources\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "############ Qt4 goodness\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Copy files from source directory to destination directory, substituting any\n\n# variables.  Create destination directory if it does not exist.\n\n# http://stackoverflow.com/questions/697560/how-to-copy-directory-from-source-tree-to-binary-tree\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/tool/overseer/CMakeLists.txt" : {
+      "ObjectId" : "7d0df51aa820cc400bb74837ce4e602a014f2ef7",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############ overseer\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########### Dependencies\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#find_package(Protobuf REQUIRED)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "########### GroundTruth ProtoBuf\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#protobuf compiler\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#generate the ground truth class\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "########### Sources\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "############ Qt4 goodness\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "######### The executable\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "src/tool/playbook/CMakeLists.txt" : {
+      "ObjectId" : "10e689c8a92bca34a44fdde2118236c683cf6507",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/remote/CMakeLists.txt" : {
+      "ObjectId" : "9c0b33e04140b730c92867324159ef0288e309a3",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "############ QTool/Remote\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "########### Dependencies\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "########### Sources\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "############ Qt4 goodness\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "######### The Library\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/tool/sharedview/CMakeLists.txt" : {
+      "ObjectId" : "b84f6872ad9cad3a7dcfe4d961f920008ff0f916",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/sim/CMakeLists.txt" : {
+      "ObjectId" : "45ca343386a55e1cbe91ba97abc04fd9c9c8a358",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/unlog/CMakeLists.txt" : {
+      "ObjectId" : "992014e1a9815f21cc2df9a775148d3db5c2a260",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/tool/vision_offline/CMakeLists.txt" : {
+      "ObjectId" : "31e28569b651735968c78f3dd0bc979966d78286",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# man image\n",
+        "Line" : 24,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : "# man vision\n",
+        "Line" : 25,
+        "CharPositionInLine" : 9
+      },
+      "CommentCount" : 2
+    },
+    "src/tool/worldview/CMakeLists.txt" : {
+      "ObjectId" : "f503ea47f1dbef249b1291a4c046c40771ca5ccd",
+      "LastModified" : "2016-06-24T18:44:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set source files here that need to be compiled.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add project as a library.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link project to appropriate libraries.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 112,
+    "MAKEFILE" : 11,
+    "ANT" : 2
+  },
+  "ElapsedTime" : 7116
+}

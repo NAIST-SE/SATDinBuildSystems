@@ -1,0 +1,396 @@
+{
+  "Repository" : "604351",
+  "Revision" : "HEAD",
+  "ObjectId" : "7b2924e59a4ac68b8e3f3a3ef2b78f4ad32a5616",
+  "CommitTime" : "2014-10-30T02:56:13Z",
+  "Files" : {
+    "src/build.xml" : {
+      "ObjectId" : "d0c6e44c11a6f782496ada3bd7909f13585d85d2",
+      "LastModified" : "2014-08-07T06:53:50Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n    Ganymede Ant build file\n\n    Deepak Giridharagopal, deepak@arlut.utexas.edu\n",
+        "Line" : 5,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "\n    Project-wide settings. All directories are relative to the project\n    directories.\n  ",
+        "Line" : 14,
+        "CharPositionInLine" : 6
+      },
+      "2" : {
+        "Text" : " Build directories ",
+        "Line" : 21,
+        "CharPositionInLine" : 29
+      },
+      "3" : {
+        "Text" : " Dist directories ",
+        "Line" : 28,
+        "CharPositionInLine" : 28
+      },
+      "4" : {
+        "Text" : " Global settings ",
+        "Line" : 32,
+        "CharPositionInLine" : 27
+      },
+      "5" : {
+        "Text" : " Global properties for javac ",
+        "Line" : 36,
+        "CharPositionInLine" : 39
+      },
+      "6" : {
+        "Text" : " ============================================================\n\n       We use crypto for two things in Ganymede.\n\n       The first is we want to have a private key on the server and a\n       self-signed certificate (containing the matching public key) on\n       the client in order to SSL-protect communications between the\n       client and the server.\n\n       We have no need to use a certificate authority to authenticate\n       this private/public key pair because the server, client, and\n       admin console jar files are built with the appropriate crypto\n       material included.\n\n       This section defines the properties we need to generate this\n       private/public key pair and to package the appropriate\n       materials in the jar files we build.\n\n       You shouldn't need to change any of the following.\n\n       ============================================================ ",
+        "Line" : 59,
+        "CharPositionInLine" : 72
+      },
+      "7" : {
+        "Text" : " Are we going to use SSL?  (Say yes!) ",
+        "Line" : 61,
+        "CharPositionInLine" : 48
+      },
+      "8" : {
+        "Text" : " We're storing our server SSL key in a known location with a\n       known alias and store password so the server can access it.\n\n       The server_ssl_key.storepass must match the value stored in\n       arlut.csd.ganymede.common.RMISSLServerSocketFactory.passphrase.\n\n       We don't bother signing the server_ssl_key because we're\n       counting on the key being held in the server_ssl_key.keystore\n       on the server. ",
+        "Line" : 72,
+        "CharPositionInLine" : 26
+      },
+      "9" : {
+        "Text" : " Likewise, we've got a cert for our server SSL key that is\n       distributed with the clients in a known location ",
+        "Line" : 78,
+        "CharPositionInLine" : 60
+      },
+      "10" : {
+        "Text" : " ============================================================\n\n       The second thing we use crypto for is to sign the client\n       and admin console jar files so that they will be accepted by\n       Java Web Start.\n\n       Starting with the version 7u40 of the Oracle JDK, the JDK will\n       either provide a scary warning dialog or will refuse to permit\n       the clients to run unless the client jar files are signed with\n       a certificate from a certificate authority (CA) recognized by\n       the Oracle JDK distribution.\n\n       In order to set this up, you need to create a private / public\n       key pair using the Java keytool command, then use keytool to\n       generate a certificate signing request (CSR)..\n\n       Here are the instructions for this as provided by one\n       certificate authority:\n\n       https://www.globalsign.com/support/ordering-guides/SignJavaCodeApplets.pdf\n\n       After generating the CSR, you will need to purchase a\n       certificate from a certificate authority recognized by the\n       Oracle JDK, such as GlobalSign, Thawte, Verisign, among others.\n\n       You'll need to retrieve the purchased certificate (and any\n       intermediate certificates provided to you by the certificate\n       authority web site) and bind them with the private key you\n       initially generated with keytool in a Java keystore (JKS) file.\n\n       Once you've got a Java keystore that includes the private key\n       along with the certificate or certificates from the CA, you'll\n       need to specify the following properties:\n\n       jar_signing.keystore, the location of the keystore\n       jar_signing.storepass, the password for the keystore\n       jar_signing.keyalias, the identifier for the private key\n       jar_signing.keypass, the password for the private key\n\n       For obvious reasons, the keystore and the properties specified\n       above should never be recorded in Git or any other revision\n       control system.  For this reason, I've put *.jks and\n       src/build/crypto/crypto.properties in the .gitignore file at\n       the root of the Ganymede distribution.\n\n       Put the above properties in src/build/crypto/crypto.properties,\n       and they'll be used by this build.xml file.\n\n       If any of the above properties are not found in\n       crypto.properties, the jars produced by the \"jars\" task will\n       not be signed, and a warning will be emitted.\n\n       ==\n\n       In addition to the above, this build.xml file supports signing\n       the JNLP files that you use to launch the client and admin\n       console.\n\n       In order to sign your client JNLP file, you'll need to create\n       the following directory tree under src/build/crypto:\n       \n       client/JNLP-INF/APPLICATION.JNLP\n\n       where APPLICATION.JNLP is either a copy or a symlink to the\n       client.jnlp file server by your web server to launch the client,\n       and\n\n       console/JNLP-INF/APPLICATION.JNLP\n\n       as a copy or symlink to the console.jnlp file used to launch\n       the admin client.\n\n       If you don't want to sign your JNLP launch files, just don't\n       provide the client and console directories.\n\n       ============================================================ ",
+        "Line" : 173,
+        "CharPositionInLine" : 72
+      },
+      "11" : {
+        "Text" : " Are we going to sign our jars?  (Say yes!) ",
+        "Line" : 175,
+        "CharPositionInLine" : 54
+      },
+      "12" : {
+        "Text" : " If we are required to generate our own, unsigned private server\n       key, let's make it valid for 10 years ",
+        "Line" : 181,
+        "CharPositionInLine" : 49
+      },
+      "13" : {
+        "Text" : " If we are required to generate our own, unsigned private server\n       key, give it the following name. ",
+        "Line" : 185,
+        "CharPositionInLine" : 44
+      },
+      "14" : {
+        "Text" : "\n      We're going to encode the DOMAIN name of the build host into the\n      client and admin console jar files, to let Java7u25 and later\n      know not to let people run the jar files we are building here\n      from some random foreign system.\n\n      See\n\n      http://docs.oracle.com/javase/7/docs/technotes/guides/jweb/no_redeploy.html\n\n      for details.\n\n      NOTE: The <hostinfo/> element requires Ant 1.8.0 or later. ",
+        "Line" : 200,
+        "CharPositionInLine" : 69
+      },
+      "15" : {
+        "Text" : " Include the JarBundler task so that we can do Mac OS X specific\n  build packaging. ",
+        "Line" : 205,
+        "CharPositionInLine" : 23
+      },
+      "16" : {
+        "Text" : " === Targets ahoy ===  ",
+        "Line" : 220,
+        "CharPositionInLine" : 33
+      },
+      "17" : {
+        "Text" : " main is intended as an unadvertised target, so that we can provide\n         the user with the 'don't forget the jars' advice if they run ant\n         or ant build. ",
+        "Line" : 297,
+        "CharPositionInLine" : 27
+      },
+      "18" : {
+        "Text" : "\n  We have lots and lots of pre-Java 5 Vector usage, but if you want to turn on linting..\n\n      <compilerarg value=\"-Xlint:unchecked\"/>\n",
+        "Line" : 317,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : " I'm always thinking validate is verify, so let's add a verify\n       target as an alias, too. - Jon ",
+        "Line" : 335,
+        "CharPositionInLine" : 42
+      },
+      "20" : {
+        "Text" : " Put a build.properties file in the jar file so that the\n    arlut.csd.ganymede.common.BuildInfo class can report on the build\n    environment. ",
+        "Line" : 343,
+        "CharPositionInLine" : 21
+      },
+      "21" : {
+        "Text" : " The following two entries must be customized for your deployment.\n\n           If your ganymede.jar and ganymedeAdmin.jar files are signed\n           with a recognizable cert authority and the build process is\n           modified to include the launching jnlp file, maybe this\n           won't work..\n\n           All of this got a lot harder with Java 7u45, so we have to sneak\n           these properties into the jar file itself.  Jon ",
+        "Line" : 358,
+        "CharPositionInLine" : 63
+      },
+      "22" : {
+        "Text" : " Copy over any jars used in the build ",
+        "Line" : 365,
+        "CharPositionInLine" : 50
+      },
+      "23" : {
+        "Text" : " Build the server jar file ",
+        "Line" : 370,
+        "CharPositionInLine" : 39
+      },
+      "24" : {
+        "Text" : " Build the client jar file ",
+        "Line" : 398,
+        "CharPositionInLine" : 39
+      },
+      "25" : {
+        "Text" : " Pull in a couple of jar files that we'll use to provide\n           better GUI support on Mac. ",
+        "Line" : 428,
+        "CharPositionInLine" : 42
+      },
+      "26" : {
+        "Text" : " add in a few extra for use w new calendar popup widget. James ",
+        "Line" : 433,
+        "CharPositionInLine" : 77
+      },
+      "27" : {
+        "Text" : " Manifest attributes to satisfy a couple of security checks\n           that Oracle added in Java 7u25. ",
+        "Line" : 438,
+        "CharPositionInLine" : 47
+      },
+      "28" : {
+        "Text" : " Build the admin jar file ",
+        "Line" : 447,
+        "CharPositionInLine" : 38
+      },
+      "29" : {
+        "Text" : " Ugh, we need the server-side GanymedeScheduler included, since the scheduleHandle\n           that we can transmit from the server to the admin console includes a GanymedeScheduler\n           reference variable. ",
+        "Line" : 464,
+        "CharPositionInLine" : 35
+      },
+      "30" : {
+        "Text" : " Pull in a couple of jar files that we'll use to provide\n           better GUI support on Mac. ",
+        "Line" : 482,
+        "CharPositionInLine" : 42
+      },
+      "31" : {
+        "Text" : " Manifest attributes to satisfy a couple of security checks\n           that Oracle added in Java 7u25. ",
+        "Line" : 488,
+        "CharPositionInLine" : 47
+      },
+      "32" : {
+        "Text" : " Copy over the newly created jars ",
+        "Line" : 499,
+        "CharPositionInLine" : 46
+      },
+      "33" : {
+        "Text" : " Copy over the newly created docs ",
+        "Line" : 526,
+        "CharPositionInLine" : 46
+      },
+      "CommentCount" : 34
+    },
+    "src/schemas/gasharl/build.xml" : {
+      "ObjectId" : "fc72365b09b2a09c49e6d2a5902262d42cffe751",
+      "LastModified" : "2010-05-25T04:48:34Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n    Ganymede GASHARL schema kit Ant build file\n\n    Last Revision Changed: $Rev$\n    Last Changed By: $Author$\n    Last Mod Date: $Date$\n    SVN URL: $HeadURL$\n\n    Deepak Giridharagopal, deepak@arlut.utexas.edu\n",
+        "Line" : 10,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " \n    Project-wide settings. All directories are relative to the project\n    directories.\n  ",
+        "Line" : 17,
+        "CharPositionInLine" : 6
+      },
+      "2" : {
+        "Text" : " Build directories ",
+        "Line" : 22,
+        "CharPositionInLine" : 29
+      },
+      "3" : {
+        "Text" : " Global settings ",
+        "Line" : 28,
+        "CharPositionInLine" : 27
+      },
+      "4" : {
+        "Text" : " Global properties for javac ",
+        "Line" : 32,
+        "CharPositionInLine" : 39
+      },
+      "5" : {
+        "Text" : " === Targets ahoy ===  ",
+        "Line" : 44,
+        "CharPositionInLine" : 33
+      },
+      "6" : {
+        "Text" : " main is intended as an unadvertised target, so that we can provide\n         the user with the 'don't forget the jars' advice if they run ant\n         or ant build. ",
+        "Line" : 81,
+        "CharPositionInLine" : 27
+      },
+      "7" : {
+        "Text" : " Copy over any jars used in the build ",
+        "Line" : 101,
+        "CharPositionInLine" : 50
+      },
+      "CommentCount" : 8
+    },
+    "src/schemas/gasharl/buildscripts/Makefile" : {
+      "ObjectId" : "850b488a277272696b0de6d47a94b2caa69c206c",
+      "LastModified" : "2004-12-01T23:42:30Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#***********************************************************************\n\n#\n\n#             ARL:UT Group Administration Shell Package\n\n#                         September 13, 1994\n\n#\n\n#  Copyright 1994. The University of Texas at Austin (UTA).  All rights\n\n#  reserved.  By using this software the USER indicates that he or she\n\n#  has read, understood, and will comply with the following:\n\n#\n\n#  -UTA hereby grants USER nonexclusive permission to use, copy, and/or\n\n#  modify this software for internal purposes only.  Any non-internal \n\n#  distribution, including commercial sale or license, of this software,\n\n#  copies of the software, its associated documentation, and/or\n\n#  modifications of either is strictly prohibited without the prior\n\n#  consent of UTA.  Title to copyright to this software and its \n\n#  associated documentation shall at all times remain with UTA. \n\n#  Appropriate copyright notice shall be placed on all software copies,\n\n#  and a complete copy of this notice shall be included in all copies\n\n#  of the associated documentation.  No right is granted to use in \n\n#  advertising, publicity, or otherwise any trademark, service mark,\n\n#  or the name of UTA.\n\n#\n\n#  -This software and any associated documentation is provided \"as is\",\n\n#  and UTA MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED,\n\n#  INCLUDING THOSE OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR\n\n#  PURPOSE, OR THAT USE OF THE SOFTWARE, MODIFICATIONS, OR ASSOCIATED\n\n#  DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS \n\n#  OR OTHER INTELLECTUAL PROPERTY RIGHTS OF A THIRD PARTY.  UTA, the\n\n#  University of Texas System, its Regents, officers, and employees \n\n#  shall not be liable under any circumstances for any direct, indirect,\n\n#  special, incidental, or consequential damages with respect to any\n\n#  claim by USER or any third party on account of or arising from the\n\n#  use, or inability to use, this software or its associated \n\n#  documentation, even if UTA has been advised of the possibility of\n\n#  those damages.\n\n#\n\n#***********************************************************************\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Welcome to the wonderful world of GASH makefiles. This will will have a\n\n# list of variables so that they can easily be moved. Following this list\n\n# will be the actual dependences and how to make the correct maps from the\n\n# original information files.\n\n#\n\n# Last modified by Pug on 9/14/94.\n\n#\n\n# The B variable tells NIS weither to use DNS over NIS or not.\n\n# B=-b means user DNS over NIS.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#B=\n\n#\n\n# DIR is the location of the files such as services, networks, etc. \n\n# (Note, netmasks is located in SRC to get around multiple-interface netmasks.)\n\n#\n\n# SRC is the location of the GASH maintained files. (ie. user_info, hosts_info)\n\n# DNSDIR is the location of the DNS master maps. (ie. named.*)\n\n#\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# The NIS domainname. It is usually returned by the `domainname` command.\n\n#\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# NOPUSH = \"1\" means don't push NIS maps.\n\n#\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#NOPUSH      = \"\"\n\n#\n\n# See notes under hosts.time for YPALT.\n\n#\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#\n\n# The location of the NIS programs. The first entry is SunOS 5.x and the\n\n# second is SunOS 4.x.\n\n#\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#YPDIR       = /usr/etc/yp\n\n#\n\n# The location of the GASH database creation scripts.\n\n#\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# The directory where NIS maps are to be put. It is actually\n\n# $(YPDBDIR)/$(DOM)\n\n#\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#\n\n#\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#\n\n# This is the list of informational files.\n\n#\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#timezone\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# See note below for netmasks.time.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Commented out since in our setup we didn't use the timezone NIS map.\n\n#timezone:\ttimezone.time\n\n#$(DIR)/timezone:\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#\n\n# Move all the old files into the subdir.\n\n#\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#\n\n# Make the passwd map.\n\n#\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#\n\n# This will make the hosts, ethers, and DNS records.\n\n#\n\n# Note that it actually makes the hosts file from a cut down hosts file.\n\n# This is due to the fact that we actually want to do all nameservice\n\n# through DNS. Remove references of $(YPALT)/ if you want to actually use\n\n# the GASH hosts file that is created.\n\n# \n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#.*$$// $(SRC)/hosts $(CHKPIPE)) | \\\n\t  ($(STDHOSTS) $(CHKPIPE)) | \\\n\t  (awk '{for (i = 2; i <= NF; i++) print $$i, $$0 }' $(CHKPIPE)) \\\n\t  | $(MAKEDBM) $(B) -l - $(YPDBDIR)/$(DOM)/hosts.byname;\n",
+        "Line" : 191,
+        "CharPositionInLine" : 23
+      },
+      "18" : {
+        "Text" : "#\n\n# This makes the mail aliases, generics files and the like.\n\n#\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# This will make the netgroups map.\n\n#\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#\n\n# This will make the groups map from the group_info file.\n\n#\n",
+        "Line" : 270,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#\n\n# This little script will make the automount.volume map as well as the\n\n# auto.home.* maps for all the individualized maps. The rm of $(YPDBIR)/\n\n# $(DOM)/auto.home.* is so that once a map has been removed it will not\n\n# show up in future NIS maps. There needs to be a way of deleting old\n\n# maps from NIS slaves.\n\n#\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#.*$$// $(SRC)/auto.vol \\\n\t  | $(MAKEDBM) - $(YPDBDIR)/$(DOM)/auto.vol;\n",
+        "Line" : 305,
+        "CharPositionInLine" : 22
+      },
+      "23" : {
+        "Text" : "## -e s/auto.home/gash.home/`;\\\n\t  cp -p $$name $$name2; \\\n\t  $(YPDBSRC)/gash2auto $$name2; \\\n\t  echo \"iteration 1 of $$name in auto.vol\"; \\\n\tdone;\n",
+        "Line" : 312,
+        "CharPositionInLine" : 41
+      },
+      "24" : {
+        "Text" : "#.*$$// $$name \\\n\t\t| $(MAKEDBM) - $(YPDBDIR)/$(DOM)/$$name; \\\n\t  echo \"iteration 2 of $$name in auto.vol\"; \\\n\t  name2=`echo $$name | sed -e s/auto.home/gash.home/`; \\\n\t  mv -f $$name2 $$name; \\\n\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) $$name &); fi; \\\n\t  if [ ! $(NOPUSH) ]; then echo \"pushed $$name\"; fi; \\\n          echo sorting $$name; \\\n\t  $(YPDBSRC)/sort_automap $$name; \\\n\tdone;\n",
+        "Line" : 319,
+        "CharPositionInLine" : 23
+      },
+      "25" : {
+        "Text" : "#\n\n# The remaining maps are out of the regular files and need no modifications\n\n# for use in NIS besides being ran through their normal filters and makedbm.\n\n#\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#.*$$// $(DIR)/networks $(CHKPIPE)) \\\n\t\t| (awk '{print $$1, $$0; for (i = 3;i <= NF;i++) print \\\n\t\t$$i,$$0}' $(CHKPIPE)) | $(MAKEDBM) - \\\n\t\t$(YPDBDIR)/$(DOM)/networks.byname; \\\n\t  (awk 'BEGIN { OFS=\"\\t\"; } $$1 !~ /^#/ { print $$2, $$0 }' \\\n\t\t$(DIR)/networks $(CHKPIPE)) | $(MAKEDBM) - \\\n\t\t$(YPDBDIR)/$(DOM)/networks.byaddr; \\\n\t  touch networks.time; \\\n\t  echo \"updated networks\"; \\\n\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) \\\n\t\tnetworks.byname &); fi; \\\n\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) \\\n\t  \tnetworks.byaddr &); fi; \\\n\t  if [ ! $(NOPUSH) ]; then echo \"pushed networks\"; fi; \\\n\telse \\\n\t  echo \"couldn't find $(DIR)/networks\"; \\\n\tfi\n",
+        "Line" : 342,
+        "CharPositionInLine" : 24
+      },
+      "27" : {
+        "Text" : "#.*$$// $(DIR)/protocols $(CHKPIPE)) | \\\n\t\t(awk '{print $$1,$$0; for (i = 3;i <= NF;i++) print $$i, \\\n\t\t$$0}' $(CHKPIPE)) | $(MAKEDBM) - \\\n\t\t$(YPDBDIR)/$(DOM)/protocols.byname; \\\n\t  touch protocols.time; \\\n\t  echo \"updated protocols\"; \\\n\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) \\\n\t\tprotocols.byname &); fi; \\\n\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) \\\n\t\tprotocols.bynumber &); fi; \\\n\t  if [ ! $(NOPUSH) ]; then echo \"pushed protocols\"; fi; \\\n\telse \\\n\t  echo \"couldn't find $(DIR)/protocols\"; \\\n\tfi\n",
+        "Line" : 392,
+        "CharPositionInLine" : 24
+      },
+      "28" : {
+        "Text" : "#.*$$// -e 's/[    ][      ]*$$//' \\\n\t\t-e '/\\\\$$/s/\\\\$$/ /' $(DIR)/bootparams $(CHKPIPE)) \\\n\t\t|( awk '/ $$/ {printf \"%s\", $$0} !/ $$/ {print}' $(CHKPIPE)) \\\n\t\t|( sed -e 's/[   ][      ]*/ /g' $(CHKPIPE)) \\\n\t\t| $(MAKEDBM) - $(YPDBDIR)/$(DOM)/bootparams; \\\n\t  touch bootparams.time; \\\n\t  echo \"updated bootparams\"; \\\n\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) bootparams &); fi; \\\n\t  if [ ! $(NOPUSH) ]; then echo \"pushed bootparams\"; fi; \\\n\telse \\\n\t  echo \"couldn't find $(DIR)/bootparams\"; \\\n\tfi\n",
+        "Line" : 409,
+        "CharPositionInLine" : 24
+      },
+      "29" : {
+        "Text" : "#\n\n# A netmasks files must exist in the in the SRC directory to make sure a\n\n# machine with multiple interfaces pushes out the correct netmasks for\n\n# the other machines.\n\n#\n",
+        "Line" : 422,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Commented out since we don't use it.\n\n#\n\n#timezone.time:  $(DIR)/timezone\n\n#\t-@if [ -f $(DIR)/timezone ]; then \\\n#\t  sed -e \"/^#/d\" -e s/#.*$$// $(DIR)/timezone \\\n#\t\t| awk '{for (i = 2; i<=NF; i++) print $$i, $$0}' \\\n#\t\t| $(MAKEDBM) - $(YPDBDIR)/$(DOM)/timezone.byname; \\\n#\t  touch timezone.time; \\\n#\t  echo \"updated timezone\"; \\\n#\t  if [ ! $(NOPUSH) ]; then ($(YPPUSH) -d $(DOM) \\\n#\t\ttimezone.byname &); fi; \\\n#\t  if [ ! $(NOPUSH) ]; then echo \"pushed timezone\"; fi; \\\n#\telse \\\n#\t  echo \"couldn't find $(DIR)/timezone\"; \\\n#\tfi\n",
+        "Line" : 452,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 31
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 1,
+    "ANT" : 2
+  },
+  "ElapsedTime" : 2019
+}

@@ -1,0 +1,2734 @@
+{
+  "Repository" : "26248489",
+  "Revision" : "HEAD",
+  "ObjectId" : "ccdb6b557d440423843952cace3e7d351a743fa6",
+  "CommitTime" : "2018-07-24T20:24:57Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "1458bc813942e5d3c4592a495a0cc03d54713098",
+      "LastModified" : "2018-07-06T17:04:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Require cmake that can build LLVM [1].\n\n#\n\n# Note: cmake in thirdparty/ will always meet this minimum.\n\n#\n\n# 1. http://llvm.org/releases/3.9.0/docs/ReleaseNotes.html\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Prevent builds from the top-level source directory. This ensures that build\n\n# output is well isolated from the source tree.\n\n#\n\n# May be overridden by setting KUDU_ALLOW_IN_SOURCE_BUILD; this is only\n\n# recommended for experts!\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Provide a 'latest' symlink to this build directory if the \"blessed\"\n\n# multi-build layout is detected:\n\n#\n\n# build/\n\n# build/<first build directory>\n\n# build/<second build directory>\n\n# ...\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create the symlink both during cmake invocation and when the default target\n\n# ('all') is built. The former is useful for scripts that, after running\n\n# cmake, only build a single target (i.e. \"make lint\").\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# 'ALL' above doesn't actually add 'latest_symlink' as a dependency to all\n\n# targets. So, we override add_executable to ensure that whenever any executable\n\n# is built, the symlink is re-created.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Call through to the original add_executable function.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# TODO: can we somehow pass this into the java build?\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Allow \"make install\" to not depend on all targets.\n\n#\n\n# Must be declared in the top-level CMakeLists.txt.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Codegen-dependent executables need to be linked with -rdynamic; otherwise LLVM\n\n# can't find dependent Kudu symbols at runtime.\n\n#\n\n# Setting the ENABLE_EXPORTS target property for each codegen-dependent\n\n# executable is more precise, but that's a rather long target list, so we'll\n\n# just do it once here for all Kudu executables.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Always generate the compilation database file (compile_commands.json) for use\n\n# with various development tools, such as IWYU and Vim's YouCompleteMe plugin.\n\n# See http://clang.llvm.org/docs/JSONCompilationDatabase.html\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Make sure thirdparty stuff is up-to-date.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "############################################################\n\n# Compiler flags\n\n############################################################\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# compiler flags that are common across debug/release builds\n\n#  -msse4.2: Enable sse4.2 compiler intrinsics.\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#  -Wall: Enable all warnings.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#  -Wno-sign-compare: suppress warnings for comparison between signed and unsigned\n\n#     integers\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#  -Wno-comment: suppress warnings about backslash-newline in \"//\" comments,\n\n#     which appear in the Kudu source code due to the use of ASCII art and\n\n#     multi-line command line examples in comments.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#  -Wno-deprecated: we currently have a number of places using deprecated functions\n\n#     (mostly our own functions). TODO(todd) remove or individually suppress call sites.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#  -pthread: enable multithreaded malloc\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#  -fno-strict-aliasing\n\n#     Assume programs do not follow strict aliasing rules.\n\n#     GCC cannot always verify whether strict aliasing rules are indeed followed due to\n\n#     fundamental limitations in escape analysis, which can result in subtle bad code generation.\n\n#     This has a small perf hit but worth it to avoid hard to debug crashes.\n",
+        "Line" : 142,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#  -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG: enable nanosecond precision for boost\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We want access to the PRI* print format macros.\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# We want short macros from util/status.h.\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Slice includes many gutil dependencies that third-party users of the Kudu\n\n# client library don't have. Our build has them, though.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# We don't want to use any stubs; that's exclusively for builds using our\n\n# exported client headers).\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# compiler flags for different build types (run 'cmake -DCMAKE_BUILD_TYPE=<type> .')\n\n# For all builds:\n\n# For CMAKE_BUILD_TYPE=Debug\n\n#   -ggdb: Enable gdb debugging\n\n# For CMAKE_BUILD_TYPE=FastDebug\n\n#   Same as DEBUG, except with some optimizations on.\n\n# For CMAKE_BUILD_TYPE=Release\n\n#   -O3: Enable all compiler optimizations\n\n#   -g: Enable symbols for profiler tools (TODO: remove for shipping)\n\n#   -DNDEBUG: Turn off dchecks/asserts/debug only code.\n\n#   -fno-omit-frame-pointer\n\n#       use frame pointers to allow simple stack frame walking for backtraces.\n\n#       This has a small perf hit but worth it for the ability to profile in production\n\n# For profile guided optimization (PGO) builds, in addition to the flags for release builds:\n\n#   1. Build first with CMAKE_BUILD_TYPE_PROFILE_GEN:\n\n#     -fprofile-generate: Indicates compiler should insert profile guided optimization events\n\n#   2. Run the benchmarks (generates *.gcda profiling data).\n\n#   3. Build again with CMAKE_BUILD_TYPE_PROFILE_BUILD\n\n#     -fprofile-use: Compiler will use the profile outputs for optimizations\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# if no build build type is specified, default to debug builds\n",
+        "Line" : 197,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Alias RELEASE as RELWITHDEBINFO and MINSIZEREL. These are common CMake\n\n# release type names and this provides compatibility with the CLion IDE.\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Set compile flags based on the build type.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Add common flags\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Determine compiler version\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Using Clang with ccache causes a bunch of spurious warnings that are\n\n# purportedly fixed in the next version of ccache. See the following for details:\n\n#\n\n#   http://petereisentraut.blogspot.com/2011/05/ccache-and-clang.html\n\n#   http://petereisentraut.blogspot.com/2011/09/ccache-and-clang-part-2.html\n",
+        "Line" : 233,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# Clang generates ambiguous member template warnings when calling the ev++ api.\n",
+        "Line" : 240,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# Emit a warning when the method/function marked as deprecated\n\n# in its in-line documentation but lacks the deprecated attribute\n\n# ATTRIBUTE_DEPRECATED in its signature.\n",
+        "Line" : 243,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# Avoid 'taking address of packed member' warnings, which pollute macOs/clang 4.0 builds.\n\n# This is also done in chromium. See:\n\n# https://bugs.chromium.org/p/chromium/issues/detail?id=619640\n\n# Unfortunately older versions of clang complain about not knowing the warning, so\n\n# this also disables the warning about unknown warnings.\n",
+        "Line" : 248,
+        "CharPositionInLine" : 2
+      },
+      "35" : {
+        "Text" : "# Only hardcode -fcolor-diagnostics if stderr is opened on a terminal. Otherwise\n\n# the color codes show up as noisy artifacts.\n\n#\n\n# This test is imperfect because 'cmake' and 'make' can be run independently\n\n# (with different terminal options), and we're testing during the former.\n\n#\n\n# We also provide a manual override as -DKUDU_FORCE_COLOR_DIAGNOSTICS=1 or\n\n# by setting an environment variable of the same name.\n",
+        "Line" : 255,
+        "CharPositionInLine" : 2
+      },
+      "36" : {
+        "Text" : "# Disallow GCC < 4.8, since it doesn't support the C++11 standard\n\n# well enough for us.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 2
+      },
+      "37" : {
+        "Text" : "# GCC 4.8's tree vectorizer has a bug which causes hard-to-debug incorrect\n\n# code. Disable this option on release builds, where it would otherwise\n\n# be enabled by -O3.\n",
+        "Line" : 280,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# Sanity check linking option.\n",
+        "Line" : 291,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Remove all but the first letter.\n",
+        "Line" : 299,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# If not set, any file that includes kudu_export.h (an autogenerated file) will\n\n# use visibility(\"hidden\") with symbols annotated with KUDU_NO_EXPORT, even when\n\n# compiled with default visibility flags. It is overridden as needed by\n\n# ADD_EXPORTABLE_LIBRARY() when actually compiling exported library variants.\n",
+        "Line" : 303,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Clang does not support using ASAN and TSAN simultaneously.\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Flag to enable clang address sanitizer\n\n# This will only build if clang or a recent enough gcc is the chosen compiler\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# If UBSAN is also enabled, and we're on clang < 3.5, ensure static linking is\n\n# enabled. Otherwise, we run into https://llvm.org/bugs/show_bug.cgi?id=18211\n",
+        "Line" : 322,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# For any C code, use the same flags.\n",
+        "Line" : 341,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Enable the Clang undefined behavior (UB) sanitizer.\n",
+        "Line" : 345,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Enable UB and unsigned integer overflow detection.\n",
+        "Line" : 351,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "# Disable 'alignment' because unaligned access is really OK on Nehalem and we do it all over the place.\n",
+        "Line" : 353,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# Stop execution after UB or overflow is detected.\n",
+        "Line" : 356,
+        "CharPositionInLine" : 2
+      },
+      "49" : {
+        "Text" : "# Flag to enable thread sanitizer (clang or gcc 4.8)\n",
+        "Line" : 360,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Enables dynamic_annotations.h to actually generate code\n",
+        "Line" : 369,
+        "CharPositionInLine" : 2
+      },
+      "51" : {
+        "Text" : "# changes atomicops to use the tsan implementations\n",
+        "Line" : 372,
+        "CharPositionInLine" : 2
+      },
+      "52" : {
+        "Text" : "# Disables using the precompiled template specializations for std::string, shared_ptr, etc\n\n# so that the annotations in the header actually take effect.\n",
+        "Line" : 375,
+        "CharPositionInLine" : 2
+      },
+      "53" : {
+        "Text" : "# Compile and link against the thirdparty TSAN instrumented libstdcxx.\n",
+        "Line" : 379,
+        "CharPositionInLine" : 2
+      },
+      "54" : {
+        "Text" : "# Strictly speaking, TSAN doesn't require dynamic linking. But it does\n\n# require all code to be position independent, and the easiest way to\n\n# guarantee that is via dynamic linking (not all 3rd party archives are\n\n# compiled with -fPIC e.g. boost).\n",
+        "Line" : 387,
+        "CharPositionInLine" : 2
+      },
+      "55" : {
+        "Text" : "# GCC 4.8 and 4.9 (latest as of this writing) don't allow you to specify a\n\n# sanitizer blacklist.\n",
+        "Line" : 401,
+        "CharPositionInLine" : 2
+      },
+      "56" : {
+        "Text" : "# Require clang 3.4 or newer; clang 3.3 has issues with TSAN and pthread\n\n# symbol interception.\n",
+        "Line" : 404,
+        "CharPositionInLine" : 4
+      },
+      "57" : {
+        "Text" : "# Code coverage\n",
+        "Line" : 416,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Use clang for coverage builds so that we can standardize on a single\n\n# compiler. clang also handles flushing coverage from shared libraries\n\n# better than gcc.\n",
+        "Line" : 421,
+        "CharPositionInLine" : 4
+      },
+      "59" : {
+        "Text" : "# If we still don't know what kind of linking to perform, choose based on\n\n# build type (developers like fast builds).\n",
+        "Line" : 428,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Interrogates the linker version via the C++ compiler to determine whether\n\n# we're using the gold linker, and if so, extracts its version.\n\n#\n\n# If the gold linker is being used, sets GOLD_VERSION in the parent scope with\n\n# the extracted version.\n\n#\n\n# Any additional arguments are passed verbatim into the C++ compiler invocation.\n",
+        "Line" : 441,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# The gold linker is only for ELF binaries, which macOS doesn't use.\n",
+        "Line" : 449,
+        "CharPositionInLine" : 2
+      },
+      "62" : {
+        "Text" : "# We're expecting LINKER_OUTPUT to look like one of these:\n\n#   GNU gold (version 2.24) 1.11\n\n#   GNU gold (GNU Binutils for Ubuntu 2.30) 1.15\n",
+        "Line" : 457,
+        "CharPositionInLine" : 2
+      },
+      "63" : {
+        "Text" : "# Is the compiler hard-wired to use the gold linker?\n",
+        "Line" : 470,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# Can the compiler optionally enable the gold linker?\n",
+        "Line" : 475,
+        "CharPositionInLine" : 2
+      },
+      "65" : {
+        "Text" : "# We can't use the gold linker if it's inside devtoolset because the compiler\n\n# won't find it when invoked directly from make/ninja (which is typically\n\n# done outside devtoolset).\n",
+        "Line" : 478,
+        "CharPositionInLine" : 2
+      },
+      "66" : {
+        "Text" : "# Older versions of the gold linker are vulnerable to a bug [1] which\n\n# prevents weak symbols from being overridden properly. This leads to\n\n# omitting of Kudu's tcmalloc dependency.\n\n#\n\n# How we handle this situation depends on other factors:\n\n# - If gold is optional, we won't use it.\n\n# - If gold is required, we'll either:\n\n#   - Raise an error in RELEASE builds (we shouldn't release such a product), or\n\n#   - Drop tcmalloc in all other builds.\n\n#\n\n# 1. https://sourceware.org/bugzilla/show_bug.cgi?id=16979.\n",
+        "Line" : 492,
+        "CharPositionInLine" : 2
+      },
+      "67" : {
+        "Text" : "# The Gold linker must be manually enabled.\n",
+        "Line" : 517,
+        "CharPositionInLine" : 4
+      },
+      "68" : {
+        "Text" : "# Having set KUDU_LINK due to build type and/or sanitizer, it's now safe to\n\n# act on its value.\n",
+        "Line" : 528,
+        "CharPositionInLine" : 0
+      },
+      "69" : {
+        "Text" : "# Position independent code is only necessary when producing shared objects.\n",
+        "Line" : 533,
+        "CharPositionInLine" : 2
+      },
+      "70" : {
+        "Text" : "# where to put generated archives (.a files)\n",
+        "Line" : 537,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# where to put generated libraries (.so files)\n",
+        "Line" : 541,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# where to put generated binaries\n",
+        "Line" : 545,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "############################################################\n\n# Visibility\n\n############################################################\n\n# For generate_export_header() and add_compiler_export_flags().\n",
+        "Line" : 553,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Honor visibility properties for all target types. See\n\n# \"cmake --help-policy CMP0063\" for details.\n\n#\n\n# This policy was only added to cmake in version 3.3, so until the cmake in\n\n# thirdparty is updated, we must check if the policy exists before setting it.\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# add_library() wrapper that adds a second variant of the library for use in the\n\n# exported Kudu C++ client. This variant is suffixed with \"_exported\" and is\n\n# compiled with special visibility flags to hide all symbols except those that\n\n# are part of the public ABI.\n\n#\n\n# There are two different kinds of exported libraries: internal and leaf.\n\n# Internal libraries are static archives while leaf libraries are shared\n\n# objects built from internal libraries. In practice there is only one leaf\n\n# library: the Kudu C++ client itself.\n\n#\n\n# Arguments:\n\n#\n\n# LIB_NAME is the name of the library. It must come first. Required.\n\n#\n\n# SRCS is the list of source files to compile into the library. Required.\n\n#\n\n# DEPS is the list of targets that both library variants depend on. Required.\n\n#\n\n# NONLINK_DEPS is the list of (non-linked) targets that both library variants\n\n# depend on. Optional.\n\n#\n\n# COMPILE_FLAGS is a string containing any additional compilation flags that\n\n# should be added to both library variants. Optional.\n\n#\n\n# EXPORTED_SHARED is a toggle that, if set, indicates that the exported variant\n\n# is a \"leaf\" library. Otherwise it is an \"internal\" library. Optional.\n\n#\n\n# EXPORTED_OUTPUT_NAME is a string describing a different file name for the\n\n# exported library variant. If not set, defaults to LIB_NAME. Optional.\n\n#\n\n# EXPORTED_OUTPUT_DIRECTORY is a string describing a different directory where\n\n# the exported library variant should be written. If not set, defaults to the\n\n# directory where this function was called. Optional.\n\n#\n\n# EXPORTED_DEPS is a list of targets that the exported library variant depends\n\n# on. If not set, defaults to DEPS. Optional.\n",
+        "Line" : 568,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# Parse the arguments.\n",
+        "Line" : 605,
+        "CharPositionInLine" : 2
+      },
+      "77" : {
+        "Text" : "# First add the regular version of the library. It uses\n\n# whatever linkage was defined globally.\n",
+        "Line" : 614,
+        "CharPositionInLine" : 2
+      },
+      "78" : {
+        "Text" : "# Now start setting up the exported variant.\n",
+        "Line" : 626,
+        "CharPositionInLine" : 2
+      },
+      "79" : {
+        "Text" : "# Leaf library.\n",
+        "Line" : 629,
+        "CharPositionInLine" : 4
+      },
+      "80" : {
+        "Text" : "# Internal library.\n",
+        "Line" : 633,
+        "CharPositionInLine" : 4
+      },
+      "81" : {
+        "Text" : "# Compile with visibility flags:\n\n# - default for classes annotated with KUDU_EXPORT.\n\n# - hidden for classes annotated with KUDU_NO_EXPORT.\n\n# - hidden for everything else.\n",
+        "Line" : 639,
+        "CharPositionInLine" : 2
+      },
+      "82" : {
+        "Text" : "# Exported variants are either static archives that will be linked to a shared\n\n# object, or shared objects. Either way, -fPIC is needed.\n",
+        "Line" : 654,
+        "CharPositionInLine" : 2
+      },
+      "83" : {
+        "Text" : "# We need to remove some definitions previously added at directory scope.\n\n# There doesn't appear to be a good way to do this in cmake, so we do it via\n\n# the compiler with -U (e.g. \"-UFOO\" means \"undefine the FOO definition\").\n\n# Adding insult to injury, the COMPILE_DEFINITIONS property adds a -D prefix\n\n# to anything passed into it, so we're forced to handle the removal via\n\n# COMPILE_FLAGS, which, lucky for us, is emitted on the command line after\n\n# COMPILE_DEFINITIONS.\n",
+        "Line" : 660,
+        "CharPositionInLine" : 2
+      },
+      "84" : {
+        "Text" : "# Exported variants need KUDU_EXPORT definitions to take effect.\n",
+        "Line" : 668,
+        "CharPositionInLine" : 2
+      },
+      "85" : {
+        "Text" : "# Exported variants may not use tcmalloc.\n",
+        "Line" : 671,
+        "CharPositionInLine" : 2
+      },
+      "86" : {
+        "Text" : "# Exported variants should conform to the C++03 ABI, which doesn't\n\n# include sized deallocation (new in C++14). This reverses the setting from\n\n# non-exported (default) flags.\n",
+        "Line" : 674,
+        "CharPositionInLine" : 2
+      },
+      "87" : {
+        "Text" : "# Note: this is retained by the set_target_properties() call below.\n",
+        "Line" : 678,
+        "CharPositionInLine" : 4
+      },
+      "88" : {
+        "Text" : "# Handle EXPORTED_OUTPUT_NAME and EXPORTED_OUTPUT_DIRECTORY.\n",
+        "Line" : 686,
+        "CharPositionInLine" : 2
+      },
+      "89" : {
+        "Text" : "# Set up exported variant dependent targets.\n\n#\n\n# Every linked dependency is suffixed with \"_exported\". This is fine; the\n\n# exported target graph is expected to be complete, and ADD_THIRDPARTY_LIB\n\n# will provide an \"exported variant\" for each third party target.\n",
+        "Line" : 696,
+        "CharPositionInLine" : 2
+      },
+      "90" : {
+        "Text" : "############################################################\n\n# Testing\n\n############################################################\n",
+        "Line" : 715,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# Add a new binary that is compiled just like a unit test but is not executed\n\n# by or registered with \"ctest\". Useful for writing tests that use the Google\n\n# Test infrastructure but cannot or should not be run pre-commit.\n",
+        "Line" : 719,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "# Add a new test case, with or without an executable that should be built.\n\n#\n\n# REL_TEST_NAME is the name of the test. It may be a single component\n\n# (e.g. monotime-test) or contain additional components (e.g.\n\n# net/net_util-test). Either way, the last component must be a globally\n\n# unique name.\n\n#\n\n# Additional optional arguments:\n\n#\n\n#   TIMEOUT <secs>\n\n#       Sets a timeout for running this test.\n\n#\n\n#       NOTE: this only affects the test timeout when run via 'ctest'.\n\n#       Jenkins builds typically execute tests using dist-test, and that\n\n#       does not respect these timeouts. If a test suite is long enough\n\n#       to require a bumped timeout, consider enabling sharding of the\n\n#       test (see below).\n\n#\n\n#   NUM_SHARDS <num shards>\n\n#       Sets the number of shards used for running this test.\n\n#\n\n#       This configuration splits up the test cases within the binary\n\n#       into several separate shards. Each shard becomes a separate\n\n#       test case when run by ctest or when submitted for distributed testing.\n\n#       This should be used whenever a test binary is long-running and\n\n#       consists of many separate test cases.\n\n#\n\n#       NOTE: sharding is still recommended even for tests with RUN_SERIAL\n\n#       or RESOURCE_LOCK properties. Even though the shards cannot run in\n\n#       parallel on a single machine using ctest, they will still run in\n\n#       parallel across separate machines using dist-test.\n\n#\n\n#   PROCESSORS <num processors>\n\n#   RUN_SERIAL true\n\n#       These built-in CMake properties should be used when a test is\n\n#       a heavy consumer of CPU.\n\n#\n\n#       The PROCESSORS flag allows ctest to ensure that tests are only\n\n#       scheduled in parallel when an appropriate number of cores are\n\n#       available. The default is to assume that a test uses a single core\n\n#       (i.e. equivalent to PROCESSORS 1).\n\n#\n\n#       RUN_SERIAL ensures that the test does not run in parallel with any\n\n#       other test. This should be used for stress tests which start many\n\n#       threads and attempt to monopolize the machine.\n\n#\n\n#       In order to determine an appropriate setting, you can run the test\n\n#       with the KUDU_MEASURE_TEST_CPU_CONSUMPTION environment variable\n\n#       set. See build-support/run-test.sh for more details.\n\n#\n\n#   DATA_FILES <file1> <file2> ...\n\n#       Specify data files that should be copied into the build directory\n\n#       next to test executable. These will also be automatically uploaded\n\n#       to the dist-test environment.\n\n#\n\n#       If the file is in a directory, an equivalent directory path will\n\n#       be made in the build directory. For example, 'testdata/foo' will\n\n#       ensure that an equivalent directory 'testdata/' is made in the\n\n#       build directory.\n\n#\n\n# Any other arguments will be passed to set_tests_properties().\n",
+        "Line" : 728,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# Parse out properties for which we have special handling.\n",
+        "Line" : 790,
+        "CharPositionInLine" : 2
+      },
+      "94" : {
+        "Text" : "# Default to 15 minutes.\n\n# NOTE: this should be kept in sync with the default value of KUDU_TEST_TIMEOUT\n\n# in build-support/run-test.sh\n",
+        "Line" : 796,
+        "CharPositionInLine" : 4
+      },
+      "95" : {
+        "Text" : "# Any unrecognized arguments go into ${ARG_UNPARSED_ARGUMENTS}, which we forward\n\n# along as properties down below.\n",
+        "Line" : 805,
+        "CharPositionInLine" : 2
+      },
+      "96" : {
+        "Text" : "# This test has a corresponding .cc file, set it up as an executable.\n",
+        "Line" : 815,
+        "CharPositionInLine" : 4
+      },
+      "97" : {
+        "Text" : "# No executable, just invoke the test (probably a script) directly.\n",
+        "Line" : 819,
+        "CharPositionInLine" : 4
+      },
+      "98" : {
+        "Text" : "# Ideally this would run only when the test is built, not when cmake runs,\n\n# but add_test() doesn't yield a target (if it did, that target could depend\n\n# on an add_custom_command() that copies the test file into place).\n",
+        "Line" : 823,
+        "CharPositionInLine" : 4
+      },
+      "99" : {
+        "Text" : "# Copy data files into the build directory.\n",
+        "Line" : 832,
+        "CharPositionInLine" : 2
+      },
+      "100" : {
+        "Text" : "# If there is a symlink there, replace it with a copy. This is to\n\n# work around issues with incremental builds where earlier build\n\n# setups had used symlinks into the build directory instead of\n\n# copies.\n",
+        "Line" : 836,
+        "CharPositionInLine" : 4
+      },
+      "101" : {
+        "Text" : "# Copy with read-only permissions since tests should not\n\n# modify the data files in place.\n",
+        "Line" : 844,
+        "CharPositionInLine" : 6
+      },
+      "102" : {
+        "Text" : "# Only name the targets with a '.<shard>' if the test is sharded.\n",
+        "Line" : 853,
+        "CharPositionInLine" : 4
+      },
+      "103" : {
+        "Text" : "# Set the ctest timeout to be a bit longer than the timeout we pass to\n\n# our test wrapper. This gives the test wrapper some opportunity to do\n\n# things like dump stacks, compress the log, etc.\n",
+        "Line" : 865,
+        "CharPositionInLine" : 4
+      },
+      "104" : {
+        "Text" : "# Add the configured timeout to the environment for the test wrapper.\n",
+        "Line" : 870,
+        "CharPositionInLine" : 4
+      },
+      "105" : {
+        "Text" : "# The only way we can pass information to dist-test is through the environment.\n\n# So, use a comma-delimited environment variable to pass the list of data files\n\n# that need to be uploaded.\n",
+        "Line" : 879,
+        "CharPositionInLine" : 4
+      },
+      "106" : {
+        "Text" : "# A wrapper for add_dependencies() that is compatible with NO_TESTS.\n",
+        "Line" : 891,
+        "CharPositionInLine" : 0
+      },
+      "107" : {
+        "Text" : "############################################################\n\n# Dependencies\n\n############################################################\n",
+        "Line" : 903,
+        "CharPositionInLine" : 0
+      },
+      "108" : {
+        "Text" : "# Set up an \"exported variant\" for this thirdparty library (see \"Visibility\"\n\n# above). It's the same as the real target, just with an \"_exported\" suffix.\n\n# We prefer the static archive if it exists (as it's akin to an \"internal\"\n\n# library), but we'll settle for the shared object if we must.\n\n#\n\n# A shared object exported variant will force any \"leaf\" library that\n\n# transitively depends on it to also depend on it at runtime; this is\n\n# desirable for some libraries (e.g. cyrus_sasl).\n",
+        "Line" : 935,
+        "CharPositionInLine" : 2
+      },
+      "109" : {
+        "Text" : "# Look in thirdparty prefix paths before anywhere else for system dependencies.\n",
+        "Line" : 965,
+        "CharPositionInLine" : 0
+      },
+      "110" : {
+        "Text" : "## Cyrus SASL\n",
+        "Line" : 971,
+        "CharPositionInLine" : 0
+      },
+      "111" : {
+        "Text" : "## GSSAPI\n",
+        "Line" : 978,
+        "CharPositionInLine" : 0
+      },
+      "112" : {
+        "Text" : "## GLog\n",
+        "Line" : 985,
+        "CharPositionInLine" : 0
+      },
+      "113" : {
+        "Text" : "## libunwind (dependent of glog)\n\n## Doesn't build on OSX.\n",
+        "Line" : 993,
+        "CharPositionInLine" : 0
+      },
+      "114" : {
+        "Text" : "## GFlags\n",
+        "Line" : 1004,
+        "CharPositionInLine" : 0
+      },
+      "115" : {
+        "Text" : "## GMock\n",
+        "Line" : 1012,
+        "CharPositionInLine" : 0
+      },
+      "116" : {
+        "Text" : "## Protobuf\n",
+        "Line" : 1019,
+        "CharPositionInLine" : 0
+      },
+      "117" : {
+        "Text" : "## Thrift\n",
+        "Line" : 1031,
+        "CharPositionInLine" : 0
+      },
+      "118" : {
+        "Text" : "# The mini-HMS relies on JAVA_HOME being set in order to run the HMS, and\n\n# JDK 1.7 or later for compiling the Kudu metastore plugin.\n",
+        "Line" : 1038,
+        "CharPositionInLine" : 0
+      },
+      "119" : {
+        "Text" : "# Defines the add_jar() CMake command.\n",
+        "Line" : 1042,
+        "CharPositionInLine" : 0
+      },
+      "120" : {
+        "Text" : "## Snappy\n",
+        "Line" : 1045,
+        "CharPositionInLine" : 0
+      },
+      "121" : {
+        "Text" : "## Libev\n",
+        "Line" : 1052,
+        "CharPositionInLine" : 0
+      },
+      "122" : {
+        "Text" : "## LZ4\n",
+        "Line" : 1059,
+        "CharPositionInLine" : 0
+      },
+      "123" : {
+        "Text" : "## Bitshuffle\n",
+        "Line" : 1064,
+        "CharPositionInLine" : 0
+      },
+      "124" : {
+        "Text" : "## ZLib\n",
+        "Line" : 1069,
+        "CharPositionInLine" : 0
+      },
+      "125" : {
+        "Text" : "## Squeasel\n",
+        "Line" : 1076,
+        "CharPositionInLine" : 0
+      },
+      "126" : {
+        "Text" : "## Mustache\n",
+        "Line" : 1082,
+        "CharPositionInLine" : 0
+      },
+      "127" : {
+        "Text" : "## OpenSSL\n\n##\n\n## Version 1.0.0 or higher is required because we are using the following\n\n## features introduced started OpenSSL 1.0.0:\n\n##   * The new breed of functions to work with the X509_EXTENSION stack\n\n##   * automatic usage of &errno as a safe per-thread identifier\n\n##\n\n## If having multiple OpenSSL libraries installed on the system,\n\n## use the OPENSSL_ROOT_DIR cmake flag to specify where to look for the proper\n\n## version of the OpenSSL framework/library, e.g.\n\n##\n\n##   cmake -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl ...\n\n##\n\n## If no such OPENSSL_ROOT_DIR is specified, and we see that there is an OpenSSL\n\n## binary in thirdparty (deposited there by thirdparty/install-openssl-el6-workaround.sh)\n\n## then we'll use that one. See that script for more information.\n",
+        "Line" : 1088,
+        "CharPositionInLine" : 0
+      },
+      "128" : {
+        "Text" : "## Kerberos\n",
+        "Line" : 1115,
+        "CharPositionInLine" : 0
+      },
+      "129" : {
+        "Text" : "## Google PerfTools\n\n##\n\n## Disabled with TSAN/ASAN as well as with gold+dynamic linking (see\n\n## earlier comment).\n",
+        "Line" : 1121,
+        "CharPositionInLine" : 0
+      },
+      "130" : {
+        "Text" : "# Required pmem libraries\n",
+        "Line" : 1140,
+        "CharPositionInLine" : 0
+      },
+      "131" : {
+        "Text" : "## curl\n",
+        "Line" : 1161,
+        "CharPositionInLine" : 0
+      },
+      "132" : {
+        "Text" : "## crcutil\n",
+        "Line" : 1164,
+        "CharPositionInLine" : 0
+      },
+      "133" : {
+        "Text" : "## breakpad\n",
+        "Line" : 1171,
+        "CharPositionInLine" : 0
+      },
+      "134" : {
+        "Text" : "## llvm\n\n# Note that llvm has a unique cmake setup. See kudu/codegen/CMakeLists.txt\n\n# for details.\n",
+        "Line" : 1180,
+        "CharPositionInLine" : 0
+      },
+      "135" : {
+        "Text" : "## librt\n",
+        "Line" : 1190,
+        "CharPositionInLine" : 0
+      },
+      "136" : {
+        "Text" : "## Kerberos binaries (kinit, kadmin, etc).\n",
+        "Line" : 1207,
+        "CharPositionInLine" : 0
+      },
+      "137" : {
+        "Text" : "## We rely on the Kerberos binaries for testing security.\n",
+        "Line" : 1209,
+        "CharPositionInLine" : 2
+      },
+      "138" : {
+        "Text" : "# The tests as well as any binaries which are run as subprocesses by tests (eg tserver,\n\n# master, and the 'kudu' CLI tool) need to link this in. We have to set it\n\n# here so it's accessible by all targets.\n\n#\n\n# OSX doesn't support the linker flag below, but also has a new enough krb5 that the\n\n# override library isn't necessary.\n",
+        "Line" : 1213,
+        "CharPositionInLine" : 0
+      },
+      "139" : {
+        "Text" : "## Boost\n",
+        "Line" : 1223,
+        "CharPositionInLine" : 0
+      },
+      "140" : {
+        "Text" : "# We use a custom cmake module and not cmake's FindBoost.\n\n# see: cmake_modules/FindKuduBoost.cmake\n",
+        "Line" : 1225,
+        "CharPositionInLine" : 0
+      },
+      "141" : {
+        "Text" : "############################################################\n\n# Enable sized deallocation where supported.\n\n# This happens down here instead of up with the rest of the\n\n# compiler options since we only do this when tcmalloc was\n\n# found and enabled.\n\n############################################################\n",
+        "Line" : 1234,
+        "CharPositionInLine" : 0
+      },
+      "142" : {
+        "Text" : "# On OS X 10.12 (El Capitan), sized-deallocation symbols are missing\n\n# in the libc++ library for some reason.\n",
+        "Line" : 1241,
+        "CharPositionInLine" : 0
+      },
+      "143" : {
+        "Text" : "############################################################\n\n# Linker setup\n\n############################################################\n",
+        "Line" : 1273,
+        "CharPositionInLine" : 0
+      },
+      "144" : {
+        "Text" : "# Use \"thin archives\" for our static libraries. We only use static libraries\n\n# internal to our own build, so thin ones are just as good and much smaller.\n",
+        "Line" : 1279,
+        "CharPositionInLine" : 0
+      },
+      "145" : {
+        "Text" : "############################################################\n\n# \"make ctags\" target\n\n############################################################\n",
+        "Line" : 1288,
+        "CharPositionInLine" : 0
+      },
+      "146" : {
+        "Text" : "############################################################\n\n# \"make etags\" target\n\n#\n\n# Requires the exuberant-ctags system package.\n\n############################################################\n",
+        "Line" : 1297,
+        "CharPositionInLine" : 0
+      },
+      "147" : {
+        "Text" : "############################################################\n\n# \"make cscope\" target\n\n############################################################\n",
+        "Line" : 1310,
+        "CharPositionInLine" : 0
+      },
+      "148" : {
+        "Text" : "############################################################\n\n# \"make lint\" target\n\n############################################################\n",
+        "Line" : 1322,
+        "CharPositionInLine" : 0
+      },
+      "149" : {
+        "Text" : "# Full lint\n",
+        "Line" : 1326,
+        "CharPositionInLine" : 2
+      },
+      "150" : {
+        "Text" : "# Incremental lint - only checks files changed since the last\n\n# merged upstream commit\n",
+        "Line" : 1328,
+        "CharPositionInLine" : 2
+      },
+      "151" : {
+        "Text" : "############################################################\n\n# \"make pb-gen\": generate all protobuf source/header files\n\n############################################################\n",
+        "Line" : 1333,
+        "CharPositionInLine" : 0
+      },
+      "152" : {
+        "Text" : "############################################################\n\n# \"make krpc-gen\": generate all KRPC source/header files\n\n############################################################\n",
+        "Line" : 1340,
+        "CharPositionInLine" : 0
+      },
+      "153" : {
+        "Text" : "############################################################\n\n# \"make iwyu\" and \"make iwyu-fix\" target\n\n############################################################\n",
+        "Line" : 1347,
+        "CharPositionInLine" : 0
+      },
+      "154" : {
+        "Text" : "############################################################\n\n# \"make tidy\" target\n\n############################################################\n",
+        "Line" : 1359,
+        "CharPositionInLine" : 0
+      },
+      "155" : {
+        "Text" : "############################################################\n\n# \"make docs\" target\n\n############################################################\n",
+        "Line" : 1367,
+        "CharPositionInLine" : 0
+      },
+      "156" : {
+        "Text" : "# The docs output HTML will end up in a docs/ subdir.\n",
+        "Line" : 1372,
+        "CharPositionInLine" : 4
+      },
+      "157" : {
+        "Text" : "############################################################\n\n# \"make doxygen\" target\n\n# Needs the doxygen system package to work.\n\n############################################################\n",
+        "Line" : 1377,
+        "CharPositionInLine" : 0
+      },
+      "158" : {
+        "Text" : "# NOTE: DOXY_CLIENT_API_OUTDIR and DOXY_CLIENT_API_FOOTER are used\n\n#       in client_api.doxy.in template file\n",
+        "Line" : 1393,
+        "CharPositionInLine" : 4
+      },
+      "159" : {
+        "Text" : "# If doxygen is present, generate doxygen documentation along with 'docs'.\n",
+        "Line" : 1409,
+        "CharPositionInLine" : 4
+      },
+      "160" : {
+        "Text" : "############################################################\n\n# \"make site\" target\n\n#\n\n# NOTE: It's supposed find_package(Doxygen) has already\n\n# been run at this point.\n\n############################################################\n",
+        "Line" : 1414,
+        "CharPositionInLine" : 0
+      },
+      "161" : {
+        "Text" : "############################################################\n\n# Subdirectories\n\n############################################################\n",
+        "Line" : 1430,
+        "CharPositionInLine" : 0
+      },
+      "162" : {
+        "Text" : "# Google util libraries borrowed from supersonic, tcmalloc, Chromium, etc.\n",
+        "Line" : 1443,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 163
+    },
+    "cmake_modules/CompilerInfo.cmake" : {
+      "ObjectId" : "ff5f7899d1c6e9e02798b40ff5e5fa5fd64859f1",
+      "LastModified" : "2017-09-21T20:15:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# Sets COMPILER_FAMILY to 'clang' or 'gcc'\n\n# Sets COMPILER_VERSION to the version\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# clang on Linux and Mac OS X before 10.9\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# clang on Mac OS X 10.9 and later\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# clang on Mac OS X, XCode 7.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# clang on Mac OS X, XCode 8.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# clang on Mac OS X, XCode 9.\n\n#\n\n# TODO(dan): 4.0.0svn is just a guess, because Apple has not (as of the time of\n\n# writing) released the sources [1]. [2] and [3] are good resources for\n\n# determining the upstream Clang version as well.\n\n#\n\n# [1]: https://opensource.apple.com/\n\n# [2]: https://gist.github.com/yamaya/2924292\n\n# [3]: https://gist.github.com/epipping/ef8b02b0cfaec4a5ebf3a57092145a3f\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# gcc\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# gcc (and some varieties of clang) mention the path prefix where system headers\n\n# and libraries are located.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake_modules/FindBitshuffle.cmake" : {
+      "ObjectId" : "8caae640798862d8b6d754aee0218933010d71aa",
+      "LastModified" : "2016-02-17T00:03:16Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find Bitshuffle (bitshuffle.h, bitshuffle.a)\n\n# This module defines\n\n#  BITSHUFFLE_INCLUDE_DIR, directory containing headers\n\n#  BITSHUFFLE_STATIC_LIB, path to bitshuffle's static library\n\n#  BITSHUFFLE_FOUND, whether bitshuffle has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindBreakpadClient.cmake" : {
+      "ObjectId" : "b79db5c8b55c4a7ef1a57ab0cc521f2322756269",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find libbreakpad_client (exception_handler.h, libbreakpad_client.a)\n\n# This module defines\n\n#  BREAKPAD_CLIENT_INCLUDE_DIR, directory containing headers\n\n#  BREAKPAD_CLIENT_STATIC_LIB, path to libbreakpad_client's static library\n\n#  BREAKPAD_CLIENT_SHARED_LIB, path to libbreakpad_client's shared library\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake_modules/FindCrcutil.cmake" : {
+      "ObjectId" : "6866348759d1fc8a34c7f108d2342d371aeec092",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find CRCUTIL (crcutil/include.h, libcrcutil.a)\n\n# This module defines\n\n#  CRCUTIL_INCLUDE_DIR, directory containing headers\n\n#  CRCUTIL_SHARED_LIB, path to libcrcutil's shared library\n\n#  CRCUTIL_STATIC_LIB, path to libcrcutil's static library\n\n#  CRCUTIL_FOUND, whether crcutil has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake_modules/FindCyrusSASL.cmake" : {
+      "ObjectId" : "8f92cf53a95950e0cbff7c361b3bfd2b7adeb78e",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# - Find Cyrus SASL (sasl.h, libsasl2.so)\n\n#\n\n# This module defines\n\n#  CYRUS_SASL_INCLUDE_DIR, directory containing headers\n\n#  CYRUS_SASL_SHARED_LIB, path to Cyrus SASL's shared library\n\n#  CYRUS_SASL_FOUND, whether Cyrus SASL and its plugins have been found\n\n#\n\n# N.B: we do _not_ include sasl in thirdparty, for a fairly subtle reason. The\n\n# TLDR version is that newer versions of cyrus-sasl (>=2.1.26) have a bug fix\n\n# for https://bugzilla.cyrusimap.org/show_bug.cgi?id=3590, but that bug fix\n\n# relied on a change both on the plugin side and on the library side. If you\n\n# then try to run the new version of sasl (e.g from our thirdparty tree) with\n\n# an older version of a plugin (eg from RHEL6 install), you'll get a SASL_NOMECH\n\n# error due to this bug.\n\n#\n\n# In practice, Cyrus-SASL is so commonly used and generally non-ABI-breaking that\n\n# we should be OK to depend on the host installation.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake_modules/FindGFlags.cmake" : {
+      "ObjectId" : "acfbccd2ef81f6372440eb1051cbfa18c2b207a4",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find GFLAGS (gflags.h, libgflags.a, libgflags.so, and libgflags.so.0)\n\n# This module defines\n\n#  GFLAGS_INCLUDE_DIR, directory containing headers\n\n#  GFLAGS_SHARED_LIB, path to libgflags shared library\n\n#  GFLAGS_STATIC_LIB, path to libgflags static library\n\n#  GFLAGS_FOUND, whether gflags has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindGLog.cmake" : {
+      "ObjectId" : "c9876b7afbe386e241ca283076d3b7912163e4c9",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find GLOG (logging.h, libglog.a, libglog.so, and libglog.so.0)\n\n# This module defines\n\n#  GLOG_INCLUDE_DIR, directory containing headers\n\n#  GLOG_SHARED_LIB, path to libglog's shared library\n\n#  GLOG_STATIC_LIB, path to libglog's static library\n\n#  GLOG_FOUND, whether glog has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindGMock.cmake" : {
+      "ObjectId" : "7b6eb703d78be78c9d6b24c91cadb3e5650a73a0",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2009-2010 Volvox Development Team\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in\n\n# all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n\n# THE SOFTWARE.\n\n#\n\n# Author: Konstantin Lepa <konstantin.lepa@gmail.com>\n\n#\n\n# Find the Google Mock Framework, heavily cribbed from FindGTest.cmake.\n\n# gmock ships a copy of gtest and bundles it in its libraries, so this also\n\n# finds the gtest headers.\n\n#\n\n# This module defines\n\n# GMOCK_INCLUDE_DIR, where to find gmock include files, etc.\n\n# GTEST_INCLUDE_DIR, where to find gtest include files\n\n# GMOCK_SHARED_LIBRARY, Location of libgmock's shared library\n\n# GMOCK_STATIC_LIBRARY, Location of libgmock's static library\n\n# GMOCK_FOUND, If false, do not try to use gmock.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake_modules/FindGPerf.cmake" : {
+      "ObjectId" : "d3ed697b07ec34f01ddaa1f0d8b3bbc1eccb350e",
+      "LastModified" : "2017-02-08T22:42:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# -*- cmake -*-\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# - Find Google perftools\n\n# Find the Google perftools includes and libraries\n\n# This module defines\n\n#  GOOGLE_PERFTOOLS_INCLUDE_DIR, where to find heap-profiler.h, etc.\n\n#  GOOGLE_PERFTOOLS_FOUND, If false, do not try to use Google perftools.\n\n# also defined for general use are\n\n#  TCMALLOC_SHARED_LIB, path to tcmalloc's shared library\n\n#  TCMALLOC_STATIC_LIB, path to tcmalloc's static library\n\n#  PROFILER_SHARED_LIB, path to libprofiler's shared library\n\n#  PROFILER_STATIC_LIB, path to libprofiler's static library\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindGSSAPI.cmake" : {
+      "ObjectId" : "19c0691d35af3db8a83a9163122c43a901d5eabe",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# - Find GSSAPI SASL (gssapi.h, gssapi_krb5.so)\n\n#\n\n# This module defines\n\n#  GSSAPI_INCLUDE_DIR, directory containing headers\n\n#  GSSAPI_SHARED_LIB, path to GSSAPI's shared library\n\n#  GSSAPI_FOUND, whether GSSAPI has been found\n\n#\n\n# N.B: we do _not_ include GSSAPI in thirdparty. In practice, GSSAPI (like\n\n# Cyrus-SASL) is so commonly used and generally non-ABI-breaking that we should\n\n# be OK to depend on the host installation.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake_modules/FindGTest.cmake" : {
+      "ObjectId" : "06fc02e8901dd037ea05667a9dc271d492d5f6cb",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) 2009-2010 Volvox Development Team\n\n#\n\n# Permission is hereby granted, free of charge, to any person obtaining a copy\n\n# of this software and associated documentation files (the \"Software\"), to deal\n\n# in the Software without restriction, including without limitation the rights\n\n# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\n# copies of the Software, and to permit persons to whom the Software is\n\n# furnished to do so, subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be included in\n\n# all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\n# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\n# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\n# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\n# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\n# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n\n# THE SOFTWARE.\n\n#\n\n# Author: Konstantin Lepa <konstantin.lepa@gmail.com>\n\n#\n\n# Find the Google Test Framework\n\n#\n\n# This module defines\n\n# GTEST_INCLUDE_DIR, where to find gtest include files, etc.\n\n# GTest_FOUND, If false, do not try to use gtest.\n\n# GTEST_STATIC_LIBRARY, Location of libgtest.a\n\n# GTEST_SHARED_LIBRARY, Location of libttest's shared library\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# also defined, but not for general use are\n\n# GTEST_LIBRARY, where to find the GTest library.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Kudu does not use the gtest_main library (we have kudu_test_main).\n\n#find_library(GTEST_MAIN_LIBRARY_PATH\n\n#  NAMES gtest_main\n\n#  PATHS GTEST_SEARCH_PATH\n\n#        NO_DEFAULT_PATH\n\n#  DOC   \"Google's framework for writing C++ tests (gtest_main)\"\n\n#)\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindJavaHome.cmake" : {
+      "ObjectId" : "c3b8cf483729708d273e5411ebe412c586f1b33c",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This is an adaptation of Bigtop's bigtop-detect-javahome:\n\n# https://github.com/apache/bigtop/blob/38e1571b2f73bbfa6ab0c01a689fae967b8399d9/bigtop-packages/src/common/bigtop-utils/bigtop-detect-javahome\n\n# (this is the last version to support JDK7).\n\n#\n\n# This module defines\n\n#  JAVA_HOME, directory containing a Java installation\n\n#  JAVA_HOME_FOUND, whether JAVA_HOME has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use the 'java_home' finder on macOS.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindKRPC.cmake" : {
+      "ObjectId" : "35e20d639126d2d320008640dc040a72aa0f08f7",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# Kudu RPC generator support\n\n#########\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Generate the KRPC files for a given .proto file.\n\n#\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Ensure that the protobuf file is within the source root.\n\n# This is a requirement of protoc.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Used to find built-in .proto files (e.g. FileDescriptorProto)\n",
+        "Line" : 90,
+        "CharPositionInLine" : 11
+      },
+      "4" : {
+        "Text" : "# This custom target enforces that there's just one invocation of protoc\n\n# when there are multiple consumers of the generated files. The target name\n\n# must be unique; adding parts of the filename helps ensure this.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# The 'krpc-gen' is a high-level target in $KUDU_ROOT/CMakeLists.txt to\n\n# generate all KRPC proxy/service stub files.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "cmake_modules/FindKerberos.cmake" : {
+      "ObjectId" : "197a30c68a5eb326b76f81f7a1afc8db4a67deba",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Find the native Kerberos includes and library\n\n#\n\n#  KERBEROS_INCLUDE_DIR  - Where to find krb5.h, etc.\n\n#  KERBEROS_LIBRARY      - List of libraries when using krb5.\n\n#  KERBEROS_FOUND        - True if krb5 found.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set KERBEROS_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindKerberosPrograms.cmake" : {
+      "ObjectId" : "27b181a48145dabcfa6641b41f9782f34baae443",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find Kerberos Binaries\n\n# This module ensures that the Kerberos binaries depended on by tests are\n\n# present on the system.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Linux install location.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 15
+      },
+      "3" : {
+        "Text" : "# Homebrew install location.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 15
+      },
+      "4" : {
+        "Text" : "# Macports install location.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 15
+      },
+      "5" : {
+        "Text" : "# SLES\n",
+        "Line" : 33,
+        "CharPositionInLine" : 15
+      },
+      "CommentCount" : 6
+    },
+    "cmake_modules/FindKuduBoost.cmake" : {
+      "ObjectId" : "3b1cea4e817cf3a48b221f8747057c5ac8ef6bbc",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# Find Boost's libs (currently date_time) and makes sure boost includes are available.\n\n#\n\n# We use a custom cmake module instead of cmake's FindBoost as otherwise we'd have to:\n\n# - Run cmake's FindBoost twice to make sure it picks up the shared and static version of the lib.\n\n# - Have a check to make sure we're not picking up the system's boost.\n\n#\n\n# Less (and simpler) cmake lines are required than if we were to work around cmake's FindBoost\n\n# behavior.\n\n#\n\n# This module defines\n\n#  BOOST_DATE_TIME_SHARED_LIB, path to boost's date_time shared library\n\n#  BOOST_DATE_TIME_STATIC_LIB, path to boost's date_time static library\n\n#  BOOST_INCLUDE_DIR, patch to boost's headers\n\n#  BOOST_DATE_TIME_FOUND, whether boost has been found\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake_modules/FindLibEv.cmake" : {
+      "ObjectId" : "c2cfbd31b648fd3374a5790aaf61ed2a0f4d0bba",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find LIBEV (ev++.h, libev.a, and libev.so)\n\n# This module defines\n\n#  LIBEV_INCLUDE_DIR, directory containing headers\n\n#  LIBEV_SHARED_LIB, path to libev's shared library\n\n#  LIBEV_STATIC_LIB, path to libev's static library\n\n#  LIBEV_FOUND, whether libev has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindLibUnwind.cmake" : {
+      "ObjectId" : "b6a8622aa043bbee750fd6d558e180b6ba36dfb9",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# - Find libunwind (libunwind.h, libunwind.so)\n\n#\n\n# This module defines\n\n#  UNWIND_INCLUDE_DIR, directory containing headers\n\n#  UNWIND_SHARED_LIB, path to libunwind's shared library\n\n#  UNWIND_STATIC_LIB, path to libunwind's static library\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake_modules/FindLz4.cmake" : {
+      "ObjectId" : "362d493f7eed0c1e785415c1c0ceccbd91b1de34",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find LZ4 (lz4.h, liblz4.a)\n\n# This module defines\n\n#  LZ4_INCLUDE_DIR, directory containing headers\n\n#  LZ4_STATIC_LIB, path to liblz4's static library\n\n#  LZ4_FOUND, whether lz4 has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindMustache.cmake" : {
+      "ObjectId" : "e1e38f735b1d3709e9ea7d31e85b0c18c3fcf676",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n# - Find Mustache (mustache.h, libmustache.a)\n\n# This module defines\n\n#  MUSTACHE_INCLUDE_DIR, directory containing headers\n\n#  MUSTACHE_STATIC_LIB, path to libmustache.a\n\n#  MUSTACHE_FOUND, whether mustache has been found\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake_modules/FindPmem.cmake" : {
+      "ObjectId" : "2270e659a49a8f2a3d193b98b3aeb078ca7e308f",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find Required PMEM libraries (libvmem, libpmem, libpmemobj)\n\n# This module defines\n\n#  PMEM_INCLUDE_DIR, directory containing headers\n\n#  XXX_STATIC_LIBS, path to *.a\n\n#  XXX_SHARED_LIBS, path to *.so shared library\n\n#  PMEM_FOUND, whether PMEM libraries have been found\n\n#  PMEMOBJ_DEPS, dependencies required for using libpmemobj\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake_modules/FindProtobuf.cmake" : {
+      "ObjectId" : "08332ea265e7adf290775d57527e2a51ca3b675a",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n#=============================================================================\n\n# This file is heavily modified/rewritten from FindProtobuf.cmake from the\n\n# CMake project:\n\n#\n\n#   Copyright 2011 Kirill A. Korinskiy <catap@catap.ru>\n\n#   Copyright 2009 Kitware, Inc.\n\n#   Copyright 2009 Philip Lowman <philip@yhbt.com>\n\n#   Copyright 2008 Esben Mose Hansen, Ange Optimization ApS\n\n#\n\n#   Distributed under the OSI-approved BSD License (the \"License\"):\n\n#\n\n#   CMake - Cross Platform Makefile Generator\n\n#   Copyright 2000-2015 Kitware, Inc.\n\n#   Copyright 2000-2011 Insight Software Consortium\n\n#   All rights reserved.\n\n#\n\n#   Redistribution and use in source and binary forms, with or without\n\n#   modification, are permitted provided that the following conditions\n\n#   are met:\n\n#\n\n#   * Redistributions of source code must retain the above copyright\n\n#     notice, this list of conditions and the following disclaimer.\n\n#\n\n#   * Redistributions in binary form must reproduce the above copyright\n\n#     notice, this list of conditions and the following disclaimer in the\n\n#     documentation and/or other materials provided with the distribution.\n\n#\n\n#   * Neither the names of Kitware, Inc., the Insight Software Consortium,\n\n#     nor the names of their contributors may be used to endorse or promote\n\n#     products derived from this software without specific prior written\n\n#     permission.\n\n#\n\n#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\n#   \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n\n#   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n\n#   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n\n#   HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n\n#   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n\n#   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n#   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n#   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n#   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\n#   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#=============================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########\n\n# Local rewrite of the protobuf support in cmake.\n\n#\n\n# Supports cross-module protobuf dependencies and protobufs inside\n\n# packages much better than the one built into cmake.\n\n#########\n\n#\n\n# Locate and configure the Google Protocol Buffers library.\n\n# Defines the following variables:\n\n#\n\n#   PROTOBUF_INCLUDE_DIR - the include directory for protocol buffers\n\n#   PROTOBUF_SHARED_LIBRARY - path to protobuf's shared library\n\n#   PROTOBUF_STATIC_LIBRARY - path to protobuf's static library\n\n#   PROTOBUF_PROTOC_SHARED_LIBRARY - path to protoc's shared library\n\n#   PROTOBUF_PROTOC_STATIC_LIBRARY - path to protoc's static library\n\n#   PROTOBUF_PROTOC_EXECUTABLE - the protoc compiler\n\n#   PROTOBUF_FOUND - whether the Protocol Buffers library has been found\n\n#\n\n#  ====================================================================\n\n#  Example:\n\n#\n\n#   find_package(Protobuf REQUIRED)\n\n#   include_directories(${PROTOBUF_INCLUDE_DIR})\n\n#\n\n#   include_directories(${CMAKE_CURRENT_BINARY_DIR})\n\n#   PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS PROTO_TGTS\n\n#     [SOURCE_ROOT <root from which source is found>]\n\n#     [BINARY_ROOT <root into which binaries are built>]\n\n#     PROTO_FILES foo.proto)\n\n#   add_executable(bar bar.cc ${PROTO_SRCS} ${PROTO_HDRS})\n\n#   target_link_libraries(bar ${PROTOBUF_SHARED_LIBRARY})\n\n#\n\n# NOTE: You may need to link against pthreads, depending\n\n# on the platform.\n\n#  ====================================================================\n\n#\n\n# PROTOBUF_GENERATE_CPP (public function)\n\n#   SRCS = Variable to define with autogenerated\n\n#          source files\n\n#   HDRS = Variable to define with autogenerated\n\n#          header files\n\n#   TGTS = Variable to define with autogenerated\n\n#          custom targets; if SRCS/HDRS need to be used in multiple\n\n#          libraries, those libraries should depend on these targets\n\n#          in order to \"serialize\" the protoc invocations\n\n#  ====================================================================\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Ensure that the protobuf file is within the source root.\n\n# This is a requirement of protoc.\n",
+        "Line" : 147,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Used to find built-in .proto files (e.g. FileDescriptorProto)\n",
+        "Line" : 170,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# This custom target enforces that there's just one invocation of protoc\n\n# when there are multiple consumers of the generated files. The target name\n\n# must be unique; adding parts of the filename helps ensure this.\n",
+        "Line" : 177,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# The 'pb-gen' is a high-level target in $KUDU_ROOT/CMakeLists.txt to\n\n# process protobuf definitions and generate corresponding header/source files.\n",
+        "Line" : 191,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "cmake_modules/FindSnappy.cmake" : {
+      "ObjectId" : "20d5aceb6725e12195b54ab4081274b1bc3a7b4c",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find SNAPPY (snappy.h, libsnappy.a, libsnappy.so, and libsnappy.so.1)\n\n# This module defines\n\n#  SNAPPY_INCLUDE_DIR, directory containing headers\n\n#  SNAPPY_SHARED_LIB, path to snappy's shared library\n\n#  SNAPPY_STATIC_LIB, path to snappy's static library\n\n#  SNAPPY_FOUND, whether snappy has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindSqueasel.cmake" : {
+      "ObjectId" : "631a4bf13aec8a57d2cc537319c0c0ce57d183dc",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n# - Find Squeasel (squeasel.h, libsqueasel.a)\n\n# This module defines\n\n#  SQUEASEL_INCLUDE_DIR, directory containing headers\n\n#  SQUEASEL_STATIC_LIB, path to libsqueasel.a\n\n#  SQUEASEL_FOUND, whether squeasel has been found\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 24,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 2
+    },
+    "cmake_modules/FindThrift.cmake" : {
+      "ObjectId" : "834bbfd87cab3f552c10f56adf403b1dbc7c4203",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########\n\n#\n\n# Locate and configure the Thrift library.\n\n# Defines the following variables:\n\n#\n\n#   THRIFT_INCLUDE_DIR - the include directory for thrift headers\n\n#   THRIFT_SHARED_LIBRARY - path to thrift's shared library\n\n#   THRIFT_STATIC_LIBRARY - path to thrift's static library\n\n#   THRIFT_EXECUTABLE - the thrift compiler\n\n#   THRIFT_FOUND - whether the Thrift library and executable has been found\n\n#\n\n#  ====================================================================\n\n#  Example:\n\n#\n\n#   find_package(Thrift REQUIRED)\n\n#   include_directories(${THRIFT_INCLUDE_DIR})\n\n#\n\n#   include_directories(${CMAKE_CURRENT_BINARY_DIR})\n\n#   THRIFT_GENERATE_CPP(THRIFT_SRCS THRIFT_HDRS THRIFT_TGTS\n\n#     [SOURCE_ROOT <root from which source is found>]\n\n#     [BINARY_ROOT <root into which binaries are built>]\n\n#     THRIFT_FILES foo.thrift)\n\n#   add_executable(bar bar.cc ${THRIFT_SRCS} ${THRIFT_HDRS})\n\n#   target_link_libraries(bar ${THRIFT_SHARED_LIBRARY})\n\n#\n\n#  ====================================================================\n\n#\n\n# THRIFT_GENERATE_CPP (public function)\n\n#   SRCS = Variable to define with autogenerated\n\n#          source files\n\n#   HDRS = Variable to define with autogenerated\n\n#          header files\n\n#   TGTS = Variable to define with autogenerated\n\n#          custom targets; if SRCS/HDRS need to be used in multiple\n\n#          libraries, those libraries should depend on these targets\n\n#          in order to \"serialize\" the thrift invocations\n\n#  ====================================================================\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# TODO(dan): Add the fb303 files manually. This is a complete hack.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Used to find built-in .thrift files (e.g. fb303.thrift)\n",
+        "Line" : 118,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# This custom target enforces that there's just one invocation of thrift\n\n# when there are multiple consumers of the generated files. The target name\n\n# must be unique; adding parts of the filename helps ensure this.\n",
+        "Line" : 124,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "cmake_modules/FindZlib.cmake" : {
+      "ObjectId" : "48d7b0111beef80d04dd59554f29dfffff7828f8",
+      "LastModified" : "2017-12-07T20:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Find ZLIB (zlib.h, libz.a, libz.so, and libz.so.1)\n\n# This module defines\n\n#  ZLIB_INCLUDE_DIR, directory containing headers\n\n#  ZLIB_SHARED_LIB, path to libz's shared library\n\n#  ZLIB_STATIC_LIB, path to libz's static library\n\n#  ZLIB_FOUND, whether zlib has been found\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "examples/cpp/CMakeLists.txt" : {
+      "ObjectId" : "62bc177d6caae3c8966276da10d538db8af84f10",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# Client API example executables\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "examples/java/collectl/pom.xml" : {
+      "ObjectId" : "9684e486801a18e0d326c292d2b0d1b8b5af168c",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " For logging messages. ",
+        "Line" : 71,
+        "CharPositionInLine" : 35
+      },
+      "CommentCount" : 2
+    },
+    "examples/java/insert-loadgen/pom.xml" : {
+      "ObjectId" : "b988465c22207b9eec394f7b69aff6debc6deb3e",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " For logging messages. ",
+        "Line" : 71,
+        "CharPositionInLine" : 35
+      },
+      "CommentCount" : 2
+    },
+    "examples/java/java-example/pom.xml" : {
+      "ObjectId" : "67b075442c85f33b48bd8c85a1dc748fd6d73062",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " For logging messages. ",
+        "Line" : 71,
+        "CharPositionInLine" : 35
+      },
+      "CommentCount" : 2
+    },
+    "java/kudu-backup/pom.xml" : {
+      "ObjectId" : "7f0e1a58136cf72343e3501f5f9607bdcac632f2",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Make sure wrong Guava version is not pulled in. ",
+        "Line" : 55,
+        "CharPositionInLine" : 77
+      },
+      "2" : {
+        "Text" : " Make sure wrong Scala version is not pulled in. ",
+        "Line" : 67,
+        "CharPositionInLine" : 77
+      },
+      "3" : {
+        "Text" : " TODO(KUDU-2500): Spark uses reflection which requires the annotations at runtime. ",
+        "Line" : 73,
+        "CharPositionInLine" : 99
+      },
+      "4" : {
+        "Text" : " Used in the protobuf plugin to find the right protoc artifact\n                 with the property os.detected.classifier ",
+        "Line" : 147,
+        "CharPositionInLine" : 62
+      },
+      "5" : {
+        "Text" : " Documented at:\n                         https://www.xolstice.org/protobuf-maven-plugin/usage.html ",
+        "Line" : 162,
+        "CharPositionInLine" : 87
+      },
+      "6" : {
+        "Text" : " Emit warning and location for usages of features that should be imported explicitly. ",
+        "Line" : 184,
+        "CharPositionInLine" : 118
+      },
+      "7" : {
+        "Text" : " Emit various static analysis warnings. ",
+        "Line" : 186,
+        "CharPositionInLine" : 72
+      },
+      "8" : {
+        "Text" : " This big ol' block of nonsense tells the m2e Eclipse plugin what\n            to do with maven plugins that don't have m2e \"extensions\" available.\n\n            It doesn't affect the Maven build at all. ",
+        "Line" : 224,
+        "CharPositionInLine" : 58
+      },
+      "CommentCount" : 9
+    },
+    "java/kudu-client-tools/pom.xml" : {
+      "ObjectId" : "35a45c72f0ff0e4e2e97c934a904136de07b8d95",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Ignore the transitive annotations libraries that are ",
+        "Line" : 45,
+        "CharPositionInLine" : 78
+      },
+      "2" : {
+        "Text" : " not marked as optional in version 22.0+ ",
+        "Line" : 46,
+        "CharPositionInLine" : 65
+      },
+      "CommentCount" : 3
+    },
+    "java/kudu-client/pom.xml" : {
+      "ObjectId" : "a01965f74bf47523a6cb0f2aaeae251b58104e17",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Not shaded or included in the client JAR because it's part\n                 of the public API. ",
+        "Line" : 35,
+        "CharPositionInLine" : 40
+      },
+      "2" : {
+        "Text" : " Explicitly exclude slf4j because async uses version ranges\n                     for the dependency ",
+        "Line" : 41,
+        "CharPositionInLine" : 44
+      },
+      "3" : {
+        "Text" : " Ignore the transitive annotations libraries that are ",
+        "Line" : 54,
+        "CharPositionInLine" : 78
+      },
+      "4" : {
+        "Text" : " not marked as optional in version 22.0+ ",
+        "Line" : 55,
+        "CharPositionInLine" : 65
+      },
+      "5" : {
+        "Text" : " Used in the protobuf plugin to find the right protoc artifact\n                 with the property os.detected.classifier ",
+        "Line" : 131,
+        "CharPositionInLine" : 62
+      },
+      "6" : {
+        "Text" : " Documented at:\n                         https://www.xolstice.org/protobuf-maven-plugin/usage.html ",
+        "Line" : 146,
+        "CharPositionInLine" : 87
+      },
+      "7" : {
+        "Text" : " Attach source and javadoc to packaged jar ",
+        "Line" : 200,
+        "CharPositionInLine" : 63
+      },
+      "8" : {
+        "Text" : " This big ol' block of nonsense tells the m2e Eclipse plugin what\n             to do with maven plugins that don't have m2e \"extensions\" available.\n\n             It doesn't affect the Maven build at all. ",
+        "Line" : 258,
+        "CharPositionInLine" : 59
+      },
+      "CommentCount" : 9
+    },
+    "java/kudu-flume-sink/pom.xml" : {
+      "ObjectId" : "7b664fb6fd7803d735b3d595bdc8a5f94c479c2d",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : " Licensed to the Apache Software Foundation (ASF) under one or more contributor\n  license agreements. See the NOTICE file distributed with this work for additional\n  information regarding copyright ownership. The ASF licenses this file to\n  You under the Apache License, Version 2.0 (the \"License\"); you may not use\n  this file except in compliance with the License. You may obtain a copy of\n  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required\n  by applicable law or agreed to in writing, software distributed under the\n  License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS\n  OF ANY KIND, either express or implied. See the License for the specific\n  language governing permissions and limitations under the License. ",
+        "Line" : 11,
+        "CharPositionInLine" : 72
+      },
+      "1" : {
+        "Text" : " Configure the Avro plugin to compile the schemas in the\n                     resource directory so the schemas are available in tests. ",
+        "Line" : 130,
+        "CharPositionInLine" : 83
+      },
+      "CommentCount" : 2
+    },
+    "java/kudu-hive/pom.xml" : {
+      "ObjectId" : "0e6244feb3d5674e413ff25a898347d34b5493b4",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " NOTE: The build currently expects all dependencies will be available\n             via the hive-metastore classpath. Therefore, all dependencies should\n             be provided scope.",
+        "Line" : 34,
+        "CharPositionInLine" : 35
+      },
+      "2" : {
+        "Text" : " Transitively required through hive-metastore, which has marked it\n             as an optional dependency. ",
+        "Line" : 48,
+        "CharPositionInLine" : 44
+      },
+      "3" : {
+        "Text" : " Skip publishing kudu-hive until it's ready to be supported long-term. ",
+        "Line" : 92,
+        "CharPositionInLine" : 95
+      },
+      "CommentCount" : 4
+    },
+    "java/kudu-jepsen/pom.xml" : {
+      "ObjectId" : "055ce31cc8b9881f8803391ba5cb3999425e9ec9",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n// Licensed under the Apache License, Version 2.0 (the \"License\");\n// you may not use this file except in compliance with the License.\n// You may obtain a copy of the License at\n//\n//     http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing, software\n// distributed under the License is distributed on an \"AS IS\" BASIS,\n// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n// See the License for the specific language governing permissions and\n// limitations under the License.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Jepsen tests require specific infrastructure and do not run as part of the\n             regular java tests.",
+        "Line" : 31,
+        "CharPositionInLine" : 36
+      },
+      "2" : {
+        "Text" : " List of Kudu Master nodes (e.g. \"m0\" or \"m0,m1,m2\") ",
+        "Line" : 33,
+        "CharPositionInLine" : 69
+      },
+      "3" : {
+        "Text" : " List of Kudu Tablet Server nodes (e.g. \"t0,t1,t2\") ",
+        "Line" : 35,
+        "CharPositionInLine" : 68
+      },
+      "4" : {
+        "Text" : " Path to the SSH key to access Kudu Master and\n             Tablet Server nodes as the 'root' user.  If left empty, the test\n             will try to use keys from the SSH agent, if any. ",
+        "Line" : 39,
+        "CharPositionInLine" : 66
+      },
+      "5" : {
+        "Text" : " Number of iterations to run the test suite in cycle. ",
+        "Line" : 41,
+        "CharPositionInLine" : 70
+      },
+      "6" : {
+        "Text" : " Jepsen imports its own slf4j",
+        "Line" : 89,
+        "CharPositionInLine" : 49
+      },
+      "7" : {
+        "Text" : " Load maven extensions (like type and packaging handlers) for\n                   the clojure maven plugin",
+        "Line" : 113,
+        "CharPositionInLine" : 47
+      },
+      "8" : {
+        "Text" : " Do not run the checkstyle plugin for clojure sources ",
+        "Line" : 126,
+        "CharPositionInLine" : 76
+      },
+      "CommentCount" : 9
+    },
+    "java/kudu-mapreduce/pom.xml" : {
+      "ObjectId" : "a772ad4af7c18c12b1a1b69c2558910f1ff66c0b",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " Ignore the transitive annotations libraries that are ",
+        "Line" : 44,
+        "CharPositionInLine" : 78
+      },
+      "2" : {
+        "Text" : " not marked as optional in version 22.0+ ",
+        "Line" : 45,
+        "CharPositionInLine" : 65
+      },
+      "3" : {
+        "Text" : " Explicitly exclude slf4j because async uses version ranges\n                     for the dependency ",
+        "Line" : 58,
+        "CharPositionInLine" : 44
+      },
+      "CommentCount" : 4
+    },
+    "java/kudu-spark-tools/pom.xml" : {
+      "ObjectId" : "0fd7744a77dc3f2ca145955b9727ecc658924066",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " TODO(KUDU-2500): Spark uses reflection which requires the annotations at runtime. ",
+        "Line" : 50,
+        "CharPositionInLine" : 99
+      },
+      "2" : {
+        "Text" : " make sure wrong scala version is not pulled in ",
+        "Line" : 70,
+        "CharPositionInLine" : 76
+      },
+      "3" : {
+        "Text" : " make sure wrong scala version is not pulled in ",
+        "Line" : 75,
+        "CharPositionInLine" : 76
+      },
+      "4" : {
+        "Text" : " Emit warning and location for usages of features that should be imported explicitly. ",
+        "Line" : 150,
+        "CharPositionInLine" : 118
+      },
+      "5" : {
+        "Text" : " Emit various static analysis warnings. ",
+        "Line" : 152,
+        "CharPositionInLine" : 72
+      },
+      "CommentCount" : 6
+    },
+    "java/kudu-spark/pom.xml" : {
+      "ObjectId" : "51b564e706497893762e38b0cd38ce739d8329a5",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n// Licensed under the Apache License, Version 2.0 (the \"License\");\n// you may not use this file except in compliance with the License.\n// You may obtain a copy of the License at\n//\n//     http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing, software\n// distributed under the License is distributed on an \"AS IS\" BASIS,\n// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n// See the License for the specific language governing permissions and\n// limitations under the License.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " TODO(KUDU-2500): Spark uses reflection which requires the annotations at runtime. ",
+        "Line" : 32,
+        "CharPositionInLine" : 99
+      },
+      "2" : {
+        "Text" : " make sure wrong scala version is not pulled in ",
+        "Line" : 46,
+        "CharPositionInLine" : 76
+      },
+      "3" : {
+        "Text" : " make sure wrong scala version is not pulled in ",
+        "Line" : 51,
+        "CharPositionInLine" : 76
+      },
+      "4" : {
+        "Text" : " Emit warning and location for usages of features that should be imported explicitly. ",
+        "Line" : 112,
+        "CharPositionInLine" : 118
+      },
+      "5" : {
+        "Text" : " Emit various static analysis warnings. ",
+        "Line" : 114,
+        "CharPositionInLine" : 72
+      },
+      "CommentCount" : 6
+    },
+    "java/pom.xml" : {
+      "ObjectId" : "4dbe193d5da93c3b9bb2bb3bb16444ed19152e96",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n//\n// Licensed to the Apache Software Foundation (ASF) under one\n// or more contributor license agreements.  See the NOTICE file\n// distributed with this work for additional information\n// regarding copyright ownership.  The ASF licenses this file\n// to you under the Apache License, Version 2.0 (the\n// \"License\"); you may not use this file except in compliance\n// with the License.  You may obtain a copy of the License at\n//\n//   http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing,\n// software distributed under the License is distributed on an\n// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n// KIND, either express or implied.  See the License for the\n// specific language governing permissions and limitations\n// under the License.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " inherit from the ASF POM for distribution management ",
+        "Line" : 30,
+        "CharPositionInLine" : 66
+      },
+      "2" : {
+        "Text" : " Properties Management ",
+        "Line" : 43,
+        "CharPositionInLine" : 35
+      },
+      "3" : {
+        "Text" : " Platform encoding override ",
+        "Line" : 45,
+        "CharPositionInLine" : 44
+      },
+      "4" : {
+        "Text" : " Maven plugins ",
+        "Line" : 49,
+        "CharPositionInLine" : 31
+      },
+      "5" : {
+        "Text" : " Note: Bumping maven-failsafe-plugin to 2.19+ (2.21) breaks the integration tests due to shading issues ",
+        "Line" : 56,
+        "CharPositionInLine" : 120
+      },
+      "6" : {
+        "Text" : " Library dependencies ",
+        "Line" : 66,
+        "CharPositionInLine" : 38
+      },
+      "7" : {
+        "Text" : " Scala Library dependencies ",
+        "Line" : 92,
+        "CharPositionInLine" : 44
+      },
+      "8" : {
+        "Text" : " Misc variables ",
+        "Line" : 99,
+        "CharPositionInLine" : 32
+      },
+      "9" : {
+        "Text" : " Enforce that all of our code uses Java 7 and not Java 8 APIs. ",
+        "Line" : 307,
+        "CharPositionInLine" : 87
+      },
+      "10" : {
+        "Text" : " Build the jepsen test for Kudu.\n\n             Disabled by default since Java 8 and maven >= 3.3.6 is required to\n             build the kudu-jepsen artifact.  To enable, add '-Pjepsen'\n             to the maven command line. ",
+        "Line" : 336,
+        "CharPositionInLine" : 44
+      },
+      "CommentCount" : 11
+    },
+    "python/Makefile" : {
+      "ObjectId" : "f8df9531b18d23c585e511512b53a33f34e74627",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/kudu/benchmarks/CMakeLists.txt" : {
+      "ObjectId" : "28825dc5b654320d4b671425c0adb4e5065ac5bf",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Everything in this module depends on test infrastructure.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# tpch1\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# tpch_real_world\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# rle\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Disabled on macOS since it relies on fdatasync() and sync_file_range().\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Tests\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/kudu/cfile/CMakeLists.txt" : {
+      "ObjectId" : "7eac93691db4aa8a493509c0a829c63893342d31",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tests\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/kudu/client/CMakeLists.txt" : {
+      "ObjectId" : "2e6ab1cf9e27c4ce47f9710a8391ba4436eaed7e",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Make sure we exclude tcmalloc from the exported library; we want the library\n\n# code to use the linking application's malloc implementation.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We customize the output name/directory of the exported library so that we can\n\n# call it \"kudu_client\" without it colliding with the regular library.\n\n#\n\n# Unfortunately, this doesn't extend to the autogenerated cmake files that ship\n\n# with the exported library; they still hew to the original target name of\n\n# \"kudu_client_exported\".\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "################################################################################\n\n# LIBRARY VERSIONS\n\n################################################################################\n\n#\n\n# The external version of the exported Kudu client library. It is a separate\n\n# entity from the main Kudu version so that the library and backends can evolve\n\n# independently.\n\n#\n\n# Library versions affect packaging and control how the runtime linker finds the\n\n# actual library file. The library's SOVERSION (i.e. major version) is typically\n\n# appended to its package name and to the library filename, which means:\n\n#\n\n# 1. Multiple packages of the different major versions may be installed.\n\n# 2. An application must link against a specific major version of the library.\n\n#\n\n# The minor and patch versions are purely informational; changes to them have no\n\n# effect on runtime linking or on packages.\n\n#\n\n# The major version should only be incremented when an incompatible change is\n\n# made to the library's ABI (i.e. interface to the application). It is not to be\n\n# taken lightly because it has far reaching effects. Besides forcing an\n\n# application to recompile (or worse, rewrite some code), it also affects\n\n# packages. For example, package names typically change after a major version\n\n# bump (e.g. libkuduclient0 becomes libkuduclient1).\n\n#\n\n# The minor and patch versions can be incremented freely, and should be\n\n# incremented when significant (but not incompatible) or insignificant changes\n\n# are made respectively.\n\n#\n\n# For a detailed explanation of the kinds of C++ changes that would break ABI\n\n# compatibility, see:\n\n#\n\n#   https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C++\n\n#\n\n# For more background on library versions, see:\n\n#\n\n#   https://autotools.io/libtool/version.html\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Localize thirdparty symbols using a linker version script. This hides them\n\n# from the client application. The OS X linker does not support the\n\n# version-script option.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# This version is appended to the filename.\n\n#\n\n# For example: libkudu_client.so.1.2.3\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# This version is used to create two library symlinks.\n\n#\n\n# For example: libkudu_client.so -> libkudu_client.so.1\n\n#              libkudu_client.so.1 -> libkudu_client.so.1.2.3\n\n#\n\n# The runtime linker is expected to look up a library by name and SOVERSION.\n\n# In the previous example, that means it'll look up a file with name\n\n# libkudu_client.so.1. If the library is installed, that file should be a\n\n# symlink to the actual library file libkudu_client.so.1.2.3.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Generate kudu_export.h.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# \"make install\" invocations to generate a directory tree containing the\n\n# exported client library and all of its headers.\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# For CMAKE_INSTALL_<dir> variables.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Shared library.\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Headers: client\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Headers: common\n",
+        "Line" : 188,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Headers: util\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Client example code.\n\n#\n\n# Can't use CMAKE_INSTALL_DOCDIR because we don't ever call project().\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Exported cmake file for just the library's targets.\n\n#\n\n# Should not be included directly by users.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Exported cmake file for the library.\n\n#\n\n# This is the main cmake entry point and should be included directly.\n",
+        "Line" : 217,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# There's no way to rename a logical cmake exported target, so we use this\n\n# script to forcefully change the kudu_client_exported target to kudu_client.\n",
+        "Line" : 229,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Test utility library\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# This code is useful for other tests which use the client, but isn't\n\n# part of the client itself (ie we don't want to ship it to customers,\n\n# and therefore don't need to worry about export strictness)\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Tests\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# The OS X system compiler does not support source symbol maps, so the client\n\n# leaks internal symbols globally.\n\n#\n\n# Coverage builds insert gcov-related symbols into the client library. We\n\n# don't ship such builds, so there's no point in checking symbol visibility.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# The examples are never built with ASAN/TSAN.\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "src/kudu/client/MungeExportedInstallTargets.cmake" : {
+      "ObjectId" : "b5e4060d79c44ad2233ef6bf9379e1241daf4473",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n\n# Finds all Kudu client cmake installation files and replaces all references\n\n# to kudu_client_exported with kudu_client, thus renaming the targets.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/kudu/clock/CMakeLists.txt" : {
+      "ObjectId" : "7371aeb9958beb4b96d346d08f30acaee9c040f8",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/kudu/codegen/CMakeLists.txt" : {
+      "ObjectId" : "c8bbbb0cf6b47090b465d1b14364f0b30ee1f718",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "################################################################################\n\n# This target relies on special LLVM-configured cmake functions\n\n# see http://llvm.org/docs/CMake.html#embedding-llvm-in-your-project\n\n################################################################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################\n\n# Configure LLVM-specific dependencies\n\n#######################################\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "## Add preprocessor defs and include directories\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Workaround for a conflict between LLVM's Support/Valgrind.h file\n\n# and our dynamic_annotations.h. Defining this prevents the LLVM\n\n# header from getting included.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "## Get the required libraries to link to in llvm\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################\n\n# Precompiling to LLVM bytecode\n\n#######################################\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "## Create .ll file for precompiled functions (and their dependencies).\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Retrieve all includes directories needed for precompilation.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# OS X keeps the libc++ headers in a non-standard location that the thirdparty\n\n# Clang does not know about by default.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Get preprocessing definitions, which enable directives for glog and gtest.\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Get flags related to actually compiling the source.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Provide clang with any explicitly defined system prefix path. If there isn't\n\n# one, clang will search for it on its own.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Avoid enabling ASAN in the precompiled IR.\n\n#\n\n# This avoids an issue when the main code is compiled with a different version\n\n# of LLVM than we are using for JIT, and ASAN is enabled. In that case,\n\n# the IR code will try to call __asan_init_v<X> while our runtime code will\n\n# only have defined __asan_init_v<Y> (where X != Y).\n\n#\n\n# Disabling -fsanitize-address will prevent the instrumentation, so it doesn't\n\n# try to link against these symbols.\n\n#\n\n# NOTE: we leave \"-DADDRESS_SANITIZER\" because this enables ASAN annotations\n\n# from dynamic_annotations.h. These annotations are just extern function\n\n# declarations which will link fine against the ASAN in our executable, even\n\n# if the JIT code is not instrumented.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Disable TSAN in precompiled IR.\n\n#\n\n# Protobuf 2.6.1's atomicops-internals-tsan.h relies on\n\n# <sanitizer/tsan_interface_atomic.h>, which is not provided by the LLVM version\n\n# we use for codegen.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Remove any optimization flags from the generated IR.\n\n# Optimizing during the precompilation limits the ability to optimize\n\n# again at runtime.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# If present (see the top-level CMakeLists.txt), this has no effect and just generates\n\n# an unused argument warning.\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Disable built-in LLVM passes which would add 'noinline' attributes to all\n\n# standalone functions.\n\n#\n\n# This is per the advice in https://reviews.llvm.org/D28053#629914 which says:\n\n#\n\n#   \"This will generate a frontend-optimized but backend pristine bitcode file that\n\n#    can be processed more or less depending on the desire of the user...\"\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# We need a library which depends on the IR source, because CMake+Ninja\n\n# doesn't support IMPLICIT_DEPENDS in ADD_CUSTOM_COMMAND.\n\n#\n\n# Using a fake target like this allows us to pick up the dependencies\n\n# of precompiled.ll, and then we make the IR generation depend on the fake\n\n# target. We end up doing one extra compilation, but that's better than\n\n# having stale IR.\n\n#\n\n# See: http://www.cmake.org/Bug/bug_relationship_graph.php?bug_id=13234\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# The IR uses protobufs from kudu_common, so we have to generate that code first.\n",
+        "Line" : 151,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Use 'xxd' to create a cc file containing the precompiled bitcode as a literal array.\n\n# See http://stackoverflow.com/questions/4158900/embedding-resources-in-executable-using-gcc\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#######################################\n\n# codegen\n\n#######################################\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#######################################\n\n# Unit tests\n\n#######################################\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "src/kudu/common/CMakeLists.txt" : {
+      "ObjectId" : "3e3b4eeca02dfc2d52aaf8c1a04978cffa3051c4",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Workaround for clang bug https://llvm.org/bugs/show_bug.cgi?id=23757\n\n# in which it incorrectly optimizes key_util.cc and causes incorrect results.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/kudu/consensus/CMakeLists.txt" : {
+      "ObjectId" : "ca21394675f3ad285432c5ce3741828c0306a04b",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########################################\n\n# consensus_metadata_proto\n\n#########################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#########################################\n\n# consensus_proto\n\n#########################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#########################################\n\n# log_proto\n\n#########################################\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Our current version of gmock overrides virtual functions without adding\n\n# the 'override' keyword which, since our move to c++11, make the compiler\n\n# issue warnings. This suppresses those warnings.\n\n# TODO This problem has been resolved in recent versions of gtest/gmock (now\n\n# googletest). Remove this when we upgrade.\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/kudu/experiments/CMakeLists.txt" : {
+      "ObjectId" : "bbed26e3bb46dd2a53ce4f95565ee8cda0a44e26",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Everything in this module depends on test infrastructure.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Disabled on macOS because it relies on sched_getcpu().\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/kudu/fs/CMakeLists.txt" : {
+      "ObjectId" : "b4dda2bcd3bdc0dd63188a1fa4a56d9189525577",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tests\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Will only pass on Linux.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "src/kudu/gutil/CMakeLists.txt" : {
+      "ObjectId" : "3d487ebb88adb0863e462a7f892eb92ecb55651a",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# clock_gettime() requires -lrt\n",
+        "Line" : 62,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# Disable warnings which trigger a lot in the Google code:\n",
+        "Line" : 68,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "src/kudu/hms/CMakeLists.txt" : {
+      "ObjectId" : "fbc4c6e1d49cc9b8ae0721b0d94d67075e71395e",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##############################\n\n# mini_hms\n\n##############################\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tests\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These tests must run serially, otherwise starting the HMS can take a very long time.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "src/kudu/integration-tests/CMakeLists.txt" : {
+      "ObjectId" : "07bc6cfd4cde182d71e673b04aa6f5155628a603",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Everything in this module is test-related.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tests\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Opens too many files on macOS because we're not using a file cache for\n\n# reading log segments.\n\n# TODO(wdb): Re-enable once a file cache is being used.\n",
+        "Line" : 124,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Tests that should not be run automatically by ctest.\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/kudu/kserver/CMakeLists.txt" : {
+      "ObjectId" : "a6f3738c41b84c140de837062af3725069659223",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########################################\n\n# kserver\n\n#########################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/kudu/master/CMakeLists.txt" : {
+      "ObjectId" : "84a7d904b80b8b6b7ff02314df8d196764ccc69b",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tests\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Actual master executable\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/kudu/mini-cluster/CMakeLists.txt" : {
+      "ObjectId" : "356e49288407802d49978145275c09df9bd96f3b",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tests\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/kudu/rpc/CMakeLists.txt" : {
+      "ObjectId" : "f8cdb025f15cb6461eeb547bfa13534aafc8229a",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#### Global header protobufs\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "### RPC library\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "### RPC generator tool\n",
+        "Line" : 91,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#### RPC test\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Tests\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/kudu/security/CMakeLists.txt" : {
+      "ObjectId" : "b79486efbc1a0c81a1c956ce0fb9f00db99f9b7e",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# See the comment in krb5_realm_override.cc for details on this library's usage.\n\n# The top-level CMakeLists sets a ${KRB5_REALM_OVERRIDE} variable which should\n\n# be linked first into all Kudu binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "##############################\n\n# krb5_realm_override\n\n##############################\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "##############################\n\n# token_proto\n\n##############################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "##############################\n\n# security\n\n##############################\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Check for krb5_get_init_creds_opt_set_out_ccache, which is not available in versions\n\n# of MIT Kerberos older than krb5-1.6, and is also not present in Heimdal kerberos.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Fall back to using the ported functionality if we're using an older version of OpenSSL.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "##############################\n\n# mini_kdc\n\n##############################\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "##############################\n\n# security_test_util\n\n##############################\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Tests\n",
+        "Line" : 127,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 10
+    },
+    "src/kudu/server/CMakeLists.txt" : {
+      "ObjectId" : "859fa32271fa09004c34b1fcc0402cea0c06978e",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########################################\n\n# server_base_proto\n\n#########################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#########################################\n\n# server_process\n\n#########################################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# This module depends on tcmalloc and profiler directly, so need to make\n\n# sure that they get linked in the right order.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#########################################\n\n# server_process tests\n\n#########################################\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/kudu/tablet/CMakeLists.txt" : {
+      "ObjectId" : "5f9b851492f21578ff994b91c1482fd93e49c3a0",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Some tests don't have dependencies on other tablet stuff\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/kudu/tools/CMakeLists.txt" : {
+      "ObjectId" : "cfc3ce02dcd85f05f908b051fc3ed0268361521a",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################\n\n# tool_proto\n\n#######################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################\n\n# kudu_tools_util\n\n#######################################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################\n\n# ksck\n\n#######################################\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################\n\n# kudu_tools_rebalance\n\n#######################################\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################\n\n# kudu\n\n#######################################\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#######################################\n\n# kudu_tools_test_util\n\n#######################################\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#######################################\n\n# Unit tests\n\n#######################################\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/kudu/tserver/CMakeLists.txt" : {
+      "ObjectId" : "c411e92c0f5922b98cefc590c497dac877157f36",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#########################################\n\n# tablet_copy_proto\n\n#########################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#########################################\n\n# tserver_proto\n\n#########################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#########################################\n\n# tserver_admin_proto\n\n#########################################\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#########################################\n\n# tserver_service_proto\n\n#########################################\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#########################################\n\n# tserver\n\n#########################################\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#########################################\n\n# kudu-tserver\n\n#########################################\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#########################################\n\n# tserver_test_util\n\n#########################################\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#########################################\n\n# tserver tests\n\n#########################################\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "src/kudu/util/CMakeLists.txt" : {
+      "ObjectId" : "94dd2fa8923a8e3a763cf612e50bad56cdca416b",
+      "LastModified" : "2018-07-18T14:57:07Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######################################\n\n# util_compression_proto\n\n#######################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#######################################\n\n# histogram_proto\n\n#######################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#######################################\n\n# maintenance_manager_proto\n\n#######################################\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#######################################\n\n# pb_util_proto\n\n#######################################\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#######################################\n\n# version_info_proto\n\n#######################################\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "############################################################\n\n# Version stamp\n\n############################################################\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Unlike CMAKE_CURRENT_BINARY_DIR, CMAKE_BINARY_DIR is always the root of\n\n# the build directory.\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#######################################\n\n# kudu_util\n\n#######################################\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# overwrite.cc contains a single function which would be a hot spot in\n\n# debug builds. It's separated into a separate file so it can be\n\n# optimized regardless of the default optimization options.\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# We use MallocExtension, but not in the exported version of the library.\n",
+        "Line" : 245,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#######################################\n\n# kudu_util_compression\n\n#######################################\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#######################################\n\n# kudu_test_util\n\n#######################################\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Used by mini-cluster, so must be built even when NO_TESTS=0.\n",
+        "Line" : 279,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#######################################\n\n# kudu_curl_util\n\n#######################################\n",
+        "Line" : 293,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#######################################\n\n# kudu_test_main\n\n#######################################\n",
+        "Line" : 306,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#######################################\n\n# protoc-gen-insertions\n\n#######################################\n",
+        "Line" : 327,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#######################################\n\n# Unit tests\n\n#######################################\n",
+        "Line" : 334,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# has a benchmark\n",
+        "Line" : 349,
+        "CharPositionInLine" : 40
+      },
+      "19" : {
+        "Text" : "#######################################\n\n# jsonwriter_test_proto\n\n#######################################\n",
+        "Line" : 420,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#######################################\n\n# jsonwriter-test\n\n#######################################\n",
+        "Line" : 434,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#######################################\n\n# pb_util_test_proto\n\n#######################################\n",
+        "Line" : 444,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#######################################\n\n# pb_util-test\n\n#######################################\n",
+        "Line" : 464,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#######################################\n\n# util/compression tests\n\n#######################################\n",
+        "Line" : 474,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 51,
+    "MAKEFILE" : 1,
+    "MAVEN" : 13
+  },
+  "ElapsedTime" : 4072
+}

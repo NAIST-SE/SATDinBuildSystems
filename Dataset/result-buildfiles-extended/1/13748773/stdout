@@ -1,0 +1,1310 @@
+{
+  "Repository" : "13748773",
+  "Revision" : "HEAD",
+  "ObjectId" : "b9bc5732804a59d70b916faed657ec097fb765c9",
+  "CommitTime" : "2019-04-11T11:44:15Z",
+  "Files" : {
+    "cmake-toolchains/android.toolchain.cmake" : {
+      "ObjectId" : "a154d969224b114b79dfe28cf14673c09448436f",
+      "LastModified" : "2018-10-27T10:17:33Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (C) 2016 The Android Open Source Project\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#      http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Configurable variables.\n\n# Modeled after the ndk-build system.\n\n# For any variables defined in:\n\n#         https://developer.android.com/ndk/guides/android_mk.html\n\n#         https://developer.android.com/ndk/guides/application_mk.html\n\n# if it makes sense for CMake, then replace LOCAL, APP, or NDK with ANDROID, and\n\n# we have that variable below.\n\n# The exception is ANDROID_TOOLCHAIN vs NDK_TOOLCHAIN_VERSION.\n\n# Since we only have one version of each gcc and clang, specifying a version\n\n# doesn't make much sense.\n\n#\n\n# ANDROID_TOOLCHAIN\n\n# ANDROID_ABI\n\n# ANDROID_PLATFORM\n\n# ANDROID_STL\n\n# ANDROID_PIE\n\n# ANDROID_CPP_FEATURES\n\n# ANDROID_ALLOW_UNDEFINED_SYMBOLS\n\n# ANDROID_ARM_MODE\n\n# ANDROID_ARM_NEON\n\n# ANDROID_DISABLE_NO_EXECUTE\n\n# ANDROID_DISABLE_RELRO\n\n# ANDROID_DISABLE_FORMAT_STRING_CHECKS\n\n# ANDROID_CCACHE\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FIPS specific stuff\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# FIXME: FIPS_EXCEPTIONS and FIPS_RTTI\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Set ANDROID_NDK to FIPS sdk path\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Inhibit all of CMake's own NDK handling code.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# CMake invokes the toolchain file twice during the first build, but only once\n\n# during subsequent rebuilds. This was causing the various flags to be added\n\n# twice on the first build, and on a rebuild ninja would see only one set of the\n\n# flags and rebuild the world.\n\n# https://github.com/android-ndk/ndk/issues/323\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Android NDK\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Allow the user to specify their own NDK path, but emit a warning. This is an\n\n# uncommon use case, but helpful if users want to use a bleeding edge\n\n# toolchain file with a stable NDK.\n\n# https://github.com/android-ndk/ndk/issues/473\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# message(WARNING \"Using custom NDK path (ANDROID_NDK is set): ${ANDROID_NDK}\")\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Android NDK revision\n\n# Possible formats:\n\n# * r16, build 1234: 16.0.1234\n\n# * r16b, build 1234: 16.1.1234\n\n# * r16 beta 1, build 1234: 16.0.1234-beta1\n\n#\n\n# Canary builds are not specially marked.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Touch toolchain variable to suppress \"unused variable\" warning.\n\n# This happens if CMake is invoked with the same command line the second time.\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Compatibility for configurable variables.\n\n# Compatible with configurable variables from the other toolchain file:\n\n#         https://github.com/taka-no-me/android-cmake\n\n# TODO: We should consider dropping compatibility to simplify things once most\n\n# of our users have migrated to our standard set of configurable variables.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Default values for configurable variables.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# If no platform version was chosen by the user, default to the minimum version\n\n# supported by this NDK.\n",
+        "Line" : 213,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Aliases defined by meta/platforms.json include codename aliases for platform\n\n# API levels as well as cover any gaps in platforms that may not have had NDK\n\n# APIs.\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Pull up to the minimum supported version if an old API level was requested.\n",
+        "Line" : 244,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# And for LP64 we need to pull up to 21. No diagnostic is provided here because\n\n# minSdkVersion < 21 is valid for the project even though it may not be for this\n\n# ABI.\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# ANDROID_PLATFORM beyond the maximum is an error. The correct way to specify\n\n# the latest version is ANDROID_PLATFORM=latest.\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Export configurable variables for the try_compile() command.\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Standard cross-compiling stuff.\n",
+        "Line" : 311,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Allow users to override these values in case they want more strict behaviors.\n\n# For example, they may want to prevent the NDK's libz from being picked up so\n\n# they can use their own.\n\n# https://github.com/android-ndk/ndk/issues/517\n",
+        "Line" : 315,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# ABI.\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# add fips specific flags\n",
+        "Line" : 378,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Don't re-export libgcc symbols in every binary.\n",
+        "Line" : 383,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# STL.\n",
+        "Line" : 387,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Behavior of CMAKE_SYSTEM_LIBRARY_PATH and CMAKE_LIBRARY_PATH are really weird\n\n# when CMAKE_SYSROOT is set. The library path is appended to the sysroot even if\n\n# the library path is an abspath. Using a relative path from the sysroot doesn't\n\n# work either, because the relative path is abspath'd relative to the current\n\n# CMakeLists.txt file before being appended :(\n\n#\n\n# We can try to get out of this problem by providing another root path for cmake\n\n# to check. CMAKE_FIND_ROOT_PATH is intended for this purpose:\n\n# https://cmake.org/cmake/help/v3.8/variable/CMAKE_FIND_ROOT_PATH.html\n\n#\n\n# In theory this should just be our sysroot, but since we don't have a single\n\n# sysroot that is correct (there's only one set of headers, but multiple\n\n# locations for libraries that need to be handled differently).  Some day we'll\n\n# want to move all the libraries into ${ANDROID_NDK}/sysroot, but we'll need to\n\n# make some fixes to Clang, various build systems, and possibly CMake itself to\n\n# get that working.\n",
+        "Line" : 430,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Sysroot.\n",
+        "Line" : 448,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# CMake 3.9 tries to use CMAKE_SYSROOT_COMPILE before it gets set from\n\n# CMAKE_SYSROOT, which leads to using the system's /usr/include. Set this\n\n# manually.\n\n# https://github.com/android-ndk/ndk/issues/467\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# The compiler driver doesn't check any arch specific include locations (though\n\n# maybe we should add that). Architecture specific headers like asm/ and\n\n# machine/ are installed to an arch-$ARCH subdirectory of the sysroot.\n",
+        "Line" : 457,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# We need different sysroots for linking and compiling, but cmake doesn't\n\n# support that. Pass the sysroot flag manually when linking.\n",
+        "Line" : 463,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# find_library searches a handful of paths as described by\n\n# https://cmake.org/cmake/help/v3.6/command/find_library.html.  Since libraries\n\n# are per-API level and headers aren't, We don't have libraries in the\n\n# CMAKE_SYSROOT. Set up CMAKE_SYSTEM_LIBRARY_PATH\n\n# (https://cmake.org/cmake/help/v3.6/variable/CMAKE_SYSTEM_LIBRARY_PATH.html)\n\n# instead.\n\n#\n\n# NB: The suffix is just lib here instead of dealing with lib64 because\n\n# apparently CMake does some automatic rewriting of that? I've been testing by\n\n# building my own CMake with a bunch of logging added, and that seems to be the\n\n# case.\n",
+        "Line" : 469,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Toolchain.\n",
+        "Line" : 483,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Clang can fail to compile if CMake doesn't correctly supply the target and\n\n# external toolchain, but to do so, CMake needs to already know that the\n\n# compiler is clang. Tell CMake that the compiler is really clang, but don't\n\n# use CMakeForceCompiler, since we still want compile checks. We only want\n\n# to skip the compiler ID detection step.\n",
+        "Line" : 507,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Generic flags.\n",
+        "Line" : 536,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Debug and release flags.\n",
+        "Line" : 552,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Toolchain and ABI specific flags.\n",
+        "Line" : 564,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# http://b.android.com/222239\n\n# http://b.android.com/220159 (internal http://b/31809417)\n\n# x86 devices have stack alignment issues.\n",
+        "Line" : 580,
+        "CharPositionInLine" : 2
+      },
+      "38" : {
+        "Text" : "# STL specific flags.\n",
+        "Line" : 586,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Add the libc++ lib directory to the path so the linker scripts can pick up\n\n# the extra libraries.\n",
+        "Line" : 598,
+        "CharPositionInLine" : 2
+      },
+      "40" : {
+        "Text" : "# Configuration specific flags.\n",
+        "Line" : 635,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# x86 and x86_64 use large model pic, whereas everything else uses small model.\n\n# In the past we've always used -fPIE, but the LLVMgold plugin (for LTO)\n\n# complains if the models are mismatched.\n",
+        "Line" : 637,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# PIE is supported on all currently supported Android releases, but it is not\n\n# supported with static executables, so we still provide ANDROID_PIE as an\n\n# escape hatch for those.\n",
+        "Line" : 647,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# CMake automatically forwards all compiler flags to the linker,\n\n# and clang doesn't like having -Wa flags being used for linking.\n\n# To prevent CMake from doing this would require meddling with\n\n# the CMAKE_<LANG>_COMPILE_OBJECT rules, which would get quite messy.\n",
+        "Line" : 697,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Convert these lists into strings.\n",
+        "Line" : 719,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Set or retrieve the cached flags.\n\n# This is necessary in case the user sets/changes flags in subsequent\n\n# configures. If we included the Android flags in here, they would get\n\n# overwritten.\n",
+        "Line" : 743,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Compatibility for read-only variables.\n\n# Read-only variables for compatibility with the other toolchain file.\n\n# We'll keep these around for the existing projects that still use them.\n\n# TODO: All of the variables here have equivalents in our standard set of\n\n# configurable variables, so we can remove these once most of our users migrate\n\n# to those variables.\n",
+        "Line" : 785,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# CMake 3.7+ compatibility.\n",
+        "Line" : 844,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 48
+    },
+    "cmake-toolchains/emscripten.toolchain.cmake" : {
+      "ObjectId" : "f69472c8d7d97b2e0e815cfcf63c37761dae6c3c",
+      "LastModified" : "2019-02-20T11:18:11Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#\temscripten.toolchain.cmake\r\n\n#\tFips cmake toolchain file for cross-compiling to emscripten.\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\r\n\n# FIXME FIXME FIXME:\r\n\n#\r\n\n#   emar currently has trouble using a non-standard .emscripten config\r\n\n#   file: https://github.com/kripken/emscripten/issues/2886\r\n\n#\r\n\n#   once this is fixed, set the CMAKE_AR_FLAGS variable to\r\n\n#   use the --em-config like the C/CXX compilers.\r\n\n#\r\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# define emscripten SDK version\r\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# find the emscripten SDK and set the \"EMSC_HAS_LOCAL_CONFIG\" variable\r\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# first check for the official EMSDK, this does not allow to override\r\n\n# the location of the .emscripten config file\r\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# find the emscripten SDK\r\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Normalize, convert Windows backslashes to forward slashes or CMake will crash.\r\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# tweakable options \r\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Find the .emscripten file and cache, this is either setup locally in the\r\n\n# emscripten SDK (this is the preferred way and used by 'fips setup emscripten',\r\n\n# but it's a brand new feature: https://github.com/juj/emsdk/issues/24)\r\n\n# If an SDK-local .emscripten is not found, fall back to ~/.emscripten\r\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# set a separate .emscripten_cache when tracing since this will use an \r\n\n# instrumented dlmalloc.c\r\n",
+        "Line" : 175,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# no sdk-embedded config found, use the default (~/.emscripten and ~/.emscripten_cache)\r\n",
+        "Line" : 185,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# tool suffic (.bat on windows)\r\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# define configurations\r\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# specify cross-compilers\r\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# only search for libraries and includes in the toolchain\r\n",
+        "Line" : 206,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# c++ compiler flags\r\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# c compiler flags\r\n",
+        "Line" : 254,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# linker flags\r\n",
+        "Line" : 260,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# static library flags (for CMAKE_AR)\r\n",
+        "Line" : 266,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# dynamic lib linker flags\r\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# update cache variables for cmake gui\r\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# set the build type to use\r\n",
+        "Line" : 291,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 22
+    },
+    "cmake-toolchains/ios.toolchain.cmake" : {
+      "ObjectId" : "92c6a37e5a9f0ae5350c7b469bdd7a6f06b26074",
+      "LastModified" : "2018-07-30T07:41:14Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#\tios.toolchain.cmake\r\n\n#\tFips cmake toolchain file for cross-compiling to iOS from OSX.\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NOTE I'm not sure if those 2 are necessary, it worked for me\r\n\n# without, but not for others\r\n\n# See:\r\n\n# - https://github.com/floooh/fips/pull/112\r\n\n# - https://cmake.org/Bug/view.php?id=15329\r\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# define configurations\r\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# define standard frame works that are always linked\r\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# globally silence the GLES deprecation warning\r\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ARC on/off?\r\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# only build active arch?\r\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# need to set some flags directly as Xcode attributes\r\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# exceptions on/off?\r\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# rtti on/off?\r\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# compiler flags\r\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# update cache variables for cmake gui\r\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# set the build type to use\r\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "cmake-toolchains/linux.cmake" : {
+      "ObjectId" : "209f5943af6cbecb555f4cb4a3bb32e94b91e236",
+      "LastModified" : "2018-10-02T08:33:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   linux.cmake\r\n\n#   Fips cmake settings file for Linux target platform.\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Raspbian Linux flavour\r\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# define configuration types\r\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# C++ flags\r\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# C flags\r\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# exe linker flags\r\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# exceptions on/off?\r\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# RTTI on/off?\r\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# 32-bit build on/off?\r\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# update cache variables for cmake gui\r\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# set the build type to use\r\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "cmake-toolchains/osx.cmake" : {
+      "ObjectId" : "a88062ac79e35da279138b99fcdf292015e196d8",
+      "LastModified" : "2018-10-02T08:33:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#\tosx.cmake\r\n\n#\tFips cmake settings file for OSX target platform.\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# define configuration types\r\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# FIXME: define standard frame works that are always linked\r\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# globally silence the GL deprecation warning\r\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# compiler flags\r\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# need to set some flags directly as Xcode attributes\r\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ARC on/off?\r\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# exceptions on/off?\r\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# rtti on/off?\r\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# clang address sanitizer?\r\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# clang 'save-optimization-record'?\r\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# update cache variables for cmake gui\r\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# set the build type to use\r\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "cmake-toolchains/windows.cmake" : {
+      "ObjectId" : "2f9653c47db02ab14c524aaebf079ff43b6e404b",
+      "LastModified" : "2019-01-20T11:06:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#\twindows.cmake\r\n\n#\tfips cmake settings file for Windows platform (supports 32- and 64-bit)\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# detect 32-bit or 64-bit target platform   \r\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# define configuration types\r\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# define the standard link libraries\r\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# define compiler and linker flags\r\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# GENERIC compiler flags:\r\n\n# \t/WX treat warnings as errors\r\n\n# \t/GF eliminate duplicate strings\r\n\n# \t/TP treat files as C++ source\r\n\n#\t/TC treat files as C source\r\n\n# \t/fp:fast create fast (not precise) floating point code\r\n\n# \t/Gm: enable minimal rebuild\r\n\n#\t/EHsc: slim exception model\r\n\n#\t/EHa: fat exception model\r\n\n#   /MP: use multiple cores\r\n\n#\r\n\n# DEBUG compiler flags:\r\n\n#\t/Zi create debugging information PDB file\r\n\n#\t/Od disable optimizations\r\n\n# \t/Oy- do not suppress frame pointers (recommended for debugging)\r\n\n#\t/MTd use statically linked, thread-safe, debug CRT libs\r\n\n#\r\n\n# RELEASE compiler flags:\r\n\n#\t/Ox full optimization\r\n\n#\t/MT use statically linked, thread-safe CRT libs\r\n\n# \t/GS- no Buffer Security Check\r\n\n#\t\r\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# define exe linker flags\r\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# 4221: warning on empty object files\r\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# update cache variables for cmake gui\r\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# set the build type to use\r\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "cmake/fips.cmake" : {
+      "ObjectId" : "8c07c51d8b0a8631f7d424e7151ca86c25b70fa7",
+      "LastModified" : "2019-01-20T11:33:09Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips.cmake\r\n\n#   Main cmake header for fips, this must be included in the top-level\r\n\n#   CMakeLists.txt file of a fips project\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   define top-level options for the whole project\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_setup()\r\n\n#   Performs one-time initialization of the build system. Must be called\r\n\n#   at the start of the root CMakeLists.txt file.\r\n\n#\r\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# default settings\r\n",
+        "Line" : 48,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# check for optional main-project name, this is the preferred way to\r\n\n# define the project name, but we better be backward compatible\r\n\n# it is still allowed to call fips_project() afterwards\r\n\n#\r\n\n# if a project imports Apps or SharedLibs, fips_setup MUST contain a PROJECT arg\r\n",
+        "Line" : 53,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# set FIPS_CONFIG to default if not provided by command line\r\n\n# (this provides better compatibility with some IDEs not directly\r\n\n# supported by cmake, like QtCreator\r\n",
+        "Line" : 93,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# set host system variables\r\n",
+        "Line" : 106,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# detect compiler\r\n",
+        "Line" : 124,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Eclipse: Disable linked resources because Eclipse may get confused by these linked resources\r\n",
+        "Line" : 147,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# manually include \"toolchain\" files for non-crosscompiling scenarios\r\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# enable ccache??\r\n",
+        "Line" : 168,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# setup standard link directories\r\n",
+        "Line" : 184,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# setup the target group variable, used to group targets into folders in IDEs\r\n",
+        "Line" : 187,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# check whether python is installed\r\n",
+        "Line" : 191,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# write empty YAML property tracking files\r\n",
+        "Line" : 197,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# initialize code generation\r\n",
+        "Line" : 202,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# load project-local fips-include.cmake if exists\r\n",
+        "Line" : 205,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# load generated .fips-imports.cmake if exists\r\n",
+        "Line" : 212,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_finish()\r\n\n#\r\n",
+        "Line" : 219,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# nothing to do, reserved for future use\r\n",
+        "Line" : 223,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_ide_group(group)\r\n\n#   Define the IDE group name for the following targets.\r\n\n#\r\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_project(proj)\r\n\n#   Starts a new project.\r\n\n#\r\n",
+        "Line" : 234,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_begin_module(module)\r\n\n#   Begin defining an fips module.\r\n\n#\r\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_end_module(module)\r\n\n#   End defining an fips module, the interesting stuff happens here.\r\n\n#\r\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# add library target\r\n",
+        "Line" : 261,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# set platform- and target-specific compiler options\r\n",
+        "Line" : 265,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# add dependencies\r\n",
+        "Line" : 268,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "# handle generators (post-target)\r\n",
+        "Line" : 271,
+        "CharPositionInLine" : 4
+      },
+      "28" : {
+        "Text" : "# track some target properties in YAML files\r\n",
+        "Line" : 274,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_begin_lib(name)\r\n\n#   Begin defining a static link library\r\n\n#\r\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_end_library(name)\r\n\n#   End defining a static link library.\r\n\n#\r\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# add library target\r\n",
+        "Line" : 298,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# set platform- and target-specific compiler options\r\n",
+        "Line" : 302,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "# add dependencies\r\n",
+        "Line" : 305,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "# handle generators (post-target)\r\n",
+        "Line" : 308,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# track some target properties in YAML files\r\n",
+        "Line" : 311,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_begin_app(name type)\r\n\n#   Begin an fips command line app.\r\n\n#   Type can be \"windowed\" or \"cmdline\", default is \"cmdline\".\r\n\n#\r\n",
+        "Line" : 317,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_end_app()\r\n\n#   End defining an application.\r\n\n#\r\n",
+        "Line" : 334,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# add standard frameworks and libs\r\n",
+        "Line" : 340,
+        "CharPositionInLine" : 4
+      },
+      "39" : {
+        "Text" : "# add executable target\r\n",
+        "Line" : 349,
+        "CharPositionInLine" : 4
+      },
+      "40" : {
+        "Text" : "# a windowed application\r\n",
+        "Line" : 351,
+        "CharPositionInLine" : 8
+      },
+      "41" : {
+        "Text" : "# a command line application\r\n",
+        "Line" : 364,
+        "CharPositionInLine" : 8
+      },
+      "42" : {
+        "Text" : "# set platform- and target-specific compiler options\r\n",
+        "Line" : 376,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "# FIPS_APP_WINDOWED or FIPS_APP_CMDLINE defines\r\n",
+        "Line" : 379,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "# android specific stuff\r\n",
+        "Line" : 382,
+        "CharPositionInLine" : 4
+      },
+      "45" : {
+        "Text" : "# handle generators (post-target)\r\n",
+        "Line" : 387,
+        "CharPositionInLine" : 4
+      },
+      "46" : {
+        "Text" : "# add dependencies\r\n",
+        "Line" : 390,
+        "CharPositionInLine" : 4
+      },
+      "47" : {
+        "Text" : "# setup executable output directory and postfixes (_debug, etc...)\r\n",
+        "Line" : 393,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "# track some target properties in YAML files\r\n",
+        "Line" : 397,
+        "CharPositionInLine" : 4
+      },
+      "49" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_begin_sharedlib(name)\r\n\n#   Begin a fips shared library.\r\n\n#\r\n",
+        "Line" : 403,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_end_sharedlib()\r\n\n#   End defining a shared library.\r\n\n#\r\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# add standard frameworks and libs\r\n",
+        "Line" : 420,
+        "CharPositionInLine" : 4
+      },
+      "52" : {
+        "Text" : "# add shared lib target\r\n",
+        "Line" : 429,
+        "CharPositionInLine" : 4
+      },
+      "53" : {
+        "Text" : "# set platform- and target-specific compiler options\r\n",
+        "Line" : 433,
+        "CharPositionInLine" : 4
+      },
+      "54" : {
+        "Text" : "# handle generators (post-target)\r\n",
+        "Line" : 436,
+        "CharPositionInLine" : 4
+      },
+      "55" : {
+        "Text" : "# add dependencies\r\n",
+        "Line" : 439,
+        "CharPositionInLine" : 4
+      },
+      "56" : {
+        "Text" : "# setup executable output directory and postfixes (_debug, etc...)\r\n",
+        "Line" : 442,
+        "CharPositionInLine" : 4
+      },
+      "57" : {
+        "Text" : "# track some target properties in YAML files\r\n",
+        "Line" : 445,
+        "CharPositionInLine" : 4
+      },
+      "58" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_deps(deps ...)\r\n\n#   Add one or more dependencies to the current target. The dependencies\r\n\n#   must be cmake build targets defined with fips_begin/end_module()\r\n\n#   or fips_begin/end_lib(). Dependencies can also be added to fips modules\r\n\n#   or libs, they will then be resolved recursively in the app linking stage.\r\n\n#\r\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_libs(libs ...)\r\n\n#   Add one or more static link library dependencies to the current target.\r\n\n#   The current target can also be a fips module or lib. Dependencies added\r\n\n#   with fips_libs() will be resolved recursively in the app linking stage\r\n\n#   (see fips_deps()).\r\n\n#\r\n",
+        "Line" : 464,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_libs_debug(libs ...)\r\n\n#   Add one or more static link library that are only used in debug mode.\r\n\n#   This is sometimes necessary for precompiled visual studio libs (if they\r\n\n#   use STL code).\r\n\n#   NOTE: libraries with fips_libs_debug() have no recursive dependency\r\n\n#   resolution.\r\n\n#\r\n",
+        "Line" : 477,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_libs_release(libs ...)\r\n\n#   Same as fips_libs_debug(), but for release mode (or rather: all non-debug\r\n\n#   modes).\r\n\n#\r\n",
+        "Line" : 491,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_dir(dir [GROUP ide_group])\r\n\n#   Enter a source code subdirectory.\r\n\n#\r\n",
+        "Line" : 502,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# parse args\r\n",
+        "Line" : 507,
+        "CharPositionInLine" : 4
+      },
+      "64" : {
+        "Text" : "# assign CurDir global var\r\n",
+        "Line" : 516,
+        "CharPositionInLine" : 4
+      },
+      "65" : {
+        "Text" : "# assign CurGroup global var\r\n",
+        "Line" : 523,
+        "CharPositionInLine" : 4
+      },
+      "66" : {
+        "Text" : "# group is explicitly given as GROUP argument\r\n",
+        "Line" : 525,
+        "CharPositionInLine" : 8
+      },
+      "67" : {
+        "Text" : "# special case 'no group' as GROUP \".\"\r\n",
+        "Line" : 527,
+        "CharPositionInLine" : 8
+      },
+      "68" : {
+        "Text" : "# otherwise derive from directory path\r\n\n# hack to string the leading '/' from CurDir\r\n",
+        "Line" : 534,
+        "CharPositionInLine" : 8
+      },
+      "69" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_files(files ...)\r\n\n#   Add files to current target.\r\n\n#\r\n",
+        "Line" : 542,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_files_ex(path [globbing expressions ...]\r\n\n#       [EXCEPT globbing expressions ...]\r\n\n#       [GROUP ide_group]\r\n\n#       [NO_RECURSE]\r\n\n#       [GROUP_FOLDERS])\r\n\n#\r\n\n#   Add files from a path to the current target by using globbing expression.\r\n\n#   It also creates and IDE group.\r\n\n#\r\n\n#   EXCEPT:   globbing expressions on files to exclude\r\n\n#   GROUP:    the same as fips_dir GROUP, used for grouping files in a project\r\n\n#   NO_RECURSE: do not use GLOB_RECURSE on globbing expressions\r\n\n#   GROUP_FOLDERS: will create groups based on folders\r\n\n#\r\n\n#   Note: fips_dir is used internally, so the current dir will change and you\r\n\n#   will be able to more operation on this dir as fips_files().\r\n\n#\r\n",
+        "Line" : 552,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_src(path [globbing expressions ...]\r\n\n#       [EXCEPT globbing expressions ...]\r\n\n#       [GROUP ide_group]\r\n\n#       [NO_RECURSE])\r\n\n#\r\n\n#   Enter a source code subdirectory and collect C/C++ source and header files\r\n\n#   (*.c, *.cc, *.cpp, *.h, *.hh, *.hpp)\r\n\n#   Note that Objective-C aren't automatically considered, for these files use\r\n\n#   fips_files() or fips_files_ex().\r\n\n#\r\n\n#   EXCEPT:   globbing expressions on files to exclude\r\n\n#   GROUP:    the same as fips_dir GROUP, used for grouping files in a project\r\n\n#   NO_RECURSE: do not use GLOB_RECURSE on globbing expressions\r\n\n#\r\n\n#   Note: fips_dir is used internally, so the current dir will change and you\r\n\n#   will be able to more operation on this dir as fips_files().\r\n\n#\r\n",
+        "Line" : 627,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_generate(FROM input_file\r\n\n#       [TYPE generator_type]\r\n\n#       [SOURCE output_source]\r\n\n#       [HEADER output_header]\r\n\n#       [ARGS args_in_yaml_format]\r\n\n#       [REQUIRES target]\r\n\n#       [OUT_OF_SOURCE])\r\n\n#\r\n\n#   Generate one C/C++ source/header pair from an input definition file\r\n\n#   by running a python generator script.\r\n\n#\r\n\n#   FROM:     name of an input file to be processed\r\n\n#   TYPE:     the generator type, filename of a generator script with the .py\r\n\n#   SOURCE:   name of generated source file\r\n\n#   HEADER:   name of generated header file\r\n\n#   ARGS:     optional key/value arguments handed to generator script as dict\r\n\n#   REQUIRES: optional target required to exist or be built before generation\r\n\n#   OUT_OF_SOURCE:  if present, put the generated sources into the build\r\n\n#                   directory, not the source code directory\r\n\n#\r\n\n#   If no TYPE is provided, the input_file must be a python script.\r\n\n#\r\n\n#   If both SOURCE and HEADER are omitted, it is assumed that the\r\n\n#   generator script generated a input_file.cc/input_file.h pair.\r\n\n#   Omitting one of SOURCE or HEADER means the generator script\r\n\n#   will only generate either the SOURCE or HEADER file.\r\n\n#\r\n\n#   NOTE: when using REQUIRES the target must exist to be considered, otherwise\r\n\n#   it will ignore the directive. The order on which the targets are defined\r\n\n#   is important, so define required targets BEFORE requiring generators.\r\n\n#\r\n",
+        "Line" : 649,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# if both no SOURCE and no HEADER provided, set both\r\n\n# to input file plus .cc / .h extension\r\n",
+        "Line" : 693,
+        "CharPositionInLine" : 8
+      },
+      "74" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_add_subdirectory(dir)\r\n\n#\r\n",
+        "Line" : 706,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_include_directories(dir)\r\n\n#\r\n",
+        "Line" : 713,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 76
+    },
+    "cmake/fips_android.cmake" : {
+      "ObjectId" : "e6866e0f08466749af33dcb75e66e72727b41583",
+      "LastModified" : "2019-01-20T11:06:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_android.cmake\n\n#   Helper functions for building and deploying Android apps.\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_android_postbuildstep\n\n#\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/fips_generators.cmake" : {
+      "ObjectId" : "c66f7e5754caf0c509cc961bb882283e13262949",
+      "LastModified" : "2019-01-20T11:06:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_generators.cmake\n\n#   Helper cmake functions for integrating python generator scripts into \n\n#   the build process.\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   Background Info\n\n#\n\n#   There are 2 types of code generation:\n\n#   (1) Just list a python file as source file, this file will be called\n\n#       during the build and is expected to build exactly one .cc and one .h\n\n#       file (this detail may change in the future).\n\n#   (2) Or use the fips_generate() macro which accepts the name of a generator\n\n#       python script (located under project-dir/fips-files/generators),\n\n#       one input file, and a one or multiple output files. The generator\n\n#       must produce the output files using the input file.\n\n#\n\n#   - all filenames handed to the generator scripts will be absolute paths\n\n#   - the generator script must not overwrite the output files if they\n\n#     are already uptodate to prevent triggering dependent targets\n\n#\n\n#   During a cmake run, one .yml file and one cmake custom target \n\n#   will be generated per compile target which needs code generation, \n\n#   the custom target will call a generated python file .fips-gen.py \n\n#   in the project root (created during 'fips gen') which takes\n\n#   a generator.yml file as input and calls the listed generator, which \n\n#   in turn write the generated source file (after making sure that they \n\n#   are actually dirty). cmake will also setup a target dependency between\n\n#   the generator target and the actual compile target which depends on the\n\n#   generated source files.\n\n#\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_begin_gen(target)\n\n#\n\n#   Called from fips_begin_module, fips_begin_lib, fips_begin_app to \n\n#   clear the generator .yml file.\n\n#\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_add_generator()\n\n#   Add a code generator item to the current target.\n\n#\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# special case: input file is the generator script\n",
+        "Line" : 54,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "# add .py extension to generator type\n",
+        "Line" : 57,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# write 'environment'\n",
+        "Line" : 95,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# if generated out-of-source, add the current build dir to\n\n# the header search path, only for the current directory\n",
+        "Line" : 101,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_handle_py_files_posttarget(target pyFiles)\n\n#   Create custom target for .py generator files.\n\n#\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "cmake/fips_osx.cmake" : {
+      "ObjectId" : "e2ccc0d4c69b002c6ff180eaaa2b12c87b8c3f15",
+      "LastModified" : "2019-01-20T11:06:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_osx.cmake\n\n#   OSX/IOS specific cmake functions.\n\n#   FIXME: OSX framework resolution doesn't seem to work\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_frameworks_osx(frameworks ...)\n\n#   OSX specific: Add one or more OSX frameworks for linking with the\n\n#   current target.\n\n#\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_copy_osx_dylib_files(target isbundle)\n\n#   Copy OSX dynamic link libs to the executables directory.\n\n#\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_osx_generate_plist_file(target)\n\n#\n\n#   FIXME: need a way to override the plist file from a fips target\n\n#   description.\n\n#\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_osx_add_target_properties(target)\n\n#   Setup special target properties for OSX/iOS.\n\n#\n",
+        "Line" : 158,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/fips_private.cmake" : {
+      "ObjectId" : "0fa9ad6676accccdcdcf0465aa338785275b684f",
+      "LastModified" : "2019-01-20T11:06:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_private.cmake\r\n\n#   Private cmake macros (all the public stuff is in fips.cmake)\r\n\n#-------------------------------------------------------------------------------\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fisit_reset(target)\r\n\n#   Reset the global tracker variables.\r\n\n#\r\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_apply_target_group(target)\r\n\n#   Apply IDE group name to target.\r\n\n#\r\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_setup_link_directories()\r\n\n#   Setup the link library search paths.\r\n\n#\r\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_resolve_dependencies(target)\r\n\n#   Add all required dependencies to a target\r\n\n#\r\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_config_postfixes_for_exe(target)\r\n\n#   Internal macro to set the executable extensions\r\n\n#\r\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_output_directory(target)\r\n\n#   Internal macro to set the output directory for exes and sharedlibs\r\n\n#\r\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# exes\r\n",
+        "Line" : 94,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# ...and DLLs\r\n",
+        "Line" : 100,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_reset_targets_list()\r\n\n#   Clears a .yml file which keeps track of all targets.\r\n\n#\r\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_addto_targets_list(target type)\r\n\n#   Adds a new entry to the targets type list, this is called from \r\n\n#   the fips_end_xxx() functions.\r\n\n#\r\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_reset_headerdirs_list\r\n\n#   Clears the fips_headerdirs.yml file which keeps track of header search path.\r\n\n#\r\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_addto_headerdirs_list(target)\r\n\n#   Adds the target's header search path to the fips_headerdirs.yml file.\r\n\n#\r\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_reset_defines_list\r\n\n#   Clears the fips_defines.yml file which keeps track of target definitions.\r\n\n#\r\n",
+        "Line" : 145,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_addto_defines_list(target)\r\n\n#   Add target compile definitions to the fips_defines.yml file.\r\n\n#\r\n\n#   NOTE: currently this only adds the global-level defines, a proper\r\n\n#   implementation should add global- and target-level defines.\r\n\n#\r\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_choose_config()\r\n\n#   Sets the FIPS_CONFIG variable to a sensible value, call this if\r\n\n#   FIPS_CONFIG hasn't been provided by the command line when using\r\n\n#   some IDEs which are not directly supported by cmake, like QtCreator\r\n\n#   or CLion.\r\n\n#\r\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_add_file()\r\n\n#   Private helper function to add a single file to the project, with\r\n\n#   additional handling for code generation files.\r\n\n#\r\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# handle subdirectory\r\n",
+        "Line" : 222,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# determine source group name and\r\n\n# add to current source group\r\n",
+        "Line" : 230,
+        "CharPositionInLine" : 8
+      },
+      "19" : {
+        "Text" : "# mark .m as .c file for older cmake versions (bug is fixed in cmake 3.1+)\r\n",
+        "Line" : 235,
+        "CharPositionInLine" : 12
+      },
+      "20" : {
+        "Text" : "# handle plist files special\r\n",
+        "Line" : 239,
+        "CharPositionInLine" : 12
+      },
+      "21" : {
+        "Text" : "# add to global tracker variables\r\n",
+        "Line" : 245,
+        "CharPositionInLine" : 8
+      },
+      "22" : {
+        "Text" : "# remove dups\r\n",
+        "Line" : 248,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_dir_groups()\r\n\n#   Private helper function to add a list of files in a directory tree as groups\r\n\n#   emulating the directory tree.\r\n\n#\r\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# otherise it may end as \"./\" and create a group \".\"\r\n",
+        "Line" : 268,
+        "CharPositionInLine" : 39
+      },
+      "25" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_add_target_dependency(target...)\r\n\n#   Add one or more dependencies to the current target. The dependencies\r\n\n#   must be cmake build targets defined with fips_begin*/fips_end*().\r\n\n#   Used to define a build order required when, for example, building tools to\r\n\n#   use during compilation of the current target.\r\n\n#\r\n",
+        "Line" : 277,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "#-------------------------------------------------------------------------------\r\n\n#   fips_apply_executable_type_defines(target [cmdline|windowed])\r\n\n#   Adds the define FIPS_APP_CMDLINE or FIPS_APP_WINDOWED to the current\r\n\n#   executable target (and only this target). This can be used on\r\n\n#   Windows to decide whether the app should implement a main() or WinMai()\r\n\n#   entry function.\r\n\n#\r\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 27
+    },
+    "cmake/fips_windows.cmake" : {
+      "ObjectId" : "cc2b05afc38602ef344f1b70f8f3e36ba720720c",
+      "LastModified" : "2015-05-17T15:45:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_windows.cmake\n\n#   Windows/VStudio-specific helper functions\n\n#-------------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_vs_warning_level(1..4)\n\n#   Set a module-specific warning level for Visual Studio, simply set this\n\n#   within a 'begin/end' pair.\n\n#\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_vs_disable_warning(warnings ...)\n\n#   Disable a specific vstudio warning\n\n#\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-------------------------------------------------------------------------------\n\n#   fips_vs_apply_options()\n\n#   Applies the module-specific options set between begin/end\n\n#\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "templates/CMakeLists.txt" : {
+      "ObjectId" : "62295a4868936e9c5e5d7a83cb03149dd8cddd89",
+      "LastModified" : "2019-01-20T11:06:34Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# project: $project\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# include the fips main cmake file\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# include_directories(src)\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# fips_add_subdirectory(src/...)\n\n# fips_add_subdirectory(src/...)\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 13
+  },
+  "ElapsedTime" : 815
+}

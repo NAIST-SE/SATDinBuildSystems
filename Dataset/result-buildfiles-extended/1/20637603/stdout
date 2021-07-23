@@ -1,0 +1,3336 @@
+{
+  "Repository" : "20637603",
+  "Revision" : "HEAD",
+  "ObjectId" : "d261076edff66c6a22a47e9f46c425917394a1e3",
+  "CommitTime" : "2017-01-29T00:57:22Z",
+  "Files" : {
+    "3rdparty/CMakeLists.txt" : {
+      "ObjectId" : "5fbe178c3d4335bb30c5b955fbde8861648c0496",
+      "LastModified" : "2016-12-09T14:32:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# DEPENDENCIES FOR THE PROCESS LIBRARY AND STOUT.\n\n#\n\n# Downloads, configures, and compiles the third-party libraries for the process\n\n# library (located in `3rdparty/`).\n\n###############################################################################\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define sources of third-party dependencies.\n\n#############################################\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# NOTE: libevent doesn't come rebundled, so this URL is always the same. But,\n\n# it's only downloaded if `ENABLE_LIBEVENT` is set.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# TODO(hausdorff): (MESOS-3394) Upgrade Windows to use glog v0.3.5 when they\n\n# release it, as that will contain fixes that will allow us to build glog on\n\n# Windows, as well as build using CMake directly. For now, we simply point\n\n# Windows builds at a commit hash in the glog history that has all the\n\n# functionality we want.\n\n#\n\n# Finally, for our third-party libraries, MSVC 1800 and 1900 are not\n\n# linker-compatible, so it's important for us to be able to build glog\n\n# (as well as all the other third-party dependencies) on MSVC 1900.\n\n#\n\n# [1] https://github.com/google/glog/pull/43\n",
+        "Line" : 52,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Define build/patch/configure commands for third-party libs.\n\n#############################################################\n\n# NOTE: (fix for MESOS-3250) A few third-party libraries (libev, gmock) do not\n\n# have `make install` commands available, so below we have to add our own\n\n# \"install\" commands.\n\n#\n\n# The reason is: if we do not, we get runtime library load problems on OS X. In\n\n# particular, `dydl` will look for these libraries at the prefix we passed to\n\n# `configure` (or in `/usr/local` if we did not pass a prefix in), but since\n\n# they don't have a `make install` step, they never get placed in the prefix\n\n# folder.\n\n#\n\n# Our solution is to:\n\n#   (1) make a lib directory inside the Mesos folder for each of the libraries\n\n#       that has no install step, and\n\n#   (2) copy all such libraries into their respective directories.\n\n#\n\n# (Note that step (1) is not only convenient, but important: make will add a\n\n# `lib` to the end of your prefix path when linking, and since the built\n\n# libraries end up in a `.libs` folder, it's not enough to simply pass the\n\n# build directory into `configure` as a prefix; so if we're going to move the\n\n# libraries, we might as well move them to a library folder.)\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Patch glog to deal with a problem that appears when compiling on clang\n\n# under the C++11 standard. cf. MESOS-860, MESOS-966.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# NOTE: `libev` is \"installed\" into a lib directory, see \"NOTE: (fix for\n\n# MESOS-3250)\" comment above for explanation.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Patch libev to keep it from reaping child processes.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Set the patch command which will utilize patch.exe under\n\n# `\\Users\\<user>\\AppData\\Local\\Temp with no elevation prompt`\n",
+        "Line" : 129,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Third-party libraries. Tell the build system how to pull in and build third-\n\n# party libraries at compile time, using the ExternalProject_Add macro.\n\n##############################################################################\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# The patch, configure, build, and install commands are stubbed out on Windows\n\n# builds so that it defaults to build using CMake. This is for the same reason\n\n# as the GMock code library build, see the call to `ExternalProject_Add` for\n\n# the GMock project below for more details.\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Windows third-party libraries. Windows has no package manager, so we download\n\n# them here.\n\n###############################################################################\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# TODO(hausdorff): maybe try to incorporate this into findpackage for Windows\n",
+        "Line" : 246,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# DEPENDENCIES FOR THE PROCESS LIBRARY TESTS AND STOUT TESTS.\n\n#\n\n# Downloads, configures, and compiles the third-party libraries for the process\n\n# library tests (located in `3rdparty/`).\n\n###############################################################################\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# TODO(hausdorff): (MESOS-3453) this is a patched version of the protobuf\n\n# library that compiles on Windows. We need to either send this as a PR back\n\n# to the protobuf project, or we need to apply these changes to our existing\n\n# protobuf tarball in the patch step.\n",
+        "Line" : 290,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# NOTE: `gmock` is \"installed\" into a lib directory, see \"NOTE: (fix for\n\n# MESOS-3250)\" comment above for explanation.\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# NOTE: An implicit consequence of the following code is that on non-Windows\n\n# platforms, gmock and gtest are assumed to be CMake projects, and are thus\n\n# configured and built using default CMake commands. The reason is that on\n\n# non-Windows platforms, we choose to set `GMOCK_CONFIG_CMD` and\n\n# `GMOCK_BUILD_CMD` with stub commands, which cause CMake to \"fall back\" to\n\n# trying to build them with CMake.\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# BUILDING THE STOUT TESTS.\n\n#\n\n# Builds, configures, and compiles the Stout tests.\n\n###################################################\n",
+        "Line" : 344,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# BUILDING THE PROCESS LIBRARY AND ITS TESTS.\n\n#\n\n# Builds, configures, and compiles the process library and assorted tests.\n\n##########################################################################\n",
+        "Line" : 351,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# BUILDING THE MESOS DEPENDENCIES.\n\n#\n\n# Downloads, configures, and compiles the third-party libraries for the mesos.\n\n###################################################\n",
+        "Line" : 359,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Define sources of third-party dependencies.\n\n#############################################\n",
+        "Line" : 364,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Similar to glog, on Windows, we use a different version of ZK. We'll\n\n# eventually want to upgrade the Mesos project but for now this version of ZK\n\n# does not come rebundled in the Mesos repository, so we need to get it from\n\n# our canonical package mirror.\n",
+        "Line" : 379,
+        "CharPositionInLine" : 2
+      },
+      "23" : {
+        "Text" : "# Define build/patch/configure commands for third-party libs.\n\n#############################################################\n",
+        "Line" : 386,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Set the patch command which will utilize patch.exe in temp location for no elevation prompt\n\n# NOTE: We do not specify the `--binary` patch option here because the\n\n# files being modified are extracted with CRLF (Windows) line endings\n\n# already. The `--binary` option will instead fail to apply the patch.\n",
+        "Line" : 397,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Third-party libraries. Tell the build system how to pull in and build third-\n\n# party libraries at compile time, using the ExternalProject_Add macro.\n\n##############################################################################\n",
+        "Line" : 417,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "3rdparty/Makefile.am" : {
+      "ObjectId" : "bbf9cfe7125b193003115f440a00c91e2e68f404",
+      "LastModified" : "2016-12-09T14:32:47Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile is for building third-party packages from\n\n# tarballs. For autotools-based packages, we configure each of the\n\n# packages to build static PIC binaries which we can safely link into\n\n# a shared libmesos, and build it in-place without installing it (even\n\n# if one runs 'make install' in this directory). Non-autotools based\n\n# packages may be special cases; this Makefile is responsible for\n\n# passing any special make or configure flags that might be required.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Initialized to enable using +=.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 16
+      },
+      "3" : {
+        "Text" : "# We need to add '--srcdir=.' needed because 'make distcheck' adds\n\n#  '--srcdir=...' when configuring.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The reason we use '/' prefix is to allow ourselves to install these packages\n\n# in build/3rdparty directory as well. To do that, we can simply call\n\n#   `make install DESTDIR=/path/to/builddir/ install`\n\n# Similarly, when doing system-wide installation, we can do:\n\n#   `make install DESTDIR=${MESOS-PREFIX}/lib/mesos/3rdparty install`\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Directory where bundled 3rdparty module dependencies are installed.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We need to patch glog in order to deal with a compilation issue when\n\n# compiling with clang (and C++11); see MESOS-860, MESOS-966.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We patch http-parser to avoid a name collision with our `flags` namespace.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We need to patch leveldb to prevent it from linking to snappy and\n\n# tcmalloc; see MESOS-1054, MESOS-1624.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# We patch libev to keep it from reaping child processes.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# We include an upstream patch for protobuf in order to avoid\n\n# signed/unsigned comparisons.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# We need to patch ZooKeeper in order to get 3.4.8 to compile on PPC LE.\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# This is where the magic happens: we use stamp files as dependencies\n\n# which cause the packages to get extracted as necessary. We also\n\n# apply any patches as appropriate.\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Dependencies for all-local.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Initialize ALL_LOCAL so we can add to it.\n",
+        "Line" : 132,
+        "CharPositionInLine" : 12
+      },
+      "15" : {
+        "Text" : "# Stout depends on ELFIO. Install ELFIO into $PREFIX/include\n\n# but don't add it to the source tarball.\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Initialize to empty\n",
+        "Line" : 189,
+        "CharPositionInLine" : 15
+      },
+      "17" : {
+        "Text" : "# NOTE: We explicitly set GTEST_CONFIG=no so that we don't attempt to\n\n# build glog against a system installed gtest (there's no reason to\n\n# \"test\" glog and it's highly likely it will cause a compilation bug\n\n# when building with clang).\n\n# We explicitly build only libglog.la as it is the artifact we depend\n\n# on. This e.g., avoids building glog-internal tests.\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Convenience library for nodejs/http-parser.\n",
+        "Line" : 225,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Stout depends on <picojson.h>. Install picojson.h into $PREFIX/include\n\n# but don't add it to the source tarball.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Convenience library for gmock/gtest.\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We list the sources in BUILT_SOURCES to make sure that the package\n\n# gets unarchived first.\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# TODO(charles): Figure out PIC options in our configure.ac or create\n\n# a configure.ac for leveldb.\n",
+        "Line" : 297,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# No matter what, we need to extract ZooKeeper so that we can run\n\n# 'make check' (some of our tests need the ZooKeeper JAR).\n",
+        "Line" : 313,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Install 3rdparty module dependencies.\n",
+        "Line" : 335,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 25
+    },
+    "3rdparty/cmake/Mesos3rdpartyConfigure.cmake" : {
+      "ObjectId" : "eeb27860f6f95d297ccfe273ed76de5355b50ff8",
+      "LastModified" : "2016-03-02T07:55:26Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# DEFINE DIRECTORY STRUCTURE FOR THIRD-PARTY LIBS.\n\n##################################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The latest release of ZK, 3.4.7, does not compile on Windows. Therefore, we\n\n# pick a recent commit that does until the next release stabilizes.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Intermediate convenience variables for oddly-structured directories.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Convenience variables for include directories of third-party dependencies.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Convenience variables for `lib` directories of built third-party dependencies.\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Convenience variables for \"lflags\", the symbols we pass to CMake to generate\n\n# things like `-L/path/to/glog` or `-lglog`.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Configure Windows use of the GNU patch utility;\n\n# we attempt to find it in its default location,\n\n# but this path may be customized.\n\n#################################################\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Since Windows Vista patch.exe has been reqesting elevation to work\n\n# eventhough it is not required to apply patches. So to avoid a prompt\n\n# for elevation a manifest will be applied to patch.exe in the current\n\n# user temp directory.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# First: Copy patch.exe and patch.exe.manifest to the user temp dir where\n\n# elevation is not required. 'Set \\Users\\<user>\\AppData\\Local\\Temp' dir.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Set full path for temp location of patch.exe.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "#set full path for patch.exe.manifest.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Set full path for temp location of patch.exe.manifest.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Copy patch.exe and path.exe.manifest to temp location.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Second: Apply manifest to patch command.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 15
+    },
+    "3rdparty/cmake/Versions.cmake" : {
+      "ObjectId" : "ad23f3895b49d623709c0939d63a0529654788ef",
+      "LastModified" : "2016-08-15T18:03:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO(hausdorff): (MESOS-3529) transition this back to a non-beta version.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "3rdparty/libprocess/3rdparty/Makefile.am" : {
+      "ObjectId" : "9dc5fb51d8120d0b26b3f158f69191e468694275",
+      "LastModified" : "2016-08-15T18:03:22Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile is for building third-party packages from\n\n# tarballs. For autotools-based packages, we configure each of the\n\n# packages to build static PIC binaries which we can safely link into\n\n# a shared libmesos, and build it in-place without installing it (even\n\n# if one runs 'make install' in this directory). Non-autotools based\n\n# packages may be special cases; this Makefile is responsible for\n\n# passing any special make or configure flags that might be required.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Initialized to enable using +=.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 16
+      },
+      "3" : {
+        "Text" : "# We need to add '--srcdir=.' needed because 'make distcheck' adds\n\n#  '--srcdir=...' when configuring.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Directory which holds bundled dependencies\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We need to patch glog in order to deal with a compilation issue when\n\n# compiling with clang (and C++11); see MESOS-860, MESOS-966.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We patch http-parser to avoid a name collision with our `flags` namespace.\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We patch libev to keep it from reaping child processes.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# We include an upstream patch for protobuf in order to avoid\n\n# signed/unsigned comparisons.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# This is where the magic happens: we use stamp files as dependencies\n\n# which cause the packages to get extracted as necessary. We also\n\n# apply any patches as appropriate.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Dependencies for all-local.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Initialize ALL_LOCAL so we can add to it.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 12
+      },
+      "12" : {
+        "Text" : "# Initialize to empty\n",
+        "Line" : 97,
+        "CharPositionInLine" : 15
+      },
+      "13" : {
+        "Text" : "# NOTE: We explicitly set GTEST_CONFIG=no so that we don't attempt to\n\n# build glog against a system installed gtest (there's no reason to\n\n# \"test\" glog and it's highly likely it will cause a compilation bug\n\n# when building with clang).\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Convenience library for nodejs/http-parser.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Convenience library for gmock/gtest.\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# We list the sources in BUILT_SOURCES to make sure that the package\n\n# gets unarchived first.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "3rdparty/libprocess/CMakeLists.txt" : {
+      "ObjectId" : "6312e20ec0102edbef086bf61ce4256109ae8fa0",
+      "LastModified" : "2016-08-15T18:03:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# BUILD THE PROCESS LIBRARY.\n\n############################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# PROCESS TESTING INFRASTRUCTURE.\n\n#################################\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "3rdparty/libprocess/Makefile.am" : {
+      "ObjectId" : "5e7fdd06ccbed50f248c81e9df1651a3702e7add",
+      "LastModified" : "2016-12-22T06:02:23Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Makefile for libprocess. Note that 3rdparty needs to be built\n\n# first (see 3rdparty/Makefile.am).\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable common (and some language specific) warnings.\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Warn when a comparison is made between signed and unsigned values.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Warn about use of format functions that can produce security issues.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We will also have much more hardened/secured binaries and libraries.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Protect many of the functions with stack guards\n\n# (either -fstack-protector-strong or -fstack-protector depending on compiler support).\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Produce position independent code when appropriate.\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOTE: The libprocess headers were moved to the Makefile in \"include\"\n\n# subdirectory to make it easy to preserve the directory structure of\n\n# the header files during installation.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Dependencies for all-local.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Initialize BUNDLED_DEPENDENCIES so we can add to it.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 15
+      },
+      "11" : {
+        "Text" : "# Ensure bundled software is build properly.\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Library. It is not installable presently because most people link\n\n# the libprocess statically into their resulting library or binary and\n\n# don't want any parts of libprocess to get installed (which happens\n\n# even if you attempt to do conditional installation via configure\n\n# arguments, see configure.ac).\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We use \"-isystem\" instead of \"-I\" to add Boost to the include search\n\n# path. This disables compiler warnings inside Boost headers since we\n\n# can't easily fix them. See MESOS-3799.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# A static libprocess with position independent code can be used to produce a\n\n# final shared library (e.g., libmesos.so) which includes everything necessary\n\n# (and only install that).\n",
+        "Line" : 221,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Tests.\n",
+        "Line" : 233,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Used for testing remote links.\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# If libprocess is not static, we need to directly link against libglog, etc.\n\n# When libprocess is configured by Mesos, it is forced to generate a static\n\n# libprocess.a library. The static libprocess.a encapsulates libglog, etc.\n\n# However, when building a standalone libprocess, we need to explicitly link\n\n# these tests against libglog, etc., because libprocess.so won't contain these\n\n# libraries.\n",
+        "Line" : 302,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# We use a check-local target for now to avoid the parallel test\n\n# runner that ships with newer versions of autotools.\n\n# See the following discussion for the workaround:\n\n# http://lists.gnu.org/archive/html/automake/2013-01/msg00051.html\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# TODO(benh): Fix shared builds (tests need libglog, libev, etc).\n",
+        "Line" : 331,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Make sure we don't recurse into 3rdparty when creating the distribution\n\n# tarball.\n\n# When recursing into 3rdparty, it tries to distribute the bundled dependencies\n\n# such as boost and glog even though they have already been included as part of\n\n# top-level 3rdparty.\n",
+        "Line" : 334,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Explicitly include 3rdparty directory in the distribution tarball since we\n\n# exclude it from DIST_SUBDIRS (when building it as part of Mesos).\n",
+        "Line" : 341,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Using LT_OUTPUT in configure.ac creates config.lt that doesn't get\n\n# cleaned up by distclean-libtool. See this bug patch (which doesn't\n\n# appear to be in all versions of libtool.m4):\n\n# http://lists.gnu.org/archive/html/automake-commit/2008-11/msg00015.html.\n",
+        "Line" : 348,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 23
+    },
+    "3rdparty/libprocess/cmake/Process3rdpartyConfigure.cmake" : {
+      "ObjectId" : "e9eabd08d327f4c714199f7bde91b9adf644a678",
+      "LastModified" : "2016-12-09T14:32:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# DEFINE DIRECTORY STRUCTURE FOR THIRD-PARTY LIBS.\n\n##################################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Glog 0.3.3 does not compile out of the box on Windows. Therefore, we\n\n# require 0.3.4.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# NOTE: We expect cURL and zlib exist on Unix (usually pulled in with a\n\n# package manager), but Windows has no package manager, so we have to go\n\n# get it.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Intermediate convenience variables for oddly-structured directories.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Convenience variables for include directories of third-party dependencies.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Convenience variables for `lib` directories of built third-party dependencies.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Convenience variables for \"lflags\", the symbols we pass to CMake to generate\n\n# things like `-L/path/to/glog` or `-lglog`.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Necessary because the lib names for (e.g.) curl are generated incorrectly\n\n# on Windows. That is, on *nix, the curl binary should be (e.g.) libcurl.so,\n\n# and on Windows it should be curl.lib. But on Windows, it's actually\n\n# libcurl.lib. Hence, we have to special case it here because CMake assumes\n\n# the library names are generated correctly.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Windows requires a static build of zlib.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Convenience variable for `protoc`, the Protobuf compiler.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Configure the process library, the last of our third-party libraries.\n\n#######################################################################\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "3rdparty/libprocess/cmake/ProcessConfigure.cmake" : {
+      "ObjectId" : "c15b0a66c5226c2810454b0b0aa8f92b57cc13ab",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# This file exports variables needed ot link to third-party libs. These are\n\n# used throughout the Mesos project.\n\n#\n\n# This includes things like:\n\n#   * Components defining the public interface, like which headers we need in\n\n#     order to link to libprocess.\n\n#   * Where to look to find built libraries.\n\n#   * Version information of the third-party libraries in use.\n\n#\n\n# This does not include:\n\n#   * Where to find include headers for tests -- the rest of Mesos does not\n\n#     need this information.\n\n#   * Any information about how to build these libraries. That's in\n\n#     libprocess/CMakeLists.txt\n\n#   * Information required to build third-party libraries, wuch as what source\n\n#     files we need to compile libprocess.\n\n#   * Build commands actually used to compile (e.g.) libprocess.\n\n#\n\n# Rationale: Autoconf makes linking to third party dependencies as simple as\n\n# pointing at the underlying makefile. In CMake, this is harder because we do\n\n# not assume there are Makefiles at all. Thus, it is useful to export variables\n\n# with things like which header files you need to include to link to third\n\n# party libraries, and where in the directory tree you need to look to get the\n\n# actual libraries.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# SOURCE GROUPS. Allows IDEs to group header files for projects taking a\n\n# dependency on this package.\n\n########################################################################\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Define process library dependencies. Tells the process library build targets\n\n# download/configure/build all third-party libraries before attempting to build.\n\n################################################################################\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Define third-party include directories. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux).\n\n###############################################################################\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define third-party lib install directories. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Define third-party libs. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# TODO(hausdorff): (MESOS-3396) The `LINUX` flag comes from MesosConfigure;\n\n# when we port the bootstrap script to CMake, we should also copy this\n\n# logic into .cmake files in the Stout and Process libraries'\n\n# folders individually.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 8
+    },
+    "3rdparty/libprocess/cmake/ProcessTestsConfigure.cmake" : {
+      "ObjectId" : "31e20e475a4f51ea74eeebae2a026264589e8dda",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# DEFINE PROCESS TEST LIBRARY DEPENDENCIES. Tells the process library build\n\n# tests target download/configure/build all third-party libraries before\n\n# attempting to build.\n\n###########################################################################\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# DEFINE THIRD-PARTY INCLUDE DIRECTORIES. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux).\n\n###############################################################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# includes, e.g., decoder.hpp\n",
+        "Line" : 48,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# DEFINE THIRD-PARTY LIB INSTALL DIRECTORIES. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# libprocess directory.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 33
+      },
+      "6" : {
+        "Text" : "# DEFINE THIRD-PARTY LIBS. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "3rdparty/libprocess/cmake/macros/External.cmake" : {
+      "ObjectId" : "5bc51bd3822677040ab03edd576c876b74bd8afc",
+      "LastModified" : "2016-08-15T18:03:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# EXTERNAL defines a few variables that make it easy for us to track the\n\n# directory structure of a dependency. In particular, if our library's name is\n\n# boost, we will define the following variables:\n\n#\n\n#   BOOST_VERSION    (e.g., 1.53.0)\n\n#   BOOST_TARGET     (a target folder name to put dep in e.g., boost-1.53.0)\n\n#   BOOST_CMAKE_ROOT (where to have CMake put the uncompressed source, e.g.,\n\n#                     build/3rdparty/boost-1.53.0)\n\n#   BOOST_ROOT       (where the code goes in various stages of build, e.g.,\n\n#                     build/.../boost-1.53.0/src, which might contain folders\n\n#                     build-1.53.0-build, -lib, and so on, for each build step\n\n#                     that dependency has)\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Names of variables we will set in this function.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# e.g., BOOST_VERSION\n\n# e.g., BOOST_TARGET\n\n# e.g., BOOST_CMAKE_ROOT\n\n# e.g., BOOST_ROOT\n",
+        "Line" : 38,
+        "CharPositionInLine" : 51
+      },
+      "4" : {
+        "Text" : "# Generate data that we will put in the above variables.\n\n# NOTE: bundled packages are untar'd into the BIN_ROOT, which is why we're\n\n#       pointing the source root into BIN_ROOT rather than SRC_ROOT.\n\n# TODO(hausdorff): SRC_DATA doesn't work for HTTP, LIBEV, GMOCK, or GTEST.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Finally, EXPORT THE ABOVE VARIABLES. We take the data variables we just\n\n# defined, and export them to variables in the parent scope.\n\n#\n\n# NOTE: The \"export\" step is different from the \"define the data vars\" step\n\n#       because an expression like ${VERSION_VAR} will evaluate to\n\n#       something like \"BOOST_VERSION\", not something like \"1.53.0\". That\n\n#       is: to get the version in the parent scope we would do something\n\n#       like ${BOOST_VERSION}, which might evaluate to something like\n\n#       \"1.53.0\". So in this function, if you wanted to generate (e.g.) the\n\n#       target variable, it is not sufficient to write\n\n#       \"${LIB_NAME}-${VERSION_VAR}\", because this would result in\n\n#       something like \"boost-BOOST_VERSION\" when what we really wanted was\n\n#       \"boost-1.53.0\". Hence, these two steps are different.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# e.g., 1.53.0\n",
+        "Line" : 65,
+        "CharPositionInLine" : 24
+      },
+      "7" : {
+        "Text" : "# e.g., boost-1.53.0\n",
+        "Line" : 69,
+        "CharPositionInLine" : 24
+      },
+      "8" : {
+        "Text" : "# e.g., build/3rdparty/boost-1.53.0\n",
+        "Line" : 73,
+        "CharPositionInLine" : 24
+      },
+      "9" : {
+        "Text" : "# e.g., build/.../boost-1.53.0/src\n",
+        "Line" : 77,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 10
+    },
+    "3rdparty/libprocess/cmake/macros/PatchCommand.cmake" : {
+      "ObjectId" : "12ee3f177a490c9b2319ed865aa3bb73019dad0d",
+      "LastModified" : "2015-07-22T00:49:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##############################################################\n\n# PATCH_CMD generates a patch command for those dependencies that need it. For\n\n# example, when the rebundled version of GLOG needs to be patched, we would run\n\n# this command.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# CMake does not appear to have a good way for macro functions to return\n\n# values, so here we assign the patch command to a variable in the\n\n# PARENT_SCOPE. (The name of the variable to assign to in the parent scope\n\n# is passed in as a parameter to the macro function.)\n",
+        "Line" : 22,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 3
+    },
+    "3rdparty/libprocess/cmake/macros/VsBuildCommand.cmake" : {
+      "ObjectId" : "c7b795313ddb604a32bbb7666b2352b6b4aa5df7",
+      "LastModified" : "2016-08-15T18:03:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "##############################################################\n\n# VS_BUILD_CMD generates a build command for project which have Visual Studio\n\n# Solution File(.sln). For example, when we want to build GLOG through Visual\n\n# Studio in command line, we would run this command. It would define\n\n# ${LIB_NAME_UPPER}_BUILD_CMD with build command finally.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generate the build command with ${VS_BUILD_SCRIPT}.\n\n## 1. Convert the path to Windows style.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "## 2. Convert the command to list so that CMake could handle it correctly.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 4
+    },
+    "3rdparty/libprocess/include/Makefile.am" : {
+      "ObjectId" : "662c04e5b2db197cbd0eca62ca0145b5fd579dc7",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Headers.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "3rdparty/libprocess/src/CMakeLists.txt" : {
+      "ObjectId" : "ab362aa476e528deef691239a70f0be9d864e6c0",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# SOURCE FILES FOR THE PROCESS LIBRARY.\n\n#######################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR PROCESS LIBRARY (generates, e.g., -I/path/to/thing\n\n# on Linux).\n\n###########################################################################\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# THE PROCESS LIBRARY (generates, e.g., libprocess.so, etc., on Linux).\n\n#######################################################################\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "3rdparty/libprocess/src/tests/CMakeLists.txt" : {
+      "ObjectId" : "b298bbe042cabcb18169da1923562e9956374232",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# PROCESS TESTS.\n\n################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ADDITIONAL CPP FLAGS FOR PROCESS TEST BINARY (e.g., -DBUILD_DIR=...).\n\n#######################################################################\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR PROCESS TEST BINARY (generates, e.g., -I/path/to/thing\n\n# on Linux).\n\n###############################################################################\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# THE PROCESS TEST EXECUTABLE (generates, e.g., libprocess-tests, etc., on Linux).\n\n###############################################################################\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# ADDITIONAL EXECUTABLE(s).\n\n###########################\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# ADD TEST TARGET (runs when you do, e.g., `make check`).\n\n#########################################################\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "3rdparty/stout/3rdparty/Makefile.am" : {
+      "ObjectId" : "73f6e058eff6ed8b08d119fcb61bc28c8d30c346",
+      "LastModified" : "2016-08-15T18:03:22Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This Makefile is for building third-party packages from\n\n# tarballs. For autotools-based packages, we configure each of the\n\n# packages to build static PIC binaries which we can safely link into\n\n# a shared libmesos, and build it in-place without installing it (even\n\n# if one runs 'make install' in this directory). Non-autotools based\n\n# packages may be special cases; this Makefile is responsible for\n\n# passing any special make or configure flags that might be required.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Initialized to enable using +=.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 16
+      },
+      "3" : {
+        "Text" : "# We need to add '--srcdir=.' needed because 'make distcheck' adds\n\n#  '--srcdir=...' when configuring.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Directory which holds bundled dependencies\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We need to patch glog in order to deal with a compilation issue when\n\n# compiling with clang (and C++11); see MESOS-860, MESOS-966.\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We include an upstream patch for protobuf in order to avoid\n\n# signed/unsigned comparisons.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# This is where the magic happens: we use stamp files as dependencies\n\n# which cause the packages to get extracted as necessary. We also\n\n# apply any patches as appropriate.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Dependencies for all-local.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Initialize ALL_LOCAL so we can add to it.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 12
+      },
+      "10" : {
+        "Text" : "# Initialize to empty\n",
+        "Line" : 80,
+        "CharPositionInLine" : 15
+      },
+      "11" : {
+        "Text" : "# NOTE: We explicitly set GTEST_CONFIG=no so that we don't attempt to\n\n# build glog against a system installed gtest (there's no reason to\n\n# \"test\" glog and it's highly likely it will cause a compilation bug\n\n# when building with clang).\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Convenience library for gmock/gtest.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We list the sources in BUILT_SOURCES to make sure that the package\n\n# gets unarchived first.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "3rdparty/stout/Makefile.am" : {
+      "ObjectId" : "ebf1069eb1b787f063a2066a4db0b3f5de4a56da",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Makefile for stout.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Enable common (and some language specific) warnings.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Warn when a comparison is made between signed and unsigned values.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Warn about use of format functions that can produce security issues.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# We will also have much more hardened/secured binaries and libraries.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Protect many of the functions with stack guards\n\n# (either -fstack-protector-strong or -fstack-protector depending on compiler support).\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Produce position independent code when appropriate.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# NOTE: The stout headers were moved to the Makefile in \"include\"\n\n# subdirectory to make it easy to preserve the directory structure of\n\n# the header files during installation.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Dependencies for all-local.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Initialize BUNDLED_DEPS so we can add to it.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 15
+      },
+      "11" : {
+        "Text" : "# Ensure bundled software is build properly.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# We use \"-isystem\" instead of \"-I\" to add Boost to the include search\n\n# path. This disables compiler warnings inside Boost headers since we\n\n# can't easily fix them. See MESOS-3799.\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# TODO(kapil): Handle unbundled GMOCK.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Enable the INT64 support for PicoJSON.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Tests for stout.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The order of include flags shouldn't matter because we are allowed to disable\n\n# some bundled dependencies in favor of system-installed ones. This would be a\n\n# concern if some headers were to have the same paths.\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The order of LDADD flags would matter if the same symbol is provided by\n\n# multiple of these libraries. This is highly unlikely, especially, since we are\n\n# allowed to disable some bundled libraries in lieu of system-installed ones.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# FreeBSD makes the dynamic linking interface available in libc\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# We use a check-local target for now to avoid the parallel test\n\n# runner that ships with newer versions of autotools.\n\n# See the following discussion for the workaround:\n\n# http://lists.gnu.org/archive/html/automake/2013-01/msg00051.html\n",
+        "Line" : 205,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Make sure we don't recurse into 3rdparty when creating the distribution\n\n# tarball.\n\n# When recursing into 3rdparty, it tries to distribute the bundled dependencies\n\n# such as boost and glog even though they have already been included as part of\n\n# top-level 3rdparty.\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Explicitly include 3rdparty directory in the distribution tarball since we\n\n# exclude it from DIST_SUBDIRS (when building it as part of Mesos).\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 22
+    },
+    "3rdparty/stout/cmake/FindApr.cmake" : {
+      "ObjectId" : "13156a58a57c22044977c7220df31372e61f82f6",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# IMPORTANT NOTE: I (hausdorff) have copied a *lot* of stuff in this file from\n\n#                 code I found at in the Akumuli[1] project. The original version\n\n#                 of this file was also released under the Apache 2.0 license, and\n\n#                 licensed to the ASF, making it fully compatible with the Mesos\n\n#                 project.\n\n#  [1] https://github.com/akumuli/Akumuli/blob/master/cmake/FindAPR.cmake\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This module helps to find the Apache Portable Runtime (APR) and APR-Util\n\n# packages.\n\n#\n\n# USAGE: to use this module, add the following line to your CMake project:\n\n#   find_package(Apr)\n\n#\n\n# To make linking to APR simple, this module defines:\n\n#   * APR_FOUND and APRUTIL_FOUND             (if false, linking build will fail)\n\n#   * APR_INCLUDE_DIR and APRUTIL_INCLUDE_DIR (defineswhere to find apr.h, etc.)\n\n#   * APR_LIBS and APRUTIL_LIBS     (binaries for APR and friends)\n\n#\n\n# Also defined, but not for general use are:\n\n#   * APR_LIB and APRUTIL_LIB         (where to find the APR library)\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# CONFIGURE THE APR SEARCH. Specify what we're looking for, and which directories\n\n# we're going to look through to find them.\n\n#############################################################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# NOTE: If this fails, stderr is ignored, and the output variable is empty.\n\n# This has no deleterious effect our path search.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# SEARCH FOR APR LIBRARIES.\n\n###########################\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Did we find the include directory?\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Value set to APR_INCLUDE_DIR-NOTFOUND if not found.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 21
+      },
+      "8" : {
+        "Text" : "# Did we find the library?\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Value set to `APR_LIB-NOTFOUND` if not found.\n",
+        "Line" : 101,
+        "CharPositionInLine" : 13
+      },
+      "10" : {
+        "Text" : "# APR is considered \"found\" if we've both an include directory and an APR binary.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Results.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# (Deprecated declarations.)\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Export libraries variables.\n",
+        "Line" : 129,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# CONFIGURE THE APR-UTIL SEARCH. Specify what we're looking for, and which\n\n# directories we're going to look through to find them.\n\n#############################################################################\n\n# NOTE: If this fails, stderr is ignored, and the output variable is empty.\n\n# This has no deleterious effect our path search.\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# SEARCH FOR APR-UTIL LIBRARIES.\n\n################################\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Did we find the include directory?\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Value set to APR_INCLUDE_DIR-NOTFOUND if not found.\n",
+        "Line" : 179,
+        "CharPositionInLine" : 25
+      },
+      "18" : {
+        "Text" : "# Did we find the library?\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Value set to `APR_LIB-NOTFOUND` if not found.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 17
+      },
+      "20" : {
+        "Text" : "# APR-UTIL is \"found\" if we've both an include directory and an APR-UTIL binary.\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Results.\n",
+        "Line" : 199,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# (Deprecated declarations.)\n",
+        "Line" : 211,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Export libraries variables.\n",
+        "Line" : 215,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "3rdparty/stout/cmake/FindSvn.cmake" : {
+      "ObjectId" : "d57eed98285295bcc845bb0494c86e3866685690",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# IMPORTANT NOTE: Much of this file is taken almost-directly from the\n\n#                 FindApr.cmake file in this project. This file is itself taken\n\n#                 from an external source; see comments for details.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This module helps to find the Subversion packages.\n\n#\n\n# USAGE: to use this module, add the following line to your CMake project:\n\n#   find_package(Svn)\n\n#\n\n# To make linking to Subversion simple, this module defines:\n\n#   * SVN_FOUND       (if false, linking build will fail)\n\n#   * SVN_INCLUDE_DIR (defineswhere to find svn_client.h, etc.)\n\n#   * SVN_LIBS   (binaries for SVN and friends)\n\n#\n\n# Also defined, but not for general use are:\n\n#   * SVN_LIB (where to find the APR library)\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# CONFIGURE OUR SEARCH. Specify what we're looking for, and which directories\n\n# we're going to look through to find them.\n\n#############################################################################\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SEARCH FOR SVN LIBRARIES.\n\n###########################\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Did we find the include directory?\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Value set to `SVN_INCLUDE_DIR-NOTFOUND` if not found.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 21
+      },
+      "7" : {
+        "Text" : "# Did we find the library?\n",
+        "Line" : 85,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Value set to ${${LIB_NAME}_PATH}-NOTFOUND if not found.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 24
+      },
+      "9" : {
+        "Text" : "# Results.\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Export variables.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "3rdparty/stout/cmake/GroupSource.cmake" : {
+      "ObjectId" : "3cf6a908ebc9a3ad40968f1c0c236f73e1725293",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# GROUP_SOURCE takes a directory root and recursively groups source files by\n\n# folder, so they can be displayed hierarchically in IDEs such as XCode or\n\n# Visual Studio. NOTE: Source files are only displayed if they are added for\n\n# compilation. If a file is not compiled, it will not show up in the IDE.\n\n#\n\n# Parameters:\n\n#   GROUP_NAME     Specifies group name of this directory tree. For example,\n\n#                  the directory tree `src/slave/` would fall under the group\n\n#                  name \"Agent Source Files\".\n\n#   ROOT_DIRECTORY Root of the directory tree to generate source groups for.\n\n#   RELATIVE_TO    Directory to create source group tree relative to. For\n\n#                  example, if you want to the code in `src/slave` to show up\n\n#                  in the directory tree under a folder called `slave/` (i.e.,\n\n#                  omitting the `src/` component), then you would provite a\n\n#                  ROOT_DIRECTORY `src/slave` RELATIVE_TO `slave/`.\n\n#   SOURCE_PATTERN Pattern (glob) of source files to match (e.g, *.cpp).\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Extremely inefficient method of recursively creating a source group for\n\n# every subdirectory that contains a source file. In other words, if we have\n\n# a folder structure like `slave/containerizer/`, we want a source group for\n\n# both `slave/` and `slave/containerizer/`, so that the IDE structures the\n\n# source tree hierarchically. This loop is so inefficient because CMake does\n\n# not support a set data structure, it is hard to do better than this and\n\n# still be cross-platform.\n\n#\n\n# The way this loop functions is to:\n\n# (1) Loop over every source file found in any subdirectory rooted at\n\n#     `ROOT_DIRECTORY`\n\n# (2) For each source file, obtain the directory it exists in. For example if\n\n#     the source file is `slave/containerizer/containerizer.cpp`, then the\n\n#     directory `slave/containerizer/`.\n\n# (3) Create a source group for the directory. The source group for the\n\n#     directory consists of any file that is in the directory, not including\n\n#     files that are in subdirectories. In the example above, this would be\n\n#     something like `slave/containerizer/*.cpp`.\n\n#\n\n#     NOTE: This operation is so inefficient because it occurs for every\n\n#     source file, rather than every unique directory. So, every time we\n\n#     encounter a source file in any directory, we will add a source group\n\n#     for its source directory.\n\n#\n\n#     NOTE: This operation will also add every source file to the source\n\n#     group, but only the source files that both appear in this source group,\n\n#     and which users actually pass to the target for compilation will appear\n\n#     in the IDE's source group.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Get relative directory of source file, use to generate a source group\n\n# that resembles the directory tree.\n",
+        "Line" : 71,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# This is necessary because source group names require '\\' rather than '/'\n\n# as separators, in order to make a hierarchical source tree. This is\n\n# primarily because the source group construct was originally designed for\n\n# Visual Studio projects.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Get all files in `SOURCE_DIRECTORY`, and create a source group for it.\n\n# NOTE: It is important concatinate `SOURCE_FILE` with the relative-to root\n\n# we passed to `file` above; if we don't, we will get an empty string when\n\n# `RELATIVE_TO` is the same as the current source directory, which in turn\n\n# will cause the call to `file` below to return no source files.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "3rdparty/stout/cmake/StoutConfigure.cmake" : {
+      "ObjectId" : "32ce8c7221ac2602346575258e8746b8a960d60f",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO(hausdorff): (cf. MESOS-3181) Add support for attempting to find these\n\n# packages on Windows, and then if that fails, use CMake macros/functions to\n\n# download, configure, and build them.\n\n#\n\n# WHY: Windows does not have a good package manager, so getting some of our\n\n# dependencies can be really annoying in some circumstances. For this reason,\n\n# we should support a CMake-based \"distribution channel\", even though this\n\n# way is sure to be more hackish.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# SOURCE GROUPS. Allows IDEs to group header files for projects taking a\n\n# dependency on this package.\n\n########################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# DEFINE PROCESS LIBRARY DEPENDENCIES. Tells the process library build targets\n\n# download/configure/build all third-party libraries before attempting to build.\n\n################################################################################\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# DEFINE THIRD-PARTY INCLUDE DIRECTORIES. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux).\n\n###############################################################################\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# DEFINE THIRD-PARTY LIB INSTALL DIRECTORIES. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# DEFINE THIRD-PARTY LIBS. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# TODO(hausdorff): The `LINUX` flag comes from MesosConfigure; when we\n\n# port the bootstrap script to CMake, we should also copy this logic\n\n# into .cmake files in the Stout and Process libraries' folders\n\n# individually.\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "3rdparty/stout/cmake/StoutTestsConfigure.cmake" : {
+      "ObjectId" : "685f1c840e1bdad0dcc4c6b0629a944cffbb309f",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# Defines the variables useful for tests, and exports them to the scope of\n\n# any file includes this file. There are a few important consequence of this:\n\n#\n\n#   * This file MUST be included before the third-party dependencies like gmock\n\n#     are configured/built/downloaded (if you're doing this). If this code isn't\n\n#     run first, then we won't know (e.g.) what folders to unpack the code to.\n\n#   * This file ONLY defines and exports variables for third-party dependencies\n\n#     that are required by the test suite, but are not a dependency that\n\n#     libprocess core takes. That is, this file handles the gmock dependency,\n\n#     but not the glog dependency (which the process library itself takes a\n\n#     dependency on).\n\n#   * This file and the config file for the libprocess \"core\" dependencies\n\n#     (e.g. glog, boost, etc.) are separate so that we can export the variables\n\n#     for the core dependencies (e.g., where to find the .so/.dll files) without\n\n#     having to also export the variables for test-only dependencies.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# COMPILER CONFIGURATION.\n\n#########################\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# GTEST on OSX needs its own tr1 tuple.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Convenience variables for include directories of third-party dependencies.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Convenience variables for `lib` directories of built third-party dependencies.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Convenience variables for \"lflags\", the symbols we pass to CMake to generate\n\n# things like `-L/path/to/glog` or `-lglog`.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# DEFINE PROCESS LIBRARY DEPENDENCIES. Tells the process library build targets\n\n# download/configure/build all third-party libraries before attempting to build.\n\n################################################################################\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# DEFINE THIRD-PARTY INCLUDE DIRECTORIES. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux)..\n\n###############################################################################\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# DEFINE THIRD-PARTY LIB INSTALL DIRECTORIES. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# DEFINE THIRD-PARTY LIBS. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 11
+    },
+    "3rdparty/stout/include/Makefile.am" : {
+      "ObjectId" : "53d04a9b6c4a0d8b35d3c84ef24d619fdb8a2c82",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Headers.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "3rdparty/stout/tests/CMakeLists.txt" : {
+      "ObjectId" : "4e22bf6d9e9fa723dfe3696fa98d6a2e3e23d07e",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# STOUT TESTS.\n\n##############\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR STOUT TEST BINARY (generates, e.g., -I/path/to/thing\n\n# on Linux).\n\n#############################################################################\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# THE STOUT TEST EXECUTABLE (generates, e.g., stout-tests, etc., on Linux).\n\n###########################################################################\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ADD TEST TARGET (runs when you do, e.g., `make check`).\n\n#########################################################\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "18279c706a2016aad090c2bedfc42ac7897c779f",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE MESOS PROJECT.\n\n####################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# CMAKE MODULE SETUP.\n\n#####################\n\n# Paths that are searched when `include(...)` is called.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Macros.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configuration.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# SUBDIRECTORIES.\n\n#################\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# TESTS.\n\n########\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "Makefile.am" : {
+      "ObjectId" : "20709cf2240bfbefcb84a08915650bd7279932d0",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Directories to optionally install test binaries and libraries.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Since we generate several files in src/ with config.status, make\n\n# sure they're regenerated before we recurse into the src directory.\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Standard stuff.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# On install, pip fetches and installs all missing dependencies. When running\n\n# distcheck, this behavior ends up installing files that we are not able to\n\n# uninstall (protobuf for example). Using this flag during the distcheck run\n\n# forces us to verify that we can install/uninstall the mesos specific\n\n# libraries and only those libraries.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# MPI framework.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Run benchmark tests.\n\n# Currently benchmark tests exist only under src/ so the top level\n\n# 'bench' rule calls the Makefile under src/ directly to run these\n\n# tests, after it builds the entire program (i.e. 'all') and the test\n\n# prerequisites (libgmock.la).\n\n# TODO(xujyan): The use of variable 'MESOS_BENCHMARKS' on the target\n\n# 'check' is likely going to be replaced by a long-term solution for\n\n# benchmark testing, for which we should consider separating\n\n# benchmark tests from the 'mesos-tests' binary (i.e. the\n\n# 'correctness' tests).\n\n# TODO(xujyan): Consider using `AM_EXTRA_RECURSIVE_TARGETS` macro\n\n# (requires Automake >= 1.13) to define 'bench' as a recursive target\n\n# when we have benchmark tests in multiple subdirs.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Using LT_OUTPUT in configure.ac creates config.lt that doesn't get\n\n# cleaned up by distclean-libtool. See this bug patch (which doesn't\n\n# appear to be in all versions of libtool.m4):\n\n# http://lists.gnu.org/archive/html/automake-commit/2008-11/msg00015.html.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake/Common.cmake" : {
+      "ObjectId" : "76b2a67419cb6836b598a0070f26632d4ca048ff",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# Exports a variable CMAKE_NOOP as noop operation.\n\n#\n\n# NOTE: This is especially important when building third-party libraries on\n\n# Windows; the default behavior of `ExternalProject` is to try to assume that\n\n# third-party libraries can be configured/built/installed with CMake, so in\n\n# cases where this isn't true, we have to \"trick\" CMake into skipping those\n\n# steps by giving it a noop command to run instead.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/CompilationConfigure.cmake" : {
+      "ObjectId" : "560935b81603dc58c167918d36e2ae0a4060673d",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# GENERAL OPTIONS.\n\n##################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# 3RDPARTY OPTIONS.\n\n###################\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# If 'REBUNDLED' is set to FALSE, this will cause Mesos to build against\n\n# the specified dependency repository.  This is especially useful for\n\n# Windows builds, because building on MSVC 1900 requires newer versions\n\n# of ZK, glog, and libevent, than the ones bundled in the Mesos repository.\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SYSTEM CHECKS.\n\n################\n\n# Check that we are targeting a 64-bit architecture.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Make sure C++ 11 features we need are supported.\n\n# This is split into two cases: Windows and \"other platforms\".\n\n#   * For \"other platforms\", we simply check if the C++11 flags work\n\n#   * For Windows, C++11 is enabled by default on MSVC 1900.\n\n#     We just check the MSVC version.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# We don't support compilation against mingw headers (which, e.g., Clang on\n\n# Windows does at this point), because this is likely to cost us more effort\n\n# to support than it will be worth at least in the short term.\n",
+        "Line" : 122,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# MSVC 1900 supports C++11; earlier versions don't. So, warn if you try to\n\n# use anything else.\n",
+        "Line" : 132,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# POSIX CONFIGURATION.\n\n######################\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Directory structure for some build artifacts.\n\n# This is defined for use in tests.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# LINUX CONFIGURATION.\n\n######################\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# WINDOWS CONFIGURATION.\n\n########################\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# COFF/PE and friends are somewhat limited in the number of sections they\n\n# allow for an object file. We use this to avoid those problems.\n",
+        "Line" : 175,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Enable multi-threaded compilation.\n",
+        "Line" : 180,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Build against the multi-threaded, static version of the runtime library.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# Convenience flags to simplify Windows support in C++ source; used to\n\n# `#ifdef` out some platform-specific parts of Mesos.  We choose to define\n\n# a new flag rather than using an existing flag (`_WIN32`) because we want\n\n# to give the build system fine-grained control over what code is #ifdef'd\n\n# out in the future.  Using only flags defined by our build system to control\n\n# this logic is the clearest and most stable way of accomplishing this.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Defines to disable warnings generated by Visual Studio when using\n\n# deprecated functions in CRT and the use of insecure functions in CRT.\n\n# TODO(dpravat): Once the entire codebase is changed to use secure CRT\n\n# functions, these defines should be removed.\n",
+        "Line" : 199,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Directory structure definitions.\n\n# TODO(hausdorff): (MESOS-5455) These are placeholder values.\n\n# Transition away from them.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Windows-specific workaround for a glog issue documented here[1].\n\n# Basically, Windows.h and glog/logging.h both define ERROR. Since we don't\n\n# need the Windows ERROR, we can use this flag to avoid defining it at all.\n\n# Unlike the other fix (defining GLOG_NO_ABBREVIATED_SEVERITIES), this fix\n\n# is guaranteed to require no changes to the original Mesos code. See also\n\n# the note in the code itself[2].\n\n#\n\n# [1] https://google-glog.googlecode.com/svn/trunk/doc/glog.html#windows\n\n# [2] https://code.google.com/p/google-glog/source/browse/trunk/src/windows/glog/logging.h?r=113\n",
+        "Line" : 221,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# GLOBAL CONFIGURATION.\n\n#######################\n",
+        "Line" : 237,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# NOTE: This conditional is required. It is not sufficient to set\n\n# `-DHAS_AUTHENTICATION=${HAS_AUTHENTICATION}`, as this will define the\n\n# symbol, and our intention is to only define it if the CMake variable\n\n# `HAS_AUTHENTICATION` is set.\n",
+        "Line" : 240,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Enable the INT64 support for PicoJSON.\n\n# NOTE: PicoJson requires __STDC_FORMAT_MACROS to be defined before importing\n\n# 'inttypes.h'.  Since other libraries may also import this header, it must\n\n# be globally defined so that PicoJson has access to the macros, regardless\n\n# of the order of inclusion.\n",
+        "Line" : 250,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Add build information to Mesos flags.\n",
+        "Line" : 269,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# TODO(hausdorff): (MESOS-5902) Populate this value when we integrate Java\n\n# support.\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# NOTE: The quotes in these definitions are necessary. Without them, the\n\n# preprocessor will interpret the symbols as (e.g.) int literals and uquoted\n\n# identifiers, rather than the string values our code expects.\n",
+        "Line" : 282,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# TODO(hausdorff): (MESOS-5455) `BUILD_FLAGS` is currently a placeholder value.\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 26
+    },
+    "cmake/MesosConfigure.cmake" : {
+      "ObjectId" : "e44f662b6da71caa493cc568a5e5bcb0a608a8b1",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# SYSTEM CONFIGURATION INFORMATION.\n\n###################################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# CMAKE CONFIGURE LOGO.\n\n#######################\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# CMAKE OPTIONS.\n\n################\n\n# NOTE: This silences a warning from CMake policy CMP0042.\n\n# By default, `CMAKE_MACOSX_RPATH` is ON, but CMake will continue to warn\n\n# unless the value is set explicitly in the build files.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SET UP TESTING INFRASTRUCTURE.\n\n################################\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# CONFIGURE COMPILER.\n\n#####################\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# THIRD-PARTY CONFIGURATION.\n\n############################\n\n# NOTE: The third-party configuration variables exported here are used\n\n# throughout the project, so it's important that this config script goes here.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Generate a batch script that will build Mesos. Any project referencing Mesos\n\n# can then build it by calling this script.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# DEFINE DIRECTORY STRUCTURE MESOS PROJECT.\n\n###########################################\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Convenience variables for include directories of third-party dependencies.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Make directories that generated Mesos code goes into.\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# CONFIGURE AGENT.\n\n##################\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# CONFIGURE MASTER.\n\n##################\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# CONFIGURE EXAMPLE MODULES AND FRAMEWORKS.\n\n###########################################\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# DEFINE MESOS BUILD TARGETS.\n\n#############################\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# MESOS LIBRARY CONFIGURATION.\n\n##############################\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# MESOS SCRIPT CONFIGURATION.\n\n#############################\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Create build bin/ directory. We will place configured scripts here.\n",
+        "Line" : 185,
+        "CharPositionInLine" : 2
+      },
+      "18" : {
+        "Text" : "# Define the variables required to configure these scripts.\n",
+        "Line" : 189,
+        "CharPositionInLine" : 2
+      },
+      "19" : {
+        "Text" : "# Find all scripts to configure. The scripts are in the bin/ directory, and\n\n# end with the `.in` suffix. For example `mesos.sh.in`.\n",
+        "Line" : 194,
+        "CharPositionInLine" : 2
+      },
+      "20" : {
+        "Text" : "# Strip the `.in` suffix off. This will be the script's name in the build\n\n# bin/ directory. For example, `mesos.sh.in` -> `mesos.sh`.\n",
+        "Line" : 198,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Configure. Because CMake does not support configuring and setting\n\n# permissions, we do this in a two-step process: we first configure the\n\n# file, placing the configured file in a temporary directory, and then we\n\n# \"copy\" the configured file to the build `bin` directory, setting the\n\n# permissions as we go.\n\n#\n\n# NOTE: We use the `@ONLY` argument here to avoid trying to substitute\n\n# the value of `${@}`, which we frequently use in the scripts.\n",
+        "Line" : 203,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 22
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "09ef1aee680c6b91476092dbf61d4ca3a8d256bb",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# GENERATE PUBLIC AND INTERNAL PROTOBUFS.\n\n#########################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build the protobuf structs.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# BUILD PROTOBUFS.\n\n##################\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Configure Mesos files.\n\n########################\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# SOURCE FILES FOR THE MESOS LIBRARY.\n\n#####################################\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Include source for linux build.\n",
+        "Line" : 473,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Include source for Windows build.\n",
+        "Line" : 478,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR MESOS LIBRARY (generates, e.g., -I/path/to/thing\n\n# on Linux).\n\n#########################################################################\n",
+        "Line" : 483,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Generate all binaries in the same folder.\n",
+        "Line" : 489,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Generate all libraries in the same folder to conform with the Automake build.\n",
+        "Line" : 496,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# THE MESOS LIBRARY (generates, e.g., libmesos.so, etc., on Linux).\n\n###################################################################\n",
+        "Line" : 508,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# ADD LIBRARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 517,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 526,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# BUILD THE MESOS EXECUTABLES.\n\n##############################\n",
+        "Line" : 530,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# BUILD THE MESOS TESTS.\n\n#########################################################\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "src/Makefile.am" : {
+      "ObjectId" : "6c9be54fe0ce3faaa26e2f090773d1b77bb6e430",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add 'subdir-objects' to build objects in respective subdirectories\n\n# which is necessary for dealing with naming conflicts, i.e,,\n\n# master/http.cpp and slave/http.cpp.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# TODO(charles): Move these into an included automakefile and have\n\n# them include $(top_builddir) as appropriate.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Unfortunatley, 'pkglibexecdir' and 'pkgsysconfdir' are not set\n\n# before automake 1.11, so we need to set them manually (until we in\n\n# the future assume an automake version).\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Directories to optionally install test binaries and libraries.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Directory where Mesos modules are installed.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Protocol buffer compiler.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Initialize variables here so we can use += operator everywhere else.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Use -Wl,--as-needed to AM_LDFLAGS since we link against all the\n\n# libraries programs may depend upon, not the exact one. --as-needed\n\n# causes the linker to only link to the ones a program actually uses,\n\n# not the full list on the command line.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Add compiler and linker flags for pthreads.\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Enable common (and some language specific) warnings.\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Warn when a comparison is made between signed and unsigned values.\n",
+        "Line" : 103,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Warn about use of format functions that can produce security issues.\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We will also have much more hardened/secured binaries and libraries.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Produce position independent executables so that we better take advantage of ASLR.\n",
+        "Line" : 110,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Protect many of the functions with stack guards\n\n# (either -fstack-protector-strong or -fstack-protector depending on compiler support).\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Produce position independent code when appropriate.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Setup CPPFLAGS that are used for most source files.\n",
+        "Line" : 121,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Protobuf headers that depend on mesos.pb.h need this.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Header only dependencies will be ignored for --disable-bundled.\n\n#\n\n# For non-convenience libraries we need to link them in to make the shared\n\n# library each time. (Currently, we don't support platforms where this is not\n\n# possible.)\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Enable the INT64 support for PicoJson.\n\n# NOTE: PicoJson requires __STDC_FORMAT_MACROS to be defined before importing\n\n# 'inttypes.h'.  Since other libraries may also import this header, it must\n\n# be globally defined so that PicoJson has access to the macros, regardless\n\n# of the order of inclusion.\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# We use \"-isystem\" instead of \"-I\" to add Boost to the include search\n\n# path. This disables compiler warnings inside Boost headers since we\n\n# can't easily fix them. See MESOS-3799.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# We need to directly include the leveldb library in order to avoid\n\n# the installed libmesos.la file to include leveldb in\n\n# 'dependency_libs' (via '-L../3rdparty/leveldb -lleveldb').\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# README: we build the Mesos library out of a collection of\n\n# convenience libraries (that is, libraries that do not get installed\n\n# but we can use as building blocks to vary compile flags as necessary\n\n# and then aggregate into final archives): libmesos_no_3rdparty.la\n\n# libbuild.la, liblog.la, libjava.la.\n",
+        "Line" : 218,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# First, let's define necessary protocol buffer files.\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Targets for generating C++ protocol buffer code.\n",
+        "Line" : 389,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Targets for generating Java protocol buffer code.\n",
+        "Line" : 397,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Targets for generating Python protocol buffer code.\n\n# NOTE: All python protocol buffer code that imports from mesos.proto\n\n# has to get patched using sed, removing the leading 'mesos.'\n\n# namespace qualifier due to the flat hierachy in the resulting\n\n# mesos.interface egg. See MESOS-1750 for more.\n",
+        "Line" : 447,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# We even use a convenience library for most of Mesos so that we can\n\n# exclude third party libraries so setuptools can build a\n\n# self-contained Python library and statically link in the third party\n\n# libraries themselves.\n",
+        "Line" : 807,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# TODO(tillt): Remove authentication/cram_md5/* which will enable us to\n\n# lose the immediate cyrus-sasl2 dependency.\n",
+        "Line" : 824,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Initialized to enable using +=.\n",
+        "Line" : 1269,
+        "CharPositionInLine" : 33
+      },
+      "31" : {
+        "Text" : "# Convenience library that *always* gets rebuilt to ensure accurate info.\n",
+        "Line" : 1271,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# We need to escape the build flags properly.\n",
+        "Line" : 1298,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# TODO(benh): Provide other build flags.\n",
+        "Line" : 1303,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Convenience library for building the replicated log in order to\n\n# include the leveldb headers.\n",
+        "Line" : 1310,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Convenience library for building \"state\" abstraction in order to\n\n# include the leveldb headers.\n",
+        "Line" : 1348,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# The final result!\n",
+        "Line" : 1365,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Include as part of the distribution.\n",
+        "Line" : 1368,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Since we just include the convenience library (and no sources), we\n\n# need to tell libtool to build this as a C++ library.\n",
+        "Line" : 1403,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Add the convenience library.\n",
+        "Line" : 1407,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Binaries.\n",
+        "Line" : 1420,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Need to distribute and install mesos-*.\n",
+        "Line" : 1522,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# Need to distribute/install webui javascript. We use 'pkgdatadir'\n\n# instead of 'datadir' as the install directory so we get the\n\n# package name (i.e., 'mesos') as part of the path (i.e.,\n\n# /path/to/mesos/webui versus something like /path/to/webui). Note\n\n# that 'datadir' (e.g., /usr/local/share) is for read-only \"data\" and\n\n# 'sysconfdir' (e.g., /usr/local/var) is for modifiable \"data\".\n",
+        "Line" : 1529,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# Need to distribute/install webui CSS.\n",
+        "Line" : 1541,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# Need to distribute/install webui HTML.\n",
+        "Line" : 1546,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# Need to distribute/install webui images.\n",
+        "Line" : 1563,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# Need to distribute/install webui fonts.\n",
+        "Line" : 1569,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# Need to distribute/install third-party javascript.\n",
+        "Line" : 1576,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# And the deploy related stuff.\n",
+        "Line" : 1592,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Need to explicitly add this because by default DATA files are not\n\n# included in distributions.\n",
+        "Line" : 1609,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Java related files are listed outside if HAS_JAVA so we can add them\n\n# to EXTRA_DIST unconditionally.\n",
+        "Line" : 1616,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# Mesos JAR.\n",
+        "Line" : 1619,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# We build all the Java examples into their own JAR.\n",
+        "Line" : 1645,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# Convenience library for JNI bindings.\n\n# TODO(Charles Reiss): We really should be building the Java library\n\n# with -module, which means it should be a different library than the\n\n# main libmesos.so.\n",
+        "Line" : 1663,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# We don't add libjava.la to libmesos_no_3rdparty.la so we don't\n\n# include the JNI bindings in the Python egg (but we might want to\n\n# reconsider this in the future).\n",
+        "Line" : 1710,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# We need to generate the JNI header files before we build the sources\n\n# and the easiest way to do that with autotools is with the\n\n# BUILT_SOURCES mechanism. The downside of this is that a user cannot\n\n# run 'make libjava.la' (or any target that uses BUILT_SOURCES) but\n\n# that should not matter as libjava.la is just a convenience library\n\n# and should not get exposed.\n",
+        "Line" : 1715,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# HAS_JAVA\n",
+        "Line" : 1801,
+        "CharPositionInLine" : 6
+      },
+      "57" : {
+        "Text" : "# Python files listed outside HAS_PYTHON so they are included with the\n\n# distribution unconditionally.\n",
+        "Line" : 1811,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "# Build a protobuf Python egg.\n",
+        "Line" : 1846,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# This builds the mesos.native egg against libmesos_no_3rdparty.a that is\n\n# self-contained. It currently depends on the libraries in 3rdparty\n\n# being built as .a's. (If this is changed, the setup.py will need to\n\n# be edited).\n",
+        "Line" : 1863,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# TODO(Charles Reiss): Figure out how to do a proper out-of-source\n\n# build of these Python eggs. Right now we copy the entire source\n\n# directories into the build directory.\n",
+        "Line" : 1868,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# TODO(Charles Reiss): Additionally support building and installing\n\n# Python libraries that link against the system libmesos.so. This\n\n# should be the default mode if we eventually are able to rely on\n\n# system versions of our dependencies (since we won't be able to\n\n# create a standalone egg anyways).\n",
+        "Line" : 1872,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# We currently require both eggs and wheels to be built. Eggs can be added to\n\n# the PYTHONPATH and imported. These end up being used for the tests. Wheels\n\n# can be easily uninstalled. They end up being what gets installed/uninstalled.\n",
+        "Line" : 1884,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# The python source is in directories of the form: python/interface. The make\n\n# target is of the form: python/dist/mesos.interface-0.20.0-py2.7.egg. To build\n\n# this, we must first cd into it. The first line of this takes the make target\n\n# and converts it into the correct directory path.\n",
+        "Line" : 1903,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "# Some python installations create their own distutils.cfg (homebrew, redhat).\n\n# This includes `prefix=` which overrides anything set via. pip during install.\n\n# The file is required to ensure the python packages get installed to the right\n\n# location. It only affects files installed from the python/dist directory.\n",
+        "Line" : 1925,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# See the comment next to AM_DISTCHECK_CONFIGURE_FLAGS in the top level\n\n# Makefile.am for an explanation of this variable.\n",
+        "Line" : 1932,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# We are using the 3rdparty bundled pip instead of relying on what might exist\n\n# on the system. Because the actual pip scripts have not been created, we just\n\n# use the standard entry point.\n",
+        "Line" : 1940,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# Make sure the egg gets built via 'make all'.\n",
+        "Line" : 1962,
+        "CharPositionInLine" : 0
+      },
+      "68" : {
+        "Text" : "# HAS_PYTHON\n",
+        "Line" : 1964,
+        "CharPositionInLine" : 6
+      },
+      "69" : {
+        "Text" : "# Test (make check) binaries.\n",
+        "Line" : 1972,
+        "CharPositionInLine" : 0
+      },
+      "70" : {
+        "Text" : "# LDFLAGS to be used for the module libraries.\n",
+        "Line" : 2063,
+        "CharPositionInLine" : 0
+      },
+      "71" : {
+        "Text" : "# Library containing the logrotate container logger.\n",
+        "Line" : 2066,
+        "CharPositionInLine" : 0
+      },
+      "72" : {
+        "Text" : "# Library containing the fixed resource estimator.\n",
+        "Line" : 2075,
+        "CharPositionInLine" : 0
+      },
+      "73" : {
+        "Text" : "# Library containing the load qos controller.\n",
+        "Line" : 2081,
+        "CharPositionInLine" : 0
+      },
+      "74" : {
+        "Text" : "# Even if we are not installing the test suite, we still need to build\n\n# the test module libraries as shared libraries for running the test suite.\n\n# When we use the 'noinst_' prefix to ensure these libraries are not\n\n# installed, automake skips building the shared libraries. The workaround is\n\n# to use '-rpath /nowhere' to force libtool to always build shared libraries.\n",
+        "Line" : 2090,
+        "CharPositionInLine" : 0
+      },
+      "75" : {
+        "Text" : "# Library containing an example module.\n",
+        "Line" : 2114,
+        "CharPositionInLine" : 0
+      },
+      "76" : {
+        "Text" : "# Library containing the test anonymous modules.\n",
+        "Line" : 2119,
+        "CharPositionInLine" : 0
+      },
+      "77" : {
+        "Text" : "# Library containing the test CRAM-MD5 authentication modules.\n\n# TODO(tillt): Add cyrus-sasl2 dependency while removing it from libmesos.\n\n# TODO(tillt): Enable optional building of this module library.\n",
+        "Line" : 2124,
+        "CharPositionInLine" : 0
+      },
+      "78" : {
+        "Text" : "# Library containing the test authorizer module.\n",
+        "Line" : 2131,
+        "CharPositionInLine" : 0
+      },
+      "79" : {
+        "Text" : "# Library containing the test http authenticator module.\n",
+        "Line" : 2136,
+        "CharPositionInLine" : 0
+      },
+      "80" : {
+        "Text" : "# Library containing the test DRF allocator module.\n",
+        "Line" : 2141,
+        "CharPositionInLine" : 0
+      },
+      "81" : {
+        "Text" : "# Library containing example test sandbox container logger module.\n",
+        "Line" : 2146,
+        "CharPositionInLine" : 0
+      },
+      "82" : {
+        "Text" : "# Library containing the test contender module.\n",
+        "Line" : 2152,
+        "CharPositionInLine" : 0
+      },
+      "83" : {
+        "Text" : "# Library containing the test detector module.\n",
+        "Line" : 2157,
+        "CharPositionInLine" : 0
+      },
+      "84" : {
+        "Text" : "# Library containing test Hook module.\n",
+        "Line" : 2162,
+        "CharPositionInLine" : 0
+      },
+      "85" : {
+        "Text" : "# Library containing test CPU and memory isolator modules.\n",
+        "Line" : 2167,
+        "CharPositionInLine" : 0
+      },
+      "86" : {
+        "Text" : "# Library containing example test noop resource estimator module.\n",
+        "Line" : 2172,
+        "CharPositionInLine" : 0
+      },
+      "87" : {
+        "Text" : "# Library containing example test noop qos controller module.\n",
+        "Line" : 2178,
+        "CharPositionInLine" : 0
+      },
+      "88" : {
+        "Text" : "# We use \"-isystem\" instead of \"-I\" to add googlemock to the include\n\n# search path. This disables compiler warnings inside googlemock\n\n# headers since we can't easily fix them.\n",
+        "Line" : 2313,
+        "CharPositionInLine" : 0
+      },
+      "89" : {
+        "Text" : "# FreeBSD includes dynamic lib utils in libc.\n",
+        "Line" : 2324,
+        "CharPositionInLine" : 28
+      },
+      "90" : {
+        "Text" : "# This target will do the following two things:\n\n# 1. Copy mesos-agent-env.sh.template to mesos-slave-env.sh.template.\n\n# 2. Create \"slave->agent\" symlink in the agent headers installation\n\n#    path.\n\n#\n\n# TODO(tomxing): Remove this target once the\n\n# slave->agent rename is complete (MESOS-3782 & MESOS-5230).\n",
+        "Line" : 2439,
+        "CharPositionInLine" : 0
+      },
+      "91" : {
+        "Text" : "# Install compatibility symlinks for modules that used to be in $(LIBDIR)\n\n# but are now in $(PKGMODULEDIR). We use install-data-hook because it\n\n# runs late in the install process after the target directories have\n\n# been created.\n",
+        "Line" : 2453,
+        "CharPositionInLine" : 0
+      },
+      "92" : {
+        "Text" : "# TODO(tomxing): Remove this hook once the\n\n# slave->agent rename is complete(MESOS-3782 & MESOS 5230).\n",
+        "Line" : 2471,
+        "CharPositionInLine" : 0
+      },
+      "93" : {
+        "Text" : "# We use a check-local target for now to avoid the parallel test\n\n# runner that ships with newer versions of autotools.\n\n# See the following discussion for the workaround:\n\n# http://lists.gnu.org/archive/html/automake/2013-01/msg00051.html\n",
+        "Line" : 2478,
+        "CharPositionInLine" : 0
+      },
+      "94" : {
+        "Text" : "# If we enabled test installation, we can run the tests from the\n\n# installation tree.\n",
+        "Line" : 2486,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 95
+    },
+    "src/checks/CMakeLists.txt" : {
+      "ObjectId" : "ce195e2820c70dd7ebec1f06a6382f58fc729af7",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO(alexr): Enable this on Windows once it is supported.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE MESOS TCP CONNECT SOURCE.\n\n###############################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR MESOS TCP CONNECT EXECUTABLE (generates, e.g.,\n\n# -I/path/to/thing on Linux).\n\n#######################################################################\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# THE MESOS TCP CONNECT EXECUTABLE.\n\n###################################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/cli/CMakeLists.txt" : {
+      "ObjectId" : "4f235929da57f5546e58f100c67538ab7c7abd72",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO(josephw): Enable this on Windows after sorting out the dependencies.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE MESOS-EXECUTE SOURCE.\n\n###########################\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# THE MESOS EXECUTE.\n\n#######################\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/cmake/MesosProtobuf.cmake" : {
+      "ObjectId" : "e30ad84c02d659c3bd698fc872085cd9a1f6e4ca",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# PROTO_TO_INCLUDE_DIR is a convenience function that will: (1) compile .proto\n\n# files found in the Mesos public-facing `include/` directory, (2) place the\n\n# generated files in the build folder, but with an identical directory\n\n# structure, and (3) export variables holding the fully qualified path to the\n\n# generated files, based on a name structure the user specifies with the\n\n# `BASE_NAME` and `BASE_DIR_STRUCTURE` parameters.\n\n#\n\n# For example, if suppose wish to compile `include/mesos/mesos.proto`. We might\n\n# pass in the following values for the parameters:\n\n#\n\n#   BASE_NAME:          MESOS       (i.e., basis for the exported var names)\n\n#   BASE_DIR_STRUCTURE: mesos/mesos (i.e., where `mesos/mesos.proto` would be\n\n#                                    the relative path to the .proto file, we'd\n\n#                                    use this \"root name\" to generate files\n\n#                                    like `mesos/mesos.pb.cc`\n\n#\n\n# In this case, this function would:\n\n#\n\n#   (1) compile the `include/mesos/mesos.proto`, which would generate the files\n\n#       `build/include/mesos/mesos.pb.h` and `build/include/mesos/mesos.pb.cc`\n\n#   (2) export the following variables, based on the `BASE_NAME` parameter\n\n#       (a) MESOS_PROTO:    ${MESOS_ROOT}/include/mesos/mesos.proto\n\n#       (b) MESOS_PROTO_CC: ${MESOS_ROOT}/build/include/mesos/mesos.pb.cc\n\n#       (a) MESOS_PROTO_H:   ${MESOS_ROOT}/build/include/mesos/mesos.pb.h\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Names of variables we will be publicly exporting.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# e.g., MESOS_PROTO\n\n# e.g., MESOS_PROTO_CC\n\n# e.g., MESOS_PROTO_H\n",
+        "Line" : 49,
+        "CharPositionInLine" : 39
+      },
+      "4" : {
+        "Text" : "# Fully qualified paths for the input .proto files and the output C files.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Export variables holding the target filenames.\n",
+        "Line" : 58,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# e.g., mesos/mesos.proto\n\n# e.g., mesos/mesos.pb.cc\n\n# e.g., mesos/mesos.pb.h\n",
+        "Line" : 59,
+        "CharPositionInLine" : 42
+      },
+      "7" : {
+        "Text" : "# Compile the .proto file.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# PROTO_TO_SRC_DIR is similar to `PROTO_TO_INCLUDE_DIR`, except it acts on the\n\n# Mesos `src/` directory instead of the public-facing `include/` directory (see\n\n# documentation for `PROTO_TO_INCLUDE_DIR` for details).\n",
+        "Line" : 71,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Names of variables we will be publicly exporting.\n",
+        "Line" : 81,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# e.g., MESOS_PROTO\n\n# e.g., MESOS_PROTO_CC\n\n# e.g., MESOS_PROTO_H\n",
+        "Line" : 82,
+        "CharPositionInLine" : 39
+      },
+      "11" : {
+        "Text" : "# Fully qualified paths for the input .proto files and the output C files.\n",
+        "Line" : 86,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Export variables holding the target filenames.\n",
+        "Line" : 91,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# e.g., mesos/mesos.proto\n\n# e.g., mesos/mesos.pb.cc\n\n# e.g., mesos/mesos.pb.h\n",
+        "Line" : 92,
+        "CharPositionInLine" : 42
+      },
+      "14" : {
+        "Text" : "# Compile the .proto file.\n",
+        "Line" : 96,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "src/docker/CMakeLists.txt" : {
+      "ObjectId" : "2d7c30db5854853625a99227568a27dde281ec2e",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE DOCKER EXECUTOR SOURCE.\n\n#############################\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR DOCKER EXECUTOR EXECUTABLE (generates, e.g.,\n\n# -I/path/to/thing on Linux).\n\n#####################################################################\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 31,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# THE DOCKER EXECUTOR EXECUTABLE.\n\n#################################\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/examples/CMakeLists.txt" : {
+      "ObjectId" : "6244a52db9f34d1477759a2129aef5382ec2a7dd",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test module sources.\n\n######################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Example framework and executor sources.\n\n#########################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build the test modules.\n\n#########################\n\n# NOTE: Modules are not supported on Windows.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Build the example frameworks and executors.\n\n#############################################\n\n# TODO(josephw): The scheduler driver is current not built on Windows.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 93,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/examples/cmake/ExamplesConfigure.cmake" : {
+      "ObjectId" : "d85da4e2e236df9408c86405caeca4d8eae3a35d",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define test module library targets.\n\n#####################################\n\n# These libraries are usually the default implementation\n\n# of the module pulled out into a shared library.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define example framework and executor targets.\n\n################################################\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/launcher/CMakeLists.txt" : {
+      "ObjectId" : "f63f544f92924b92ef41382c40acabef59a56d8b",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE MESOS LAUNCHER EXECUTOR SOURCE.\n\n#####################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE MESOS LAUNCHER FETCHER SOURCE.\n\n####################################\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# THE LAUNCHER EXECUTOR AND FETCHER EXECUTABLES.\n\n################################################\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/local/CMakeLists.txt" : {
+      "ObjectId" : "a55d81a5fc06b4e8ff3e21a420e282c38cd4e699",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO(josephw): Enable this on Windows after sorting out the dependencies.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE MESOS-LOCAL SOURCE.\n\n#########################\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# THE MESOS LOCAL EXECUTABLE.\n\n#############################\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/log/CMakeLists.txt" : {
+      "ObjectId" : "014ec4e808b850f0d43fa2cc4ccac0c16a7426aa",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO(josephw): Enable this on Windows after sorting out the dependencies.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE MESOS-LOG SOURCE.\n\n###########################\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# THE MESOS LOG.\n\n###########################################\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/master/CMakeLists.txt" : {
+      "ObjectId" : "92a1af86efdc975b5512519d494fda898f534d45",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO(josephw): Enable this on Windows after sorting out the dependencies.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE MASTER SOURCE.\n\n###################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR MASTER EXECUTABLE (generates, e.g., -I/path/to/thing\n\n# on Linux).\n\n############################################################################\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# THE MASTER EXECUTABLE.\n\n#######################\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "src/master/cmake/MasterConfigure.cmake" : {
+      "ObjectId" : "e9d6270bd99f7cdcfdc8b7deac4b53f69008e7d3",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define process library dependencies. Tells the process library build targets\n\n# download/configure/build all third-party libraries before attempting to build.\n\n################################################################################\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define third-party include directories. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux).\n\n###############################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Contains (e.g.) compiled *.pb.h files.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Define third-party lib install directories. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define third-party libs. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/slave/CMakeLists.txt" : {
+      "ObjectId" : "9dbadca53b9ac34db08cfb9c9e9fea741c01114b",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE AGENT SOURCE.\n\n###################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# INCLUDE DIRECTIVES FOR AGENT EXECUTABLE (generates, e.g., -I/path/to/thing\n\n# on Linux).\n\n############################################################################\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# LINKING LIBRARIES BY DIRECTORY (might generate, e.g., -L/path/to/thing on\n\n# Linux).\n\n###########################################################################\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# THE AGENT EXECUTABLE.\n\n#######################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "src/slave/cmake/AgentConfigure.cmake" : {
+      "ObjectId" : "8d930d329048440d57b621fe8393b11912cdb27b",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define process library dependencies. Tells the process library build targets\n\n# download/configure/build all third-party libraries before attempting to build.\n\n################################################################################\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define third-party include directories. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux).\n\n###############################################################################\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Contains (e.g.) compiled *.pb.h files.\n",
+        "Line" : 54,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Define third-party lib install directories. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Define third-party libs. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/slave/cmake/FindCurl.cmake" : {
+      "ObjectId" : "63818d35aef1f5e4387b20604cf46487652dfdb0",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "###############################################################\n\n# **NOTE:** I (darroyo) have copied a *lot* of stuff in this\n\n# file from code I found at in the FindAPR.cmake[1] project. The\n\n# original version[2] of this file was also released under the\n\n# Apache 2.0 license, and licensed to the ASF, making it fully\n\n# compatible with the Mesos project.\n\n#  [1] 3rdparty/stout/cmake/FindApr.cmake\n\n#  [2] https://github.com/akumuli/Akumuli/blob/master/cmake/FindAPR.cmake\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# This module helps to find the cURL library.\n\n#\n\n# USAGE: to use this module, add the following line to your CMake project:\n\n#   find_package(Curl)\n\n#\n\n# To make linking to cURL simple, this module defines:\n\n#   * CURL_FOUND            (if false, linking build will fail)\n\n#   * CURL_INCLUDE_DIR      (defineswhere to find apr.h, etc.)\n\n#   * CURL_LIBS             (binaries for cURL and friends)\n\n#\n\n# Also defined, but not for general use are:\n\n#   * CURL_LIB        (where to find the cURL library)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# CONFIGURE THE CURL SEARCH. Specify what we're looking for, and which\n\n# directories we're going to look through to find them.\n\n#############################################################################\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# SEARCH FOR CURL LIBRARIES.\n\n############################\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Did we find the include directory?\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Value set to CURL_INCLUDE_DIR-NOTFOUND if not found.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 22
+      },
+      "7" : {
+        "Text" : "# Did we find the library?\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Value set to `CURL_LIB-NOTFOUND` if not found.\n",
+        "Line" : 76,
+        "CharPositionInLine" : 14
+      },
+      "9" : {
+        "Text" : "# cURL is considered \"found\" if we've both an include directory and a cURL\n\n# binary.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Results.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# (Deprecated declarations.)\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "src/slave/container_loggers/CMakeLists.txt" : {
+      "ObjectId" : "b46360fb1ced188102c285c914cc0d146c6db5e1",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Logrotate container logger sources.\n\n#####################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Build the container logger module.\n\n####################################\n\n# NOTE: Modules are not supported on Windows.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/slave/containerizer/mesos/CMakeLists.txt" : {
+      "ObjectId" : "51f481ecaf8b7798ff492ccb8b166349b66dfb96",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# SOURCE FILES FOR THE CONTAINERIZER.\n\n#####################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE CONTAINERIZER EXECUTABLE.\n\n###############################\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/slave/qos_controllers/CMakeLists.txt" : {
+      "ObjectId" : "65ab338a71276a77e43af962fbc9b76e050efca6",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE QOS_CONTROLLER SOURCE.\n\n############################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE AGENT EXECUTABLE.\n\n#######################\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/slave/resource_estimators/CMakeLists.txt" : {
+      "ObjectId" : "1d28bd457c7e567219d892f0940903b12c5a877b",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE RESOURCE_ESTIMATOR SOURCE.\n\n################################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE AGENT EXECUTABLE.\n\n#######################\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "src/tests/CMakeLists.txt" : {
+      "ObjectId" : "44b74ee591b14d7d69bc0c03c26167b33eaa789c",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Sources for a test helper binary.\n\n###################################\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Test utilities.\n\n#################\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# All the test sources.\n\n#######################\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# INCLUDE DIRECTIVES (generates, e.g., -I/path/to/thing on Linux).\n\n##################################################################\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# LINKING LIBRARIES (might generate, e.g., -L/path/to/thing on Linux).\n\n######################################################################\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# THE TEST AND HELPER EXECUTABLEs (generates, e.g., stout-tests, etc., on Linux).\n\n#################################$###############################################\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 240,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 245,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# The tests require all the test modules.\n\n# NOTE: Modules are not supported on Windows.\n",
+        "Line" : 254,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# The tests require all the example frameworks and executors.\n\n# TODO(josephw): The scheduler driver is current not built on Windows.\n",
+        "Line" : 273,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# ADD TEST TARGET (runs when you do, e.g., `make check`).\n\n#########################################################\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "src/tests/cmake/MesosTestsConfigure.cmake" : {
+      "ObjectId" : "62e274114e7ab062e037ef194781828146e15fed",
+      "LastModified" : "2017-01-28T02:15:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# COMPILER CONFIGURATION.\n\n#########################\n\n# NOTE: On Windows, these paths should be Windows-style, with '\\' characters\n\n# separating path components. Unfortunately, CMake does not escape these\n\n# slashes in path strings, so when we pass them as preprocessor flags,\n\n# a string like `C:\\src` will look to the standard Windows API like a\n\n# string with an escaped '\\s' character.\n\n#\n\n# On the other hand, Windows APIs are happy to take Unix-style paths as\n\n# arguments. So, to unblock making the agent tests work, we simply use\n\n# Unix paths here.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# DEFINE PROCESS LIBRARY DEPENDENCIES. Tells the process library build targets\n\n# download/configure/build all third-party libraries before attempting to build.\n\n################################################################################\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# DEFINE THIRD-PARTY INCLUDE DIRECTORIES. Tells compiler toolchain where to get\n\n# headers for our third party libs (e.g., -I/path/to/glog on Linux)..\n\n###############################################################################\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# DEFINE THIRD-PARTY LIB INSTALL DIRECTORIES. Used to tell the compiler\n\n# toolchain where to find our third party libs (e.g., -L/path/to/glog on\n\n# Linux).\n\n########################################################################\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# DEFINE THIRD-PARTY LIBS. Used to generate flags that the linker uses to\n\n# include our third-party libs (e.g., -lglog on Linux).\n\n#########################################################################\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "src/usage/CMakeLists.txt" : {
+      "ObjectId" : "fc87b297832157b679039c68baf9ddc68a292060",
+      "LastModified" : "2017-01-28T02:15:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# THE MESOS USAGE SOURCE.\n\n#########################\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# THE USAGE EXECUTABLE.\n\n#######################\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ADD LINKER FLAGS (generates, e.g., -lglog on Linux).\n\n######################################################\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ADD BINARY DEPENDENCIES (tells CMake what to compile/build first).\n\n####################################################################\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 44,
+    "AUTOMAKE" : 9
+  },
+  "ElapsedTime" : 3674
+}

@@ -1,0 +1,697 @@
+{
+  "Repository" : "3633806",
+  "Revision" : "HEAD",
+  "ObjectId" : "1179ac70e9ad100d507c276e6d8de1f9aba08104",
+  "CommitTime" : "2017-05-04T20:57:12Z",
+  "Files" : {
+    "CMake/Documentation.cmake" : {
+      "ObjectId" : "f3bbfdc6b857dbba0c16895f65c861f79ab80d4c",
+      "LastModified" : "2016-08-23T15:52:41Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# po4a/docbook documentation support for CMake\n\n# - see documentation of add_docbook()\n\n#\n\n# Copyright (C) 2016 Julian Andres Klode <jak@debian.org>.\n\n#\n\n# Permission is hereby granted, free of charge, to any person\n\n# obtaining a copy of this software and associated documentation files\n\n# (the \"Software\"), to deal in the Software without restriction,\n\n# including without limitation the rights to use, copy, modify, merge,\n\n# publish, distribute, sublicense, and/or sell copies of the Software,\n\n# and to permit persons to whom the Software is furnished to do so,\n\n# subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be\n\n# included in all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\n\n# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n\n# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\n\n# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS\n\n# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN\n\n# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\n\n# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Debian\n",
+        "Line" : 28,
+        "CharPositionInLine" : 9
+      },
+      "2" : {
+        "Text" : "# OpenSUSE\n",
+        "Line" : 31,
+        "CharPositionInLine" : 9
+      },
+      "3" : {
+        "Text" : "# Arch\n",
+        "Line" : 33,
+        "CharPositionInLine" : 9
+      },
+      "4" : {
+        "Text" : "# Fedora\n",
+        "Line" : 35,
+        "CharPositionInLine" : 9
+      },
+      "5" : {
+        "Text" : "# Fink\n",
+        "Line" : 37,
+        "CharPositionInLine" : 9
+      },
+      "6" : {
+        "Text" : "# FreeBSD\n",
+        "Line" : 39,
+        "CharPositionInLine" : 9
+      },
+      "7" : {
+        "Text" : "# Split up a string of the form DOCUMENT[.DOCUMENT][.LANGUAGE][.SECTION].EXTENSION\n\n#\n\n# There might be up to two parts in the document name. The language must be\n\n# a two char language code like de, or a 5 char code of the form de_DE.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Make it a list\n",
+        "Line" : 61,
+        "CharPositionInLine" : 52
+      },
+      "9" : {
+        "Text" : "# First element is always the document\n\n# Second *might* be a language\n\n# Second-last *might* be a section\n\n# Last element is always the file type\n",
+        "Line" : 63,
+        "CharPositionInLine" : 28
+      },
+      "10" : {
+        "Text" : "# If the language code is neither a file type, nor a section, nor a language\n\n# assume it is part of the file name and use the next component as the lang.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# If no language is present, we get a section; both not present => type\n",
+        "Line" : 74,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# A (manpage) section must be a number\n",
+        "Line" : 78,
+        "CharPositionInLine" : 42
+      },
+      "13" : {
+        "Text" : "# Process one document\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Calculate target file name\n",
+        "Line" : 94,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# po4a might drop files not translated enough, so build a stamp file\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# Return result\n",
+        "Line" : 117,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Default parameters\n",
+        "Line" : 131,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Parameters if localized\n",
+        "Line" : 141,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# add_docbook(Name [ALL] [HTML] [TEXT] [MANPAGE]\n\n#             [INSTALL install dir]\n\n#             [DEPENDS depend ...]\n\n#             [DOCUMENTS documents ...]\n\n#             [LINGUAS lingua ...])\n\n#\n\n# Generate a target called name with all the documents being converted to\n\n# the chosen output formats and translated to the chosen languages using po4a.\n\n#\n\n# For the translation support, the po4a.conf must be written so that\n\n# translations for a document guide.xml are written to LANG/guide.LANG.xml,\n\n# and for a manual page man.5.xml to a file called LANG/man.LANG.5.xml.\n\n#\n\n# The guide and manual page names may also contain a second component separated\n\n# by a dot, it must however not be a valid language code.\n\n#\n\n# Note that po4a might chose not to generate a translated manual page for a\n\n# given language if the translation rate is not high enough. We deal with this\n\n# by creating stamp files.\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Add an update-po4a target\n",
+        "Line" : 294,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 21
+    },
+    "CMake/FindBerkeleyDB.cmake" : {
+      "ObjectId" : "34bc3b0d16d48d5fb53a8321cb2cc7e0a322e08e",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find Berkeley DB\n\n# Once done this will define\n\n#\n\n#  BERKELEY_DB_FOUND - system has Berkeley DB\n\n#  BERKELEY_DB_INCLUDE_DIRS - the Berkeley DB include directory\n\n#  BERKELEY_DB_LIBRARIES - Link these to use Berkeley DB\n\n#  BERKELEY_DB_DEFINITIONS - Compiler switches required for using Berkeley DB\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Copyright (c) 2006, Alexander Dymo, <adymo@kdevelop.org>\n\n# Copyright (c) 2016, Julian Andres Klode <jak@debian.org>\n\n#\n\n# Redistribution and use in source and binary forms, with or without\n\n# modification, are permitted provided that the following conditions\n\n# are met:\n\n#\n\n# 1. Redistributions of source code must retain the copyright\n\n#    notice, this list of conditions and the following disclaimer.\n\n# 2. Redistributions in binary form must reproduce the copyright\n\n#    notice, this list of conditions and the following disclaimer in the\n\n#    documentation and/or other materials provided with the distribution.\n\n# 3. The name of the author may not be used to endorse or promote products\n\n#    derived from this software without specific prior written permission.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR\n\n# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES\n\n# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n\n# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,\n\n# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT\n\n# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\n# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF\n\n# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We need NO_DEFAULT_PATH here, otherwise CMake helpfully picks up the wrong\n\n# db.h on BSD systems instead of the Berkeley DB one.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# show the BERKELEY_DB_INCLUDE_DIRS and BERKELEY_DB_LIBRARIES variables only in the advanced view\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "CMake/FindIconv.cmake" : {
+      "ObjectId" : "67046d95d15b496ed787a224ed1ac8d91ebc6015",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/FindLFS.cmake" : {
+      "ObjectId" : "e1fcf964c6f04e434c35f029fe5515116ad990d9",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# CMake support for large files\n\n#\n\n# Copyright (C) 2016 Julian Andres Klode <jak@debian.org>.\n\n#\n\n# Permission is hereby granted, free of charge, to any person\n\n# obtaining a copy of this software and associated documentation files\n\n# (the \"Software\"), to deal in the Software without restriction,\n\n# including without limitation the rights to use, copy, modify, merge,\n\n# publish, distribute, sublicense, and/or sell copies of the Software,\n\n# and to permit persons to whom the Software is furnished to do so,\n\n# subject to the following conditions:\n\n#\n\n# The above copyright notice and this permission notice shall be\n\n# included in all copies or substantial portions of the Software.\n\n#\n\n# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\n\n# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n\n# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\n\n# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS\n\n# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN\n\n# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\n\n# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n\n# SOFTWARE.\n\n#\n\n# This defines the following variables\n\n#\n\n# LFS_DEFINITIONS - List of definitions to pass to add_definitions()\n\n# LFS_COMPILE_OPTIONS - List of definitions to pass to add_compile_options()\n\n# LFS_LIBRARIES - List of libraries and linker flags\n\n# LFS_FOUND - If there is Large files support\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Test program to check for LFS. Requires that off_t has at least 8 byte large\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Check if the given options are needed\n\n#\n\n# This appends to the variables _lfs_cppflags, _lfs_cflags, and _lfs_ldflags,\n\n# it also sets LFS_FOUND to 1 if it works.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Check for the availability of LFS.\n\n# The cases handled are:\n\n#\n\n#  * Native LFS\n\n#  * Output of getconf LFS_CFLAGS; getconf LFS_LIBS; getconf LFS_LDFLAGS\n\n#  * Preprocessor flag -D_FILE_OFFSET_BITS=64\n\n#  * Preprocessor flag -D_LARGE_FILES\n\n#\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Check using getconf. If getconf fails, don't worry, the check in\n\n# _lfs_check_compiler_option will fail as well.\n",
+        "Line" : 93,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# Move -D flags to the place they are supposed to be\n",
+        "Line" : 112,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# Check if the flags we received (if any) produce working LFS support\n",
+        "Line" : 121,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# IRIX stuff\n",
+        "Line" : 128,
+        "CharPositionInLine" : 23
+      },
+      "8" : {
+        "Text" : "# Linux and friends\n",
+        "Line" : 131,
+        "CharPositionInLine" : 23
+      },
+      "9" : {
+        "Text" : "# AIX\n",
+        "Line" : 134,
+        "CharPositionInLine" : 23
+      },
+      "CommentCount" : 10
+    },
+    "CMake/FindLZ4.cmake" : {
+      "ObjectId" : "597f520a829acb762104e56f4d875a26ec83e78b",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find LZ4\n\n# Once done, this will define\n\n#\n\n#  LZ4_FOUND - system has LZ4\n\n#  LZ4_INCLUDE_DIRS - the LZ4 include directories\n\n#  LZ4_LIBRARIES - the LZ4 library\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMake/FindLZMA.cmake" : {
+      "ObjectId" : "6abc4fa7784c6739b5f588c90fd2d34c49de7372",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find LZMA\n\n# Once done, this will define\n\n#\n\n#  LZMA_FOUND - system has LZMA\n\n#  LZMA_INCLUDE_DIRS - the LZMA include directories\n\n#  LZMA_LIBRARIES - the LZMA library\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "CMake/Misc.cmake" : {
+      "ObjectId" : "6ad0b9479a34c8f6144093a363e3a7895a3ce51e",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Flatten our header structure\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Substitute vendor references in a file\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Would like to use ${AVF_OUTPUT} as target name, but then ninja gets\n\n# cycles.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Add symbolic links to a file\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Generates a simple version script versioning everything with current SOVERSION\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# install_empty_directories(path ...)\n\n#\n\n# Creates empty directories in the install destination dir. Paths may be\n\n# absolute or relative; in the latter case, the value of CMAKE_INSTALL_PREFIX\n\n# is prepended.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "CMake/Translations.cmake" : {
+      "ObjectId" : "79f2633a79534ef001484dd5ba3b8c9a96e8d55f",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# translations.cmake - Translations using APT's translation system.\n\n# Copyright (C) 2009, 2016 Julian Andres Klode <jak@debian.org>\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Build the list of source files of the target\n",
+        "Line" : 9,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Create the template for this specific sub-domain\n",
+        "Line" : 47,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# We are building a ${domain}.pot with a header for launchpad, but we also\n\n# build a ${domain.pot}-tmp as a byproduct. The msgfmt command than depend\n\n# on the byproduct while their target depends on the output, so that msgfmt\n\n# does not have to be rerun if nothing in the template changed.\n\n#\n\n# Make sure the .pot-tmp has no line numbers, to avoid useless rebuilding\n\n# of .mo files.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# We need a target to depend on otherwise, the msgmerge might not get called\n\n# with the make generator\n",
+        "Line" : 92,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Build .mo files\n",
+        "Line" : 96,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Command to merge and compile the messages. As explained in the custom\n\n# command for msgcomm, this depends on byproduct to avoid reruns\n",
+        "Line" : 106,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Usage: apt_add_update_po(output domain [domain ...])\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "CMake/vendor_substitute.cmake" : {
+      "ObjectId" : "71449c9e8c0be3e0ed8c07af85b11ea5bd64d9c9",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "363dc139388fde31426bf4da61ca39586fa46c9f",
+      "LastModified" : "2017-05-04T20:57:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (C) 2009, 2016 Julian Andres Klode <jak@debian.org>.\n\n# Licensed under the same terms as APT; i.e. GPL 2 or later.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# set minimum version\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Generic header locations\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Add coverage target\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Work around bug in GNUInstallDirs\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Include stuff\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Add large file support\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Set compiler flags\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# apt-ftparchive dependencies\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# apt-transport-https dependencies\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# (De)Compressor libraries\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Mount()ing and stat()ing and friends\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Other checks\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# FreeBSD\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Handle resolving\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Configure some variables like package, version and architecture.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Set various directories\n",
+        "Line" : 194,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Configure our configuration headers (config.h and apti18n.h)\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Add our subdirectories\n",
+        "Line" : 207,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Link update-po4a into the update-po target\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Create our directories.\n",
+        "Line" : 227,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 21
+    },
+    "apt-inst/CMakeLists.txt" : {
+      "ObjectId" : "31da115e432d12c7acab5664da4db2bea33be508",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Include apt-pkg directly, as some files have #include <system.h>\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the version of the library\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Definition of the C++ files used to build the library - note that this\n\n# is expanded at CMake time, so you have to rerun cmake if you add or remove\n\n# a file (you can just run cmake . in the build directory)\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create a library using the C++ files\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Link the library and set the SONAME\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Install the library and the headers\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "apt-pkg/CMakeLists.txt" : {
+      "ObjectId" : "e3e078b81a1628e9cf8320197315fc85859b3086",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Include apt-pkg directly, as some files have #include <system.h>\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set the version of the library\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# exporting for methods/CMakeLists.txt\n",
+        "Line" : 30,
+        "CharPositionInLine" : 41
+      },
+      "3" : {
+        "Text" : "# Definition of the C++ files used to build the library - note that this\n\n# is expanded at CMake time, so you have to rerun cmake if you add or remove\n\n# a file (you can just run cmake . in the build directory)\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create a library using the C++ files\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Link the library and set the SONAME\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Install the library and the header files\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "apt-private/CMakeLists.txt" : {
+      "ObjectId" : "5dda36c92b34056c517560025c0b3db67a49afb6",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set the version of the library\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Definition of the C++ files used to build the library - note that this\n\n# is expanded at CMake time, so you have to rerun cmake if you add or remove\n\n# a file (you can just run cmake . in the build directory)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Create a library using the C++ files\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link the library and set the SONAME\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Install the library and the headers\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmdline/CMakeLists.txt" : {
+      "ObjectId" : "8977b45d14065230a83477782fbed922c2d317ab",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create the executable tasks\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Link the executables against the libraries\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install the executables\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Install the not-to-be-compiled programs\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "completions/CMakeLists.txt" : {
+      "ObjectId" : "4ef62a89253f3c3625bc5201655f28ced6dca242",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "doc/CMakeLists.txt" : {
+      "ObjectId" : "a1491428f0cd57654b4c1a7df73135157c83c41c",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "doc/examples/CMakeLists.txt" : {
+      "ObjectId" : "1998867db3034fb7a23ff102b4e185c38996c0ec",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dselect/CMakeLists.txt" : {
+      "ObjectId" : "804306e723a9a3a54c8af9e830804e3e80e994ff",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "ftparchive/CMakeLists.txt" : {
+      "ObjectId" : "bbd2848c15c088480a7dbcd9a1f23fba55d28d1f",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Definition of the C++ files used to build the program - note that this\n\n# is expanded at CMake time, so you have to rerun cmake if you add or remove\n\n# a file (you can just run cmake . in the build directory)\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Link the executables against the libraries\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install the executables\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "methods/CMakeLists.txt" : {
+      "ObjectId" : "a74c2ce0716b76cc4a17a30047795bbf3340be21",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create the executable targets\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Add target-specific header directories\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link the executables against the libraries\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Install the library\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "po/CMakeLists.txt" : {
+      "ObjectId" : "258c9b0504e326b2e4733f17f4f407d6d06fdbd7",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## disabled by translator request #313283\n",
+        "Line" : 4,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : "# Methods\n",
+        "Line" : 17,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 2
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "2f47b5c32ab43b5c8f6fa1ef5ea145dd07629ebe",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/interactive-helper/CMakeLists.txt" : {
+      "ObjectId" : "5a32ca17e741a6f953d70308dcdb55549d0c994d",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "test/libapt/CMakeLists.txt" : {
+      "ObjectId" : "86c0b28b5d61d94e7b1c3c7c13a3efd80c6018ca",
+      "LastModified" : "2017-01-19T14:59:38Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Definition of the C++ files used to build the test binary - note that this\n\n# is expanded at CMake time, so you have to rerun cmake if you add or remove\n\n# a file (you can just run cmake . in the build directory)\n",
+        "Line" : 25,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 1
+    },
+    "vendor/CMakeLists.txt" : {
+      "ObjectId" : "8246c725a8b93f3129ad598d52e0fd0a3d86b49f",
+      "LastModified" : "2016-08-26T22:31:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Determine the current vendor, export to CURRENT_VENDOR\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Handle sources.list example\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Handle apt.conf snippets\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 25
+  },
+  "ElapsedTime" : 7963
+}

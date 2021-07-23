@@ -1,0 +1,792 @@
+{
+  "Repository" : "96628",
+  "Revision" : "HEAD",
+  "ObjectId" : "aeb582a98374c094361cba1bd756dc6307432c42",
+  "CommitTime" : "2019-03-11T02:02:16Z",
+  "Files" : {
+    "Documentation/Makefile" : {
+      "ObjectId" : "26a2342beaf0132241980dbbcaf8592fd4d183dc",
+      "LastModified" : "2019-01-07T21:05:36Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Guard against environment variables\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# with their own formatting rules.\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# DESTDIR =\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# For docbook-xsl ...\n\n#\t-1.68.1,\tno extra settings are needed?\n\n#\t1.69.0,\t\tset ASCIIDOC_ROFF?\n\n#\t1.69.1-1.71.0,\tset DOCBOOK_SUPPRESS_SP?\n\n#\t1.71.1,\t\tset ASCIIDOC_ROFF?\n\n#\t1.72.0,\t\tset DOCBOOK_XSL_172.\n\n#\t1.73.0-,\tno extra settings are needed\n\n#\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# docbook-xsl after 1.72 needs the regular XSL, but will not\n\n# pass-thru raw roff codes from asciidoc.conf, so turn them off.\n",
+        "Line" : 161,
+        "CharPositionInLine" : 1
+      },
+      "5" : {
+        "Text" : "# Newer DocBook stylesheet emits warning cruft in the output when\n\n# this is not set, and if set it shows an absolute link.  Older\n\n# stylesheets simply ignore this parameter.\n\n#\n\n# Distros may want to use MAN_BASE_URL=file:///path/to/git/docs/\n\n# or similar.\n",
+        "Line" : 173,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# If your target system uses GNU groff, it may try to render\n\n# apostrophes as a \"pretty\" apostrophe using unicode.  This breaks\n\n# cut&paste, so you should set GNU_ROFF to force them to be ASCII\n\n# apostrophes.  Unfortunately does not work with non-GNU roff.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Shell quote;\n",
+        "Line" : 204,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# space to separate -C and subdir\n",
+        "Line" : 217,
+        "CharPositionInLine" : 29
+      },
+      "9" : {
+        "Text" : "# \"make -w\"\n",
+        "Line" : 222,
+        "CharPositionInLine" : 5
+      },
+      "10" : {
+        "Text" : "#\n\n# Determine \"include::\" file references in asciidoc files.\n\n#\n",
+        "Line" : 289,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# You must have a clone of 'git-htmldocs' and 'git-manpages' repositories\n\n# next to the 'git' repository itself for the following to work.\n",
+        "Line" : 442,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "Makefile" : {
+      "ObjectId" : "c5240942f29e788ac08daa9329de52aaa3415708",
+      "LastModified" : "2019-02-19T21:18:08Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The default target of this Makefile is...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define V=1 to have a more verbose compile.\n\n#\n\n# Define SHELL_PATH to a POSIX shell if your /bin/sh is broken.\n\n#\n\n# Define SANE_TOOL_PATH to a colon-separated list of paths to prepend\n\n# to PATH if your tools in /usr/bin are broken.\n\n#\n\n# Define SOCKLEN_T to a suitable type (such as 'size_t') if your\n\n# system headers do not define a socklen_t type.\n\n#\n\n# Define INLINE to a suitable substitute (such as '__inline' or '') if git\n\n# fails to compile with errors about undefined inline functions or similar.\n\n#\n\n# Define SNPRINTF_RETURNS_BOGUS if you are on a system which snprintf()\n\n# or vsnprintf() return -1 instead of number of characters which would\n\n# have been written to the final string if enough space had been available.\n\n#\n\n# Define FREAD_READS_DIRECTORIES if you are on a system which succeeds\n\n# when attempting to read from an fopen'ed directory (or even to fopen\n\n# it at all).\n\n#\n\n# Define NO_OPENSSL environment variable if you do not have OpenSSL.\n\n#\n\n# Define USE_LIBPCRE if you have and want to use libpcre. Various\n\n# commands such as log and grep offer runtime options to use\n\n# Perl-compatible regular expressions instead of standard or extended\n\n# POSIX regular expressions.\n\n#\n\n# USE_LIBPCRE is a synonym for USE_LIBPCRE2, define USE_LIBPCRE1\n\n# instead if you'd like to use the legacy version 1 of the PCRE\n\n# library. Support for version 1 will likely be removed in some future\n\n# release of Git, as upstream has all but abandoned it.\n\n#\n\n# When using USE_LIBPCRE1, define NO_LIBPCRE1_JIT if the PCRE v1\n\n# library is compiled without --enable-jit. We will auto-detect\n\n# whether the version of the PCRE v1 library in use has JIT support at\n\n# all, but we unfortunately can't auto-detect whether JIT support\n\n# hasn't been compiled in in an otherwise JIT-supporting version. If\n\n# you have link-time errors about a missing `pcre_jit_exec` define\n\n# this, or recompile PCRE v1 with --enable-jit.\n\n#\n\n# Define LIBPCREDIR=/foo/bar if your PCRE header and library files are\n\n# in /foo/bar/include and /foo/bar/lib directories. Which version of\n\n# PCRE this points to determined by the USE_LIBPCRE1 and USE_LIBPCRE2\n\n# variables.\n\n#\n\n# Define HAVE_ALLOCA_H if you have working alloca(3) defined in that header.\n\n#\n\n# Define NO_CURL if you do not have libcurl installed.  git-http-fetch and\n\n# git-http-push are not built, and you cannot use http:// and https://\n\n# transports (neither smart nor dumb).\n\n#\n\n# Define CURLDIR=/foo/bar if your curl header and library files are in\n\n# /foo/bar/include and /foo/bar/lib directories.\n\n#\n\n# Define CURL_CONFIG to curl's configuration program that prints information\n\n# about the library (e.g., its version number).  The default is 'curl-config'.\n\n#\n\n# Define CURL_LDFLAGS to specify flags that you need to link when using libcurl,\n\n# if you do not want to rely on the libraries provided by CURL_CONFIG.  The\n\n# default value is a result of `curl-config --libs`.  An example value for\n\n# CURL_LDFLAGS is as follows:\n\n#\n\n#     CURL_LDFLAGS=-lcurl\n\n#\n\n# Define NO_EXPAT if you do not have expat installed.  git-http-push is\n\n# not built, and you cannot push using http:// and https:// transports (dumb).\n\n#\n\n# Define EXPATDIR=/foo/bar if your expat header and library files are in\n\n# /foo/bar/include and /foo/bar/lib directories.\n\n#\n\n# Define EXPAT_NEEDS_XMLPARSE_H if you have an old version of expat (e.g.,\n\n# 1.1 or 1.2) that provides xmlparse.h instead of expat.h.\n\n#\n\n# Define NO_GETTEXT if you don't want Git output to be translated.\n\n# A translated Git requires GNU libintl or another gettext implementation,\n\n# plus libintl-perl at runtime.\n\n#\n\n# Define USE_GETTEXT_SCHEME and set it to 'fallthrough', if you don't trust\n\n# the installed gettext translation of the shell scripts output.\n\n#\n\n# Define HAVE_LIBCHARSET_H if you haven't set NO_GETTEXT and you can't\n\n# trust the langinfo.h's nl_langinfo(CODESET) function to return the\n\n# current character set. GNU and Solaris have a nl_langinfo(CODESET),\n\n# FreeBSD can use either, but MinGW and some others need to use\n\n# libcharset.h's locale_charset() instead.\n\n#\n\n# Define CHARSET_LIB to the library you need to link with in order to\n\n# use locale_charset() function.  On some platforms this needs to set to\n\n# -lcharset, on others to -liconv .\n\n#\n\n# Define LIBC_CONTAINS_LIBINTL if your gettext implementation doesn't\n\n# need -lintl when linking.\n\n#\n\n# Define NO_MSGFMT_EXTENDED_OPTIONS if your implementation of msgfmt\n\n# doesn't support GNU extensions like --check and --statistics\n\n#\n\n# Define HAVE_PATHS_H if you have paths.h and want to use the default PATH\n\n# it specifies.\n\n#\n\n# Define NO_D_TYPE_IN_DIRENT if your platform defines DT_UNKNOWN but lacks\n\n# d_type in struct dirent (Cygwin 1.5, fixed in Cygwin 1.7).\n\n#\n\n# Define HAVE_STRINGS_H if you have strings.h and need it for strcasecmp.\n\n#\n\n# Define NO_STRCASESTR if you don't have strcasestr.\n\n#\n\n# Define NO_MEMMEM if you don't have memmem.\n\n#\n\n# Define NO_GETPAGESIZE if you don't have getpagesize.\n\n#\n\n# Define NO_STRLCPY if you don't have strlcpy.\n\n#\n\n# Define NO_STRTOUMAX if you don't have both strtoimax and strtoumax in the\n\n# C library. If your compiler also does not support long long or does not have\n\n# strtoull, define NO_STRTOULL.\n\n#\n\n# Define NO_SETENV if you don't have setenv in the C library.\n\n#\n\n# Define NO_UNSETENV if you don't have unsetenv in the C library.\n\n#\n\n# Define NO_MKDTEMP if you don't have mkdtemp in the C library.\n\n#\n\n# Define MKDIR_WO_TRAILING_SLASH if your mkdir() can't deal with trailing slash.\n\n#\n\n# Define NO_GECOS_IN_PWENT if you don't have pw_gecos in struct passwd\n\n# in the C library.\n\n#\n\n# Define NO_LIBGEN_H if you don't have libgen.h.\n\n#\n\n# Define NEEDS_LIBGEN if your libgen needs -lgen when linking\n\n#\n\n# Define NO_SYS_SELECT_H if you don't have sys/select.h.\n\n#\n\n# Define NO_SYMLINK_HEAD if you never want .git/HEAD to be a symbolic link.\n\n# Enable it on Windows.  By default, symrefs are still used.\n\n#\n\n# Define NO_SVN_TESTS if you want to skip time-consuming SVN interoperability\n\n# tests.  These tests take up a significant amount of the total test time\n\n# but are not needed unless you plan to talk to SVN repos.\n\n#\n\n# Define NO_FINK if you are building on Darwin/Mac OS X, have Fink\n\n# installed in /sw, but don't want GIT to link against any libraries\n\n# installed there.  If defined you may specify your own (or Fink's)\n\n# include directories and library directories by defining CFLAGS\n\n# and LDFLAGS appropriately.\n\n#\n\n# Define NO_DARWIN_PORTS if you are building on Darwin/Mac OS X,\n\n# have DarwinPorts installed in /opt/local, but don't want GIT to\n\n# link against any libraries installed there.  If defined you may\n\n# specify your own (or DarwinPort's) include directories and\n\n# library directories by defining CFLAGS and LDFLAGS appropriately.\n\n#\n\n# Define NO_APPLE_COMMON_CRYPTO if you are building on Darwin/Mac OS X\n\n# and do not want to use Apple's CommonCrypto library.  This allows you\n\n# to provide your own OpenSSL library, for example from MacPorts.\n\n#\n\n# Define BLK_SHA1 environment variable to make use of the bundled\n\n# optimized C SHA1 routine.\n\n#\n\n# Define PPC_SHA1 environment variable when running make to make use of\n\n# a bundled SHA1 routine optimized for PowerPC.\n\n#\n\n# Define DC_SHA1 to unconditionally enable the collision-detecting sha1\n\n# algorithm. This is slower, but may detect attempted collision attacks.\n\n# Takes priority over other *_SHA1 knobs.\n\n#\n\n# Define DC_SHA1_EXTERNAL in addition to DC_SHA1 if you want to build / link\n\n# git with the external SHA1 collision-detect library.\n\n# Without this option, i.e. the default behavior is to build git with its\n\n# own built-in code (or submodule).\n\n#\n\n# Define DC_SHA1_SUBMODULE in addition to DC_SHA1 to use the\n\n# sha1collisiondetection shipped as a submodule instead of the\n\n# non-submodule copy in sha1dc/. This is an experimental option used\n\n# by the git project to migrate to using sha1collisiondetection as a\n\n# submodule.\n\n#\n\n# Define OPENSSL_SHA1 environment variable when running make to link\n\n# with the SHA1 routine from openssl library.\n\n#\n\n# Define SHA1_MAX_BLOCK_SIZE to limit the amount of data that will be hashed\n\n# in one call to the platform's SHA1_Update(). e.g. APPLE_COMMON_CRYPTO\n\n# wants 'SHA1_MAX_BLOCK_SIZE=1024L*1024L*1024L' defined.\n\n#\n\n# Define BLK_SHA256 to use the built-in SHA-256 routines.\n\n#\n\n# Define GCRYPT_SHA256 to use the SHA-256 routines in libgcrypt.\n\n#\n\n# Define OPENSSL_SHA256 to use the SHA-256 routines in OpenSSL.\n\n#\n\n# Define NEEDS_CRYPTO_WITH_SSL if you need -lcrypto when using -lssl (Darwin).\n\n#\n\n# Define NEEDS_SSL_WITH_CRYPTO if you need -lssl when using -lcrypto (Darwin).\n\n#\n\n# Define NEEDS_LIBICONV if linking with libc is not enough (Darwin).\n\n#\n\n# Define NEEDS_LIBINTL_BEFORE_LIBICONV if you need libintl before libiconv.\n\n#\n\n# Define NO_INTPTR_T if you don't have intptr_t or uintptr_t.\n\n#\n\n# Define NO_UINTMAX_T if you don't have uintmax_t.\n\n#\n\n# Define NEEDS_SOCKET if linking with libc is not enough (SunOS,\n\n# Patrick Mauritz).\n\n#\n\n# Define NEEDS_RESOLV if linking with -lnsl and/or -lsocket is not enough.\n\n# Notably on Solaris hstrerror resides in libresolv and on Solaris 7\n\n# inet_ntop and inet_pton additionally reside there.\n\n#\n\n# Define NO_MMAP if you want to avoid mmap.\n\n#\n\n# Define MMAP_PREVENTS_DELETE if a file that is currently mmapped cannot be\n\n# deleted or cannot be replaced using rename().\n\n#\n\n# Define NO_POLL_H if you don't have poll.h.\n\n#\n\n# Define NO_SYS_POLL_H if you don't have sys/poll.h.\n\n#\n\n# Define NO_POLL if you do not have or don't want to use poll().\n\n# This also implies NO_POLL_H and NO_SYS_POLL_H.\n\n#\n\n# Define NEEDS_SYS_PARAM_H if you need to include sys/param.h to compile,\n\n# *PLEASE* REPORT to git@vger.kernel.org if your platform needs this;\n\n# we want to know more about the issue.\n\n#\n\n# Define NO_PTHREADS if you do not have or do not want to use Pthreads.\n\n#\n\n# Define NO_PREAD if you have a problem with pread() system call (e.g.\n\n# cygwin1.dll before v1.5.22).\n\n#\n\n# Define NO_SETITIMER if you don't have setitimer()\n\n#\n\n# Define NO_STRUCT_ITIMERVAL if you don't have struct itimerval\n\n# This also implies NO_SETITIMER\n\n#\n\n# Define NO_FAST_WORKING_DIRECTORY if accessing objects in pack files is\n\n# generally faster on your platform than accessing the working directory.\n\n#\n\n# Define NO_TRUSTABLE_FILEMODE if your filesystem may claim to support\n\n# the executable mode bit, but doesn't really do so.\n\n#\n\n# Define NEEDS_MODE_TRANSLATION if your OS strays from the typical file type\n\n# bits in mode values (e.g. z/OS defines I_SFMT to 0xFF000000 as opposed to the\n\n# usual 0xF000).\n\n#\n\n# Define NO_IPV6 if you lack IPv6 support and getaddrinfo().\n\n#\n\n# Define NO_UNIX_SOCKETS if your system does not offer unix sockets.\n\n#\n\n# Define NO_SOCKADDR_STORAGE if your platform does not have struct\n\n# sockaddr_storage.\n\n#\n\n# Define NO_ICONV if your libc does not properly support iconv.\n\n#\n\n# Define OLD_ICONV if your library has an old iconv(), where the second\n\n# (input buffer pointer) parameter is declared with type (const char **).\n\n#\n\n# Define ICONV_OMITS_BOM if your iconv implementation does not write a\n\n# byte-order mark (BOM) when writing UTF-16 or UTF-32 and always writes in\n\n# big-endian format.\n\n#\n\n# Define NO_DEFLATE_BOUND if your zlib does not have deflateBound.\n\n#\n\n# Define NO_R_TO_GCC_LINKER if your gcc does not like \"-R/path/lib\"\n\n# that tells runtime paths to dynamic libraries;\n\n# \"-Wl,-rpath=/path/lib\" is used instead.\n\n#\n\n# Define NO_NORETURN if using buggy versions of gcc 4.6+ and profile feedback,\n\n# as the compiler can crash (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49299)\n\n#\n\n# Define USE_NSEC below if you want git to care about sub-second file mtimes\n\n# and ctimes. Note that you need recent glibc (at least 2.2.4) for this. On\n\n# Linux, kernel 2.6.11 or newer is required for reliable sub-second file times\n\n# on file systems with exactly 1 ns or 1 s resolution. If you intend to use Git\n\n# on other file systems (e.g. CEPH, CIFS, NTFS, UDF), don't enable USE_NSEC. See\n\n# Documentation/technical/racy-git.txt for details.\n\n#\n\n# Define USE_ST_TIMESPEC if your \"struct stat\" uses \"st_ctimespec\" instead of\n\n# \"st_ctim\"\n\n#\n\n# Define NO_NSEC if your \"struct stat\" does not have \"st_ctim.tv_nsec\"\n\n# available.  This automatically turns USE_NSEC off.\n\n#\n\n# Define USE_STDEV below if you want git to care about the underlying device\n\n# change being considered an inode change from the update-index perspective.\n\n#\n\n# Define NO_ST_BLOCKS_IN_STRUCT_STAT if your platform does not have st_blocks\n\n# field that counts the on-disk footprint in 512-byte blocks.\n\n#\n\n# Define DOCBOOK_XSL_172 if you want to format man pages with DocBook XSL v1.72\n\n# (not v1.73 or v1.71).\n\n#\n\n# Define ASCIIDOC_ROFF if your DocBook XSL does not escape raw roff directives\n\n# (versions 1.68.1 through v1.72).\n\n#\n\n# Define GNU_ROFF if your target system uses GNU groff.  This forces\n\n# apostrophes to be ASCII so that cut&pasting examples to the shell\n\n# will work.\n\n#\n\n# Define USE_ASCIIDOCTOR to use Asciidoctor instead of AsciiDoc to build the\n\n# documentation.\n\n#\n\n# Define ASCIIDOCTOR_EXTENSIONS_LAB to point to the location of the Asciidoctor\n\n# Extensions Lab if you have it available.\n\n#\n\n# Define PERL_PATH to the path of your Perl binary (usually /usr/bin/perl).\n\n#\n\n# Define NO_PERL if you do not want Perl scripts or libraries at all.\n\n#\n\n# Define NO_PERL_CPAN_FALLBACKS if you do not want to install bundled\n\n# copies of CPAN modules that serve as a fallback in case the modules\n\n# are not available on the system. This option is intended for\n\n# distributions that want to use their packaged versions of Perl\n\n# modules, instead of the fallbacks shipped with Git.\n\n#\n\n# Define PYTHON_PATH to the path of your Python binary (often /usr/bin/python\n\n# but /usr/bin/python2.7 on some platforms).\n\n#\n\n# Define NO_PYTHON if you do not want Python scripts or libraries at all.\n\n#\n\n# Define NO_TCLTK if you do not want Tcl/Tk GUI.\n\n#\n\n# Define SANE_TEXT_GREP to \"-a\" if you use recent versions of GNU grep\n\n# and egrep that are pickier when their input contains non-ASCII data.\n\n#\n\n# The TCL_PATH variable governs the location of the Tcl interpreter\n\n# used to optimize git-gui for your system.  Only used if NO_TCLTK\n\n# is not set.  Defaults to the bare 'tclsh'.\n\n#\n\n# The TCLTK_PATH variable governs the location of the Tcl/Tk interpreter.\n\n# If not set it defaults to the bare 'wish'. If it is set to the empty\n\n# string then NO_TCLTK will be forced (this is used by configure script).\n\n#\n\n# Define INTERNAL_QSORT to use Git's implementation of qsort(), which\n\n# is a simplified version of the merge sort used in glibc. This is\n\n# recommended if Git triggers O(n^2) behavior in your platform's qsort().\n\n#\n\n# Define HAVE_ISO_QSORT_S if your platform provides a qsort_s() that's\n\n# compatible with the one described in C11 Annex K.\n\n#\n\n# Define UNRELIABLE_FSTAT if your system's fstat does not return the same\n\n# information on a not yet closed file that lstat would return for the same\n\n# file after it was closed.\n\n#\n\n# Define OBJECT_CREATION_USES_RENAMES if your operating systems has problems\n\n# when hardlinking a file to another name and unlinking the original file right\n\n# away (some NTFS drivers seem to zero the contents in that scenario).\n\n#\n\n# Define INSTALL_SYMLINKS if you prefer to have everything that can be\n\n# symlinked between bin/ and libexec/ to use relative symlinks between\n\n# the two. This option overrides NO_CROSS_DIRECTORY_HARDLINKS and\n\n# NO_INSTALL_HARDLINKS which will also use symlinking by indirection\n\n# within the same directory in some cases, INSTALL_SYMLINKS will\n\n# always symlink to the final target directly.\n\n#\n\n# Define NO_CROSS_DIRECTORY_HARDLINKS if you plan to distribute the installed\n\n# programs as a tar, where bin/ and libexec/ might be on different file systems.\n\n#\n\n# Define NO_INSTALL_HARDLINKS if you prefer to use either symbolic links or\n\n# copies to install built-in git commands e.g. git-cat-file.\n\n#\n\n# Define USE_NED_ALLOCATOR if you want to replace the platforms default\n\n# memory allocators with the nedmalloc allocator written by Niall Douglas.\n\n#\n\n# Define OVERRIDE_STRDUP to override the libc version of strdup(3).\n\n# This is necessary when using a custom allocator in order to avoid\n\n# crashes due to allocation and free working on different 'heaps'.\n\n# It's defined automatically if USE_NED_ALLOCATOR is set.\n\n#\n\n# Define NO_REGEX if your C library lacks regex support with REG_STARTEND\n\n# feature.\n\n#\n\n# Define HAVE_DEV_TTY if your system can open /dev/tty to interact with the\n\n# user.\n\n#\n\n# Define JSMIN to point to JavaScript minifier that functions as\n\n# a filter to have gitweb.js minified.\n\n#\n\n# Define CSSMIN to point to a CSS minifier in order to generate a minified\n\n# version of gitweb.css\n\n#\n\n# Define DEFAULT_PAGER to a sensible pager command (defaults to \"less\") if\n\n# you want to use something different.  The value will be interpreted by the\n\n# shell at runtime when it is used.\n\n#\n\n# Define DEFAULT_EDITOR to a sensible editor command (defaults to \"vi\") if you\n\n# want to use something different.  The value will be interpreted by the shell\n\n# if necessary when it is used.  Examples:\n\n#\n\n#   DEFAULT_EDITOR='~/bin/vi',\n\n#   DEFAULT_EDITOR='$GIT_FALLBACK_EDITOR',\n\n#   DEFAULT_EDITOR='\"C:\\Program Files\\Vim\\gvim.exe\" --nofork'\n\n#\n\n# Define COMPUTE_HEADER_DEPENDENCIES to \"yes\" if you want dependencies on\n\n# header files to be automatically computed, to avoid rebuilding objects when\n\n# an unrelated header file changes.  Define it to \"no\" to use the hard-coded\n\n# dependency rules.  The default is \"auto\", which means to use computed header\n\n# dependencies if your compiler is detected to support it.\n\n#\n\n# Define NATIVE_CRLF if your platform uses CRLF for line endings.\n\n#\n\n# Define GIT_USER_AGENT if you want to change how git identifies itself during\n\n# network interactions.  The default is \"git/$(GIT_VERSION)\".\n\n#\n\n# Define DEFAULT_HELP_FORMAT to \"man\", \"info\" or \"html\"\n\n# (defaults to \"man\") if you want to have a different default when\n\n# \"git help\" is called without a parameter specifying the format.\n\n#\n\n# Define GIT_TEST_INDEX_VERSION to 2, 3 or 4 to run the test suite\n\n# with a different indexfile format version.  If it isn't set the index\n\n# file format used is index-v[23].\n\n#\n\n# Define GMTIME_UNRELIABLE_ERRORS if your gmtime() function does not\n\n# return NULL when it receives a bogus time_t.\n\n#\n\n# Define HAVE_CLOCK_GETTIME if your platform has clock_gettime.\n\n#\n\n# Define HAVE_CLOCK_MONOTONIC if your platform has CLOCK_MONOTONIC.\n\n#\n\n# Define NEEDS_LIBRT if your platform requires linking with librt (glibc version\n\n# before 2.17) for clock_gettime and CLOCK_MONOTONIC.\n\n#\n\n# Define USE_PARENS_AROUND_GETTEXT_N to \"yes\" if your compiler happily\n\n# compiles the following initialization:\n\n#\n\n#   static const char s[] = (\"FOO\");\n\n#\n\n# and define it to \"no\" if you need to remove the parentheses () around the\n\n# constant.  The default is \"auto\", which means to use parentheses if your\n\n# compiler is detected to support it.\n\n#\n\n# Define HAVE_BSD_SYSCTL if your platform has a BSD-compatible sysctl function.\n\n#\n\n# Define HAVE_GETDELIM if your system has the getdelim() function.\n\n#\n\n# Define FILENO_IS_A_MACRO if fileno() is a macro, not a real function.\n\n#\n\n# Define PAGER_ENV to a SP separated VAR=VAL pairs to define\n\n# default environment variables to be passed when a pager is spawned, e.g.\n\n#\n\n#    PAGER_ENV = LESS=FRX LV=-c\n\n#\n\n# to say \"export LESS=FRX (and LV=-c) if the environment variable\n\n# LESS (and LV) is not set, respectively\".\n\n#\n\n# Define TEST_SHELL_PATH if you want to use a shell besides SHELL_PATH for\n\n# running the test scripts (e.g., bash has better support for \"set -x\"\n\n# tracing).\n\n#\n\n# When cross-compiling, define HOST_CPU as the canonical name of the CPU on\n\n# which the built Git will run (for instance \"x86_64\").\n\n#\n\n# Define RUNTIME_PREFIX to configure Git to resolve its ancillary tooling and\n\n# support files relative to the location of the runtime binary, rather than\n\n# hard-coding them into the binary. Git installations built with RUNTIME_PREFIX\n\n# can be moved to arbitrary filesystem locations. RUNTIME_PREFIX also causes\n\n# Perl scripts to use a modified entry point header allowing them to resolve\n\n# support files at runtime.\n\n#\n\n# When using RUNTIME_PREFIX, define HAVE_BSD_KERN_PROC_SYSCTL if your platform\n\n# supports the KERN_PROC BSD sysctl function.\n\n#\n\n# When using RUNTIME_PREFIX, define PROCFS_EXECUTABLE_PATH if your platform\n\n# mounts a \"procfs\" filesystem capable of resolving the path of the current\n\n# executable. If defined, this must be the canonical path for the \"procfs\"\n\n# current executable path.\n\n#\n\n# When using RUNTIME_PREFIX, define HAVE_NS_GET_EXECUTABLE_PATH if your platform\n\n# supports calling _NSGetExecutablePath to retrieve the path of the running\n\n# executable.\n\n#\n\n# When using RUNTIME_PREFIX, define HAVE_WPGMPTR if your platform offers\n\n# the global variable _wpgmptr containing the absolute path of the current\n\n# executable (this is the case on Windows).\n\n#\n\n# Define DEVELOPER to enable more compiler warnings. Compiler version\n\n# and family are auto detected, but could be overridden by defining\n\n# COMPILER_FEATURES (see config.mak.dev)\n\n#\n\n# When DEVELOPER is set, DEVOPTS can be used to control compiler\n\n# options.  This variable contains keywords separated by\n\n# whitespace. The following keywords are are recognized:\n\n#\n\n#    no-error:\n\n#\n\n#        suppresses the -Werror that implicitly comes with\n\n#        DEVELOPER=1. Useful for getting the full set of errors\n\n#        without immediately dying, or for logging them.\n\n#\n\n#    extra-all:\n\n#\n\n#        The DEVELOPER mode enables -Wextra with a few exceptions. By\n\n#        setting this flag the exceptions are removed, and all of\n\n#        -Wextra is used.\n\n#\n\n#    pedantic:\n\n#\n\n#        Enable -pedantic compilation. This also disables\n\n#        USE_PARENS_AROUND_GETTEXT_N to produce only relevant warnings.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# CFLAGS and LDFLAGS are for the users to override from the command line.\n",
+        "Line" : 509,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create as necessary, replace existing, make ranlib unneeded.\n",
+        "Line" : 517,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Among the variables below, these:\n\n#   gitexecdir\n\n#   template_dir\n\n#   sysconfdir\n\n# can be specified as a relative path some/where/else;\n\n# this is interpreted as relative to $(prefix) and \"git\" at\n\n# runtime figures out where they are based on the path to the executable.\n\n# Additionally, the following will be treated as relative by \"git\" if they\n\n# begin with \"$(prefix)/\":\n\n#   mandir\n\n#   infodir\n\n#   htmldir\n\n#   localedir\n\n#   perllibdir\n\n# This can help installing the suite in a relocatable way.\n",
+        "Line" : 520,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# DESTDIR =\n",
+        "Line" : 551,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# user customisation variable for 'sparse' target\n",
+        "Line" : 583,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# internal/platform customisation variable for 'sparse'\n",
+        "Line" : 585,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "### --- END CONFIGURATION SECTION ---\n",
+        "Line" : 592,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Those must not be GNU-specific; they are shared with perl/ which may\n\n# be built by a different compiler. (Note that this is an artifact now\n\n# but it still might be nice to keep that distinction.)\n",
+        "Line" : 594,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Guard against environment variables\n",
+        "Line" : 600,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Having this variable in your environment would break pipelines because\n\n# you cause \"cd\" to echo its destination to stdout.  It can also take\n\n# scripts to unexpected places.  If you like CDPATH, define it for your\n\n# interactive shell sessions without exporting it.\n",
+        "Line" : 621,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Generated files for scripts\n",
+        "Line" : 662,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Individual rules to allow e.g.\n\n# \"make -C ../.. SCRIPT_PERL=contrib/foo/bar.perl build-perl-script\"\n\n# from subdirectories like contrib/*/\n",
+        "Line" : 671,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Always build fuzz objects even if not testing, to prevent bit-rot.\n",
+        "Line" : 706,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Empty...\n",
+        "Line" : 711,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# ... and all the rest that could be moved out of bindir to gitexecdir\n",
+        "Line" : 714,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Binary suffix, set to .exe for Windows builds\n",
+        "Line" : 726,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Do not add more tests here unless they have extra dependencies. Add\n\n# them in TEST_BUILTINS_OBJS above.\n",
+        "Line" : 782,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# List built-in command $C whose implementation cmd_$C() is not in\n\n# builtin/$C.o but is linked in as part of some other command.\n",
+        "Line" : 791,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# what 'all' will build and 'install' will install in gitexecdir,\n\n# excluding programs for built-in commands\n",
+        "Line" : 806,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# what 'all' will build but not install in gitexecdir\n",
+        "Line" : 810,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# what test wrappers are needed and 'install' will install, in bindir\n",
+        "Line" : 813,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Set paths to tools early so that they can be used for version tests.\n",
+        "Line" : 822,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Some gcc does not accept and pass -R to the linker to specify\n\n# the runtime dynamic library path.\n",
+        "Line" : 1279,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Try \"-Wl,-rpath=$(CURLDIR)/$(lib)\" in such a case.\n",
+        "Line" : 1331,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Apple CommonCrypto requires chunking\n",
+        "Line" : 1622,
+        "CharPositionInLine" : 1
+      },
+      "27" : {
+        "Text" : "# space to separate -C and subdir\n",
+        "Line" : 1834,
+        "CharPositionInLine" : 29
+      },
+      "28" : {
+        "Text" : "# \"make -w\"\n",
+        "Line" : 1839,
+        "CharPositionInLine" : 5
+      },
+      "29" : {
+        "Text" : "### profile feedback build\n\n#\n",
+        "Line" : 1870,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Can adjust this to be a global directory if you want to do extended\n\n# data gathering\n",
+        "Line" : 1873,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Shell quote (do not use $(call) to accommodate ancient setups);\n",
+        "Line" : 1890,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# RUNTIME_PREFIX's resolution logic requires resource paths to be expressed\n\n# relative to each other and share an installation path.\n\n#\n\n# This is a dependency in:\n\n# - Git's binary RUNTIME_PREFIX logic in (see \"exec_cmd.c\").\n\n# - The runtime prefix Perl header (see\n\n#   \"perl/header_templates/runtime_prefix.template.pl\").\n",
+        "Line" : 1920,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# We must filter out any object files from $(GITLIBS),\n\n# as it is typically used like:\n\n#\n\n#   foo: foo.o $(GITLIBS)\n\n#\t$(CC) $(filter %.o,$^) $(LIBS)\n\n#\n\n# where we use it as a dependency. Since we also pull object files\n\n# from the dependency list, that would make each entry appear twice.\n",
+        "Line" : 1945,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Quote for C\n",
+        "Line" : 1958,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "#!.*/sh|#!$(SHELL_PATH_SQ)|' \\\n    -e 's|@SHELL_PATH@|$(SHELL_PATH_SQ)|' \\\n    -e 's|@@DIFF@@|$(DIFF_SQ)|' \\\n    -e 's|@@LOCALEDIR@@|$(localedir_SQ)|g' \\\n    -e 's/@@NO_CURL@@/$(NO_CURL)/g' \\\n    -e 's/@@USE_GETTEXT_SCHEME@@/$(USE_GETTEXT_SCHEME)/g' \\\n    -e $(BROKEN_PATH_FIX) \\\n    -e 's|@@GITWEBDIR@@|$(gitwebdir_SQ)|g' \\\n    -e 's|@@PERL@@|$(PERL_PATH_SQ)|g' \\\n    -e 's|@@SANE_TEXT_GREP@@|$(SANE_TEXT_GREP)|g' \\\n    -e 's|@@PAGER_ENV@@|$(PAGER_ENV_SQ)|g' \\\n    $@.sh >$@+\n",
+        "Line" : 2126,
+        "CharPositionInLine" : 11
+      },
+      "36" : {
+        "Text" : "# This makes sure we depend on the NO_PERL setting itself.\n",
+        "Line" : 2163,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Used for substitution in Perl modules. Disabled when using RUNTIME_PREFIX\n\n# since the locale directory is injected.\n",
+        "Line" : 2166,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Support Perl runtime prefix. In this mode, a different header is installed\n\n# into Perl scripts.\n",
+        "Line" : 2177,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Don't export a fixed $(localedir) path; it will be resolved by the Perl header\n\n# at runtime.\n",
+        "Line" : 2183,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# NO_PERL\n",
+        "Line" : 2236,
+        "CharPositionInLine" : 5
+      },
+      "41" : {
+        "Text" : "# NO_PERL\n",
+        "Line" : 2244,
+        "CharPositionInLine" : 6
+      },
+      "42" : {
+        "Text" : "# This makes sure we depend on the NO_PYTHON setting itself.\n",
+        "Line" : 2246,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# NO_PYTHON\n",
+        "Line" : 2257,
+        "CharPositionInLine" : 5
+      },
+      "44" : {
+        "Text" : "# NO_PYTHON\n",
+        "Line" : 2265,
+        "CharPositionInLine" : 6
+      },
+      "45" : {
+        "Text" : "# We avoid depending on 'configure' here, because it gets rebuilt\n\n# every time GIT-VERSION-FILE is modified, only to update the embedded\n\n# version number string, which config.status does not care about.  We\n\n# do want to recheck when the platform/environment detection logic\n\n# changes, hence this depends on configure.ac.\n",
+        "Line" : 2277,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# This is a convenience target.\n",
+        "Line" : 2291,
+        "CharPositionInLine" : 20
+      },
+      "47" : {
+        "Text" : "# Take advantage of gcc's on-the-fly dependency generation\n\n# See <http://gcc.gnu.org/gcc-3.0/features.html>.\n",
+        "Line" : 2352,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Dependencies on header files, for platforms that do not support\n\n# the gcc -MMD option.\n\n#\n\n# Dependencies on automatically generated headers such as command-list.h\n\n# should _not_ be included here, since they are necessary even when\n\n# building an object for the first time.\n",
+        "Line" : 2359,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# Reverting the munged source, leaving only the updated $@\n",
+        "Line" : 2518,
+        "CharPositionInLine" : 1
+      },
+      "50" : {
+        "Text" : "### Detect prefix changes\n",
+        "Line" : 2587,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "#!.*/sh|#!$(SHELL_PATH_SQ)|' \\\n\t     -e 's|@@BUILD_DIR@@|$(shell pwd)|' \\\n\t     -e 's|@@PROG@@|$(patsubst test-%,t/helper/test-%,$(@F))|' < $< > $@ && \\\n\tchmod +x $@\n",
+        "Line" : 2693,
+        "CharPositionInLine" : 24
+      },
+      "52" : {
+        "Text" : "# GNU make supports exporting all variables by \"export\" without parameters.\n\n# However, the environment gets quite big, and some programs have problems\n\n# with that.\n",
+        "Line" : 2698,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "### Testing rules\n",
+        "Line" : 2705,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# See contrib/coccinelle/README\n",
+        "Line" : 2789,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "### Installation rules\n",
+        "Line" : 2794,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "### Maintainer's dist rules\n",
+        "Line" : 2934,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "### command list/d' -e '/^#/d' command-list.txt | \\\n\t\tgrep -q \"^$$v[ \t]\" || \\\n\t\tcase \"$$v\" in \\\n\t\tgit) ;; \\\n\t\t*) echo \"no link: $$v\";; \\\n\t\tesac ; \\\n\tdone; \\\n\t( \\\n\t\tsed -e '1,/^### command list/d' \\\n\t\t    -e '/^#/d' \\\n\t\t    -e 's/[ \t].*//' \\\n\t\t    -e 's/^/listed /' command-list.txt; \\\n\t\t$(MAKE) -C Documentation print-man1 | \\\n\t\tgrep '\\.txt$$' | \\\n\t\tsed -e 's|Documentation/|documented |' \\\n\t\t    -e 's/\\.txt//'; \\\n\t) | while read how cmd; \\\n\tdo \\\n\t\tcase \" $(ALL_COMMANDS) \" in \\\n\t\t*\" $$cmd \"*)\t;; \\\n\t\t*) echo \"removed but $$how: $$cmd\" ;; \\\n\t\tesac; \\\n\tdone ) | sort\n",
+        "Line" : 3071,
+        "CharPositionInLine" : 14
+      },
+      "58" : {
+        "Text" : "### Make sure built-ins do not have dups and listed in git.c\n\n#\n",
+        "Line" : 3095,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "### Test suite coverage testing\n\n#\n",
+        "Line" : 3100,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "### Fuzz testing\n\n#\n\n# Building fuzz targets generally requires a special set of compiler flags that\n\n# are not necessarily appropriate for general builds, and that vary greatly\n\n# depending on the compiler version used.\n\n#\n\n# An example command to build against libFuzzer from LLVM 4.0.0:\n\n#\n\n# make CC=clang CXX=clang++ \\\n#      CFLAGS=\"-fsanitize-coverage=trace-pc-guard -fsanitize=address\" \\\n#      LIB_FUZZING_ENGINE=/usr/lib/llvm-4.0/lib/libFuzzer.a \\\n#      fuzz-all\n",
+        "Line" : 3154,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "#\n",
+        "Line" : 3166,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 62,
+      "Errorlog" : "line 3144:60 token recognition error at: '\\1'\nline 3144:64 token recognition error at: '\\2'\n"
+    },
+    "contrib/contacts/Makefile" : {
+      "ObjectId" : "a2990f0dcb53b19ed2da8f18ffb1fa1125e5b38d",
+      "LastModified" : "2014-10-15T22:18:27Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The default target of this Makefile is...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# this should be set to a 'standard' bsd-type install program\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/credential/gnome-keyring/Makefile" : {
+      "ObjectId" : "22c19df94b8177c6f264f1053f44f5ead259e730",
+      "LastModified" : "2016-06-27T16:56:51Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/credential/libsecret/Makefile" : {
+      "ObjectId" : "3e67552cc5b5ba1dbb12e806b48fc43e86bfca42",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/credential/netrc/Makefile" : {
+      "ObjectId" : "6174e3bb83826273f005b01f6d9e9b2093664e33",
+      "LastModified" : "2018-06-28T19:53:33Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The default target of this Makefile is...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/credential/osxkeychain/Makefile" : {
+      "ObjectId" : "4b3a08a2bac441f3841367d98f425b9b6a5a3598",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/credential/wincred/Makefile" : {
+      "ObjectId" : "6e992c08667d0b2b6a3c2d42314e3f500eb7502a",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/diff-highlight/Makefile" : {
+      "ObjectId" : "f2be7cc92437191219d16ddf1536883da23541c0",
+      "LastModified" : "2017-09-19T01:47:50Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "contrib/diff-highlight/t/Makefile" : {
+      "ObjectId" : "5ff5275496c55639a70056863fbc9047cfacc885",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# copied from ../../t/Makefile\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/mw-to-git/Makefile" : {
+      "ObjectId" : "4e603512a39fe209b537cdc47c344c99f7cc38f1",
+      "LastModified" : "2018-05-08T06:59:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (C) 2013\n\n#     Matthieu Moy <Matthieu.Moy@imag.fr>\n\n#\n\n# To build and test:\n\n#\n\n#   make\n\n#   bin-wrapper/git mw preview Some_page.mw\n\n#   bin-wrapper/git clone mediawiki::http://example.com/wiki/\n\n#\n\n# To install, run Git's toplevel 'make install' then run:\n\n#\n\n#   make install\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/mw-to-git/t/Makefile" : {
+      "ObjectId" : "f422203fa069fce4e482833db975ffb28b970929",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Copyright (C) 2012\n\n#     Charles Roussel <charles.roussel@ensimag.imag.fr>\n\n#     Simon Cathebras <simon.cathebras@ensimag.imag.fr>\n\n#     Julien Khayat <julien.khayat@ensimag.imag.fr>\n\n#     Guillaume Sasdy <guillaume.sasdy@ensimag.imag.fr>\n\n#     Simon Perrat <simon.perrat@ensimag.imag.fr>\n\n#\n\n## Test git-remote-mediawiki\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/persistent-https/Makefile" : {
+      "ObjectId" : "52b84ba3d4396e13c3aae3af4fe78aac5ddd55ca",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Copyright 2012 Google Inc. All Rights Reserved.\n\n#\n\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n\n# you may not use this file except in compliance with the License.\n\n# You may obtain a copy of the License at\n\n#\n\n#     http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing, software\n\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n# See the License for the specific language governing permissions and\n\n# limitations under the License.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/subtree/Makefile" : {
+      "ObjectId" : "6906aae44147810ec2cf7560eb2cae3ef56bb454",
+      "LastModified" : "2018-10-30T06:43:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The default target of this Makefile is...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# this should be set to a 'standard' bsd-type install program\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "contrib/subtree/t/Makefile" : {
+      "ObjectId" : "276898eb6bd720ac63a87a0f3d7a2bebb542cb37",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Run tests\n\n#\n\n# Copyright (c) 2005 Junio C Hamano\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#GIT_TEST_OPTS=--verbose --debug\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Shell quote;\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "contrib/svn-fe/Makefile" : {
+      "ObjectId" : "e8651aaf4b53218b9a2726a4a03595e05defc3c8",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# space to separate -C and subdir\n",
+        "Line" : 57,
+        "CharPositionInLine" : 28
+      },
+      "1" : {
+        "Text" : "# \"make -w\"\n",
+        "Line" : 62,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 2
+    },
+    "git-gui/Makefile" : {
+      "ObjectId" : "f10caedaa7a3970628148258ed8dc9f6a5e8c827",
+      "LastModified" : "2018-05-08T06:59:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Define V=1 to have a more verbose compile.\n\n#\n\n# Define NO_MSGFMT if you do not have msgfmt from the GNU gettext\n\n# package and want to use our rough pure Tcl po->msg translator.\n\n# TCL_PATH must be valid for this to work.\n\n#\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#end NONTCL_LIBFILES\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# space is required here\n",
+        "Line" : 51,
+        "CharPositionInLine" : 34
+      },
+      "3" : {
+        "Text" : "# space is required here\n",
+        "Line" : 53,
+        "CharPositionInLine" : 31
+      },
+      "4" : {
+        "Text" : "# space is required here\n",
+        "Line" : 55,
+        "CharPositionInLine" : 31
+      },
+      "5" : {
+        "Text" : "# space is required here\n",
+        "Line" : 57,
+        "CharPositionInLine" : 18
+      },
+      "6" : {
+        "Text" : "# space is required here\n\n# space is required here\n",
+        "Line" : 59,
+        "CharPositionInLine" : 19
+      },
+      "7" : {
+        "Text" : "# space is required here\n",
+        "Line" : 64,
+        "CharPositionInLine" : 22
+      },
+      "8" : {
+        "Text" : "# space is required here\n",
+        "Line" : 66,
+        "CharPositionInLine" : 22
+      },
+      "9" : {
+        "Text" : "# Is this a Cygwin Tcl/Tk binary?  If so it knows how to do\n\n# POSIX path translation just like cygpath does and we must\n\n# keep libdir in POSIX format so Cygwin packages of git-gui\n\n# work no matter where the user installs them.\n\n#\n",
+        "Line" : 142,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 10
+    },
+    "git-gui/po/glossary/Makefile" : {
+      "ObjectId" : "749aa2e7ec1b02e6af3427516b1197f77bd48795",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "gitk-git/Makefile" : {
+      "ObjectId" : "5bdd52a6ebfa722fe077ec6a3160f9bbd8ff6a2b",
+      "LastModified" : "2018-05-08T06:59:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The default target of this Makefile is...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "### Detect Tck/Tk interpreter path changes\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "gitweb/Makefile" : {
+      "ObjectId" : "cd194d057f9231ed77f57f05b22a226cd1210f6d",
+      "LastModified" : "2016-10-26T20:14:45Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# The default target of this Makefile is...\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Define V=1 to have a more verbose compile.\n\n#\n\n# Define JSMIN to point to JavaScript minifier that functions as\n\n# a filter to have static/gitweb.js minified.\n\n#\n\n# Define CSSMIN to point to a CSS minifier in order to generate a minified\n\n# version of static/gitweb.css\n\n#\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# default configuration for gitweb\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# include user config\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# determine version\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "### Build rules\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Shell quote;\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#'\n",
+        "Line" : 59,
+        "CharPositionInLine" : 37
+      },
+      "8" : {
+        "Text" : "#'\n",
+        "Line" : 60,
+        "CharPositionInLine" : 43
+      },
+      "9" : {
+        "Text" : "#'\n",
+        "Line" : 61,
+        "CharPositionInLine" : 56
+      },
+      "10" : {
+        "Text" : "#'\n",
+        "Line" : 62,
+        "CharPositionInLine" : 45
+      },
+      "11" : {
+        "Text" : "#'\n",
+        "Line" : 63,
+        "CharPositionInLine" : 44
+      },
+      "12" : {
+        "Text" : "#'\n",
+        "Line" : 64,
+        "CharPositionInLine" : 42
+      },
+      "13" : {
+        "Text" : "# Quiet generation (unless V=1)\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# space to separate -C and subdir\n",
+        "Line" : 67,
+        "CharPositionInLine" : 29
+      },
+      "15" : {
+        "Text" : "# \"make -w\"\n",
+        "Line" : 72,
+        "CharPositionInLine" : 5
+      },
+      "16" : {
+        "Text" : "# JavaScript files that are composed (concatenated) to form gitweb.js\n\n#\n\n# js/lib/common-lib.js should be always first, then js/lib/*.js,\n\n# then the rest of files; js/gitweb.js should be last (if it exists)\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "### Testing rules\n",
+        "Line" : 170,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "### Cleaning rules\n",
+        "Line" : 187,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "t/Makefile" : {
+      "ObjectId" : "c83fd18861f31039bc14ec71a9a897b03359b2c7",
+      "LastModified" : "2018-10-30T06:43:40Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Run tests\n\n#\n\n# Copyright (c) 2005 Junio C Hamano\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#GIT_TEST_OPTS = --verbose --debug\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Shell quote;\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "t/interop/Makefile" : {
+      "ObjectId" : "31a4bbc716aa3ad97cdeed1344e852f1dfa04b46",
+      "LastModified" : "2018-05-08T06:59:16Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "t/perf/Makefile" : {
+      "ObjectId" : "8c47155a7c86eebe4b8189601866b2b4df4a4f22",
+      "LastModified" : "2018-05-08T06:59:16Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "templates/Makefile" : {
+      "ObjectId" : "d22a71a3999b3dc0e99f5e36053447b33f967bd7",
+      "LastModified" : "2018-05-08T06:59:16Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# make and install sample templates\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# DESTDIR=\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Shell quote (do not use $(call) to accommodate ancient setups);\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Put templates that can be copied straight from the source\n\n# in a file direc--tory--file in the source.  They will be\n\n# just copied to the destination.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# If you need build-tailored templates, build them into blt/\n\n# directory yourself here.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 24
+  },
+  "ElapsedTime" : 11392
+}

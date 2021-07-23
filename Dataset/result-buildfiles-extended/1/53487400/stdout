@@ -1,0 +1,1486 @@
+{
+  "Repository" : "53487400",
+  "Revision" : "HEAD",
+  "ObjectId" : "268bb07d15d8d2de5df531f7702df54da05f15ad",
+  "CommitTime" : "2018-10-28T14:25:36Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "dd3deb5688bac8e868b9360466f85caa201e516c",
+      "LastModified" : "2016-06-21T13:04:12Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*-------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     | Version:     4.0\n\n#     \\\\  /    A nd           | Web:         http://www.foam-extend.org\n\n#      \\\\/     M anipulation  | For copyright notice see file Copyright\n\n# -----------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#     CMakeLists.txt file for implementing a test harness for the compilation\n\n#     and test of foam-extend-3.2 using Kitware CTest/CMake/CDash\n\n#\n\n#     The results will be submitted to the CDash server identified by the file\n\n#     CTestConfig.cmake\n\n#\n\n# Author\n\n#     Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n#\n\n# \\*-------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Utility functions\n\n#\n\n# GetHostName(var)\n\n#\n\n# Set the variable named ${var} to the host hostname\n\n#\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# GetGitStatus(status ecode)\n\n#\n\n# Get the git status for the local git repository of the source code\n\n# The variable named ${status} will get the git status\n\n# The variable named ${ecode} will get the command error code\n\n#\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# GetGitBranchName(var)\n\n#\n\n# Set the variable named ${var} to the git branch name of the source code\n\n#\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create list of strings\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Iterate over list, find the string beginning with \"* \"\n",
+        "Line" : 103,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We have  match. Cleanup and set retValue\n",
+        "Line" : 108,
+        "CharPositionInLine" : 12
+      },
+      "7" : {
+        "Text" : "#\n\n# GetGitRevNumber(var)\n\n#\n\n# Set the variable named ${var} to the git revision number of the source code\n\n#\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Minimal check that we do have a valid string\n",
+        "Line" : 130,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# CleanUpStringForCDash(var)\n\n#\n\n# Cleanup the variable named ${value} for characters not supported\n\n# for CDash identifiers. Return the modified value in retVar\n\n#\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n#\n\n#\n\n# Initialization of CTest specific variables\n\n#\n\n## Run ctest in parallel if environment variable WM_NCOMPPROCS is set\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Will run ctest in parallel over $WM_NCOMPPROCS processors\n",
+        "Line" : 157,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Initialize the site name\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We can override the site name with the environment variable\n\n# $CDASH_SUBMIT_LOCAL_HOST_ID\n",
+        "Line" : 165,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Grab the hostname FQN; will be used for the sitename\n",
+        "Line" : 172,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "#Grab the FOAM installation directory.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Construct the build name.\n\n# No need to add $WM_PROJECT_VERSION to the name of the build,\n\n# the test harness name should have taken care of that.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# We allow overriding the git branch and revision information with some\n\n# user-supplied information using the CDASH_SCM_INFO environment variable.\n\n#\n\n# Mercurial or other SCM users should be using this environment variable\n\n# in order to provide branch and revision information for the buildname.\n\n#\n\n# Git users should use this environment variable in order to provide\n\n# additionnal information instead of just the branch and revision number.\n\n#\n\n# Otherwise, the buildname will be appended with the following information:\n\n# -git-branch=the_git_branch_name-git-rev=the_git_revision_number\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Find out the version of the compiler being used.\n\n# Add this information to the buildname\n\n# This is for gcc or icc because they both support the -dumpversion option\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# We will support more compilers eventually.\n\n#\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Timeout for running every single test: 4 hours: 4 x 3600 seconds\n\n#SET(\n\n#    DART_TESTING_TIMEOUT 14400\n\n#    CACHE STRING \"Maximum time allowed (4 hours) before CTest will kill the test.\"\n\n#)\n\n# Timeout for running all this: 20 minutes : 1200 seconds (for debug)\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Update section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#\n\n# Using GIT as SCM\n\n#\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Check if the source code is under a valid git repository\n",
+        "Line" : 257,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# We have a valid git repository.\n\n# Grab the branch and revision info. Add to the build name\n",
+        "Line" : 261,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# We have a valid git repository. Grab the branch and revision info.\n\n# Add to the build name\n",
+        "Line" : 280,
+        "CharPositionInLine" : 10
+      },
+      "26" : {
+        "Text" : "# Not a git or mercurial repository: no branch nor revision information available\n",
+        "Line" : 303,
+        "CharPositionInLine" : 10
+      },
+      "27" : {
+        "Text" : "# Git is not available: no branch nor revision information supplied\n",
+        "Line" : 309,
+        "CharPositionInLine" : 4
+      },
+      "28" : {
+        "Text" : "# Some last minute cleanup\n\n# Seems like no '/' or ' 'are allowed in the BUILDNAME or in the SITE name\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "#\n\n# Build section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 322,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Compile FOAM, libs and apps\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Compile the FOAM unit tests located under applications/test\n\n# This part will not be compiled and run by default.\n\n# This would be a good candidate for a sub-project\n",
+        "Line" : 336,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Test section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "#Enable testing and dashboard\n",
+        "Line" : 346,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Modify this variable if you want the full length test case simulations\n\n# Beware, this might take a long time to execute.\n\n# Otherwise, the default behaviour is to run each tutorial for 1 \"timestep\"\n\n#SET(RUN_FROM_ONE_TIMESTEP 0)\n",
+        "Line" : 363,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# FOAM will run against this test suite:\n",
+        "Line" : 373,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# Add the suite of FOAM tutorials\n\n#\n",
+        "Line" : 375,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "# Modify the cases controlDict file in order to run for only one time step\n",
+        "Line" : 380,
+        "CharPositionInLine" : 8
+      },
+      "38" : {
+        "Text" : "# Need to supply a bash shell to run the script under Windows\n",
+        "Line" : 383,
+        "CharPositionInLine" : 10
+      },
+      "39" : {
+        "Text" : "# That's it.\n\n#\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 40
+    },
+    "CTestConfig.cmake" : {
+      "ObjectId" : "8ad55b52f4b01da51026de570258fd4259dd73ae",
+      "LastModified" : "2016-08-01T15:45:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## This file should be placed in the root directory of your project.\n\n## Then modify the CMakeLists.txt file in the root directory of your\n\n## project to incorporate the testing dashboard.\n\n##\n\n## # The following are required to submit to the CDash dashboard:\n\n##   ENABLE_TESTING()\n\n##   INCLUDE(CTest)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# These settings will allow you to publish your dashboards results\n\n# on the foam-extend CDash service hosted on SourceForge.Net\n\n# See here: http://foam-extend.sourceforge.net/CDash/index.php\n\n#\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We can override those variables for local sites so you can use\n\n# your own site CDash service\n\n# This optional file will be located here:\n\n# $FOAM_SITE_DIR/etc/CTestConfig.site.cmake\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We can override those variables from user space so you can use\n\n# your own personal CDash service\n\n# This optional file will be located here:\n\n# $WM_PROJECT_USER_DIR/etc/CTestConfig.user.cmake\n\n#\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/arrow/Makefile" : {
+      "ObjectId" : "3fa4b11f3f00acbc7f1421864d34acb54a09bcaa",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/comtest/Makefile" : {
+      "ObjectId" : "2c6009b07305b63ddd8787e3fcbe020e820719df",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/faceneighbors/Makefile" : {
+      "ObjectId" : "cc8b9bf18e217702771b7c6188d97df31d233c7f",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/gridsolution/Makefile" : {
+      "ObjectId" : "d901ed95c19213aa88cf9dffea79c48a62897657",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/ij_ordered/Makefile" : {
+      "ObjectId" : "90411d11e22dbb5b2625cb51ed580a598d6e0709",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/multiplefiles/Makefile" : {
+      "ObjectId" : "d55d2ee044072de104c6ec3e8ab53bccf1a6e061",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/multiplepolygons/Makefile" : {
+      "ObjectId" : "d11ec5afd65b1b797a81c71dfc6da34109dd018f",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/octagon/Makefile" : {
+      "ObjectId" : "b1a061516567b7dd35dc40e1b89027cd268cbccc",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/pyramid/Makefile" : {
+      "ObjectId" : "38cb009fcab781d3cb723d83445fccdf408624bd",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/simtest/Makefile" : {
+      "ObjectId" : "9e40ebe34bc211c6f4f450dca331aa3b93a39d11",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/squares/Makefile" : {
+      "ObjectId" : "120b910d62d926cad659313c6a1d48308765ae10",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/dataConversion/foamToTecplot360/tecio/examples/text/Makefile" : {
+      "ObjectId" : "415b65fd1338f042275397f5c4d5fdf265b82f47",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Set to appropriate C++ compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "applications/utilities/postProcessing/graphics/PV3FoamReader/PV3FoamReader/CMakeLists.txt" : {
+      "ObjectId" : "18f46de9985d3292d0f0bb5f3db7f85c5d434f44",
+      "LastModified" : "2010-11-24T09:30:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# create a plugin that adds a reader to the ParaView GUI\n\n# it is added in the file dialog when doing opens/saves.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The qrc file is processed by Qt's resource compiler (rcc)\n\n# the qrc file must have a resource prefix of \"/ParaViewResources\"\n\n# and ParaView will read anything contained under that prefix\n\n# the pqReader.xml file contains xml defining readers with their\n\n# file extensions and descriptions.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set output library destination to plugin folder\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build the server-side plugin\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Build the client-side plugin\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "applications/utilities/postProcessing/graphics/PV4FoamReader/PV4FoamReader/CMakeLists.txt" : {
+      "ObjectId" : "e9054371fa20ba5a2489e7d600f4aaf62a00aa32",
+      "LastModified" : "2016-08-01T15:45:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# create a plugin that adds a reader to the ParaView GUI\n\n# it is added in the file dialog when doing opens/saves.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The qrc file is processed by Qt's resource compiler (rcc)\n\n# the qrc file must have a resource prefix of \"/ParaViewResources\"\n\n# and ParaView will read anything contained under that prefix\n\n# the pqReader.xml file contains xml defining readers with their\n\n# file extensions and descriptions.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Set output library destination to plugin folder\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Build the server-side plugin\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "applications/utilities/postProcessing/graphics/PVFoamReader/PVFoamReader/CMakeLists.txt" : {
+      "ObjectId" : "1c88efbbfff2b768cc1cdb3938bc190d54d7e45e",
+      "LastModified" : "2010-08-25T21:42:57Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set the project/library name here.  Classes should be declared as\n\n# \"class VTK_FoamReader_EXPORT vtkFoo\", where PVFoamReader is the name of the\n\n# project set here.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set your list of sources here.  Do not change the name of the\n\n# PVFoamReader_SRCS variable.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# List the kits from VTK that are needed by this project.  Do not\n\n# change the name of the PVFoamReader_LIBS variable.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Most users should not need to change anything below this line.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Need to include class headers and the configuration header.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Import ParaView build settings.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Configure output directories.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Create the configuration header.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Must be defined before ADD_LIBRARY  for cmake version 2.3.4-20060317\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Create vtk client/server wrappers for the classes.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Build the package as a plugin for ParaView.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Place the package configuration file into the build tree.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Place the package configuration file into the build tree.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "src/dynamicMesh/meshMotion/mesquiteMotionSolver/msqAdditonalSrc/QualityMetric/Shape/Makefile.am" : {
+      "ObjectId" : "5602a4262a0f90f4c82bb3b981e2c37af593bf34",
+      "LastModified" : "2013-12-18T14:22:04Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    },
+    "testHarness/OSIG/Turbomachinery/CMakeFiles/CMakeLists.txt" : {
+      "ObjectId" : "e3087a4d5a2872c08c2df4cc665af7f11313cf84",
+      "LastModified" : "2013-12-18T14:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*-------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     |\n\n#     \\\\  /    A nd           | For copyright notice see file Copyright\n\n#      \\\\/     M anipulation  |\n\n# -----------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#        CMakeLists.txt file for implementing a test harness for the\n\n#        Turbomachinery OSIG test cases\n\n#\n\n#        The results will be submitted to the CDash server identified by\n\n#        CTestConfig.cmake\n\n#\n\n# Author\n\n#        Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n#\n\n# \\*-------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Initialization of CTest specific variables\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Initialize the site name\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# We can override the site name with the environment variable\n\n# $CDASH_SUBMIT_LOCAL_HOST_ID\n",
+        "Line" : 47,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Grab the hostname FQN; will be used for the sitename\n",
+        "Line" : 54,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "#Grab the Turbomachinery OSIG base directory\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Construct the build name.\n\n# No need to add $WM_PROJECT_VERSION to the name of the build,\n\n# the test harness name should have taken care of that.\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Find out the version of the compiler being used.\n\n# Add this information to the buildname\n\n# This is for gcc\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#\n\n# We will support more compilers eventually.\n\n#\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Timeout for running all this: 4 hours: 4 x 3600 seconds\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Update section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 107,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Build section\n\n#--------------------------------------------------------------------------------\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Compile the libs\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# rotorStatorInterfaces is not compiled by default\n\n# MB 22/06/2010\n",
+        "Line" : 125,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# We need the Breeder's simpleFunctionObjects library\n",
+        "Line" : 136,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Compile the apps\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Adding target-level dependencies so the building is made in proper order\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Test section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 180,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#Enable testing and dashboard\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Modify this variable if you want the full length test case simulations\n\n# Beware, this might take a long time to execute.\n\n# Otherwise, the default behaviour is to run each test case for 1 \"timestep\"\n\n#SET(RUN_FROM_ONE_TIMESTEP 0)\n",
+        "Line" : 200,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# Definition of the test suite:\n",
+        "Line" : 210,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Run the suite of Turbomachinery test cases\n\n#\n",
+        "Line" : 212,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# Add a dummy test (/bin/true, just for debugging)\n",
+        "Line" : 219,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# Modify the cases controlDict file in order to run for only one time step\n",
+        "Line" : 225,
+        "CharPositionInLine" : 8
+      },
+      "24" : {
+        "Text" : "# That's it.\n\n#",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 25
+    },
+    "testHarness/OSIG/Turbomachinery/CMakeFiles/TurbomachineryTestsuites_ercoftacCentrifugalPump.cmake" : {
+      "ObjectId" : "605dfa5f104cd25455b7256249ce34178179ac53",
+      "LastModified" : "2013-12-18T14:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*---------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     |\n\n#     \\\\  /    A nd           | For copyright notice see file Copyright\n\n#      \\\\/     M anipulation  |\n\n# -------------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#        CMake/CTest script for running the Turbomachinery OSIG testsuites\n\n#        for the ERCOFTAC Centrifugal Pump\n\n#\n\n# Author\n\n#        Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n# \\*---------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Take care of tests specific variables\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use the current directory for running the test cases\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create the runTime test cases\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Iterate over each case:\n\n# We are looking for a tutorial with an Allrun case.\n\n# If this file is present, we add this case to the list of cases to run.\n\n#\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Subdirectory for the test cases\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# First, add a global cleanup of the cases\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Next, recurse through the case root directory,\n\n# find all the Allrun files, and execute them\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Grab the name of the directory containing the file Allrun\n",
+        "Line" : 69,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We need to skip the global Allrun file\n",
+        "Line" : 72,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Grab the parent name of the case directory\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Construct the testId\n",
+        "Line" : 79,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Add the test to the test harness\n",
+        "Line" : 83,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Use this entry instead for testing\n\n#ADD_TEST(${testId} bash -c \"cd ${thisCasePath}; true\")\n",
+        "Line" : 86,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Modify the cases Allrun file for additional shell functions\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# That's it.\n\n#\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "testHarness/OSIG/Turbomachinery/CMakeFiles/TurbomachineryTestsuites_ercoftacConicalDiffuser.cmake" : {
+      "ObjectId" : "35d2934b3fb3891699b1eaae663ee91f3aa53022",
+      "LastModified" : "2013-12-18T14:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*---------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     |\n\n#     \\\\  /    A nd           | For copyright notice see file Copyright\n\n#      \\\\/     M anipulation  |\n\n# -------------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#        CMake/CTest script for running the Turbomachinery OSIG testsuites\n\n#        for the ERCOFTAC Conical Diffuser\n\n#\n\n# Author\n\n#        Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n# \\*---------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Take care of tests specific variables\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use the current directory for running the test cases\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create the runTime test cases\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Iterate over each case:\n\n# We are looking for a tutorial with an Allrun case.\n\n# If this file is present, we add this case to the list of cases to run.\n\n#\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Subdirectory for the test cases\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# First, add a global cleanup of the cases\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Next, recurse through the case root directory,\n\n# find all the Allrun files, and execute them\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Grab the name of the directory containing the file Allrun\n",
+        "Line" : 71,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We need to skip the global Allrun file\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Grab the parent name of the case directory\n",
+        "Line" : 78,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Construct the testId\n",
+        "Line" : 81,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Add the test to the test harness\n",
+        "Line" : 85,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Use this entry instead for testing\n\n#ADD_TEST(${testId} bash -c \"cd ${thisCasePath}; true\")\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Modify the cases Allrun file for additional shell functions\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# That's it.\n\n#\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "testHarness/OSIG/Turbomachinery/CMakeFiles/TurbomachineryTestsuites_singleChannelPump.cmake" : {
+      "ObjectId" : "385ab5f92e156c36ce7d654c8608395607daf7c5",
+      "LastModified" : "2013-12-18T14:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*---------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     |\n\n#     \\\\  /    A nd           | For copyright notice see file Copyright\n\n#      \\\\/     M anipulation  |\n\n# -------------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#        CMake/CTest script for running the Turbomachinery OSIG testsuites\n\n#        for the Single Channel Pump\n\n#\n\n# Author\n\n#        Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n# \\*---------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Take care of tests specific variables\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use the current directory for running the test cases\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create the runTime test cases\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Iterate over each case:\n\n# We are looking for a tutorial with an Allrun case.\n\n# If this file is present, we add this case to the list of cases to run.\n\n#\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Subdirectory for the test cases\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# No need for a global Allclean script, we will invoke the Allclean command before each\n\n# Allrun.* file\n\n#SET(testId \"SCP_Allclean_cases${testIdSuffix}\")\n\n#ADD_TEST(${testId} bash -c \"cd ${TEST_CASE_DIR}/${TESTCASES_SUBDIR}; ./Allclean\")\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Next, recurse through the case root directory,\n\n# find all the Allrun files, and execute them\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Grab the name of the directory containing the file Allrun\n",
+        "Line" : 70,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We need to skip the global Allrun file\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Grab the parent name of the case directory\n",
+        "Line" : 78,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Construct the testId\n",
+        "Line" : 81,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Add the test to the test harness\n",
+        "Line" : 85,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Use this entry instead for testing\n\n#ADD_TEST(${testId} bash -c \"cd ${thisCasePath}; true\")\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Modify the cases Allrun file for additional shell functions\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# That's it.\n\n#\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "testHarness/OSIG/Turbomachinery/CMakeFiles/TurbomachineryTestsuites_tutorials.cmake" : {
+      "ObjectId" : "140afa8a44327452e183f7f4c235b411ff578f4b",
+      "LastModified" : "2013-12-18T14:22:04Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*---------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     |\n\n#     \\\\  /    A nd           | For copyright notice see file Copyright\n\n#      \\\\/     M anipulation  |\n\n# -------------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#        CMake/CTest script for running the Turbomachinery OSIG testsuites\n\n#        for the tutorials directory\n\n#\n\n# Author\n\n#        Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n# \\*---------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Take care of tests specific variables\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use the current directory for running the test cases\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create the runTime test cases\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Iterate over each case:\n\n# We are looking for a tutorial with an Allrun case.\n\n# If this file is present, we add this case to the list of cases to run.\n\n#\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Subdirectory for the test cases\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# No need for a global Allclean script, we will invoke the Allclean command before each\n\n# Allrun.* file\n\n#SET(testId \"TUT_Allclean_cases${testIdSuffix}\")\n\n#ADD_TEST(${testId} bash -c \"cd ${TEST_CASE_DIR}/${TESTCASES_SUBDIR}; ./Allclean\")\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Next, recurse through the case root directory,\n\n# find all the Allrun files, and execute them\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#Grab the name of the directory containing the file Allrun\n",
+        "Line" : 70,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# We need to skip the .svn files\n",
+        "Line" : 74,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Grab the parent name of the case directory\n",
+        "Line" : 78,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Construct the testId\n",
+        "Line" : 81,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Add the test to the test harness\n",
+        "Line" : 85,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Use this entry instead for testing\n\n#ADD_TEST(${testId} bash -c \"cd ${thisCasePath}; true\")\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Modify the cases Allrun file for additional shell functions\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# That's it.\n\n#\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "testHarness/foam-extend/4.0/CMakeFiles/CMakeLists.txt" : {
+      "ObjectId" : "d8f1a3fd078d88e4e673e6016317f0c30c6b9d29",
+      "LastModified" : "2016-08-01T15:45:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*-------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     | Version:     4.0\n\n#     \\\\  /    A nd           | Web:         http://www.foam-extend.org\n\n#      \\\\/     M anipulation  | For copyright notice see file Copyright\n\n# -----------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#     CMakeLists.txt file for implementing a test harness for the compilation\n\n#     and test of foam-extend-4.0 using Kitware CTest/CMake/CDash\n\n#\n\n#     The results will be submitted to the CDash server identified by the file\n\n#     CTestConfig.cmake\n\n#\n\n# Author\n\n#     Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n#\n\n# \\*-------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Utility functions\n\n#\n\n# GetHostName(var)\n\n#\n\n# Set the variable named ${var} to the host hostname\n\n#\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# GetGitStatus(status ecode)\n\n#\n\n# Get the git status for the local git repository of the source code\n\n# The variable named ${status} will get the git status\n\n# The variable named ${ecode} will get the command error code\n\n#\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# GetGitBranchName(var)\n\n#\n\n# Set the variable named ${var} to the git branch name of the source code\n\n#\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Create list of strings\n",
+        "Line" : 100,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Iterate over list, find the string beginning with \"* \"\n",
+        "Line" : 103,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We have  match. Cleanup and set retValue\n",
+        "Line" : 108,
+        "CharPositionInLine" : 5
+      },
+      "7" : {
+        "Text" : "#\n\n# GetGitRevNumber(var)\n\n#\n\n# Set the variable named ${var} to the git revision number of the source code\n\n#\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Minimal check that we do have a valid string\n",
+        "Line" : 130,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# CleanUpStringForCDash(var)\n\n#\n\n# Cleanup the variable named ${value} for characters not supported\n\n# for CDash identifiers. Return the modified value in retVar\n\n#\n",
+        "Line" : 139,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n#\n\n#\n\n# Initialization of CTest specific variables\n\n#\n\n## Run ctest in parallel if environment variable WM_NCOMPPROCS is set\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Will run ctest in parallel over $WM_NCOMPPROCS processors\n",
+        "Line" : 157,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Initialize the site name\n",
+        "Line" : 162,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# We can override the site name with the environment variable\n\n# $CDASH_SUBMIT_LOCAL_HOST_ID\n",
+        "Line" : 165,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Grab the hostname FQN; will be used for the sitename\n",
+        "Line" : 172,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "#Grab the FOAM installation directory.\n",
+        "Line" : 184,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Construct the build name.\n\n# No need to add $WM_PROJECT_VERSION to the name of the build,\n\n# the test harness name should have taken care of that.\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# We allow overriding the git branch and revision information with some\n\n# user-supplied information using the CDASH_SCM_INFO environment variable.\n\n#\n\n# Mercurial or other SCM users should be using this environment variable\n\n# in order to provide branch and revision information for the buildname.\n\n#\n\n# Git users should use this environment variable in order to provide\n\n# additionnal information instead of just the branch and revision number.\n\n#\n\n# Otherwise, the buildname will be appended with the following information:\n\n# -git-branch=the_git_branch_name-git-rev=the_git_revision_number\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Find out the version of the compiler being used.\n\n# Add this information to the buildname\n\n# This is for gcc or icc because they both support the -dumpversion option\n",
+        "Line" : 214,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# We will support more compilers eventually.\n\n#\n",
+        "Line" : 222,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Timeout for running every single test: 4 hours: 4 x 3600 seconds\n\n#SET(\n\n#    DART_TESTING_TIMEOUT 14400\n\n#    CACHE STRING \"Maximum time allowed (4 hours) before CTest will kill the test.\"\n\n#)\n\n# Timeout for running all this: 20 minutes : 1200 seconds (for debug)\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# Update section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "#\n\n# Using GIT as SCM\n\n#\n",
+        "Line" : 246,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Check if the source code is under a valid git repository\n",
+        "Line" : 257,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# We have a valid git repository.\n",
+        "Line" : 261,
+        "CharPositionInLine" : 8
+      },
+      "25" : {
+        "Text" : "# Grab the branch and revision info. Add to the build name\n",
+        "Line" : 262,
+        "CharPositionInLine" : 1
+      },
+      "26" : {
+        "Text" : "# We have a valid git repository. Grab the branch and revision info.\n\n# Add to the build name\n",
+        "Line" : 280,
+        "CharPositionInLine" : 10
+      },
+      "27" : {
+        "Text" : "# Not a git or mercurial repository: no branch nor revision information available\n",
+        "Line" : 303,
+        "CharPositionInLine" : 10
+      },
+      "28" : {
+        "Text" : "# Git is not available: no branch nor revision information supplied\n",
+        "Line" : 309,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "# Some last minute cleanup\n\n# Seems like no '/' or ' 'are allowed in the BUILDNAME or in the SITE name\n",
+        "Line" : 314,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "#\n\n# Build section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 322,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Compile FOAM, libs and apps\n",
+        "Line" : 326,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Compile the FOAM unit tests located under applications/test\n\n# This part will not be compiled and run by default.\n\n# This would be a good candidate for a sub-project\n",
+        "Line" : 336,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Test section\n\n#-----------------------------------------------------------------------------\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "#Enable testing and dashboard\n",
+        "Line" : 346,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Modify this variable if you want the full length test case simulations\n\n# Beware, this might take a long time to execute.\n\n# Otherwise, the default behaviour is to run each tutorial for 1 \"timestep\"\n\n#SET(RUN_FROM_ONE_TIMESTEP 0)\n",
+        "Line" : 363,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# FOAM will run against this test suite:\n",
+        "Line" : 373,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "# Add the suite of FOAM tutorials\n\n#\n",
+        "Line" : 375,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# Modify the cases controlDict file in order to run for only one time step\n",
+        "Line" : 380,
+        "CharPositionInLine" : 8
+      },
+      "39" : {
+        "Text" : "# Need to supply a bash shell to run the script under Windows\n",
+        "Line" : 383,
+        "CharPositionInLine" : 10
+      },
+      "40" : {
+        "Text" : "# That's it.\n\n#\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 41
+    },
+    "testHarness/foam-extend/4.0/CMakeFiles/FOAM_Tutorials.cmake" : {
+      "ObjectId" : "088f09211d39f130ffa8922296f052710f64e679",
+      "LastModified" : "2016-08-01T15:45:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# /*-------------------------------------------------------------------------*\\\n\n#   =========                 |\n\n#   \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#    \\\\    /   O peration     |\n\n#     \\\\  /    A nd           | For copyright notice see file Copyright\n\n#      \\\\/     M anipulation  |\n\n# -----------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Description\n\n#        CMake/CTest script for running the FOAM tutorials\n\n#\n\n# Author\n\n#        Martin Beaudoin, Hydro-Quebec, 2010. All rights reserved\n\n#\n\n# \\*-------------------------------------------------------------------------*/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Take care of tests specific variables\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Use the current directory for running the test cases\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Create the runTime directory for the test cases\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Add a default Allrun file for the cases that don't have one.\n\n# The test harness relies on the presence of an Allrun file for\n\n# running the case\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Need to supply a bash shell to run the script under Windows\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Iterate over each tutorial case:\n\n# We are looking for tutorial cases with an Allrun file.\n\n# If this file is present, (and it should), we add this case to the list of cases to run.\n\n#\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#First, add a global cleanup of the cases\n\n#This will always run and complete first, even in paralel\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Add a dummy test (/bin/true, just for debugging)\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Add a dependency on the global clean-up target, even for the dummy test\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Next, recurse through the test cases root directory,\n\n# find all the Allrun files, and add them as a new CTest test case\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#Grab the name of the directory containing the file Allrun\n",
+        "Line" : 92,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# We need to skip the global Allrun file\n",
+        "Line" : 95,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# Grab the parent name of the case directory\n",
+        "Line" : 99,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Construct the testId\n",
+        "Line" : 102,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Add the test to the test harness\n",
+        "Line" : 106,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# We extract a label name from the top level tutorial directories\n\n# (eg: basic, incompressible, immersedBoundary, etc). We will use this\n\n# label in order to categorize the various test cases under a more 'generic\n\n# topic', so we can for instance limit the testharness to the\n\n# 'incompressible' test cases, etc., simply by using the ctest -L command.\n\n#\n\n# ctest --print-labels will print the list of all available labels.\n\n#\n",
+        "Line" : 110,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Add a dependency on the global clean-up target\n\n# When running in parallel, you need to wait for the cleanup to finish first\n",
+        "Line" : 122,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Use this following entry instead for testing purpose\n\n#ADD_TEST(${testId} bash -c \"cd ${thisCasePath}; true\")\n",
+        "Line" : 127,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# Modify the cases Allrun files to incorporate additional shell functions\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Need to supply a bash shell to run the script under Windows\n",
+        "Line" : 136,
+        "CharPositionInLine" : 2
+      },
+      "21" : {
+        "Text" : "# Configure the various ctest -S Dashboard drivers\n",
+        "Line" : 148,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# Driver for the tutorials\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# That's it.\n",
+        "Line" : 157,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 24
+    },
+    "wmake/Makefile" : {
+      "ObjectId" : "d9b954786962b5aa0248c419d91febef48869cdd",
+      "LastModified" : "2016-08-01T15:45:37Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# =========                 |\n\n# \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#  \\\\    /   O peration     | Version:     4.0\n\n#   \\\\  /    A nd           | Web:         http://www.foam-extend.org\n\n#    \\\\/     M anipulation  | For copyright notice see file Copyright\n\n#------------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Script\n\n#     Makefile\n\n#\n\n# Description\n\n#     Generic Makefile used by wmake\n\n#\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# The Makefile use a POSIX shell\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Initialise suffices list\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Set the directory containing the wmake scripts\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# declare default paths\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# declare all .o files depend on $(OBJECTS_DIR)/options\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# declare default name of libraries and executables\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Library\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Shared library extension\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Using Mac OSX\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Using MinGW-w64 compiler on Windows\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Project executable\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Standalone executable\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# set compilation and dependency building rules\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Include PROJECT directory tree file and\n\n# source, object and dependency list files.\n\n# These are constructed by wmakeDerivedFiles\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# set header file include paths\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# define link statements for executables\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# define link statements for libraries\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Set rule to create the include directory for libraries\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Set depedency rule and include dependency lists\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 231,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#------------------------------------------------------------------------------\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 21
+    },
+    "wmake/src/Makefile" : {
+      "ObjectId" : "9ac1bf655c1b18130d1a0145231b00fa2bce7112",
+      "LastModified" : "2016-08-01T15:45:37Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# =========                 |\n\n# \\\\      /  F ield         | foam-extend: Open Source CFD\n\n#  \\\\    /   O peration     | Version:     4.0\n\n#   \\\\  /    A nd           | Web:         http://www.foam-extend.org\n\n#    \\\\/     M anipulation  | For copyright notice see file Copyright\n\n#------------------------------------------------------------------------------\n\n# License\n\n#     This file is part of foam-extend.\n\n#\n\n#     foam-extend is free software: you can redistribute it and/or modify it\n\n#     under the terms of the GNU General Public License as published by the\n\n#     Free Software Foundation, either version 3 of the License, or (at your\n\n#     option) any later version.\n\n#\n\n#     foam-extend is distributed in the hope that it will be useful, but\n\n#     WITHOUT ANY WARRANTY; without even the implied warranty of\n\n#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n\n#     General Public License for more details.\n\n#\n\n#     You should have received a copy of the GNU General Public License\n\n#     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.\n\n#\n\n# Script\n\n#     Makefile\n\n#\n\n# Description\n\n#     Makefile used to compile wmake utilities.\n\n#\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# The Makefile use a POSIX shell\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# Initialise suffices list\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# set compilation and dependency building rules\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#------------------------------------------------------------------------------\n\n# targets\n\n#------------------------------------------------------------------------------\n",
+        "Line" : 58,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#------------------------------------------------------------------------------\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 12,
+    "MAKEFILE" : 14,
+    "AUTOMAKE" : 1
+  },
+  "ElapsedTime" : 5455
+}

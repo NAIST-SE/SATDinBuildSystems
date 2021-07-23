@@ -1,0 +1,377 @@
+{
+  "Repository" : "12252779",
+  "Revision" : "HEAD",
+  "ObjectId" : "1872414c49543e5e9e2e01e349dba890a04683fb",
+  "CommitTime" : "2019-03-28T05:41:32Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "a7069d4942c975f136dc61fa7f47097a92f0c9b6",
+      "LastModified" : "2017-11-09T07:27:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Select C++ standard to be used for compiling the tests,\n\n# for example: 11, 14, 17, 1z, 1y, ...\n\n#\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Defaults to C++11 if not set:\n",
+        "Line" : 48,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Clang/C2 will blow up with various parts of the standard library\n\n# if compiling with -std less than c++14.\n",
+        "Line" : 53,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# else()\n\n#   message(FATAL_ERROR \"Unknown compiler. Good luck!\")\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Test all headers\n\n# file(GLOB_RECURSE JASEL_PUBLIC_HEADERS\n\n#                   RELATIVE \"${CMAKE_SOURCE_DIR}/include\"\n\n#                   \"${CMAKE_SOURCE_DIR}/include/*.hpp\")\n\n# include(TestHeaders)\n\n# if(JASEL_NO_HEADER_CHECK)\n\n#   add_custom_target(headers)\n\n# else()\n\n#   add_custom_target(headers ALL)\n\n# endif()\n\n# generate_standalone_header_tests(EXCLUDE_FROM_ALL MASTER_TARGET headers HEADERS ${JASEL_PUBLIC_HEADERS})\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Grab the jasel version numbers:\n",
+        "Line" : 111,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Try to build a new version.hpp\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# If the new version.hpp is materially different from the one in the source\n\n# directory, update it, amend the most recent commit, and tag the commit.\n\n# if(NOT JASEL_NEW_VERSION_HPP STREQUAL JASEL_OLD_VERSION_HPP)\n\n#   # Check that Version.cmake is the only changed file:\n\n#   execute_process(\n\n#     COMMAND ${GIT_EXECUTABLE} -C \"${CMAKE_CURRENT_SOURCE_DIR}\" status -s -uno\n\n#     OUTPUT_VARIABLE JASEL_GIT_STATUS\n\n#     OUTPUT_STRIP_TRAILING_WHITESPACE\n\n#   )\n\n#   if (NOT \"x${JASEL_GIT_STATUS}\" STREQUAL \"x M Version.cmake\")\n\n#     #message(FATAL_ERROR \"${GIT_EXECUTABLE} -C ${CMAKE_CURRENT_SOURCE_DIR} status -s -uno\")\n\n#     message(FATAL_ERROR \"Cannot update version.hpp: jasel source directory has a dirty status\")\n\n#   endif()\n\n#   file(\n\n#     COPY ${CMAKE_CURRENT_BINARY_DIR}/include/jasel/version.hpp\n\n#     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/jasel\n\n#   )\n\n#   execute_process(\n\n#     COMMAND ${GIT_EXECUTABLE} -C \"${CMAKE_CURRENT_SOURCE_DIR}\" add -u\n\n#   )\n\n#   execute_process(\n\n#     COMMAND ${GIT_EXECUTABLE} -C \"${CMAKE_CURRENT_SOURCE_DIR}\" commit --amend --no-edit\n\n#   )\n\n#   execute_process(\n\n#     COMMAND ${GIT_EXECUTABLE} -C \"${CMAKE_CURRENT_SOURCE_DIR}\" tag -f -a \"${JASEL_VERSION}\" -m \"${JASEL_VERSION}\"\n\n#   )\n\n# endif()\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#add_subdirectory(example)\n\n#add_subdirectory(perf)\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "Version.cmake" : {
+      "ObjectId" : "1fb3ec74c903794b89bf40d3fd58d9f60ab0fcda",
+      "LastModified" : "2017-04-29T17:03:23Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# To update the jasel version, from a *CLEAN* working directory, update the version numbers below.\n\n# This makefile will generate a new version.hpp, *AMEND THE MOST RECENT COMMIT*, and git-tag the commit.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/TestHeaders.cmake" : {
+      "ObjectId" : "2513a4e91072bdccf7886dfb61171dcded5c7815",
+      "LastModified" : "2017-04-29T17:05:46Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Louis Dionne 2013-2016\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n\n#\n\n#\n\n# This CMake module provides a function generating unit tests to make sure\n\n# that every public header can be included on its own.\n\n#\n\n# When a C++ library or application has many header files, it can happen that\n\n# a header does not include all the other headers it depends on. When this is\n\n# the case, it can happen that including that header file on its own will\n\n# break the compilation. This CMake module generates a dummy unit test for\n\n# each header file considered public: this unit test is just a program of\n\n# the form\n\n#\n\n#   #include <the/public/header.hpp>\n\n#   int main() { }\n\n#\n\n# If this succeeds to compile, it means that the header can be included on\n\n# its own, which is what clients expect. Otherwise, you have a problem.\n\n# Since writing these dumb unit tests by hand is tedious and repetitive,\n\n# you can use this CMake module to automate this task.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generates header-inclusion unit tests for all the specified headers.\n\n#\n\n# For each specified header with path `xxx/yyy/zzz.hpp`, a target named\n\n# `test.header.xxx.yyy.zzz` is created. This target builds the unit test\n\n# including `xxx/yyy/zzz.hpp`.\n\n#\n\n# Parameters\n\n# ----------\n\n# HEADERS headers:\n\n#   A list of header files to generate the inclusion tests for. All headers\n\n#   in this list must be represented as relative paths from the root of the\n\n#   include directory added to the compiler's header search path. In other\n\n#   words, it should be possible to include all headers in this list as\n\n#\n\n#       #include <${header}>\n\n#\n\n#   For example, for a library with the following structure:\n\n#\n\n#       project/\n\n#           doc/\n\n#           test/\n\n#           ...\n\n#           include/\n\n#               boost/\n\n#                   hana.hpp\n\n#                   hana/\n\n#                       transform.hpp\n\n#                       tuple.hpp\n\n#                       pair.hpp\n\n#                       ...\n\n#\n\n#   When building the unit tests for that library, we'll add `-I project/include'\n\n#   to the compiler's arguments. The list of public headers should therefore contain\n\n#\n\n#       boost/hana.hpp\n\n#       boost/hana/transform.hpp\n\n#       boost/hana/tuple.hpp\n\n#       boost/hana/pair.hpp\n\n#       ...\n\n#\n\n#   Usually, all the 'public' header files of a library should be tested for\n\n#   standalone inclusion. A header is considered 'public' if a client should\n\n#   be able to include that header on its own.\n\n#\n\n# [EXCLUDE excludes]:\n\n#   An optional list of headers or regexes for which no unit test should be\n\n#   generated. Basically, any header in the list specified by the `HEADERS`\n\n#   argument that matches anything in `EXCLUDE` will be skipped.\n\n#\n\n# [MASTER_TARGET target]:\n\n#   An optional target name that will be made a dependent of all the generated\n\n#   targets. This can be used to create a target that will build all the\n\n#   header-inclusion tests.\n\n#\n\n# [LINK_LIBRARIES libraries]:\n\n#   An optional list of libraries that should be linked into each generated\n\n#   executable. The libraries are linked into the target using the usual\n\n#   `target_link_libraries`.\n\n#\n\n# [EXCLUDE_FROM_ALL]:\n\n#   If set to true, the generated targets are excluded from the 'all' target.\n\n#\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# options\n\n# 1 value args\n\n# multivalued args\n",
+        "Line" : 87,
+        "CharPositionInLine" : 62
+      },
+      "CommentCount" : 3
+    },
+    "doc/CMakeLists.txt" : {
+      "ObjectId" : "ee853114c617084179ea0e2e8f1c564060d94112",
+      "LastModified" : "2017-04-29T17:05:46Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright Louis Dionne 2013-2016\n\n# Distributed under the Boost Software License, Version 1.0.\n\n# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "test/CMakeLists.txt" : {
+      "ObjectId" : "4ed39705c25e50c01994d346f9548ac2625bb15c",
+      "LastModified" : "2018-12-05T15:04:39Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#=============================================================================\n\n# Setup unit tests\n\n#=============================================================================\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# We compile each unit test with the possible combinations of options\n\n# found in boost/jasel/detail/config.hpp.\n\n#\n\n# For lack of a better solution, we currently create different targets\n\n# for each configuration.\n\n# xxx  - JASEL_XXX\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "#helper(xxx-yyyy JASEL_XXX                             JASEL_YYY)\n",
+        "Line" : 34,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# We compile each unit test with the possible combinations of options\n\n# found in boost/jasel/detail/config.hpp.\n\n#\n\n# For lack of a better solution, we currently create different targets\n\n# for each configuration.\n\n# xxx  - JASEL_XXX\n",
+        "Line" : 50,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "#helper(xxx-yyyy JASEL_XXX                             JASEL_YYY)\n",
+        "Line" : 70,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "#=============================================================================\n\n# Test suites\n\n#=============================================================================\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "######\n\n#applicative_pass\n",
+        "Line" : 90,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "#applicative_std_optional_pass\n\n#applicative_std_pair_pass\n\n#applicative_std_shared_ptr_pass\n",
+        "Line" : 94,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "#applicative_std_unique_ptr_pass\n",
+        "Line" : 98,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "######\n",
+        "Line" : 103,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "######\n",
+        "Line" : 110,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "######\n\n#ex_pass # optional\n",
+        "Line" : 116,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "######\n\n#expected_no_move_constructible_fail\n",
+        "Line" : 122,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "######\n",
+        "Line" : 129,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "#make_boost_expected_pass\n\n#make_boost_optional_pass\n",
+        "Line" : 131,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "#make_std_optional_pass\n",
+        "Line" : 138,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "#make_std_shared_ptr_pass\n",
+        "Line" : 141,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "#make_std_unique_ptr_pass\n",
+        "Line" : 143,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "######\n",
+        "Line" : 157,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "######\n",
+        "Line" : 163,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "#functor_std_optional_pass\n",
+        "Line" : 167,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "#functor_std_shared_ptr_pass\n",
+        "Line" : 169,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "#functor_std_unique_ptr_pass\n",
+        "Line" : 171,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "######\n",
+        "Line" : 176,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "#monad_std_optinal_pass\n",
+        "Line" : 178,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "######\n",
+        "Line" : 183,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "#monad_error_std_optinal_pass\n\n#monad_error_std_unique_ptr_pass\n",
+        "Line" : 185,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "######\n\n#n_applicative_pass\n\n#n_applicative_std_array_pass\n\n#n_applicative_std_pair_pass\n",
+        "Line" : 191,
+        "CharPositionInLine" : 4
+      },
+      "28" : {
+        "Text" : "######\n",
+        "Line" : 200,
+        "CharPositionInLine" : 4
+      },
+      "29" : {
+        "Text" : "#n_functor_std_array_pass\n",
+        "Line" : 202,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "######\n",
+        "Line" : 209,
+        "CharPositionInLine" : 4
+      },
+      "31" : {
+        "Text" : "#nullable_std_optional_pass\n",
+        "Line" : 211,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "######\n",
+        "Line" : 218,
+        "CharPositionInLine" : 4
+      },
+      "33" : {
+        "Text" : "######\n",
+        "Line" : 224,
+        "CharPositionInLine" : 4
+      },
+      "34" : {
+        "Text" : "######\n",
+        "Line" : 230,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "######\n",
+        "Line" : 236,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "######\n\n#optionals_pass # optional\n",
+        "Line" : 242,
+        "CharPositionInLine" : 4
+      },
+      "37" : {
+        "Text" : "######\n\n#p_applicative_pass\n\n#p_applicative_std_array_pass\n\n#p_applicative_std_pair_pass\n",
+        "Line" : 248,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "######\n",
+        "Line" : 257,
+        "CharPositionInLine" : 4
+      },
+      "39" : {
+        "Text" : "#p_functor_std_array_pass\n",
+        "Line" : 259,
+        "CharPositionInLine" : 4
+      },
+      "40" : {
+        "Text" : "######\n",
+        "Line" : 265,
+        "CharPositionInLine" : 4
+      },
+      "41" : {
+        "Text" : "######\n\n#pod_optionals_pass # optional\n",
+        "Line" : 271,
+        "CharPositionInLine" : 4
+      },
+      "42" : {
+        "Text" : "######\n",
+        "Line" : 277,
+        "CharPositionInLine" : 4
+      },
+      "43" : {
+        "Text" : "######\n",
+        "Line" : 287,
+        "CharPositionInLine" : 4
+      },
+      "44" : {
+        "Text" : "######\n",
+        "Line" : 294,
+        "CharPositionInLine" : 4
+      },
+      "45" : {
+        "Text" : "######\n",
+        "Line" : 300,
+        "CharPositionInLine" : 4
+      },
+      "46" : {
+        "Text" : "#strong_counter_pass #fixme #369\n\n#strong_enums_pass #fixme\n",
+        "Line" : 305,
+        "CharPositionInLine" : 4
+      },
+      "47" : {
+        "Text" : "######\n",
+        "Line" : 313,
+        "CharPositionInLine" : 4
+      },
+      "48" : {
+        "Text" : "######\n",
+        "Line" : 323,
+        "CharPositionInLine" : 4
+      },
+      "49" : {
+        "Text" : "######\n",
+        "Line" : 330,
+        "CharPositionInLine" : 4
+      },
+      "50" : {
+        "Text" : "#sum_type_std_optional_pass\n",
+        "Line" : 333,
+        "CharPositionInLine" : 4
+      },
+      "51" : {
+        "Text" : "######\n",
+        "Line" : 339,
+        "CharPositionInLine" : 4
+      },
+      "52" : {
+        "Text" : "######\n",
+        "Line" : 346,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 53
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 5
+  },
+  "ElapsedTime" : 2236
+}

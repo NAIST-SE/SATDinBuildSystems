@@ -1,0 +1,2883 @@
+{
+  "Repository" : "39143175",
+  "Revision" : "HEAD",
+  "ObjectId" : "ee8f3e138414a41d47722b50c087eec614b520ed",
+  "CommitTime" : "2019-04-18T21:01:42Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "45ee1dfbb41fd95dfc1fa941fe8edafa91750932",
+      "LastModified" : "2019-04-13T12:07:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Write compile_commands.json\n",
+        "Line" : 5,
+        "CharPositionInLine" : 37
+      },
+      "1" : {
+        "Text" : "# Do not relink all depended targets on .so\n",
+        "Line" : 6,
+        "CharPositionInLine" : 36
+      },
+      "2" : {
+        "Text" : "# To be consistent with CMakeLists from contrib libs.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 91
+      },
+      "3" : {
+        "Text" : "# need cmake 3.9+\n",
+        "Line" : 10,
+        "CharPositionInLine" : 72
+      },
+      "4" : {
+        "Text" : "# Require at least gcc 7\n",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Require at least clang 5\n",
+        "Line" : 31,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Check that submodules are present only if source was downloaded with git\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Turn on colored output. https://github.com/ninja-build/ninja/wiki/FAQ\n",
+        "Line" : 74,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# -Werror is also added inside directories with our own code.\n",
+        "Line" : 80,
+        "CharPositionInLine" : 66
+      },
+      "9" : {
+        "Text" : "# clang: warning: argument unused during compilation: '-stdlib=libc++'\n\n# clang: warning: argument unused during compilation: '-specs=/usr/share/dpkg/no-pie-compile.specs' [-Wunused-command-line-argument]\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# Not available under freebsd\n",
+        "Line" : 124,
+        "CharPositionInLine" : 96
+      },
+      "11" : {
+        "Text" : "# clang: error: the clang compiler does not support '-march=native'\n",
+        "Line" : 138,
+        "CharPositionInLine" : 23
+      },
+      "12" : {
+        "Text" : "# Special options for better optimized code with clang\n\n#if (CMAKE_CXX_COMPILER_ID STREQUAL \"Clang\")\n\n#    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO  \"${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -Wno-unused-command-line-argument -mllvm -inline-threshold=10000\")\n\n#endif ()\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# https://cmake.org/cmake/help/latest/prop_tgt/CXX_EXTENSIONS.html#prop_tgt:CXX_EXTENSIONS\n",
+        "Line" : 157,
+        "CharPositionInLine" : 33
+      },
+      "14" : {
+        "Text" : "#set (CMAKE_CXX_FLAGS_RELEASE             \"${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_ADD}\")\n",
+        "Line" : 164,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "#set (CMAKE_C_FLAGS_RELEASE               \"${CMAKE_C_FLAGS_RELEASE} ${CMAKE_C_FLAGS_ADD}\")\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Set standard, system and compiler libraries explicitly.\n\n# This is intended for more control of what we are linking.\n",
+        "Line" : 177,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Note: this probably has no effect, but I'm not an expert in CMake.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# Disable default linked libraries.\n",
+        "Line" : 186,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# We need builtins from Clang's RT even without libcxx - for ubsan+int128. See https://bugs.llvm.org/show_bug.cgi?id=16404\n",
+        "Line" : 189,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# Add C++ libraries.\n\n#\n\n# This consist of:\n\n# - C++ standard library (like implementation of std::string);\n\n# - C++ ABI implementation (functions for exceptions like __cxa_throw, RTTI, etc);\n\n# - functions for internal implementation of exception handling (stack unwinding based on DWARF info; TODO replace with bundled libunwind);\n\n# - compiler builtins (example: functions for implementation of __int128 operations);\n\n#\n\n# There are two variants of C++ library: libc++ (from LLVM compiler infrastructure) and libstdc++ (from GCC).\n",
+        "Line" : 195,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# Linking with GLIBC prevents portability of binaries to older systems.\n\n# We overcome this behaviour by statically linking with our own implementation of all new symbols (that don't exist in older Libc or have infamous \"symbol versioning\").\n\n# The order of linking is important: 'glibc-compatibility' must be before libc but after all other libraries.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# FIXME: glibc-compatibility may be non-static in some builds!\n",
+        "Line" : 219,
+        "CharPositionInLine" : 8
+      },
+      "23" : {
+        "Text" : "# Add Libc. GLIBC is actually a collection of interdependent libraries.\n",
+        "Line" : 223,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "# Note: we'd rather use Musl libc library, but it's little bit more difficult to use.\n",
+        "Line" : 226,
+        "CharPositionInLine" : 4
+      },
+      "25" : {
+        "Text" : "# Add default libs to all targets as the last dependency.\n",
+        "Line" : 232,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# Using \"include-what-you-use\" tool.\n",
+        "Line" : 241,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Flags for test coverage\n",
+        "Line" : 253,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Enable for tests without binary\n",
+        "Line" : 261,
+        "CharPositionInLine" : 17
+      },
+      "29" : {
+        "Text" : "# when installing to /usr - place configs to /etc but for /usr/local place to /usr/local/etc\n",
+        "Line" : 263,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# Using system libs can cause lot of warnings in includes.\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# for odbc\n",
+        "Line" : 292,
+        "CharPositionInLine" : 32
+      },
+      "32" : {
+        "Text" : "# openssl, zlib, odbc before poco\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# Freebsd, bundled\n",
+        "Line" : 307,
+        "CharPositionInLine" : 33
+      },
+      "34" : {
+        "Text" : "# Debian\n",
+        "Line" : 309,
+        "CharPositionInLine" : 39
+      },
+      "35" : {
+        "Text" : "# uses protobuf\n",
+        "Line" : 316,
+        "CharPositionInLine" : 33
+      },
+      "36" : {
+        "Text" : "# Need to process before \"contrib\" dir:\n",
+        "Line" : 331,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# FIXME: actually glibc-compatibility should always be built first,\n\n#        because it's unconditionally linked via $DEFAULT_LIBS,\n\n#        and these looks like the first places that get linked.\n",
+        "Line" : 348,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 38
+    },
+    "PreLoad.cmake" : {
+      "ObjectId" : "c9bc96b621947deeb05908926ed810c3cfe73807",
+      "LastModified" : "2019-01-17T19:04:21Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Use Ninja instead of Unix Makefiles by default.\n\n# https://stackoverflow.com/questions/11269833/cmake-selecting-a-generator-within-cmakelists-txt\n\n#\n\n# Reason: it has better startup time than make and it parallelizes jobs more uniformly.\n\n# (when comparing to make with Makefiles that was generated by CMake)\n\n#\n\n# How to install Ninja on Ubuntu:\n\n#  sudo apt-get install ninja-build\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# CLion does not support Ninja\n\n# You can add your vote on CLion task tracker:\n\n# https://youtrack.jetbrains.com/issue/CPP-2659\n\n# https://youtrack.jetbrains.com/issue/CPP-870\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindArrow.cmake" : {
+      "ObjectId" : "4043a4749883eb292903de7c71b548a8be7ce3c5",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://github.com/apache/arrow/blob/master/cpp/cmake_modules/FindArrow.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# - Find ARROW (arrow/api.h, libarrow.a, libarrow.so)\n\n# This module defines\n\n#  ARROW_INCLUDE_DIR, directory containing headers\n\n#  ARROW_LIBS, directory containing arrow libraries\n\n#  ARROW_STATIC_LIB, path to libarrow.a\n\n#  ARROW_SHARED_LIB, path to libarrow's shared library\n\n#  ARROW_SHARED_IMP_LIB, path to libarrow's import library (MSVC only)\n\n#  ARROW_FOUND, whether arrow has been found\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 67,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "cmake/Modules/FindGperftools.cmake" : {
+      "ObjectId" : "1cb8d42343fa7a3c8eb553be20bf05ab32488555",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://github.com/vast-io/vast/blob/master/cmake/FindGperftools.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Tries to find Gperftools.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(Gperftools)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  Gperftools_ROOT_DIR  Set this variable to the root installation of\n\n#                       Gperftools if the module has problems finding\n\n#                       the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  GPERFTOOLS_FOUND              System has Gperftools libs/headers\n\n#  GPERFTOOLS_LIBRARIES          The Gperftools libraries (tcmalloc & profiler)\n\n#  GPERFTOOLS_INCLUDE_DIR        The location of Gperftools headers\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "cmake/Modules/FindICU.cmake" : {
+      "ObjectId" : "0e61b3dcf29da9ac79de12874a5aa46e29a636ad",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# FindICU\n\n# -------\n\n#\n\n# Find the International Components for Unicode (ICU) libraries and\n\n# programs.\n\n#\n\n# This module supports multiple components.\n\n# Components can include any of: ``data``, ``i18n``, ``io``, ``le``,\n\n# ``lx``, ``test``, ``tu`` and ``uc``.\n\n#\n\n# Note that on Windows ``data`` is named ``dt`` and ``i18n`` is named\n\n# ``in``; any of the names may be used, and the appropriate\n\n# platform-specific library name will be automatically selected.\n\n#\n\n# This module reports information about the ICU installation in\n\n# several variables.  General variables::\n\n#\n\n#   ICU_VERSION - ICU release version\n\n#   ICU_FOUND - true if the main programs and libraries were found\n\n#   ICU_LIBRARIES - component libraries to be linked\n\n#   ICU_INCLUDE_DIRS - the directories containing the ICU headers\n\n#\n\n# Imported targets::\n\n#\n\n#   ICU::<C>\n\n#\n\n# Where ``<C>`` is the name of an ICU component, for example\n\n# ``ICU::i18n``.\n\n#\n\n# ICU programs are reported in::\n\n#\n\n#   ICU_GENCNVAL_EXECUTABLE - path to gencnval executable\n\n#   ICU_ICUINFO_EXECUTABLE - path to icuinfo executable\n\n#   ICU_GENBRK_EXECUTABLE - path to genbrk executable\n\n#   ICU_ICU-CONFIG_EXECUTABLE - path to icu-config executable\n\n#   ICU_GENRB_EXECUTABLE - path to genrb executable\n\n#   ICU_GENDICT_EXECUTABLE - path to gendict executable\n\n#   ICU_DERB_EXECUTABLE - path to derb executable\n\n#   ICU_PKGDATA_EXECUTABLE - path to pkgdata executable\n\n#   ICU_UCONV_EXECUTABLE - path to uconv executable\n\n#   ICU_GENCFU_EXECUTABLE - path to gencfu executable\n\n#   ICU_MAKECONV_EXECUTABLE - path to makeconv executable\n\n#   ICU_GENNORM2_EXECUTABLE - path to gennorm2 executable\n\n#   ICU_GENCCODE_EXECUTABLE - path to genccode executable\n\n#   ICU_GENSPREP_EXECUTABLE - path to gensprep executable\n\n#   ICU_ICUPKG_EXECUTABLE - path to icupkg executable\n\n#   ICU_GENCMN_EXECUTABLE - path to gencmn executable\n\n#\n\n# ICU component libraries are reported in::\n\n#\n\n#   ICU_<C>_FOUND - ON if component was found\n\n#   ICU_<C>_LIBRARIES - libraries for component\n\n#\n\n# ICU datafiles are reported in::\n\n#\n\n#   ICU_MAKEFILE_INC - Makefile.inc\n\n#   ICU_PKGDATA_INC - pkgdata.inc\n\n#\n\n# Note that ``<C>`` is the uppercased name of the component.\n\n#\n\n# This module reads hints about search results from::\n\n#\n\n#   ICU_ROOT - the root of the ICU installation\n\n#\n\n# The environment variable ``ICU_ROOT`` may also be used; the\n\n# ICU_ROOT variable takes precedence.\n\n#\n\n# The following cache variables may also be set::\n\n#\n\n#   ICU_<P>_EXECUTABLE - the path to executable <P>\n\n#   ICU_INCLUDE_DIR - the directory containing the ICU headers\n\n#   ICU_<C>_LIBRARY - the library for component <C>\n\n#\n\n# .. note::\n\n#\n\n#   In most cases none of the above variables will require setting,\n\n#   unless multiple ICU versions are available and a specific version\n\n#   is required.\n\n#\n\n# Other variables one may set to control this module are::\n\n#\n\n#   ICU_DEBUG - Set to ON to enable debug output from FindICU.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Written by Roger Leigh <rleigh@codelibre.net>\n",
+        "Line" : 88,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# The ICU checks are contained in a function due to the large number\n\n# of temporary variables needed.\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Set up search paths, taking compiler into account.  Search ICU_ROOT,\n\n# with ICU_ROOT in the environment as a fallback if unset.\n",
+        "Line" : 115,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Find include directory\n",
+        "Line" : 128,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Get version\n",
+        "Line" : 137,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# 64-bit binary directory\n",
+        "Line" : 151,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# 64-bit library directory\n",
+        "Line" : 153,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# Find all ICU programs\n",
+        "Line" : 158,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# Find all ICU libraries\n",
+        "Line" : 172,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# Special case deliberate library naming mismatches between Unix\n\n# and Windows builds\n",
+        "Line" : 184,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Note there is no debug variant at present\n",
+        "Line" : 192,
+        "CharPositionInLine" : 6
+      },
+      "13" : {
+        "Text" : "# Note there is no debug variant at present\n",
+        "Line" : 197,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "# Find all ICU data files\n",
+        "Line" : 245,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 15
+    },
+    "cmake/Modules/FindJeMalloc.cmake" : {
+      "ObjectId" : "264415dc9b261a91f9b0d002ad687425c8b5c9f0",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://github.com/bro/cmake/blob/master/FindJeMalloc.cmake\n\n#\n\n# - Try to find jemalloc headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(JeMalloc)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  JEMALLOC_ROOT_DIR Set this variable to the root installation of\n\n#                    jemalloc if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  JEMALLOC_FOUND             System has jemalloc libs/headers\n\n#  JEMALLOC_LIBRARIES         The jemalloc library/libraries\n\n#  JEMALLOC_INCLUDE_DIR       The location of jemalloc headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/FindODBC.cmake" : {
+      "ObjectId" : "66d43e93d2d3972cec6af4e341fc56ab01a1cd11",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file copied from contrib/poco/cmake/FindODBC.cmake to allow build without submodules\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Find the ODBC driver manager includes and library.\n\n#\n\n# ODBC is an open standard for connecting to different databases in a\n\n# semi-vendor-independent fashion.  First you install the ODBC driver\n\n# manager.  Then you need a driver for each separate database you want\n\n# to connect to (unless a generic one works).  VTK includes neither\n\n# the driver manager nor the vendor-specific drivers: you have to find\n\n# those yourself.\n\n#\n\n# This module defines\n\n# ODBC_INCLUDE_DIRECTORIES, where to find sql.h\n\n# ODBC_LIBRARIES, the libraries to link against to use ODBC\n\n# ODBC_FOUND.  If false, you cannot build anything that requires ODBC.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# MinGW find usually fails\n",
+        "Line" : 72,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 3
+    },
+    "cmake/Modules/FindParquet.cmake" : {
+      "ObjectId" : "ab9c31efe2d6d87972f36f0f4b4053c23b9eaff5",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://github.com/apache/arrow/blob/master/cpp/cmake_modules/FindParquet.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements.  See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership.  The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License.  You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied.  See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# - Find PARQUET (parquet/parquet.h, libparquet.a, libparquet.so)\n\n# This module defines\n\n#  PARQUET_INCLUDE_DIR, directory containing headers\n\n#  PARQUET_LIBS, directory containing parquet libraries\n\n#  PARQUET_STATIC_LIB, path to libparquet.a\n\n#  PARQUET_SHARED_LIB, path to libparquet's shared library\n\n#  PARQUET_SHARED_IMP_LIB, path to libparquet's import library (MSVC only)\n\n#  PARQUET_FOUND, whether parquet has been found\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# make sure we don't accidentally pick up a different version\n",
+        "Line" : 58,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# Try to autodiscover the Parquet ABI version\n",
+        "Line" : 66,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "cmake/Modules/FindPoco.cmake" : {
+      "ObjectId" : "e56e2f70fb5a8b9276d90d663daa7967072efdb9",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://github.com/astahl/poco-cmake/blob/master/cmake/FindPoco.cmake\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - finds the Poco C++ libraries\n\n# This module finds the Applied Informatics Poco libraries.\n\n# It supports the following components:\n\n#\n\n# Util (loaded by default)\n\n# Foundation (loaded by default)\n\n# XML\n\n# Zip\n\n# Crypto\n\n# Data\n\n# Net\n\n# NetSSL\n\n# OSP\n\n#\n\n# Usage:\n\n#    set(ENV{Poco_DIR} path/to/poco/sdk)\n\n#    find_package(Poco REQUIRED OSP Data Crypto)\n\n#\n\n# On completion, the script defines the following variables:\n\n#\n\n#    - Compound variables:\n\n#   Poco_FOUND\n\n#        - true if all requested components were found.\n\n#    Poco_LIBRARIES\n\n#        - contains release (and debug if available) libraries for all requested components.\n\n#          It has the form \"optimized LIB1 debug LIBd1 optimized LIB2 ...\", ready for use with the target_link_libraries command.\n\n#    Poco_INCLUDE_DIRS\n\n#        - Contains include directories for all requested components.\n\n#\n\n#    - Component variables:\n\n#   Poco_Xxx_FOUND\n\n#        - Where Xxx is the properly cased component name (eg. 'Util', 'OSP').\n\n#          True if a component's library or debug library was found successfully.\n\n#    Poco_Xxx_LIBRARY\n\n#        - Library for component Xxx.\n\n#    Poco_Xxx_LIBRARY_DEBUG\n\n#        - debug library for component Xxx\n\n#   Poco_Xxx_INCLUDE_DIR\n\n#        - include directory for component Xxx\n\n#\n\n#      - OSP BundleCreator variables: (i.e. bundle.exe on windows, bundle on unix-likes)\n\n#        (is only discovered if OSP is a requested component)\n\n#    Poco_OSP_Bundle_EXECUTABLE_FOUND\n\n#        - true if the bundle-creator executable was found.\n\n#    Poco_OSP_Bundle_EXECUTABLE\n\n#        - the path to the bundle-creator executable.\n\n#\n\n# Author: Andreas Stahl andreas.stahl@tu-dresden.de\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# look for the root directory, first for the source-tree variant\n",
+        "Line" : 61,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# this means poco may have a different directory structure, maybe it was installed, let's check for that\n",
+        "Line" : 67,
+        "CharPositionInLine" : 8
+      },
+      "4" : {
+        "Text" : "# poco was still not found -> Fail\n",
+        "Line" : 74,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "# poco was found with the make install directory structure\n",
+        "Line" : 83,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# add dynamic library directory\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# if installed directory structure, set full include dir\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# append the default minimum components to the list to find\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# default components:\n",
+        "Line" : 109,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# remove duplicate defaults\n",
+        "Line" : 113,
+        "CharPositionInLine" : 35
+      },
+      "11" : {
+        "Text" : "#if(NOT Poco_${component}_FOUND)\n",
+        "Line" : 116,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# include directory for the component\n",
+        "Line" : 118,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# e.g. Foundation.h\n",
+        "Line" : 138,
+        "CharPositionInLine" : 40
+      },
+      "14" : {
+        "Text" : "# e.g. OSP/OSP.h Util/Util.h\n",
+        "Line" : 139,
+        "CharPositionInLine" : 49
+      },
+      "15" : {
+        "Text" : "# e.g. Net/NetSSL.h\n",
+        "Line" : 140,
+        "CharPositionInLine" : 53
+      },
+      "16" : {
+        "Text" : "# e.g. Data/ODBC/ODBC.h\n",
+        "Line" : 141,
+        "CharPositionInLine" : 72
+      },
+      "17" : {
+        "Text" : "# message(STATUS \"poco include debug: {component}: ${Poco_${component}_INCLUDE_DIR}\")\n",
+        "Line" : 148,
+        "CharPositionInLine" : 8
+      },
+      "18" : {
+        "Text" : "# release library\n",
+        "Line" : 156,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# debug library\n",
+        "Line" : 175,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# mark component as found or handle not finding it\n",
+        "Line" : 194,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# message(STATUS \"Poco component ${component}: Poco_${component}_LIBRARY : Poco_${component}_INCLUDE_DIR\")\n",
+        "Line" : 201,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# find the osp bundle program\n",
+        "Line" : 224,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# include bundle script file\n",
+        "Line" : 240,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 24
+    },
+    "cmake/Modules/Findbtrie.cmake" : {
+      "ObjectId" : "4f3c27f5225a61ff951a89cee02040c00b2ff3b7",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find btrie headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(btrie)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  BTRIE_ROOT_DIR Set this variable to the root installation of\n\n#                    btrie if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  BTRIE_FOUND             System has btrie libs/headers\n\n#  BTRIE_LIBRARIES         The btrie library/libraries\n\n#  BTRIE_INCLUDE_DIR       The location of btrie headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/Findcityhash.cmake" : {
+      "ObjectId" : "5250df2e0a6518e79a09dd9689d267df1bf011e1",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find cityhash headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(cityhash)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  CITYHASH_ROOT_DIR Set this variable to the root installation of\n\n#                    cityhash if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  CITYHASH_FOUND             System has cityhash libs/headers\n\n#  CITYHASH_LIBRARIES         The cityhash library/libraries\n\n#  CITYHASH_INCLUDE_DIR       The location of cityhash headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/Finddouble-conversion.cmake" : {
+      "ObjectId" : "cb01be0f25b6693ec8ad99837c57e53558ef4b12",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find double-conversion headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(double-conversion)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  DOUBLE_CONVERSION_ROOT_DIR Set this variable to the root installation of\n\n#                    double-conversion if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  DOUBLE_CONVERSION_FOUND             System has double-conversion libs/headers\n\n#  DOUBLE_CONVERSION_LIBRARIES         The double-conversion library/libraries\n\n#  DOUBLE_CONVERSION_INCLUDE_DIR       The location of double-conversion headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/Findfarmhash.cmake" : {
+      "ObjectId" : "2b45fde2c67acfb6b8882ac788a026dafb7d4911",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find farmhash headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(farmhash)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  FARMHASH_ROOT_DIR Set this variable to the root installation of\n\n#                    farmhash if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  FARMHASH_FOUND             System has farmhash libs/headers\n\n#  FARMHASH_LIBRARIES         The farmhash library/libraries\n\n#  FARMHASH_INCLUDE_DIR       The location of farmhash headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/Modules/Findmetrohash.cmake" : {
+      "ObjectId" : "c51665795bd1156e3cfdcfc7c55b834921322947",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find metrohash headers and libraries.\n\n#\n\n# Usage of this module as follows:\n\n#\n\n#     find_package(metrohash)\n\n#\n\n# Variables used by this module, they can change the default behaviour and need\n\n# to be set before calling find_package:\n\n#\n\n#  METROHASH_ROOT_DIR Set this variable to the root installation of\n\n#                    metrohash if the module has problems finding\n\n#                    the proper installation path.\n\n#\n\n# Variables defined by this module:\n\n#\n\n#  METROHASH_FOUND             System has metrohash libs/headers\n\n#  METROHASH_LIBRARIES         The metrohash library/libraries\n\n#  METROHASH_INCLUDE_DIR       The location of metrohash headers\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/add_check.cmake" : {
+      "ObjectId" : "c6abbcdb3218e7f8c76c82fdc61010641f2189d8",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Adding test output on failure\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/arch.cmake" : {
+      "ObjectId" : "f8e18629b0906a966c88bec6803ec31d01890839",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/dbms_glob_sources.cmake" : {
+      "ObjectId" : "2d2200c2c55fd50a27a1a65bbe7cd54425da5203",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_base64.cmake" : {
+      "ObjectId" : "8e52c8463c8a088b9652c5b3eaac250005ff1faf",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_boost.cmake" : {
+      "ObjectId" : "b37782556d1e179d72c9df15b9ec4f925857b751",
+      "LastModified" : "2019-02-19T20:51:44Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Test random file existing in all package variants\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# incomplete, no include search, who use it?\n",
+        "Line" : 13,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "#    # Try to find manually.\n\n#    set (BOOST_PATHS \"\")\n\n#    find_library (Boost_PROGRAM_OPTIONS_LIBRARY boost_program_options PATHS ${BOOST_PATHS})\n\n#    find_library (Boost_SYSTEM_LIBRARY boost_system PATHS ${BOOST_PATHS})\n\n#    find_library (Boost_FILESYSTEM_LIBRARY boost_filesystem PATHS ${BOOST_PATHS})\n\n# maybe found but incorrect version.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# For boost from github:\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# numeric has additional level\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# For packaged version:\n",
+        "Line" : 45,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "cmake/find_brotli.cmake" : {
+      "ObjectId" : "55350e21eedfb42f9d395b6317f71754037b28ee",
+      "LastModified" : "2019-03-13T15:37:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_capnp.cmake" : {
+      "ObjectId" : "ec591afdc382abca7abe79fe22bbbe5a2283274e",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cmake 3.5.1 bug:\n\n# capnproto uses this cmake feature:\n\n# target_compile_features(kj PUBLIC cxx_constexpr)\n\n# old cmake adds -std=gnu++11 to end of all compile commands (even if -std=gnu++17 already present in compile string)\n\n# cmake 3.9.1 (ubuntu artful) have no this bug (c++17 support added to cmake 3.8.2)\n",
+        "Line" : 4,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "cmake/find_ccache.cmake" : {
+      "ObjectId" : "22372c3cbfea1673750d7b6daa54c3346c77c82d",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#message(STATUS \"Using ${CCACHE_FOUND} ${CCACHE_VERSION}\")\n",
+        "Line" : 8,
+        "CharPositionInLine" : 7
+      },
+      "CommentCount" : 1
+    },
+    "cmake/find_consistent-hashing.cmake" : {
+      "ObjectId" : "23e709d22282a565894c66f18934b0a44785b401",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_contrib_lib.cmake" : {
+      "ObjectId" : "f9bf3ce2837c727b75fc2432361dfdce078c23ea",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_cpuid.cmake" : {
+      "ObjectId" : "552cf3fb3d9a9e80509032f149ca8ded87c224a3",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ARM: Cannot cpuid_get_raw_data: CPUID instruction is not supported\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# need in /usr/local/include/libcpuid/libcpuid_types.h\n\n# Freebsd: /usr/local/include/libcpuid/libcpuid_types.h:61:29: error: conflicting declaration 'typedef long long int int64_t'\n",
+        "Line" : 19,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# TODO: make virtual target cpuid:cpuid with COMPILE_DEFINITIONS property\n",
+        "Line" : 22,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 3
+    },
+    "cmake/find_cpuinfo.cmake" : {
+      "ObjectId" : "f122026d2bbbf1ea1d5bde1a1a89b0f9dfba1e80",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Now we have no contrib/libcpuinfo, use from system.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#message (WARNING \"submodule contrib/libcpuid is missing. to fix try run: \\n git submodule update --init --recursive\")\n",
+        "Line" : 5,
+        "CharPositionInLine" : 3
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_execinfo.cmake" : {
+      "ObjectId" : "650d279983c4d26b7082cd5f972ce62375b23da5",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_gtest.cmake" : {
+      "ObjectId" : "82ae0f8e22928db773db85a5e58b470701f2e392",
+      "LastModified" : "2019-03-14T20:52:10Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: autodetect of GTEST_SRC_DIR by EXISTS /usr/src/googletest/CMakeLists.txt\n",
+        "Line" : 13,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "cmake/find_hdfs3.cmake" : {
+      "ObjectId" : "4c29047fc752ec5b7db5da885c168b2b33b81e40",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_hyperscan.cmake" : {
+      "ObjectId" : "a3e0b6bc9bc7d130aad66acd34c4f864f579eeae",
+      "LastModified" : "2019-03-25T21:31:00Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_icu.cmake" : {
+      "ObjectId" : "39991eef87d9909fb9e92371794ff6ae8a208549",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: remove Modules/FindICU.cmake after cmake 3.7\n",
+        "Line" : 4,
+        "CharPositionInLine" : 46
+      },
+      "1" : {
+        "Text" : "#set (ICU_LIBRARIES ${ICU_I18N_LIBRARY} ${ICU_UC_LIBRARY} ${ICU_DATA_LIBRARY} CACHE STRING \"\")\n",
+        "Line" : 5,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_lfalloc.cmake" : {
+      "ObjectId" : "c9b2ce5d436788635c647dc0ba4586a7efe7ff51",
+      "LastModified" : "2019-04-16T14:12:02Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_libgsasl.cmake" : {
+      "ObjectId" : "ef1bbefe0df712574f2efd2c8708f31a42307f91",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_libxml2.cmake" : {
+      "ObjectId" : "73732e139c54aac74b3a55e5c13a683c55d4e748",
+      "LastModified" : "2019-03-13T15:37:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#find_library (LIBXML2_LIBRARY libxml2)\n\n#find_path (LIBXML2_INCLUDE_DIR NAMES libxml.h PATHS ${LIBXML2_INCLUDE_PATHS})\n",
+        "Line" : 13,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "cmake/find_llvm.cmake" : {
+      "ObjectId" : "2483676c8dbffe843fbafdace3ab93e4f1fbd4d0",
+      "LastModified" : "2019-03-13T15:37:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Broken in macos. TODO: update clang, re-test, enable\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Remove dynamically-linked zlib and libedit from LLVM's dependencies:\n",
+        "Line" : 43,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_ltdl.cmake" : {
+      "ObjectId" : "18003618dbd783199ebcf209b979a328c1a94480",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_lz4.cmake" : {
+      "ObjectId" : "5f5e058b53db47e78917eac3985dfae7a321592d",
+      "LastModified" : "2019-03-13T15:37:03Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_odbc.cmake" : {
+      "ObjectId" : "32a410c6f11d1b907724d60550fe955e4df95073",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This file copied from contrib/poco/cmake/FindODBC.cmake to allow build without submodules\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Find the ODBC driver manager includes and library.\n\n#\n\n# ODBC is an open standard for connecting to different databases in a\n\n# semi-vendor-independent fashion.  First you install the ODBC driver\n\n# manager.  Then you need a driver for each separate database you want\n\n# to connect to (unless a generic one works).  VTK includes neither\n\n# the driver manager nor the vendor-specific drivers: you have to find\n\n# those yourself.\n\n#\n\n# This module defines\n\n# ODBC_INCLUDE_DIRECTORIES, where to find sql.h\n\n# ODBC_LIBRARIES, the libraries to link against to use ODBC\n\n# ODBC_FOUND.  If false, you cannot build anything that requires ODBC.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Include directories will be either used automatically by target_include_directories or set later.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 32
+      },
+      "3" : {
+        "Text" : "# MinGW find usually fails\n",
+        "Line" : 73,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 4
+    },
+    "cmake/find_parquet.cmake" : {
+      "ObjectId" : "39af93955f4bc0321f2211094b902033f4fab98e",
+      "LastModified" : "2019-03-13T15:37:03Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Freebsd: ../contrib/arrow/cpp/src/arrow/util/bit-util.h:27:10: fatal error: endian.h: No such file or directory\n",
+        "Line" : 5,
+        "CharPositionInLine" : 20
+      },
+      "1" : {
+        "Text" : "# HAVE_STD_RANDOM_SHUFFLE\n",
+        "Line" : 35,
+        "CharPositionInLine" : 64
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_pdqsort.cmake" : {
+      "ObjectId" : "51461044cf90c08cd3ea2b534c137694ee4d0aac",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_poco.cmake" : {
+      "ObjectId" : "07d81c1bbe86b71ab9c0bb8e6097c812614180f6",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: after new poco release with SQL library rename ENABLE_POCO_ODBC -> ENABLE_POCO_SQLODBC\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# new after 2.0.0:\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# used in internal compiler\n",
+        "Line" : 57,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# How to make sutable poco:\n\n# use branch:\n\n#  develop  OR  poco-1.7.9-release + 6a49c94d18c654d7a20b8c8ea47071b1fdd4813b\n\n# and merge:\n\n# ClickHouse-Extras/clickhouse_unbundled\n\n# ClickHouse-Extras/clickhouse_unbundled_zlib\n\n# ClickHouse-Extras/clickhouse_task\n\n# ClickHouse-Extras/clickhouse_misc\n\n# ClickHouse-Extras/clickhouse_anl\n\n# ClickHouse-Extras/clickhouse_http_header https://github.com/pocoproject/poco/pull/1574\n\n# ClickHouse-Extras/clickhouse_socket\n\n# ClickHouse-Extras/clickhouse_warning\n\n# ClickHouse-Extras/clickhouse-purge-logs-on-no-space\n\n# ClickHouse-Extras/clickhouse_freebsd\n\n# ClickHouse-Extras/clikhouse_no_zlib\n\n# ClickHouse-Extras/clickhouse-fix-atomic\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "cmake/find_protobuf.cmake" : {
+      "ObjectId" : "57d546392c186ca761378182f02daa3070df085b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create an include path for each file specified\n",
+        "Line" : 43,
+        "CharPositionInLine" : 12
+      },
+      "1" : {
+        "Text" : "# ../contrib/protobuf/src/google/protobuf/arena_impl.h:45:10: fatal error: 'sanitizer/asan_interface.h' file not found\n\n# #include <sanitizer/asan_interface.h>\n",
+        "Line" : 96,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_rdkafka.cmake" : {
+      "ObjectId" : "3363c657f9104d40184cb8cf07fbc4c989d088dc",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Freebsd: contrib/cppkafka/include/cppkafka/detail/endianness.h:53:23: error: 'betoh16' was not declared in this scope\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: try to use unbundled version.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 36
+      },
+      "CommentCount" : 2
+    },
+    "cmake/find_re2.cmake" : {
+      "ObjectId" : "c0136a6cc21b6ff1355b450b223b48da3d89323d",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_readline_edit.cmake" : {
+      "ObjectId" : "c2bba6cbfab79eb17e2c1185679f8bd8bd8e2f8c",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# First try find custom lib for macos users (default lib without history support)\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/find_rt.cmake" : {
+      "ObjectId" : "25614fe55eb77bb515094fb0d0d18d5e04d86b55",
+      "LastModified" : "2019-02-19T20:46:37Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# lib from libs/libcommon\n",
+        "Line" : 2,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "cmake/find_snappy.cmake" : {
+      "ObjectId" : "1098bbc3e534087965ea5c11a1884212bbfac9df",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_sparsehash.cmake" : {
+      "ObjectId" : "187401a27a983a95bd9d86902f0bb9dd6fe8b487",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_ssl.cmake" : {
+      "ObjectId" : "6d65ccc66bf3c09ea5e7fed3371d2a4602c00bc4",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://rt.openssl.org/Ticket/Display.html?user=guest&pass=guest&id=2232\n",
+        "Line" : 22,
+        "CharPositionInLine" : 8
+      },
+      "1" : {
+        "Text" : "# Try to find manually.\n",
+        "Line" : 30,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# we need keep OPENSSL_FOUND for many libs in contrib\n",
+        "Line" : 59,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "cmake/find_termcap.cmake" : {
+      "ObjectId" : "47b772331bbd449e4bd2d42516bbf7db84b61e81",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_xxhash.cmake" : {
+      "ObjectId" : "8af871e8fd5c94fc43bd00b988f61d7e1872bfdb",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/find_zlib.cmake" : {
+      "ObjectId" : "fb6b8c7971d1e7a30631981e1dba1aad44adfc8f",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# generated zconf.h\n",
+        "Line" : 20,
+        "CharPositionInLine" : 159
+      },
+      "1" : {
+        "Text" : "# for poco\n",
+        "Line" : 21,
+        "CharPositionInLine" : 48
+      },
+      "2" : {
+        "Text" : "# for protobuf\n",
+        "Line" : 22,
+        "CharPositionInLine" : 55
+      },
+      "3" : {
+        "Text" : "# for poco\n",
+        "Line" : 23,
+        "CharPositionInLine" : 23
+      },
+      "CommentCount" : 4
+    },
+    "cmake/find_zstd.cmake" : {
+      "ObjectId" : "24bc851ed57e007f26e17995f73da19ce2f5e14b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/generate_code.cmake" : {
+      "ObjectId" : "8eb9da24d1df3e227b5972beb3310c5f5330f6c6",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/lib_name.cmake" : {
+      "ObjectId" : "847efb15fc5a19ce17880af4cf4101a2f4b099fe",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/limit_jobs.cmake" : {
+      "ObjectId" : "4f305bfb4c3a49ef2be371ffc692f2fde8d97501",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Usage:\n\n# set (MAX_COMPILER_MEMORY 2000 CACHE INTERNAL \"\") # In megabytes\n\n# set (MAX_LINKER_MEMORY 3500 CACHE INTERNAL \"\")\n\n# include (cmake/limit_jobs.cmake)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Not available under freebsd\n",
+        "Line" : 6,
+        "CharPositionInLine" : 96
+      },
+      "CommentCount" : 2
+    },
+    "cmake/print_flags.cmake" : {
+      "ObjectId" : "ad6bca2193324d5d43d36b7f2346401acfedb89d",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/print_include_directories.cmake" : {
+      "ObjectId" : "05be8f909ee6331bd070cdff5fe26e75a4a49d46",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO? Maybe recursive collect on all deps\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/sanitize.cmake" : {
+      "ObjectId" : "1d8ed9461eb8787666961d05a0fdc55be027aa5e",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/test_compiler.cmake" : {
+      "ObjectId" : "cba7a04e5e333cc5df2391d87e68f04fb3792121",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# clang4 : -no-pie cause error\n\n# clang6 : -no-pie cause warning\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake/test_cpu.cmake" : {
+      "ObjectId" : "42f9bac936ed3dc602986ddb0b06b7bf2ff91cff",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# https://software.intel.com/sites/landingpage/IntrinsicsGuide/\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# gcc -dM -E -mno-sse2 - < /dev/null | sort > gcc-dump-nosse2\n\n# gcc -dM -E -msse2 - < /dev/null | sort > gcc-dump-sse2\n\n#define __SSE2__ 1\n\n#define __SSE2_MATH__ 1\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# gcc -dM -E -msse4.1 - < /dev/null | sort > gcc-dump-sse41\n\n#define __SSE4_1__ 1\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# gcc -dM -E -msse4.2 - < /dev/null | sort > gcc-dump-sse42\n\n#define __SSE4_2__ 1\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# gcc -dM -E -mpopcnt - < /dev/null | sort > gcc-dump-popcnt\n\n#define __POPCNT__ 1\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "cmake/use_libcxx.cmake" : {
+      "ObjectId" : "29ac9406fe0533a4b82abfdf5ed7cea5e0cb2896",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Uses MAKE_STATIC_LIBRARIES\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Ok for clang6, for older can cause 'not used option' warning\n",
+        "Line" : 16,
+        "CharPositionInLine" : 78
+      },
+      "2" : {
+        "Text" : "# More checks in debug build.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 87
+      },
+      "CommentCount" : 3
+    },
+    "contrib/CMakeLists.txt" : {
+      "ObjectId" : "447ff6fb8803b49007bcc8763a270bc8f6324ea8",
+      "LastModified" : "2019-04-13T12:07:43Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Third-party libraries may have substandard code.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# also enables WITH_GZFILEOP\n",
+        "Line" : 62,
+        "CharPositionInLine" : 42
+      },
+      "2" : {
+        "Text" : "# Bug in assembler\n",
+        "Line" : 65,
+        "CharPositionInLine" : 45
+      },
+      "3" : {
+        "Text" : "# todo: make pull to Dead2/zlib-ng and remove:\n\n# We should use same defines when including zlib.h as used when zlib compiled\n",
+        "Line" : 73,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "#set_target_properties(example PROPERTIES EXCLUDE_FROM_ALL 1)\n\n#if (TARGET example64)\n\n#    set_target_properties(example64 PROPERTIES EXCLUDE_FROM_ALL 1)\n\n#endif ()\n",
+        "Line" : 82,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "#set_target_properties(minigzip PROPERTIES EXCLUDE_FROM_ALL 1)\n\n#if (TARGET minigzip64)\n\n#    set_target_properties(minigzip64 PROPERTIES EXCLUDE_FROM_ALL 1)\n\n#endif ()\n",
+        "Line" : 87,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# By default, ${CMAKE_INSTALL_PREFIX}/etc/ssl is selected - that is not what we need.\n\n# We need to use system wide ssl directory.\n",
+        "Line" : 114,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# We dont use arrow's cmakefiles because they uses too many depends and download some libs in compile time\n\n# But this mode can be used for updating auto-generated parquet files:\n\n# cmake -DUSE_INTERNAL_PARQUET_LIBRARY_NATIVE_CMAKE=1 -DUSE_STATIC_LIBRARIES=0\n\n# copy {BUILD_DIR}/contrib/arrow/cpp/src/parquet/*.cpp,*.h -> /contrib/arrow-cmake/cpp/src/parquet/\n",
+        "Line" : 160,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# Also useful parquet reader:\n\n# cd contrib/arrow/cpp/build && mkdir -p build && cmake .. -DPARQUET_BUILD_EXECUTABLES=1 && make -j8\n\n# contrib/arrow/cpp/build/debug/parquet-reader some_file.parquet\n",
+        "Line" : 165,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "#set (BOOST_INCLUDEDIR Boost_INCLUDE_DIRS)\n",
+        "Line" : 174,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "#set (ZLIB_HOME ${ZLIB_INCLUDE_DIR})\n\n#set (ZLIB_FOUND 1)\n",
+        "Line" : 176,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Because Arrow uses CMAKE_SOURCE_DIR as a project path\n\n# Hopefully will be fixed in https://github.com/apache/arrow/pull/2676\n",
+        "Line" : 192,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# TODO: set at root dir\n",
+        "Line" : 206,
+        "CharPositionInLine" : 37
+      },
+      "13" : {
+        "Text" : "# TODO (build fail)\n",
+        "Line" : 227,
+        "CharPositionInLine" : 51
+      },
+      "14" : {
+        "Text" : "# Bug in poco https://github.com/pocoproject/poco/pull/2100 found on macos\n",
+        "Line" : 236,
+        "CharPositionInLine" : 8
+      },
+      "15" : {
+        "Text" : "# Google Test from sources\n",
+        "Line" : 242,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# avoid problems with <regexp.h>\n",
+        "Line" : 244,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# silly cmake bug fix\n",
+        "Line" : 254,
+        "CharPositionInLine" : 61
+      },
+      "18" : {
+        "Text" : "# ld: unknown option: --color-diagnostics\n",
+        "Line" : 256,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# actually will use zlib, but skip find\n",
+        "Line" : 296,
+        "CharPositionInLine" : 54
+      },
+      "CommentCount" : 20
+    },
+    "contrib/arrow-cmake/CMakeLists.txt" : {
+      "ObjectId" : "bec827354cd50a3befc06bda8466ddcc4bda4487",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# === thrift\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# contrib/thrift/lib/cpp/CMakeLists.txt\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# REMOVE after https://github.com/apache/thrift/pull/1641\n",
+        "Line" : 45,
+        "CharPositionInLine" : 68
+      },
+      "3" : {
+        "Text" : "# === arrow\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# arrow/cpp/src/arrow/CMakeLists.txt\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# === parquet\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# arrow/cpp/src/parquet/CMakeLists.txt\n",
+        "Line" : 172,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#list(TRANSFORM PARQUET_SRCS PREPEND ${LIBRARY_DIR}/) # cmake 3.12\n",
+        "Line" : 193,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# makes config.h\n",
+        "Line" : 200,
+        "CharPositionInLine" : 83
+      },
+      "9" : {
+        "Text" : "# === tools\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 10
+    },
+    "contrib/base64-cmake/CMakeLists.txt" : {
+      "ObjectId" : "12379c190e1734931a5508c6bc9306eb51b8d6bd",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO flags\n\n# TODO flags\n",
+        "Line" : 12,
+        "CharPositionInLine" : 24
+      },
+      "CommentCount" : 1
+    },
+    "contrib/boost-cmake/CMakeLists.txt" : {
+      "ObjectId" : "ee6721616ae816d9e44c7d9cc97f4dca2c1a34cc",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Supported contrib/boost source variants:\n\n# 1. Default - Minimized vrsion from release archive : https://github.com/ClickHouse-Extras/boost\n\n# 2. Release archive unpacked to contrib/boost\n\n# 3. Full boost https://github.com/boostorg/boost\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# if boostorg/boost connected as submodule: Update all boost internal submodules to tag:\n\n# git submodule foreach \"git fetch --all && git checkout boost-1.66.0 || true\"\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# Important boost patch: 094c18b\n\n#\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#add_boost_lib(random)\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "contrib/brotli-cmake/CMakeLists.txt" : {
+      "ObjectId" : "6e5fb2d22ae69a8e4d17f45f275f7e3fb5934459",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/cctz-cmake/CMakeLists.txt" : {
+      "ObjectId" : "5057c2594bed3a8b76bff8bcf595f9d41d5832df",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# yes, need linux, because bsd check inside linux in time_zone_libc.cc:24\n",
+        "Line" : 27,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "contrib/cityhash102/CMakeLists.txt" : {
+      "ObjectId" : "c3f53a8f87862e512e7e3768e254dd4c3e829ba9",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/cppkafka-cmake/CMakeLists.txt" : {
+      "ObjectId" : "9fb98e35b476d9557d7d74d0c025e772b54d3a39",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/croaring/CMakeLists.txt" : {
+      "ObjectId" : "c79f66a05d754d10c005f66e5036cc8b0a079a60",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/jemalloc-cmake/CMakeLists.txt" : {
+      "ObjectId" : "94b84884f41e82a08ce9dc7e0c1f25c3e030ffe2",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# jemalloc.h\n",
+        "Line" : 47,
+        "CharPositionInLine" : 54
+      },
+      "CommentCount" : 1
+    },
+    "contrib/libbtrie/CMakeLists.txt" : {
+      "ObjectId" : "279d678b00123fa908ee7072636eb7b645074e14",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libcpuid/CMakeLists.txt" : {
+      "ObjectId" : "cd3e7fa06fed04a6b77d8317aabe2acce24f2c95",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libfarmhash/CMakeLists.txt" : {
+      "ObjectId" : "20bba58cde7ccc30b09df7ce63757a17f23f1dbe",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libhdfs3-cmake/CMake/FindGSasl.cmake" : {
+      "ObjectId" : "19ca7c30d1e3047d6be4ecc16ac2d297c79654c4",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find the GNU sasl library (gsasl)\n\n#\n\n# Once done this will define\n\n#\n\n#  GSASL_FOUND - System has gnutls\n\n#  GSASL_INCLUDE_DIR - The gnutls include directory\n\n#  GSASL_LIBRARIES - The libraries needed to use gnutls\n\n#  GSASL_DEFINITIONS - Compiler switches required for using gnutls\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in cache already\n",
+        "Line" : 12,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set GSASL_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "contrib/libhdfs3-cmake/CMake/FindGoogleTest.cmake" : {
+      "ObjectId" : "fd57c1e2abdea836bf618e4b6d8181bfef898174",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libhdfs3-cmake/CMake/FindKERBEROS.cmake" : {
+      "ObjectId" : "5fc58235a3fabb4c56b450eafeaaaa5473e41dc4",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find kerberos\n\n# Find the native KERBEROS includes and library\n\n#\n\n#  KERBEROS_INCLUDE_DIRS - where to find krb5.h, etc.\n\n#  KERBEROS_LIBRARIES    - List of libraries when using krb5.\n\n#  KERBEROS_FOUND        - True if krb5 found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 9,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set KERBEROS_FOUND to TRUE if \n\n# all listed variables are TRUE\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "contrib/libhdfs3-cmake/CMake/FindSSL.cmake" : {
+      "ObjectId" : "bcbc5d89653c05b3220173ecb78669aaa285ad82",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Try to find the Open ssl library (ssl)\n\n#\n\n# Once done this will define\n\n#\n\n#  SSL_FOUND - System has gnutls\n\n#  SSL_INCLUDE_DIR - The gnutls include directory\n\n#  SSL_LIBRARIES - The libraries needed to use gnutls\n\n#  SSL_DEFINITIONS - Compiler switches required for using gnutls\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# in cache already\n",
+        "Line" : 12,
+        "CharPositionInLine" : 1
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set SSL_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "contrib/libhdfs3-cmake/CMake/Functions.cmake" : {
+      "ObjectId" : "a771b6043fb5006c97c95781e3933948cff7d8ea",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libhdfs3-cmake/CMake/Options.cmake" : {
+      "ObjectId" : "d7ccc8b64759db67b3ed137530d5c9005cf43670",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libhdfs3-cmake/CMake/Platform.cmake" : {
+      "ObjectId" : "55fbf64658957e9a5893795f5f32b227cbc15402",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libhdfs3-cmake/CMakeLists.txt" : {
+      "ObjectId" : "0d075922f07eb9784012a9c12bf1e6759e6b157f",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# compatiable with protobuf which was compiled old C++ ABI\n",
+        "Line" : 2,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# project and source dir\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# module\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# prefer shared libraries\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# source\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "#${HDFS3_SOURCE_DIR}/proto/encryption.proto\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# target\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# inherit from parent cmake\n",
+        "Line" : 208,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "contrib/libmetrohash/CMakeLists.txt" : {
+      "ObjectId" : "d71a5432715295e1b3d32caa4a457bb7349ce912",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Not used. Pretty easy to port.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 16
+      },
+      "CommentCount" : 1
+    },
+    "contrib/librdkafka-cmake/CMakeLists.txt" : {
+      "ObjectId" : "27e3a8cec05d0d5e6a1afe6bc82c17e36a3631cc",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Because weird logic with \"include_next\" is used.\n\n# Because wrong path to \"zstd_errors.h\" is used.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 80
+      },
+      "CommentCount" : 1
+    },
+    "contrib/libtcmalloc/CMakeLists.txt" : {
+      "ObjectId" : "d7f52e1d384d55619b98735f9c6a4c177579edbd",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libunwind/CMakeLists.txt" : {
+      "ObjectId" : "80bd8a301f0e6e9a3cb26fd63c088da0d31eb827",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/libunwind/src/Makefile.am" : {
+      "ObjectId" : "7514ab551aa728f6468958cab443eccd36234bba",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "# See comments at end of file.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 17
+      },
+      "1" : {
+        "Text" : "#\n\n# Don't link with start-files since we don't use any constructors/destructors:\n\n#\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "### libunwind-ptrace:\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "### libunwind-coredump:\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "### libunwind-setjmp:\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "### libunwind:\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# List of arch-independent files needed by both local-only and generic\n\n# libraries:\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# List of arch-independent files needed by generic library (libunwind-$ARCH):\n",
+        "Line" : 104,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "#  _ReadULEB()/_ReadSLEB() are needed for Intel C++ 8.0 compatibility\n",
+        "Line" : 126,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# List of arch-independent files needed by local-only library (libunwind):\n",
+        "Line" : 130,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# The list of files that go into libunwind and libunwind-aarch64:\n",
+        "Line" : 191,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 196,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# The list of files that go into libunwind and libunwind-arm:\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 221,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# The list of files that go into libunwind-arm:\n",
+        "Line" : 232,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# The list of files that go both into libunwind and libunwind-ia64:\n",
+        "Line" : 242,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 248,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# The list of files that go into libunwind-ia64:\n",
+        "Line" : 261,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# The list of files that go both into libunwind and libunwind-hppa:\n",
+        "Line" : 271,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# The list of files that go into libunwind-hppa:\n",
+        "Line" : 286,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# The list of files that go info libunwind and libunwind-mips:\n",
+        "Line" : 295,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 300,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# The list of files that go info libunwind and libunwind-tilegx:\n",
+        "Line" : 316,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 321,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# The list of files that go both into libunwind and libunwind-x86:\n",
+        "Line" : 338,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 343,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# The list of files that go into libunwind-x86:\n",
+        "Line" : 353,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# The list of files that go both into libunwind and libunwind-x86_64:\n",
+        "Line" : 363,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# The list of files that go into libunwind-x86_64:\n",
+        "Line" : 380,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# The list of local files that go to Power 64 and 32:\n",
+        "Line" : 390,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# The list of generic files that go to Power 64 and 32:\n",
+        "Line" : 395,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# The list of files that go both into libunwind and libunwind-ppc32:\n",
+        "Line" : 400,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 405,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# The list of files that go into libunwind-ppc32:\n",
+        "Line" : 414,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# The list of files that go both into libunwind and libunwind-ppc64:\n",
+        "Line" : 423,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 428,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# The list of files that go into libunwind-ppc64:\n",
+        "Line" : 437,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# The list of files that go into libunwind and libunwind-sh:\n",
+        "Line" : 446,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# The list of files that go into libunwind:\n",
+        "Line" : 451,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "#\tNothing to do here....\n",
+        "Line" : 468,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "#\n\n# This is not ideal, but I know of no other way to install an\n\n# alias for a library.  For the shared version, we have to do\n\n# a file check before creating the link, because it isn't going\n\n# to be there if the user configured with --disable-shared.\n\n#\n",
+        "Line" : 470,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "# ARCH_SH\n\n# ARCH_PPC64\n\n# ARCH_PPC32\n\n# ARCH_X86_64\n\n# ARCH_X86\n\n# ARCH_TILEGX\n\n# ARCH_MIPS\n\n# ARCH_HPPA\n\n# ARCH_IA64\n\n# ARCH_ARM\n\n# ARCH_AARCH64\n",
+        "Line" : 665,
+        "CharPositionInLine" : 6
+      },
+      "44" : {
+        "Text" : "# libunwind-setjmp depends on libunwind-$(arch). Therefore must be added\n\n# at the end.\n",
+        "Line" : 677,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "#\n\n# Don't link with standard libraries, because those may mention\n\n# libunwind already.\n\n#\n",
+        "Line" : 683,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# The -version-info flag accepts an argument of the form\n\n# `current[:revision[:age]]'. So, passing `-version-info 3:12:1' sets\n\n# current to 3, revision to 12, and age to 1.\n",
+        "Line" : 721,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# If either revision or age are omitted, they default to 0. Also note\n\n# that age must be less than or equal to the current interface number.\n",
+        "Line" : 725,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Here are a set of rules to help you update your library version\n\n# information:\n",
+        "Line" : 728,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "#    1. Start with version information of `0:0:0' for each libtool\n\n#       library.\n",
+        "Line" : 731,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "#    2. Update the version information only immediately before a public\n\n#       release of your software. More frequent updates are unnecessary,\n\n#       and only guarantee that the current interface number gets larger\n\n#       faster.\n",
+        "Line" : 734,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "#    3. If the library source code has changed at all since the last\n\n#       update, then increment revision (`c:r:a' becomes `c:r+1:a').\n",
+        "Line" : 739,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "#    4. If any interfaces have been added, removed, or changed since the\n\n#       last update, increment current, and set revision to 0.\n",
+        "Line" : 742,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "#    5. If any interfaces have been added since the last public release,\n\n#       then increment age.\n",
+        "Line" : 745,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "#    6. If any interfaces have been removed since the last public\n\n#       release, then set age to 0.\n",
+        "Line" : 748,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 55
+    },
+    "contrib/libxml2-cmake/CMakeLists.txt" : {
+      "ObjectId" : "85b5a364faa12914ab0d365266d472e54a12f703",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/lz4-cmake/CMakeLists.txt" : {
+      "ObjectId" : "382185cc3393fed241605e1e3fc10c6fb6b75a64",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/mariadb-connector-c-cmake/CMakeLists.txt" : {
+      "ObjectId" : "9b095a2e15bfd4a0e6887ed2b741e78314f16813",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#${MARIADB_CLIENT_SOURCE_DIR}/libmariadb/mariadb_dyncol.c\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#${MARIADB_CLIENT_SOURCE_DIR}/libmariadb/secure/gnutls.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/libmariadb/secure/ma_schannel.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/libmariadb/secure/schannel.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/auth/auth_gssapi_client.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/auth/dialog.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/auth/gssapi_client.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/auth/gssapi_errmsg.c\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#${MARIADB_CLIENT_SOURCE_DIR}/plugins/auth/sspi_client.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/auth/sspi_errmsg.c\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#${MARIADB_CLIENT_SOURCE_DIR}/plugins/io/remote_io.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/pvio/pvio_npipe.c\n\n#${MARIADB_CLIENT_SOURCE_DIR}/plugins/pvio/pvio_shmem.c\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#${MARIADB_CLIENT_SOURCE_DIR}/plugins/trace/trace_example.c\n",
+        "Line" : 53,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "contrib/murmurhash/CMakeLists.txt" : {
+      "ObjectId" : "c5e467a2d6d1fd9181f0ecc6a14884ee4c6bf118",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/re2_st/CMakeLists.txt" : {
+      "ObjectId" : "6bc7fd8f343d79de36cfe84f10e2fde83ad1b3bb",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Building re2 which is thread-safe and re2_st which is not.\n\n# re2 changes its state during matching of regular expression, e.g. creates temporary DFA.\n\n# It uses RWLock to process the same regular expression object from different threads.\n\n# In order to avoid redundant locks in some cases, we use not thread-safe version of the library (re2_st).\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "contrib/re2_st/re2_transform.cmake" : {
+      "ObjectId" : "2d50d9e8c2a6b077af31d1e189aa17c6a96b5979",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "contrib/unixodbc-cmake/CMakeLists.txt" : {
+      "ObjectId" : "33c6e115065d42c8502aff122c2277c526ad3bc0",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#${ODBC_SOURCE_DIR}/libltdl/lt__dirent.c\n\n#${ODBC_SOURCE_DIR}/libltdl/lt__argz.c\n\n#${ODBC_SOURCE_DIR}/libltdl/loaders/dld_link.c\n\n#${ODBC_SOURCE_DIR}/libltdl/loaders/load_add_on.c\n\n#${ODBC_SOURCE_DIR}/libltdl/loaders/shl_load.c\n\n#${ODBC_SOURCE_DIR}/libltdl/loaders/loadlibrary.c\n\n#${ODBC_SOURCE_DIR}/libltdl/loaders/dyld.c\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# This file is generated by 'libtool' inside libltdl directory and then removed.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# SYSTEM_FILE_PATH was changed to /etc\n",
+        "Line" : 280,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "contrib/zstd-cmake/CMakeLists.txt" : {
+      "ObjectId" : "3686e9ae1c070d3b2987f130f97c2347d833bda4",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ################################################################\n\n# zstd - Makefile\n\n# Copyright (C) Yann Collet 2014-2016\n\n# All rights reserved.\n\n#\n\n# BSD license\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n# * Redistributions of source code must retain the above copyright notice, this\n\n#   list of conditions and the following disclaimer.\n\n#\n\n# * Redistributions in binary form must reproduce the above copyright notice, this\n\n#   list of conditions and the following disclaimer in the documentation and/or\n\n#   other materials provided with the distribution.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\n# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n\n# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\n# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n\n# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\n# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n\n# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n#\n\n# You can contact the author at :\n\n#  - zstd homepage : http://www.zstd.net/\n\n# ################################################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Get library version based on information from input content (use regular exp)\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Define library directory, where sources and header files are located\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Read file content\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Parse version\n",
+        "Line" : 48,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "dbms/CMakeLists.txt" : {
+      "ObjectId" : "2c9bfa4860511211b9e80217ee148f5711c5f998",
+      "LastModified" : "2019-04-17T17:36:58Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Add some warnings that are not available even with -Wall -Wextra -Wpedantic.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO Enable conversion, sign-conversion, double-promotion warnings.\n",
+        "Line" : 48,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# If we leave this optimization enabled, gcc-7 replaces a pair of SSE intrinsics (16 byte load, store) with a call to memcpy.\n\n# It leads to slow code. This is compiler bug. It looks like this:\n\n#\n\n# (gdb) bt\n\n#0  memcpy (destination=0x7faa6e9f1638, source=0x7faa81d9e9a8, size=16) at ../libs/libmemcpy/memcpy.h:11\n\n#1  0x0000000005341c5f in _mm_storeu_si128 (__B=..., __P=<optimized out>) at /usr/lib/gcc/x86_64-linux-gnu/7/include/emmintrin.h:720\n\n#2  memcpySmallAllowReadWriteOverflow15Impl (n=<optimized out>, src=<optimized out>, dst=<optimized out>) at ../dbms/src/Common/memcpySmall.h:37\n",
+        "Line" : 76,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Won't generate debug info for files with heavy template instantiation to achieve faster linking and lower size.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# used in Interpreters/AsynchronousMetrics.cpp\n",
+        "Line" : 337,
+        "CharPositionInLine" : 84
+      },
+      "5" : {
+        "Text" : "# also for copy_headers.sh:\n",
+        "Line" : 345,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Cold match files that are not in tests/ directories\n",
+        "Line" : 353,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# attach all dbms gtest sources\n",
+        "Line" : 357,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 8
+    },
+    "dbms/cmake/find_vectorclass.cmake" : {
+      "ObjectId" : "021929a4090ffff094ca7f7c0bf510746d4e006b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/cmake/version.cmake" : {
+      "ObjectId" : "3557d3d97df6ee3d221e266553c97c2429795603",
+      "LastModified" : "2019-04-18T21:01:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This strings autochanged from release_lib.sh:\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# end of autochange\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dbms/programs/CMakeLists.txt" : {
+      "ObjectId" : "b6928652801a3d3bcb0b65bf1ce02ab5a5ab83f0",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# 'clickhouse' binary is a multi purpose tool,\n\n# that contain multiple execution modes (client, server, etc.)\n\n# each of them is built and linked as a separate library, defined below.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Some dark magic\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# can't use ${} in if()\n",
+        "Line" : 49,
+        "CharPositionInLine" : 49
+      },
+      "3" : {
+        "Text" : "# can't use ${} in if()\n",
+        "Line" : 54,
+        "CharPositionInLine" : 55
+      },
+      "4" : {
+        "Text" : "# before add_executable !\n",
+        "Line" : 119,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# just to be able to run integration tests\n",
+        "Line" : 213,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# install always because depian package want this files:\n",
+        "Line" : 218,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 7
+    },
+    "dbms/programs/benchmark/CMakeLists.txt" : {
+      "ObjectId" : "ccbefc0453ace3ffc9bb431c2e0edfa0174d9d49",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/programs/clang/CMakeLists.txt" : {
+      "ObjectId" : "8bf9e3760e24622336ddaf51913886926f2a7dc5",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Make and install empty dir for debian package if compiler disabled\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# TODO: fix on macos copy_headers.sh: sed --posix\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# original: ${LLVM_LIBRARY_OUTPUT_INTDIR}/clang/${CLANG_VERSION}/include\n",
+        "Line" : 34,
+        "CharPositionInLine" : 98
+      },
+      "CommentCount" : 3
+    },
+    "dbms/programs/clang/Compiler-5.0.0/CMakeLists.txt" : {
+      "ObjectId" : "7fe0cd92ef7f24ad96fdef1f6bb30e9e77c68d50",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cant compile with -fno-rtti\n",
+        "Line" : 13,
+        "CharPositionInLine" : 81
+      },
+      "1" : {
+        "Text" : "# This is extracted almost directly from CMakeFiles/.../link.txt in LLVM build directory.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#lldMinGW\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#lldCommon\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#Polly\n\n#PollyISL\n\n#PollyPPCG\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "dbms/programs/clang/Compiler-6.0.0/CMakeLists.txt" : {
+      "ObjectId" : "b96bdb0647a71689afca19c51915632964385b62",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cant compile with -fno-rtti\n",
+        "Line" : 13,
+        "CharPositionInLine" : 81
+      },
+      "1" : {
+        "Text" : "# This is extracted almost directly from CMakeFiles/.../link.txt in LLVM build directory.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#lldWasm\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#Polly\n\n#PollyISL\n\n#PollyPPCG\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "dbms/programs/clang/Compiler-7.0.0/CMakeLists.txt" : {
+      "ObjectId" : "8b6ba6be9949ceedd4ca0425b0ad860d0f328eb8",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cant compile with -fno-rtti\n",
+        "Line" : 14,
+        "CharPositionInLine" : 81
+      },
+      "1" : {
+        "Text" : "# This is extracted almost directly from CMakeFiles/.../link.txt in LLVM build directory.\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dbms/programs/clang/Compiler-7.0.0bundled/CMakeLists.txt" : {
+      "ObjectId" : "d0ccc8d672cf4b96db30f7395bee19d641e0f76c",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# cant compile with -fno-rtti\n",
+        "Line" : 13,
+        "CharPositionInLine" : 81
+      },
+      "1" : {
+        "Text" : "# This is extracted almost directly from CMakeFiles/.../link.txt in LLVM build directory.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dbms/programs/client/CMakeLists.txt" : {
+      "ObjectId" : "ce02d45d0e01af4b21727e22a5eafd3ccede27b1",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/programs/compressor/CMakeLists.txt" : {
+      "ObjectId" : "46fd4816ba284a201b307cfa3b1afde2e71323e6",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Also in utils\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#set(CLICKHOUSE_COMPRESSOR_INCLUDE SYSTEM PRIVATE ...)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "dbms/programs/copier/CMakeLists.txt" : {
+      "ObjectId" : "55b2fc7e1cb4538909b82eabdb2d1a829adce347",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/programs/extract-from-config/CMakeLists.txt" : {
+      "ObjectId" : "4c01cd9c99950c3f41c11c69046efc198e9511f8",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#set(CLICKHOUSE_EXTRACT_FROM_CONFIG_INCLUDE SYSTEM PRIVATE ...)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/programs/format/CMakeLists.txt" : {
+      "ObjectId" : "aac72d641e6a326062777f821f4ba1147fa344b2",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#set(CLICKHOUSE_FORMAT_INCLUDE SYSTEM PRIVATE ...)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/programs/local/CMakeLists.txt" : {
+      "ObjectId" : "299458ef91348b7b26b5896e0a55e6b07ff42c4d",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#set(CLICKHOUSE_LOCAL_INCLUDE SYSTEM PRIVATE ...)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/programs/obfuscator/CMakeLists.txt" : {
+      "ObjectId" : "19dba2be95c21477327027fb8a0cfc71ccb81c79",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#set(CLICKHOUSE_OBFUSCATOR_INCLUDE SYSTEM PRIVATE ...)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/programs/odbc-bridge/CMakeLists.txt" : {
+      "ObjectId" : "143d7edf7383d59ec5b011caac5a97e4986bee6d",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# clickhouse-odbc-bridge is always a separate binary.\n\n# Reason: it must not export symbols from SSL, mariadb-client, etc. to not break ABI compatibility with ODBC drivers.\n\n# For this reason, we disabling -rdynamic linker flag. But we do it in strange way:\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/programs/odbc-bridge/tests/CMakeLists.txt" : {
+      "ObjectId" : "60e7afab969613289ce90c3982fe1a4c29fce4a9",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/programs/performance-test/CMakeLists.txt" : {
+      "ObjectId" : "c7eeaa45ab30b8559a340ae00c3c9ed9a0358aea",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/programs/server/CMakeLists.txt" : {
+      "ObjectId" : "5cb0801806538a3477d3ed52dd6a622f9d33d54a",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# temporary disabled. to enable - change 'exit 0' to 'exit $a'\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "#add_test(NAME GLIBC_required_version COMMAND bash -c \"readelf -s ${CMAKE_CURRENT_BINARY_DIR}/../clickhouse-server | grep '@GLIBC' | grep -oP 'GLIBC_[\\\\d\\\\.]+' | sort | uniq | sort --version-sort --reverse | perl -lnE 'warn($_), exit 1 if $_ gt q{GLIBC_${GLIBC_MAX_REQUIRED}}'\") # old\n",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 2
+    },
+    "dbms/src/AggregateFunctions/CMakeLists.txt" : {
+      "ObjectId" : "148bf90446cd4e4f4b6b1181ba7fc22fedd5c8f3",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/AggregateFunctions/tests/CMakeLists.txt" : {
+      "ObjectId" : "c19a115981b4dd95960e81ac05ead646d35d944c",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/CMakeLists.txt" : {
+      "ObjectId" : "c5b661b59129e8cf2d398d6a5fa7f91fb6a6fb3a",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Client/CMakeLists.txt" : {
+      "ObjectId" : "cc8b3f8eda893b0a60fb512e053a7549330226c2",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# TODO: make separate lib datastream, block, ...\n\n#include(${ClickHouse_SOURCE_DIR}/cmake/dbms_glob_sources.cmake)\n\n#add_headers_and_sources(clickhouse_client .)\n\n#add_library(clickhouse_client ${LINK_MODE} ${clickhouse_client_headers} ${clickhouse_client_sources})\n\n#target_link_libraries (clickhouse_client clickhouse_common_io ${Poco_Net_LIBRARY})\n\n#target_include_directories (clickhouse_client PRIVATE ${DBMS_INCLUDE_DIR})\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/src/Client/tests/CMakeLists.txt" : {
+      "ObjectId" : "f4471136a8a737c483a0fde2ffcd16c4513341bf",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Columns/CMakeLists.txt" : {
+      "ObjectId" : "6517235664510a0a403cb09d3aa5a8987c929c2b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Columns/tests/CMakeLists.txt" : {
+      "ObjectId" : "302c554a1fd0d7bc7e47d4416eb498b42ca58b64",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Common/CMakeLists.txt" : {
+      "ObjectId" : "61d9b9771a4dd0e8d2b189bf16f3b1f1b1e54f05",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# after common_io\n\n#add_subdirectory(ZooKeeper)\n\n#add_subdirectory(ConfigProcessor)\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/src/Common/Config/CMakeLists.txt" : {
+      "ObjectId" : "298f1ed241be63802c90a8524ce0ee0f2449bcda",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Common/StringUtils/CMakeLists.txt" : {
+      "ObjectId" : "3e2b4102be492988df9c10b7e118b2f48d4ca3bd",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# These files are located in separate library, because they are used by Yandex.Metrika code\n\n#  in places when no dependency on whole \"dbms\" library is possible.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/src/Common/ZooKeeper/CMakeLists.txt" : {
+      "ObjectId" : "41fd406faae74402f4fb26dac4127e08896f71bb",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Common/ZooKeeper/tests/CMakeLists.txt" : {
+      "ObjectId" : "06716e499180864b90a310266e1b3f9405aef522",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Common/tests/CMakeLists.txt" : {
+      "ObjectId" : "1c6c7e9f50493ce66d4681b863d334bc243650df",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Compression/CMakeLists.txt" : {
+      "ObjectId" : "1369493cb7ae8ea78f9bc245421041faa2570033",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Compression/tests/CMakeLists.txt" : {
+      "ObjectId" : "50f212f18c35b51d70c531c36e4aea71d54c4176",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Core/CMakeLists.txt" : {
+      "ObjectId" : "6517235664510a0a403cb09d3aa5a8987c929c2b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Core/tests/CMakeLists.txt" : {
+      "ObjectId" : "7f177978d26cfa7fcf732748dd7d1a9a21adcd04",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/DataStreams/CMakeLists.txt" : {
+      "ObjectId" : "6517235664510a0a403cb09d3aa5a8987c929c2b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/DataStreams/tests/CMakeLists.txt" : {
+      "ObjectId" : "3f6e154927fccbe696d9dece99483e09310a011d",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/DataTypes/CMakeLists.txt" : {
+      "ObjectId" : "6517235664510a0a403cb09d3aa5a8987c929c2b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/DataTypes/tests/CMakeLists.txt" : {
+      "ObjectId" : "aa4cb34620bb5e5abb0fa0e61e2785a232c6d004",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Dictionaries/CMakeLists.txt" : {
+      "ObjectId" : "59999bcb8e5982124eb2efe3be0d11fb68af1ece",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Dictionaries/Embedded/CMakeLists.txt" : {
+      "ObjectId" : "2af439c96777f9654763b2ac8a71d8ad5a982dc7",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Dictionaries/tests/CMakeLists.txt" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Formats/CMakeLists.txt" : {
+      "ObjectId" : "6517235664510a0a403cb09d3aa5a8987c929c2b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Formats/tests/CMakeLists.txt" : {
+      "ObjectId" : "e12fa0f02fb948017f9dd972d1ee7590cb3e8b79",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Functions/CMakeLists.txt" : {
+      "ObjectId" : "47d86190562e19dc818682924014a08d308538e6",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Won't generate debug info for files with heavy template instantiation to achieve faster linking and lower size.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "dbms/src/Functions/tests/CMakeLists.txt" : {
+      "ObjectId" : "91bfa4bc2765127fd1d5f0af6c0e91000443d744",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/IO/CMakeLists.txt" : {
+      "ObjectId" : "6517235664510a0a403cb09d3aa5a8987c929c2b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/IO/tests/CMakeLists.txt" : {
+      "ObjectId" : "127dc45d9bb575300859e20733aeee66664ae717",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Interpreters/CMakeLists.txt" : {
+      "ObjectId" : "a01a627fc6408b6dba135c50ce289d88345e8a92",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Disabling leak reporting for these tools\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Note that this doesn't work for setuid and setcap binaries\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# TODO: use libs from package: -nodefaultlibs  -lm -lc -lgcc_s -lgcc  -lc++ -lc++abi\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "dbms/src/Interpreters/tests/CMakeLists.txt" : {
+      "ObjectId" : "3de6c321de2920267732336f785d5253b7620634",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Parsers/CMakeLists.txt" : {
+      "ObjectId" : "790e151dab3d40ac793115b0ea7a1ab213b275b1",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Parsers/tests/CMakeLists.txt" : {
+      "ObjectId" : "3e1d6ae559f79b95e7785b36dac931864f672c96",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Storages/CMakeLists.txt" : {
+      "ObjectId" : "236d4d32524b00e93b731040eb507ab0fad88268",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Storages/Kafka/CMakeLists.txt" : {
+      "ObjectId" : "520f1311d1da200f2dfa984f50be4633f3a203ad",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/Storages/System/CMakeLists.txt" : {
+      "ObjectId" : "418c25de5fd21c1f6c507b1fa5a000f48bd3b166",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# The file StorageSystemContributors.cpp is generated at release time and committed to the source tree.\n\n# You can also regenerate it manually this way:\n\n# execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/StorageSystemContributors.sh)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "dbms/src/Storages/tests/CMakeLists.txt" : {
+      "ObjectId" : "c6704628620c017ce3ce04ea61d89004e7501420",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/src/TableFunctions/CMakeLists.txt" : {
+      "ObjectId" : "0ab5acec19cdf2f588c2db0dd497f4bf11106f07",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/tests/CMakeLists.txt" : {
+      "ObjectId" : "9031fcf7e39afb5bdc414c01147e51ade73f7d45",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Run tests with \"ninja check\" or \"make check\"\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# maybe add --no-long ?\n\n# if you want disable some tests: env TEST_OPT0='--skip compile'\n",
+        "Line" : 26,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# NUMBER_OF_LOGICAL_CORES\n",
+        "Line" : 29,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 3
+    },
+    "dbms/tests/CTestCustom.cmake" : {
+      "ObjectId" : "61bf7226506273dc133cbb7183036c6a7af7c537",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "dbms/tests/integration/CMakeLists.txt" : {
+      "ObjectId" : "54d5f5e727ab1ff725970d8fe10b4da4dcbfef3a",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# will mount only one binary to docker container - build with .so cant work\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To run one test with debug:\n\n# cmake . -DPYTEST_OPT=\"-ss;test_cluster_copier\"\n",
+        "Line" : 19,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 2
+    },
+    "docker/builder/Makefile" : {
+      "ObjectId" : "779e944b723a51948dba8620042caa80403173c6",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "libs/CMakeLists.txt" : {
+      "ObjectId" : "89c8748df4ce090344308ea40fe4d0b130a50277",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/consistent-hashing-sumbur/CMakeLists.txt" : {
+      "ObjectId" : "f11b5095f516c830548690988034c5e78521fed4",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/consistent-hashing/CMakeLists.txt" : {
+      "ObjectId" : "4457fe6e2dbfd1d4ea8bf3b39ca34fba2dea6690",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libcommon/CMakeLists.txt" : {
+      "ObjectId" : "999290996a909027189619e82c34591fa2df20e9",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# When testing for memory leaks with Valgrind, dont link tcmalloc or jemalloc.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "libs/libcommon/cmake/find_cctz.cmake" : {
+      "ObjectId" : "aa793657156e56bbe4ce4e9703924af6460d22f5",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libcommon/cmake/find_gperftools.cmake" : {
+      "ObjectId" : "73e8182d3905736afd0dd7757e84cd1d58221a64",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#contrib/libtcmalloc doesnt build debug version, try find in system\n",
+        "Line" : 11,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 1
+    },
+    "libs/libcommon/cmake/find_jemalloc.cmake" : {
+      "ObjectId" : "3a1b14d9c33801c01adbfe7db3ff7cd69fcb91f4",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libcommon/src/tests/CMakeLists.txt" : {
+      "ObjectId" : "2bb8afe6fa164102c8ddc6d0f11d218e390a4716",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libdaemon/CMakeLists.txt" : {
+      "ObjectId" : "eb73f1cda33745c23884c9d1f8b89394c20e0129",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libdaemon/cmake/find_unwind.cmake" : {
+      "ObjectId" : "876bc7298e8150734dc5b9114c780ad63088333b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libglibc-compatibility/CMakeLists.txt" : {
+      "ObjectId" : "4747953afde1d829dabc72a28224b7e9f7d86df5",
+      "LastModified" : "2019-04-18T12:25:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libmemcpy/CMakeLists.txt" : {
+      "ObjectId" : "c06085aaccade87f183662df83f0801fbcb5c3ed",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libmysqlxx/CMakeLists.txt" : {
+      "ObjectId" : "d0c953121227bb54537b691c658b38e70938f6b8",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libmysqlxx/cmake/find_mysqlclient.cmake" : {
+      "ObjectId" : "71cb2bfeb1db4f7cb3f31c34831ac2890d4e8c6c",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# macos brew mariadb-connector-c\n",
+        "Line" : 24,
+        "CharPositionInLine" : 37
+      },
+      "1" : {
+        "Text" : "# /usr/local/include/mysql/mysql_com.h:1011:10: fatal error: mysql/udf_registration_types.h: No such file or directory\n",
+        "Line" : 50,
+        "CharPositionInLine" : 16
+      },
+      "CommentCount" : 2
+    },
+    "libs/libmysqlxx/src/tests/CMakeLists.txt" : {
+      "ObjectId" : "d290151380865ce33a3aa09f625eec000c92e84b",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "libs/libwidechar_width/CMakeLists.txt" : {
+      "ObjectId" : "724498ac9c75296a7b3d3d2ee3c085040839a37d",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/CMakeLists.txt" : {
+      "ObjectId" : "c97c330ce3cb1e60ef7e7606b935e3ca49fd349a",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Utils used in package\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Not used in package\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "utils/check-marks/CMakeLists.txt" : {
+      "ObjectId" : "86cff8fb2338d73753218de99d203260397e5a2d",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/check-style/CMakeLists.txt" : {
+      "ObjectId" : "24b315019fea28a297c546fefb033012a5252dac",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/compressor/CMakeLists.txt" : {
+      "ObjectId" : "5af551f8d03d4bf06b848234ba141a572260d906",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/config-processor/CMakeLists.txt" : {
+      "ObjectId" : "e7e15d0be531ca86ceb493f5f0d6b68100a98c06",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/convert-month-partitioned-parts/CMakeLists.txt" : {
+      "ObjectId" : "abfd60a07a0c0e59e508f190c5438c0d63de51d0",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/corrector_utf8/CMakeLists.txt" : {
+      "ObjectId" : "9114f3f58a0cf66c7d58b6418dd2d9df75e4bbee",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Link the executable to the library.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "utils/fill-factor/CMakeLists.txt" : {
+      "ObjectId" : "35a6712b1150f1662e64c8bdf46c298e8ef460dc",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/iotest/CMakeLists.txt" : {
+      "ObjectId" : "8f141b178f0a5e81c8b767d45c16ad91465b6f74",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/report/CMakeLists.txt" : {
+      "ObjectId" : "e39dd155b1579b27d994449e77bdbb69030a6182",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/test-data-generator/CMakeLists.txt" : {
+      "ObjectId" : "787d29e40870a4c72c4d18e59f8e1f63d656cfac",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/wikistat-loader/CMakeLists.txt" : {
+      "ObjectId" : "7f72cbb9f46bb5087720935628ffa9eb59511b9a",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/zookeeper-adjust-block-numbers-to-parts/CMakeLists.txt" : {
+      "ObjectId" : "d2357ec755d4a16968b802693402561489879361",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/zookeeper-cli/CMakeLists.txt" : {
+      "ObjectId" : "550d0e855d81d29e693fba49a6cb2df46b023ee8",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/zookeeper-copy-tree/CMakeLists.txt" : {
+      "ObjectId" : "c4dc88d700c99a9affde503a2fc75ec0c3d26d4e",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/zookeeper-create-entry-to-download-part/CMakeLists.txt" : {
+      "ObjectId" : "34f2e608ef9de1614694c1d87337cb88e9ed534c",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/zookeeper-dump-tree/CMakeLists.txt" : {
+      "ObjectId" : "d2947fa89326e491fa7ea7b35c3f1cb2dce7569c",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "utils/zookeeper-remove-by-list/CMakeLists.txt" : {
+      "ObjectId" : "ba112bab9cf819479f3398e9146e9b3e22cc152e",
+      "LastModified" : "2019-04-11T17:20:36Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 192,
+    "MAKEFILE" : 1,
+    "AUTOMAKE" : 1
+  },
+  "ElapsedTime" : 19375
+}

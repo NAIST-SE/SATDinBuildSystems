@@ -1,0 +1,594 @@
+{
+  "Repository" : "20442944",
+  "Revision" : "HEAD",
+  "ObjectId" : "0ffdeb35b0a86ef1567d1caa69c864655ad6ce75",
+  "CommitTime" : "2019-04-13T23:20:00Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "7e55714ba0219736620dd96157ae2c8e88812dc2",
+      "LastModified" : "2019-04-13T23:18:20Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Caution: software update mechanism depends on format of first two lines in this file\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# Makefile for KiwiSDR project\n\n#\n\n# Copyright (c) 2014-2018 John Seamons, ZL/KF6VO\n\n#\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#\n\n# This Makefile can be run on both a build machine (I use a MacBook Pro) and the\n\n# BeagleBone Black target (Debian release).\n\n# Which machine you're on is figured out by this:\n\n#\n\n#\tDEBIAN_DEVSYS = $(shell grep -q -s Debian /etc/dogtag; echo $$?)\n\n#\tDEBIAN = 0\n\n#\tNOT_DEBIAN = 1\n\n#\tDEVSYS = 2\n\n#\tifeq ($(DEBIAN_DEVSYS),$(DEBIAN))\n\n#\t\t...\n\n#\tifeq ($(DEBIAN_DEVSYS),$(DEVSYS))\n\n#\t\t...\n\n#\n\n# The '/etc/dogtag' file is present on the Beagle and not on the dev machine.\n\n# Grep returns 0 if \"Debian\" is found in /etc/dogtag, 1 if it isn't and 2 if /etc/dogtag doesn't exist.\n\n# This same mechanism is used in the wrapper shell script because device tree files need to be\n\n# loaded only on the Beagle.\n\n#\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# installing FFTW:\n\n#\n\n#\tto create /usr/local/lib/libfftw3f.a (the 'f' in '3f' means single precision)\n\n#\tMac:\n\n#\t\tdownload the sources from fftw.org\n\n#\t\t./configure --enable-single\n\n#\t\tmake\n\n#\t\t(sudo) make install\n\n#\tBeagleBone Black, Debian:\n\n#\t\tthe Makefile automatically installs the package using apt-get\n\n#\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# try clang on your development system (if you have it) -- it's better\n\n#\tCC = clang\n\n#\tCCPP = clang++\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# clang 3.0 available on Debian 7.9 doesn't work\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# needed for iq_display.cpp et al using g++ (-std=gnu++11 isn't available on Debian 7.9)\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# clang(-3.5) on Debian 8.5 compiles project in 2 minutes vs 5 for gcc\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# To use clang address sanitizer build with \"make ASAN=1\" (uses default -O3) or \"make ASAN=1 OPT=O0\"\n\n# There are shell aliases \"masan\" and \"masan0\" for these.\n\n# Use gdb \"asan\" alias to set breakpoint necessary to backtrace address errors.\n",
+        "Line" : 87,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#LDFLAGS += -v -fsanitize=address\n",
+        "Line" : 95,
+        "CharPositionInLine" : 1
+      },
+      "10" : {
+        "Text" : "# needed for iq_display.cpp et al using clang 3.5\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "#\tCC = gcc\n\n#\tCCPP = g++\n\n# needed for iq_display.cpp et al using g++\n\n#\tCCPP_FLAGS += -std=gnu++11\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# make the compiles fast on dev system\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "#\tOPT = O0\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# The built files (generated .cpp/.h files, binaries etc.) are placed outside of the source tree\n\n# into the BUILD_DIR. This is so NFS can be used to share the sources between the\n\n# development machine and the Kiwi Beagle. If the build files were also shared there would\n\n# be file overwrites on one machine when you built on the other (and lots of unnecessary NFS copying\n\n# back and forth. See the nfs and nfsup aliases in /root/.bashrc for NFS setup details.\n",
+        "Line" : 116,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# remove generated files\n",
+        "Line" : 161,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "#CFLAGS_UNSAFE_OPT = -fcx-limited-range -funsafe-math-optimizations\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# development machine, compile simulation version\n",
+        "Line" : 169,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# host machine (BBB), only build the FPGA-using version\n\n#\tCFLAGS += -mfloat-abi=softfp -mfpu=neon\n",
+        "Line" : 179,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\tCFLAGS += -O3\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# -lrt required for clock_gettime() on Debian 7; see clock_gettime(2) man page\n",
+        "Line" : 190,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# dependencies\n\n#ALL_DEPS = pru/pru_realtime.bin\n\n#SRC_DEPS = Makefile\n",
+        "Line" : 197,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# NB: afterwards have to rerun make to pickup filename change!\n",
+        "Line" : 216,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "#\t@echo no installed extensions with files needing conversion from .c to .cpp for clang compatibility\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "#\t@echo PVT_EXT_C_FILES = $(PVT_EXT_C_FILES)\n",
+        "Line" : 227,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Makefile dependencies\n\n# dependence on VERSION_{MAJ,MIN}\n",
+        "Line" : 235,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# install packages for needed libraries or commands\n\n# some of these are prefixed with \"-\" to keep update from failing if there is damage to /var/lib/dpkg/info\n",
+        "Line" : 243,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# PRU\n",
+        "Line" : 275,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Verilog generator\n",
+        "Line" : 284,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# FPGA embedded CPU\n",
+        "Line" : 290,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# noip2 DUC\n",
+        "Line" : 296,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# web server content\n",
+        "Line" : 300,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# extension init generator and extension-specific makefiles\n",
+        "Line" : 333,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "#UI_LIST = $(subst $(space),$(comma),$(KIWI_UI_LIST))\n",
+        "Line" : 340,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# pull in dependency info for *existing* .o files\n",
+        "Line" : 355,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "#\t$(CC) -x c $(CFLAGS) $(FLAGS) -c -o $@ $<\n",
+        "Line" : 453,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# Only do a 'make install' on the target machine (not needed on the development machine).\n\n# For the Beagle this installs the device tree files in the right place and other misc stuff.\n",
+        "Line" : 527,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# don't strip symbol table while we're debugging daemon crashes\n\n#\tinstall -D -s -o root -g root $(BUILD_DIR)/kiwid.bin /usr/local/bin/kiwid\n",
+        "Line" : 540,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "#\tinstall -D -o root -g root $(GEN_DIR)/kiwi_realtime.bin /usr/local/bin/kiwid_realtime.bin\n",
+        "Line" : 544,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "#\n",
+        "Line" : 548,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "#\n",
+        "Line" : 554,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "#\n",
+        "Line" : 556,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "#\n",
+        "Line" : 559,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "#\n",
+        "Line" : 562,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# only install config files if they've never existed before\n",
+        "Line" : 567,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# don't prevent admin.json transition process\n",
+        "Line" : 578,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# remove public keys leftover from development\n",
+        "Line" : 612,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# workaround for sites having problems with git using https (even when curl with https works fine)\n",
+        "Line" : 672,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# invoked by update process -- alter with care!\n",
+        "Line" : 680,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# remove local changes from development activities before the pull\n",
+        "Line" : 682,
+        "CharPositionInLine" : 1
+      },
+      "50" : {
+        "Text" : "# selectively transfer files to the target so everything isn't compiled each time\n",
+        "Line" : 708,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# generate the files needed to build the Verilog code\n",
+        "Line" : 728,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# command to \"copy verilog\" from KiwiSDR distribution to the Vivado build location\n\n# designed to complement the \"make cv2\" command run on the Vivado build machine\n",
+        "Line" : 733,
+        "CharPositionInLine" : 0
+      },
+      "53" : {
+        "Text" : "# The following support the development process\n\n# and are not used for ordinary software builds.\n",
+        "Line" : 765,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# used by scgit alias\n",
+        "Line" : 773,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# used by gdiff alias\n",
+        "Line" : 792,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 56
+    },
+    "e_cpu/Makefile" : {
+      "ObjectId" : "3d677474b9f423fc630c42ed474d5e9a6e257039",
+      "LastModified" : "2018-05-22T02:07:54Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# assembler for the embedded processor\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# don't regenerate the .h/.vh files\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "extensions/Makefile" : {
+      "ObjectId" : "0ad7a0d9c44a8ddd70e10ca603e10a1d9cfc62a1",
+      "LastModified" : "2018-07-24T00:00:01Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# generate calls to extension main routines\n\n#\n\n# these come from the root Makefile:\n\n#\t$(EXT_DIRS) contains a list of all extension directory names\n\n#\t$(EXTS) contains a list of all extension names\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# NB: BUILD_DIR only goes up one level because this Makefile is directly included by ../Makefile\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "pkgs/jsmn/Makefile" : {
+      "ObjectId" : "a382d64d80b5ae33174319a4d28ccef04f446d88",
+      "LastModified" : "2016-06-19T02:53:15Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# You can put your build options here\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "pkgs/noip2/Makefile" : {
+      "ObjectId" : "61814a912d196293fd8c9a2c8eaf7f314e292524",
+      "LastModified" : "2018-05-22T02:07:54Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "pkgs/parson/Makefile" : {
+      "ObjectId" : "98654de11adf910769faedf3c04bdfdb31457079",
+      "LastModified" : "2018-05-22T02:07:54Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "tools/Makefile" : {
+      "ObjectId" : "8153cf3b2a52437af1af528a6e45d4c401b98264",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# CMD = cat $(FN_IN) | csdr convert_s16_f | csdr fir_interpolate_cc 32 0.002 | dd bs=8 count=1440000 > $(FN_OUT); xz --keep --force $(FN_OUT)\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "unix_env/bb.org-overlays/Makefile" : {
+      "ObjectId" : "c723aa739d6aa65e6369d363a94b2ce9d0bea8de",
+      "LastModified" : "2018-05-22T02:07:54Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Do not:\n\n# o  use make's built-in rules and variables\n\n#    (this increases performance and avoids hard-to-debug behaviour);\n\n# o  print \"Entering directory ...\";\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# To put more focus on warnings, be less verbose as default\n\n# Use 'make V=1' to see the full commands\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#New DTC Flags for v1.4.5 (Debian 9.x (Buster))\n\n#DTC_FLAGS += -Wno-dmas_property\n\n#DTC_FLAGS += -Wno-gpios_property\n\n#DTC_FLAGS += -Wno-pwms_property\n\n#DTC_FLAGS += -Wno-interrupts_property\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Beautify output\n\n# ---------------------------------------------------------------------------\n\n#\n\n# Normally, we echo the whole command before executing it. By making\n\n# that echo $($(quiet)$(cmd)), we now have the possibility to set\n\n# $(quiet) to choose other forms of output instead, e.g.\n\n#\n\n#         quiet_cmd_cc_o_c = Compiling $(RELDIR)/$@\n\n#         cmd_cc_o_c       = $(CC) $(c_flags) -c -o $@ $<\n\n#\n\n# If $(quiet) is empty, the whole command will be printed.\n\n# If it is set to \"quiet_\", only the short version will be printed. \n\n# If it is set to \"silent_\", nothing will be printed at all, since\n\n# the variable $(silent_cmd_cc_o_c) doesn't exist.\n\n#\n\n# A simple variant is to prefix commands with $(Q) - that's useful\n\n# for commands that shall be hidden in non-verbose mode.\n\n#\n\n#       $(Q)ln $@ :<\n\n#\n\n# If KBUILD_VERBOSE equals 0 then the above command will be hidden.\n\n# If KBUILD_VERBOSE equals 1 then the above command is displayed.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# If the user is running make -s (silent mode), suppress echoing of\n\n# commands\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# make-4\n",
+        "Line" : 76,
+        "CharPositionInLine" : 39
+      },
+      "6" : {
+        "Text" : "# make-3.8x\n",
+        "Line" : 80,
+        "CharPositionInLine" : 9
+      },
+      "7" : {
+        "Text" : "# build the source package in the parent directory\n\n# then rename it to project_version.orig.tar.gz\n\n#$(PYTHON) setup.py sdist $(COMPILE) --dist-dir=../\n\n#rename -f 's/$(PROJECT)-(.*)\\.tar\\.gz/$(PROJECT)_$$1\\.orig\\.tar\\.gz/' ../*\n\n# build the package\n",
+        "Line" : 188,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 8
+    },
+    "verilog/Makefile" : {
+      "ObjectId" : "ee50d59eca8ef394bf51e91c3644c4d8341d4061",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# command to \"copy verilog\" from KiwiSDR distribution into our build directory\n\n# designed to complement the \"make cv\" command run in the KiwiSDR server build directory\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\trsync -av --delete --exclude .DS_Store $(V_SRC_DIR)/KiwiSDR.Vivado.2014.4.ip/ ../import_ip\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "verilog/rx/Makefile" : {
+      "ObjectId" : "9e102ffd7cc1edf8b73041853387c3910e7c7c22",
+      "LastModified" : "2018-05-22T02:07:54Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# leave cic*.vh generated files so distribution has a working default\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "web/extensions/IBP_scan/Makefile" : {
+      "ObjectId" : "ff6f9a6555fea567626559c4924a4fccb8e80591",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/LMS_filter/Makefile" : {
+      "ObjectId" : "c4a90f4a9a9d3d11944aaf07f1a0923986caa401",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/Makefile" : {
+      "ObjectId" : "ef53d82026cfc1e6f23ab6e8539ad56a35a94a60",
+      "LastModified" : "2018-05-22T02:07:54Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/S_meter/Makefile" : {
+      "ObjectId" : "e9e7aa403e8ae3a038a76ef524e663365910bf67",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/TDoA/Makefile" : {
+      "ObjectId" : "b7bef1f49236f9acc319cfdabdffedc2495b4a08",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/colormap/Makefile" : {
+      "ObjectId" : "b6f41ff95afce99cac39386c942b8a79e793706d",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/cw_decoder/Makefile" : {
+      "ObjectId" : "9e089aa081edc629566d3b0aa17896973ec9ddcb",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/devl/Makefile" : {
+      "ObjectId" : "12bdd0d0499cb7b231003900bc756750b0f8a437",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/example/Makefile" : {
+      "ObjectId" : "0d4b0b47ddb1c1ab06b2ff6feadb6f24c889d22d",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/fax/Makefile" : {
+      "ObjectId" : "52eda6d418249c7fadc0e26af4fc7659f7c55e37",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/fsk/Makefile" : {
+      "ObjectId" : "e11e737efc591dc539378286eaf3fb039a7a387f",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/integrate/Makefile" : {
+      "ObjectId" : "b0dcb820de09267900039b07e8bb33ba7c5676c7",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/iq_display/Makefile" : {
+      "ObjectId" : "90542c3f30078d42a27f9946566b4aed3482a3af",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/loran_c/Makefile" : {
+      "ObjectId" : "8f9e13bba020dc5e30d0ee2035a7931cfa165df4",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/navtex/Makefile" : {
+      "ObjectId" : "6e086551bf621625e6ee8ec56cd1182673e15e42",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/s4285/Makefile" : {
+      "ObjectId" : "bfa45a4177a7e04d7892e0b3106617db42069a5c",
+      "LastModified" : "2018-12-30T23:50:25Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/sig_gen/Makefile" : {
+      "ObjectId" : "eedef3e8297509458ea51429891bad691fa3f58f",
+      "LastModified" : "2019-04-11T04:22:35Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/timecode/Makefile" : {
+      "ObjectId" : "a6d6fd2a5d8e986ba0a9ea174c84d702845ade9e",
+      "LastModified" : "2019-04-08T00:42:09Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/extensions/wspr/Makefile" : {
+      "ObjectId" : "97ffde37465198326f9955c224ff2b766b0cc33e",
+      "LastModified" : "2019-04-08T00:42:09Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/kiwi/Makefile" : {
+      "ObjectId" : "88bc5054d0abae561bfa71c16bb4ccd52c6d1378",
+      "LastModified" : "2019-04-08T00:42:09Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "web/openwebrx/Makefile" : {
+      "ObjectId" : "e1578a1287414b804745bd776319a5b13147cf88",
+      "LastModified" : "2019-04-08T00:42:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#FILES_ALWAYS += openwebrx/openwebrx.ccomp.js\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "web/pkgs/Makefile" : {
+      "ObjectId" : "33af060ff511db9aa206b413c4feef06d2b67e79",
+      "LastModified" : "2019-04-08T00:42:09Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "########\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# FIXME: prevent \"out of vm\" crashes during compile on Debian 7 by better balancing embed/always sizes\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "########\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 32
+  },
+  "ElapsedTime" : 2629
+}

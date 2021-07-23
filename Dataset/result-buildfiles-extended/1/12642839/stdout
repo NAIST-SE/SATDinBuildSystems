@@ -1,0 +1,2622 @@
+{
+  "Repository" : "12642839",
+  "Revision" : "HEAD",
+  "ObjectId" : "43f619bcf4f3a02a77ba413d42fc59ecb6c47ec3",
+  "CommitTime" : "2019-04-12T23:26:28Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "37d9fc2957e4cae2356f3d958c1504ef5ae0b000",
+      "LastModified" : "2019-04-12T22:12:32Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM\n\n#\n\n# Creates OpenMM library.\n\n#\n\n# Windows:\n\n#   OpenMM.dll\n\n#   OpenMM.lib\n\n#   OpenMM_static.lib\n\n# Unix:\n\n#   libOpenMM.so\n\n#   libOpenMM_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Don't create a new project name if this is part of a mega-build from the\n\n# parent directory\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We have custom cmake modules for FindOpenMM and running python tests\n",
+        "Line" : 33,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Determine what architecture we are compiling for.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Where to install\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# What type of libraries to build\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Include CPU-Features for Android\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# It seems that on linux and mac, everything is trying to be installed in /usr/local/openmm\n\n# But if every install target is prefixed with /openmm/, on Windows the install files\n\n# end up in C:/Program Files/OpenMM/openmm/ which is ugly.\n\n# Better to set CMAKE_INSTALL_PREFIX to /usr/local/openmm and leave /openmm/ off the\n\n# install target names.  Plus, the user now has the opportunity to install into /usr/local/\n\n# if she so chooses.  --cmb\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 85,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# in linux, even in static builds we link against the dynamic object (since its tied to libc versions)\n",
+        "Line" : 96,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Build 64 bit binaries compatible with OS X 10.7\n",
+        "Line" : 104,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# Improve the linking behavior of Mac libraries\n",
+        "Line" : 120,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Use warning level 2, not whatever warning level CMake picked.\n",
+        "Line" : 125,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Explicitly suppress warnings 4305 and 4244.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# -DOPENMM_TYPE has to be defined in the target subdirectories.\n\n# -Dsimbody_EXPORTS defined automatically when Windows DLL build is being done.\n",
+        "Line" : 168,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Report the version number to the CMake UI\n",
+        "Line" : 171,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# We don't actually use this version for anything yet\n",
+        "Line" : 175,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "## If no one says otherwise, change the executable path to drop into the same binary\n\n## location as the DLLs so that the test cases will use the just-build DLLs.\n",
+        "Line" : 182,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# used by plugin\n",
+        "Line" : 195,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 198,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "# start empty\n",
+        "Line" : 200,
+        "CharPositionInLine" : 22
+      },
+      "22" : {
+        "Text" : "# append\n",
+        "Line" : 202,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 209,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 211,
+        "CharPositionInLine" : 29
+      },
+      "25" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 215,
+        "CharPositionInLine" : 36
+      },
+      "26" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 224,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# empty\n",
+        "Line" : 225,
+        "CharPositionInLine" : 18
+      },
+      "28" : {
+        "Text" : "#append\n",
+        "Line" : 231,
+        "CharPositionInLine" : 69
+      },
+      "29" : {
+        "Text" : "## Make sure we find these locally before looking in OpenMM/include if\n\n## OpenMM was previously installed there.\n",
+        "Line" : 234,
+        "CharPositionInLine" : 4
+      },
+      "30" : {
+        "Text" : "# If API wrappers are being generated, and add them to the build.\n",
+        "Line" : 252,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# On Linux need to link to libdl\n",
+        "Line" : 290,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# CUDA platform\n",
+        "Line" : 320,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# OpenCL platform\n",
+        "Line" : 332,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# Optimized CPU platform\n",
+        "Line" : 344,
+        "CharPositionInLine" : 0
+      },
+      "35" : {
+        "Text" : "# Amoeba plugin\n",
+        "Line" : 351,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# RPMD plugin\n",
+        "Line" : 360,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# Drude plugin\n",
+        "Line" : 369,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# CPU PME plugin\n",
+        "Line" : 378,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# CUDA compiler plugin\n",
+        "Line" : 392,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# Serialization support\n",
+        "Line" : 426,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# Python wrappers\n",
+        "Line" : 432,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 448,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 43
+    },
+    "CTestConfig.cmake" : {
+      "ObjectId" : "dd7001d912d40937a3b8e26090581887f5b0d087",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## This file should be placed in the root directory of your project.\n\n## Then modify the CMakeLists.txt file in the root directory of your\n\n## project to incorporate the testing dashboard.\n\n## # The following are required to uses Dart and the Cdash dashboard\n\n##   ENABLE_TESTING()\n\n##   INCLUDE(CTest)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "cmake_modules/FindFFTW.cmake" : {
+      "ObjectId" : "e3002d94255e38ce035b2d3621734b984d176668",
+      "LastModified" : "2013-07-18T17:27:46Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find FFTW\n\n# Find the native FFTW includes and library\n\n#\n\n#  FFTW_INCLUDES        - where to find fftw3.h\n\n#  FFTW_LIBRARY         - the main FFTW library.\n\n#  FFTW_THREADS_LIBRARY - the FFTW multithreading support library.\n\n#  FFTW_FOUND           - True if FFTW found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 10,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set FFTW_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake_modules/FindOpenCL.cmake" : {
+      "ObjectId" : "45f8fdea1933e7542f7d063e9b98747cb14aa4ee",
+      "LastModified" : "2015-06-22T19:13:47Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "### OPENCL_INCLUDE_DIR ###\n\n# Try OPENCL_DIR variable before looking elsewhere\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Next look in environment variables set by OpenCL SDK installations\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# On Macs, look inside the platform SDK\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# As a last resort, look in default system areas followed by other possible locations\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "### OPENCL_LIBRARY ###\n",
+        "Line" : 40,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Try OPENCL_DIR variable before looking elsewhere\n",
+        "Line" : 56,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Next look in environment variables set by OpenCL SDK installations\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# As a last resort, look in default system areas followed by other possible locations\n",
+        "Line" : 74,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 8
+    },
+    "cmake_modules/TargetArch.cmake" : {
+      "ObjectId" : "d775f126f93921315c313af0535b44cc57d5e79e",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# This is from Solar CMake (https://github.com/axr/solar-cmake).\n\n#\n\n# Copyright (c) 2012 Petroules Corporation. All rights reserved.\n\n#\n\n# Redistribution and use in source and binary forms, with or without modification,\n\n# are permitted provided that the following conditions are met:\n\n#\n\n#    Redistributions of source code must retain the above copyright notice, this\n\n#    list of conditions and the following disclaimer.\n\n#\n\n#    Redistributions in binary form must reproduce the above copyright notice,\n\n#    this list of conditions and the following disclaimer in the documentation\n\n#    and/or other materials provided with the distribution.\n\n#\n\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\n\n# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\n# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n\n# IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,\n\n# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,\n\n# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\n# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n\n# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE\n\n# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED\n\n# OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Based on the Qt 5 processor detection code, so should be very accurate\n\n# https://qt.gitorious.org/qt/qtbase/blobs/master/src/corelib/global/qprocessordetection.h\n\n# Currently handles arm (v5, v6, v7), x86 (32/64), ia64, and ppc (32/64)\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Regarding POWER/PowerPC, just as is noted in the Qt source,\n\n# \"There are many more known variants/revisions that we do not handle/detect.\"\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Set ppc_support to TRUE before including this file or ppc and ppc64\n\n# will be treated as invalid architectures since they are no longer supported by Apple\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# On OS X we use CMAKE_OSX_ARCHITECTURES *if* it was set\n\n# First let's normalize the order of the values\n",
+        "Line" : 80,
+        "CharPositionInLine" : 8
+      },
+      "5" : {
+        "Text" : "# Note that it's not possible to compile PowerPC applications if you are using\n\n# the OS X SDK version 10.6 or later - you'll need 10.4/10.5 for that, so we\n\n# disable it by default\n\n# See this page for more information:\n\n# http://stackoverflow.com/questions/5333490/how-can-we-restore-ppc-ppc64-as-well-as-full-10-4-10-5-sdk-support-to-xcode-4\n",
+        "Line" : 83,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# Architecture defaults to i386 or ppc on OS X 10.5 and earlier, depending on the CPU type detected at runtime.\n\n# On OS X 10.6+ the default is x86_64 if the CPU supports it, i386 otherwise.\n",
+        "Line" : 89,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Now add all the architectures in our normalized order\n",
+        "Line" : 106,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Detect the architecture in a rather creative way...\n\n# This compiles a small C program which is a series of ifdefs that selects a\n\n# particular #error preprocessor directive whose message string contains the\n\n# target architecture. The program will always fail to compile (both because\n\n# file is not a valid C program, and obviously because of the presence of the\n\n# #error preprocessor directives... but by exploiting the preprocessor in this\n\n# way, we can detect the correct target architecture even when cross-compiling,\n\n# since the program itself never needs to be run (only the compiler/preprocessor)\n",
+        "Line" : 127,
+        "CharPositionInLine" : 8
+      },
+      "9" : {
+        "Text" : "# Parse the architecture name from the compiler output\n",
+        "Line" : 144,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Get rid of the value marker leaving just the architecture name\n",
+        "Line" : 147,
+        "CharPositionInLine" : 8
+      },
+      "11" : {
+        "Text" : "# If we are compiling with an unknown architecture this variable should\n\n# already be set to \"unknown\" but in the case that it's empty (i.e. due\n\n# to a typo in the code), then set it to unknown\n",
+        "Line" : 150,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 12
+    },
+    "docs-source/CMakeLists.txt" : {
+      "ObjectId" : "0e1bd7e8c404bd3c29fc1c4c8f4b11983692964e",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Build and install API documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Generate C++ API documentation\n",
+        "Line" : 9,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Generate Python API documentation\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "#\n\n# Build and install the User Guide and Developer Guide\n\n#\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "docs-source/api-c++/CMakeLists.txt" : {
+      "ObjectId" : "f00af2e31c31d1c1f68609671e8eedab0e103b70",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Will contain all required package files\n",
+        "Line" : 1,
+        "CharPositionInLine" : 29
+      },
+      "CommentCount" : 1
+    },
+    "docs-source/api-python/CMakeLists.txt" : {
+      "ObjectId" : "efc380b0e9b4e3ef6347cc108d47a3bdb0acc697",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Will contain all required package files\n",
+        "Line" : 1,
+        "CharPositionInLine" : 29
+      },
+      "1" : {
+        "Text" : "# PythonInstall\n",
+        "Line" : 45,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 2
+    },
+    "docs-source/developerguide/Makefile" : {
+      "ObjectId" : "cb4fe7c95f92d0a5e37af5403380df4083cffcb8",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "docs-source/usersguide/Makefile" : {
+      "ObjectId" : "cb4fe7c95f92d0a5e37af5403380df4083cffcb8",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Makefile for Sphinx documentation\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# You can set these variables from the command line.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Internal variables.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# the i18n builder cannot share the environment and doctrees with the others\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "examples/CMakeLists.txt" : {
+      "ObjectId" : "55555e7a4e8a37467208372f06e964960c7aa7b0",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Generate and install examples.\r\n\n#\r\n\n# This is boilerplate code for generating a set of executables, one per\r\n\n# .cpp file in an \"examples\" subdirectory. \r\n\n#\r\n\n# For IDEs that can deal with PROJECT_LABEL properties (at least\r\n\n# Visual Studio) the projects for building each of these adhoc\r\n\n# executables will be labeled \"Example - TheExampleName\" if a file\r\n\n# TheExampleName.cpp is found in this directory.\r\n\n#\r\n\n# We check the BUILD_TESTING_{SHARED,STATIC} variables to determine\r\n\n# whether to build dynamically linked, statically linked, or both\r\n\n# versions of the executable.\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Link with shared library\r\n",
+        "Line" : 26,
+        "CharPositionInLine" : 8
+      },
+      "2" : {
+        "Text" : "# Link with static library\r\n",
+        "Line" : 37,
+        "CharPositionInLine" : 8
+      },
+      "3" : {
+        "Text" : "# Only build wrapper examples if wrappers have been built\r\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Link with shared library\r\n\n# We need at least one .cpp here to get CMake to include\r\n\n# C++ libraries on the link line.\r\n",
+        "Line" : 58,
+        "CharPositionInLine" : 12
+      },
+      "5" : {
+        "Text" : "# Link with static library\r\n",
+        "Line" : 72,
+        "CharPositionInLine" : 12
+      },
+      "6" : {
+        "Text" : "# We need at least one .cpp here to get CMake to include\r\n\n# C++ libraries on the static link line.\r\n",
+        "Line" : 74,
+        "CharPositionInLine" : 12
+      },
+      "CommentCount" : 7
+    },
+    "examples/Makefile" : {
+      "ObjectId" : "e5d0007b0c0703fa0f9d52c3b131c7e1bd5101df",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# ----------------------------------------------------------------------\n\n# Makefile for OpenMM Preview Release 4 workshop \"hello world\" examples.\n\n# August 18, 2009\n\n# See https://simtk.org/home/openmm.\n\n# ----------------------------------------------------------------------\n\n# This assumes you have gcc compilers for whatever language you are\n\n# using: g++ for C++ and C, gfortran for Fortran 95.\n\n# \n\n# For the C and Fortran examples, we're depending on your version of\n\n# OpenMM to have been built with the automatically-generated API\n\n# wrappers.\n\n#\n\n# This has had only minimal testing, although it has been known to\n\n# work. It is likely to work fine for C and C++. For Fortran, you\n\n# may need to add some of the C/C++ libraries: \n\n#    -lc -lm -lstdc++ (or -lstdc++.6) -lgcc -lgcc_s\n\n# but this wasn't required for these examples on Centos 5.2 using\n\n# gcc 4.1.2.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Check whether this is the right capitalization for your install directory.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Extra libraries required when gfortran links with a C++ module.\n\n# If this doesn't work, look in /usr/lib to\n\n# see what versions of libstdc++.so you have and try different\n\n# versions.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Treat all .cpp source files the same way.\n",
+        "Line" : 45,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Build Fortran 95 Module file\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "libraries/irrxml/example/Makefile" : {
+      "ObjectId" : "836aa17a6dac012b90d8291f95199c189f8d8ac0",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# Project: irrXML\r\n\n# Makefile created by Dev-C++ 4.9.8.0\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "platforms/cpu/CMakeLists.txt" : {
+      "ObjectId" : "068c50fefa406274b11064e1711aa848dc0ad47c",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CPU Platform\n\n#\n\n# Creates OpenMMCPU library.\n\n#\n\n# Windows:\n\n#   OpenMMCPU.dll\n\n#   OpenMMCPU.lib\n\n#   OpenMMCPU_static.lib\n\n# Unix:\n\n#   libOpenMMCPU.so\n\n#   libOpenMMCPU_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 54,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 56,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 64,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 68,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 78,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 84,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Install headers\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "platforms/cpu/sharedTarget/CMakeLists.txt" : {
+      "ObjectId" : "c2e45678d4bf1b3153be30b5c797b8f1fb936003",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "platforms/cpu/staticTarget/CMakeLists.txt" : {
+      "ObjectId" : "fd5d1da043c9ce8713fe7f138aac9555a7492bc8",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "platforms/cpu/tests/CMakeLists.txt" : {
+      "ObjectId" : "79f5d7a9732c374d420ecc4f1c1208694dc5b8a8",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#SET( INCLUDE_SERIALIZATION TRUE )\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "platforms/cuda/CMakeLists.txt" : {
+      "ObjectId" : "72af67add54eafb2f3d63f7ca7f8bb82166ef8d4",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CUDA Platform\n\n#\n\n# Creates OpenMMCUDA library.\n\n#\n\n# Windows:\n\n#   OpenMMCUDA.dll\n\n#   OpenMMCUDA.lib\n\n#   OpenMMCUDA_static.lib\n\n# Unix:\n\n#   libOpenMMCUDA.so\n\n#   libOpenMMCUDA_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 36,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 46,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 50,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 60,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 66,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Install headers\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "platforms/cuda/EncodeCUDAFiles.cmake" : {
+      "ObjectId" : "58285b0887ec6d33961feddc75b4ed90a74770e3",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Load the file contents and process it.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# Replace all backslashes by double backslashes as they are being put in a C string.\n\n# Be careful not to replace the backslash before a semicolon as that is the CMAKE\n\n# internal escaping of a semicolon to prevent it from acting as a list seperator.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Escape double quotes as being put in a C string.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Split in separate C strings for each line.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Determine a name for the variable that will contain this file's contents\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Record the variable declaration and definition.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "platforms/cuda/sharedTarget/CMakeLists.txt" : {
+      "ObjectId" : "c425464e2b422c94f634a37e23bd38fa1d40da77",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Include CUDA related files.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "platforms/cuda/staticTarget/CMakeLists.txt" : {
+      "ObjectId" : "d80c0a4797a0caa7cccc5b6a7df7a173aedb6e28",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Include CUDA related files.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "platforms/cuda/tests/CMakeLists.txt" : {
+      "ObjectId" : "4963411f8e80603eee1d22af0f42c77c6c6655a4",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#SET( INCLUDE_SERIALIZATION TRUE )\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 25,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "platforms/opencl/CMakeLists.txt" : {
+      "ObjectId" : "4b8e4d1895bc5b1a13077443635706a2c2302b4c",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM OpenCL Platform\n\n#\n\n# Creates OpenMMOpenCL library.\n\n#\n\n# Windows:\n\n#   OpenMMOpenCL.dll\n\n#   OpenMMOpenCL.lib\n\n#   OpenMMOpenCL_static.lib\n\n# Unix:\n\n#   libOpenMMOpenCL.so\n\n#   libOpenMMOpenCL_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 36,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 38,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 46,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 50,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 60,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 66,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Install headers\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "platforms/opencl/EncodeCLFiles.cmake" : {
+      "ObjectId" : "ee8770f20298fe224211b515022b48ca8b6e7684",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Load the file contents and process it.\n",
+        "Line" : 6,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "# Replace all backslashes by double backslashes as they are being put in a C string.\n\n# Be careful not to replace the backslash before a semicolon as that is the CMAKE\n\n# internal escaping of a semicolon to prevent it from acting as a list seperator.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# Escape double quotes as being put in a C string.\n",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Split in separate C strings for each line.\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# Determine a name for the variable that will contain this file's contents\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Record the variable declaration and definition.\n",
+        "Line" : 23,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 6
+    },
+    "platforms/opencl/sharedTarget/CMakeLists.txt" : {
+      "ObjectId" : "344801c59f1b7aba9333b84dbe2d6b2f91fc3e9e",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\r\n\n# Include OpenCL related files.\r\n\n#\r\n\n# INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../FindOpenCL.cmake)\r\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "platforms/opencl/staticTarget/CMakeLists.txt" : {
+      "ObjectId" : "a5f5e130b4cf5375b78a40c51a6d3bd16ce9238c",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Include OpenCL related files.\n\n#\n\n# INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../FindOpenCL.cmake)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "platforms/opencl/tests/CMakeLists.txt" : {
+      "ObjectId" : "ebceff45ee4e07e97e171e2b9a0e2a75e6f2926b",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../FindOpenCL.cmake)\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "#SET( INCLUDE_SERIALIZATION TRUE )\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Link with static library\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "#     SET(TEST_STATIC ${TEST_ROOT}Static)\n\n#     ADD_EXECUTABLE(${TEST_STATIC} ${TEST_PROG})\n\n#     SET_TARGET_PROPERTIES(${TEST_STATIC}\n\n#                 PROPERTIES\n\n#                 COMPILE_FLAGS \"-DOPENMM_USE_STATIC_LIBRARIES\"\n\n#                 )\n\n#     TARGET_LINK_LIBRARIES(${TEST_STATIC} ${STATIC_TARGET})\n\n#     ADD_TEST(${TEST_STATIC} ${EXECUTABLE_OUTPUT_PATH}/${TEST_STATIC})\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "platforms/reference/tests/CMakeLists.txt" : {
+      "ObjectId" : "cac562167859e7b29b0807212496ce8bd5548f23",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "plugins/amoeba/CMakeLists.txt" : {
+      "ObjectId" : "b49684500a83576234b6e01269943ad290eb0767",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM Amoeba Plugin\n\n#\n\n# Creates OpenMMAmoeba plugin library.\n\n#\n\n# Windows:\n\n#   OpenMMAmoeba.dll\n\n#   OpenMMAmoeba.lib\n\n#   OpenMMAmoeba_static.lib\n\n# Unix:\n\n#   libOpenMMAmoeba.so\n\n#   libOpenMMAmoeba_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#INCLUDE(Dart)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# start empty\n",
+        "Line" : 39,
+        "CharPositionInLine" : 29
+      },
+      "6" : {
+        "Text" : "# append\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 49,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 53,
+        "CharPositionInLine" : 36
+      },
+      "10" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 62,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# empty\n",
+        "Line" : 63,
+        "CharPositionInLine" : 25
+      },
+      "12" : {
+        "Text" : "#append\n",
+        "Line" : 69,
+        "CharPositionInLine" : 83
+      },
+      "13" : {
+        "Text" : "## Make sure we find these locally before looking in OpenMM/include if\n\n## OpenMM was previously installed there.\n",
+        "Line" : 72,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 77,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# If API_AMOEBA wrappers are being generated, and add them to the build.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# On Linux need to link to libdl\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Which hardware platforms to build\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 153,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 20
+    },
+    "plugins/amoeba/platforms/cuda/CMakeLists.txt" : {
+      "ObjectId" : "8185d16419b3308dae6715ae15e9e9cd732f7e39",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CUDA Amoeba Implementation\n\n#\n\n# Creates OpenMMAmoebaCUDA library.\n\n#\n\n# Windows:\n\n#   OpenMMAmoebaCUDA.dll\n\n#   OpenMMAmoebaCUDA.lib\n\n# Unix:\n\n#   libOpenMMAmoebaCUDA.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 29,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 31,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 37,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 39,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 43,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 52,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 53,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 59,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 69,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Create the library\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Build the shared plugin library.\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Build the static plugin library.\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Ensure that links to the main CUDA library will be resolved.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 17
+    },
+    "plugins/amoeba/platforms/cuda/tests/CMakeLists.txt" : {
+      "ObjectId" : "57dd1148a6f714d69d8490f35caa2bd3c7bdfb65",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/amoeba/platforms/reference/CMakeLists.txt" : {
+      "ObjectId" : "16bc7680301dc4368e425a42ecaa528e6ff5263b",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM Reference Amoeba Implementation\n\n#\n\n# Creates OpenMMAmoebaReference library.\n\n#\n\n# Windows:\n\n#   OpenMMAmoebaReference.dll\n\n#   OpenMMAmoebaReference.lib\n\n# Unix:\n\n#   libOpenMMAmoebaReference.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 26,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 28,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 36,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 40,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 49,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 50,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 56,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Create the library\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "plugins/amoeba/platforms/reference/tests/CMakeLists.txt" : {
+      "ObjectId" : "27309d8be81f9009c6e73aacbb706743567887ca",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/amoeba/serialization/tests/CMakeLists.txt" : {
+      "ObjectId" : "2e836c6b4c891842ddbac61446a83f3ad915e9a6",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# All tests use shared libraries\n",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/amoeba/wrappers/CMakeLists.txt" : {
+      "ObjectId" : "9dde83c53d6a3e3b657ca604318028c8794e2d0e",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# WRAPPER_DOXYGEN_DIR is a workspace directory where wrapper files will be created\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Step 1 - Create Doxyfile to point to OpenMM headers\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Step 2 - Run doxygen to analyze the headers\n",
+        "Line" : 12,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Step 3 - Generate the wrappers\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "plugins/cpupme/CMakeLists.txt" : {
+      "ObjectId" : "909a6ec6e3463c29a6f8a8808db67e03ebf7d7cf",
+      "LastModified" : "2018-11-07T22:03:53Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CPU PME Plugin\n\n#\n\n# Creates OpenMMPME plugin library.\n\n#\n\n# Windows:\n\n#   OpenMMPME.dll\n\n#   OpenMMPME.lib\n\n#   OpenMMPME_static.lib\n\n# Unix:\n\n#   libOpenMMPME.so\n\n#   libOpenMMPME_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 29,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 31,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 33,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Find the include files.\n",
+        "Line" : 39,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 42,
+        "CharPositionInLine" : 36
+      },
+      "8" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 46,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# empty\n",
+        "Line" : 47,
+        "CharPositionInLine" : 18
+      },
+      "10" : {
+        "Text" : "#append\n",
+        "Line" : 53,
+        "CharPositionInLine" : 69
+      },
+      "11" : {
+        "Text" : "# Include FFTW related files.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Build the shared plugin library.\n",
+        "Line" : 70,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Build the static plugin library.\n",
+        "Line" : 83,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 14
+    },
+    "plugins/cpupme/tests/CMakeLists.txt" : {
+      "ObjectId" : "857b41ae76eff27096100ac696af22f931aabeee",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "plugins/cudacompiler/CMakeLists.txt" : {
+      "ObjectId" : "9890bfdaea69b0ad6b37c100f7af7afecdc709aa",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CUDA runtime compiler\n\n#\n\n# Creates OpenMMCudaCompiler library.\n\n#\n\n# Windows:\n\n#   OpenMMCudaCompiler.dll\n\n#   OpenMMCudaCompiler.lib\n\n# Unix:\n\n#   libOpenMMCudaCompiler.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 28,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 30,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 38,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 42,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 52,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 58,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Build the shared plugin library.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Build the static plugin library.\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Ensure that links to the main CUDA library will be resolved.\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "plugins/cudacompiler/tests/CMakeLists.txt" : {
+      "ObjectId" : "a17f7bd169ac56f9e7302b7d0e8317e88d2d6a99",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/drude/CMakeLists.txt" : {
+      "ObjectId" : "73ce6a6583f14883e0534940a24ba4b82879cb4f",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM Drude Plugin\n\n#\n\n# Creates OpenMMDrude plugin library.\n\n#\n\n# Windows:\n\n#   OpenMMDrude.dll\n\n#   OpenMMDrude.lib\n\n#   OpenMMDrude_static.lib\n\n# Unix:\n\n#   libOpenMMDrude.so\n\n#   libOpenMMDrude_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#INCLUDE(Dart)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 28
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 35
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 24
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 81
+      },
+      "12" : {
+        "Text" : "## Make sure we find these locally before looking in OpenMM/include if\n\n## OpenMM was previously installed there.\n",
+        "Line" : 60,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 65,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 80,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# On Linux need to link to libdl\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Which hardware platforms to build\n",
+        "Line" : 101,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "#INCLUDE(ApiDoxygen.cmake)\n",
+        "Line" : 146,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "plugins/drude/platforms/cuda/CMakeLists.txt" : {
+      "ObjectId" : "0b161a79e346b0a0e9651b1d75d68b7371e8d1e9",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CUDA Drude Integrator\n\n#\n\n# Creates OpenMMDrudeCUDA library.\n\n#\n\n# Windows:\n\n#   OpenMMDrudeCUDA.dll\n\n#   OpenMMDrudeCUDA.lib\n\n# Unix:\n\n#   libOpenMMDrudeCUDA.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Create the library\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Ensure that links to the main CUDA library will be resolved.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "plugins/drude/platforms/cuda/tests/CMakeLists.txt" : {
+      "ObjectId" : "10cb932d05484feaa677c3bfbb04426834180b04",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/drude/platforms/opencl/CMakeLists.txt" : {
+      "ObjectId" : "ddd3f683716f0756c795ffd21b08898c8169c1d8",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM OpenCL Drude Integrator\n\n#\n\n# Creates OpenMMDrudeOpenCL library.\n\n#\n\n# Windows:\n\n#   OpenMMDrudeOpenCL.dll\n\n#   OpenMMDrudeOpenCL.lib\n\n# Unix:\n\n#   libOpenMMDrudeOpenCL.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Create the library\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Ensure that links to the main OpenCL library will be resolved.\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "plugins/drude/platforms/opencl/tests/CMakeLists.txt" : {
+      "ObjectId" : "5a99bb4104d5e8dcb8a8d180b9f86effe05cd212",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/drude/platforms/reference/CMakeLists.txt" : {
+      "ObjectId" : "6c996a5cbd65bc921904c5819f40d9a88b407b52",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM Reference Drude Integrator\n\n#\n\n# Creates OpenMMDrudeReference library.\n\n#\n\n# Windows:\n\n#   OpenMMDrudeReference.dll\n\n#   OpenMMDrudeReference.lib\n\n# Unix:\n\n#   libOpenMMDrudeReference.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Create the library\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "plugins/drude/platforms/reference/tests/CMakeLists.txt" : {
+      "ObjectId" : "5d617a4280b9622dfb4d3a34b49abf653f15e0f0",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#LINK_DIRECTORIES\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "plugins/drude/serialization/tests/CMakeLists.txt" : {
+      "ObjectId" : "e6e7e3041fd7004a75c4d618b2b5a6b2a40951f4",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# All tests use shared libraries\n",
+        "Line" : 12,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/rpmd/CMakeLists.txt" : {
+      "ObjectId" : "0d29846fe0333759ec18abe5b0b526da53cc18dd",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM RPMD Plugin\n\n#\n\n# Creates OpenMMRPMD plugin library.\n\n#\n\n# Windows:\n\n#   OpenMMRPMD.dll\n\n#   OpenMMRPMD.lib\n\n#   OpenMMRPMD_static.lib\n\n# Unix:\n\n#   libOpenMMRPMD.so\n\n#   libOpenMMRPMD_static.a\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#INCLUDE(Dart)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 17,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# start empty\n",
+        "Line" : 34,
+        "CharPositionInLine" : 27
+      },
+      "7" : {
+        "Text" : "# append\n",
+        "Line" : 36,
+        "CharPositionInLine" : 4
+      },
+      "8" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 44,
+        "CharPositionInLine" : 34
+      },
+      "10" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 48,
+        "CharPositionInLine" : 36
+      },
+      "11" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 57,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# empty\n",
+        "Line" : 58,
+        "CharPositionInLine" : 23
+      },
+      "13" : {
+        "Text" : "#append\n",
+        "Line" : 64,
+        "CharPositionInLine" : 79
+      },
+      "14" : {
+        "Text" : "## Make sure we find these locally before looking in OpenMM/include if\n\n## OpenMM was previously installed there.\n",
+        "Line" : 67,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 72,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# ----------------------------------------------------------------------------\n",
+        "Line" : 84,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# On Linux need to link to libdl\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Which hardware platforms to build\n",
+        "Line" : 108,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 144,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "#IF (OPENMM_BUILD_SERIALIZATION_SUPPORT)\n\n#    ADD_SUBDIRECTORY(serialization)\n\n#ENDIF (OPENMM_BUILD_SERIALIZATION_SUPPORT)\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 21
+    },
+    "plugins/rpmd/platforms/cuda/CMakeLists.txt" : {
+      "ObjectId" : "55c227fc48ebfd4e7a4af4c249029a5a9d6dc9aa",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM CUDA RPMD Integrator\n\n#\n\n# Creates OpenMMRPMDCUDA library,.\n\n#\n\n# Windows:\n\n#   OpenMMRPMDCUDA.dll\n\n#   OpenMMRPMDCUDA.lib\n\n# Unix:\n\n#   libOpenMMRPMDCUDA.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 67,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Create the library\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Ensure that links to the main CUDA library will be resolved.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "plugins/rpmd/platforms/cuda/tests/CMakeLists.txt" : {
+      "ObjectId" : "4fbf6f76db989743aeb2c6ce3f701a23f2cff8e5",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/rpmd/platforms/opencl/CMakeLists.txt" : {
+      "ObjectId" : "01e143719f40f7e5c0aa03c0f3727bf2b3c23916",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM OpenCL RPMD Integrator\n\n#\n\n# Creates OpenMMRPMDOpenCL library.\n\n#\n\n# Windows:\n\n#   OpenMMRPMDOpenCL.dll\n\n#   OpenMMRPMDOpenCL.lib\n\n# Unix:\n\n#   libOpenMMRPMDOpenCL.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Set variables needed for encoding kernel sources into a C++ class\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Create the library\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Ensure that links to the main OpenCL library will be resolved.\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 15
+    },
+    "plugins/rpmd/platforms/opencl/tests/CMakeLists.txt" : {
+      "ObjectId" : "e78c1f9fc3c223a829463227b5b79a174eb72281",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 14,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 3
+    },
+    "plugins/rpmd/platforms/reference/CMakeLists.txt" : {
+      "ObjectId" : "de8de77c36c590b4da5c5123149874943be65893",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM Reference RPMD Integrator\n\n#\n\n# Creates OpenMMRPMDReference library.\n\n#\n\n# Windows:\n\n#   OpenMMRPMDReference.dll\n\n#   OpenMMRPMDReference.lib\n\n# Unix:\n\n#   libOpenMMRPMDReference.so\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# The source is organized into subdirectories, but we handle them all from\n\n# this CMakeLists file rather than letting CMake visit them as SUBDIRS.\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Collect up information about the version of the OpenMM library we're building\n\n# and make it available to the code so it can be built into the binaries.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# These are all the places to search for header files which are\n\n# to be part of the API.\n",
+        "Line" : 25,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# start empty\n",
+        "Line" : 27,
+        "CharPositionInLine" : 22
+      },
+      "5" : {
+        "Text" : "# append\n",
+        "Line" : 29,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# We'll need both *relative* path names, starting with their API_INCLUDE_DIRS,\n\n# and absolute pathnames.\n",
+        "Line" : 35,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# start these out empty\n",
+        "Line" : 37,
+        "CharPositionInLine" : 29
+      },
+      "8" : {
+        "Text" : "# returns full pathnames\n",
+        "Line" : 41,
+        "CharPositionInLine" : 36
+      },
+      "9" : {
+        "Text" : "# collect up source files\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# empty\n",
+        "Line" : 51,
+        "CharPositionInLine" : 18
+      },
+      "11" : {
+        "Text" : "#append\n",
+        "Line" : 57,
+        "CharPositionInLine" : 69
+      },
+      "12" : {
+        "Text" : "# Create the library\n",
+        "Line" : 66,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 13
+    },
+    "plugins/rpmd/platforms/reference/tests/CMakeLists.txt" : {
+      "ObjectId" : "fc7be49d63f40696da8cc23386d2c1b7311013a8",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#LINK_DIRECTORIES\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 13,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Link with shared library\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 4
+    },
+    "serialization/CMakeLists.txt" : {
+      "ObjectId" : "ebf938b465d76b0a9be2ebd0100413d9257c2313",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------\n\n# OpenMM Serialization Classes\n\n#----------------------------------------------------\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "serialization/tests/CMakeLists.txt" : {
+      "ObjectId" : "2a4d37adc06e084b35ff017af408a5e374f8277a",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "tests/CMakeLists.txt" : {
+      "ObjectId" : "b9a7e3eae92ec6bed2d82c8b922ebd6764174d83",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Testing\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Automatically create tests using files named \"Test*.cpp\"\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "wrappers/CMakeLists.txt" : {
+      "ObjectId" : "b7b7bd808f69f9eae992b3253eb82e723e73a4b6",
+      "LastModified" : "2018-11-07T21:41:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# WRAPPER_DOXYGEN_DIR is a workspace directory where wrapper files will be created\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Step 1 - Create Doxyfile to point to OpenMM headers\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Step 2 - Run doxygen to analyze the headers\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Step 3 - Generate the wrappers\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "wrappers/python/CMakeLists.txt" : {
+      "ObjectId" : "c089d69b1ce8ac29f9b11f53d78bc6211ba51589",
+      "LastModified" : "2018-11-27T17:41:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#############################################\n\n### Copy all source files to staging area ###\n\n#############################################\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# OPENMM_PYTHON_STAGING_DIR is a staging area for python, swig, and C files in the python package we are making.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Create package directory structure\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "##############################################################################\n\n### Identify files that need to be copied from source area to staging area ###\n\n##############################################################################\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Will contain all required package files\n",
+        "Line" : 19,
+        "CharPositionInLine" : 29
+      },
+      "5" : {
+        "Text" : "###########################################################\n\n### Check the git revision of the source, and write it  ###\n\n### to a python file in the in the staging directory    ###\n\n###########################################################\n",
+        "Line" : 26,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# file(GLOB_RECURSE temp RELATIVE \"${CMAKE_SOURCE_DIR}\" \"${CMAKE_SOURCE_DIR}/src/*.i\")\n\n# foreach(f ${temp})\n\n#     set(temp2 \"${temp2}\\n${f}\")\n\n# endforeach()\n",
+        "Line" : 42,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# message(\"STAGING_INPUT_FILES = \" ${STAGING_INPUT_FILES})\n",
+        "Line" : 81,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# message(\"STAGING_OUTPUT_FILE = \" ${outfile})\n",
+        "Line" : 91,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "########################################################\n\n### Rebuild the Swig wrappers if the API has changed ###\n\n########################################################\n\n# Look in ~/bin/swig first, more likely to be latest version on build machines\n",
+        "Line" : 94,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Enforce swig version\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# SWIG_OPENMM_DIR is package area where swig files will be created/used\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "### Create OpenMMSwigHeaders.i ###\n\n# Step 1 - Create Doxyfile to point to OpenMM headers\n",
+        "Line" : 124,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Step 2 - Run doxygen in non-package area\n",
+        "Line" : 132,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# OpenMM REFERENCE platform first\n",
+        "Line" : 141,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Files which will be created by python script and used by swig (dynamically generated)\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# \"${SWIG_OPENMM_DIR}/OpenMM.i\"\n",
+        "Line" : 149,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Swig input files which should have been copied from source tree\n\n# file(GLOB SWIG_INPUT_FILES2 \"${SWIG_OPENMM_DIR}/swig_lib/python/*.i\")\n",
+        "Line" : 152,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Create input files for swig\n",
+        "Line" : 163,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "#~ swig -python -c++ \\\n\n#~      -outdir $PYTHON_PACKAGE_DIR \\\n\n#~      -o OpenMMSwig.cxx \\\n\n#~      OpenMM.i\n",
+        "Line" : 184,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# Run swig\n",
+        "Line" : 189,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "##################################################################################################\n\n### Make a list of all folders containing include files the wrappers must be compiled against. ###\n\n##################################################################################################\n",
+        "Line" : 212,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "# start empty\n",
+        "Line" : 217,
+        "CharPositionInLine" : 26
+      },
+      "23" : {
+        "Text" : "# append\n",
+        "Line" : 219,
+        "CharPositionInLine" : 4
+      },
+      "24" : {
+        "Text" : "###########################################################################\n\n### Run python setup.py indirectly, so we can set environment variables ###\n\n###########################################################################\n",
+        "Line" : 226,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Binary distribution\n",
+        "Line" : 250,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Source distribution\n",
+        "Line" : 266,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Install binary module (to system location)\n",
+        "Line" : 278,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 28
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 55,
+    "MAKEFILE" : 4
+  },
+  "ElapsedTime" : 4069
+}

@@ -1,0 +1,2292 @@
+{
+  "Repository" : "972402",
+  "Revision" : "HEAD",
+  "ObjectId" : "d71566bef62ebb2cc4d989c9c540ffa4832ee797",
+  "CommitTime" : "2019-04-13T19:32:56Z",
+  "Files" : {
+    "CMake/DownloadDoxygen.cmake" : {
+      "ObjectId" : "b3093de39cdc9b5f847ba1c28d8f8a53e5de8a9c",
+      "LastModified" : "2012-10-17T15:19:33Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/DownloadDoxygenTAG.cmake" : {
+      "ObjectId" : "5a833c9826665d83d4699e09e8c2240c76e8c891",
+      "LastModified" : "2012-10-17T15:19:33Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/DownloadDoxygenXML.cmake" : {
+      "ObjectId" : "717682159985292830064433c237d992023702dd",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/ExternalData.cmake" : {
+      "ObjectId" : "604b7382aa26d3a5dacc9b2be06c68a0bb8c454d",
+      "LastModified" : "2017-03-08T15:57:29Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying\n\n# file Copyright.txt or https://cmake.org/licensing for details.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#.rst:\n\n# ExternalData\n\n# ------------\n\n#\n\n# .. only:: html\n\n#\n\n#    .. contents::\n\n#\n\n# Manage data files stored outside source tree\n\n#\n\n# Introduction\n\n# ^^^^^^^^^^^^\n\n#\n\n# Use this module to unambiguously reference data files stored outside\n\n# the source tree and fetch them at build time from arbitrary local and\n\n# remote content-addressed locations.  Functions provided by this module\n\n# recognize arguments with the syntax ``DATA{<name>}`` as references to\n\n# external data, replace them with full paths to local copies of those\n\n# data, and create build rules to fetch and update the local copies.\n\n#\n\n# For example:\n\n#\n\n# .. code-block:: cmake\n\n#\n\n#  include(ExternalData)\n\n#  set(ExternalData_URL_TEMPLATES \"file:///local/%(algo)/%(hash)\"\n\n#                                 \"file:////host/share/%(algo)/%(hash)\"\n\n#                                 \"http://data.org/%(algo)/%(hash)\")\n\n#  ExternalData_Add_Test(MyData\n\n#    NAME MyTest\n\n#    COMMAND MyExe DATA{MyInput.png}\n\n#    )\n\n#  ExternalData_Add_Target(MyData)\n\n#\n\n# When test ``MyTest`` runs the ``DATA{MyInput.png}`` argument will be\n\n# replaced by the full path to a real instance of the data file\n\n# ``MyInput.png`` on disk.  If the source tree contains a content link\n\n# such as ``MyInput.png.md5`` then the ``MyData`` target creates a real\n\n# ``MyInput.png`` in the build tree.\n\n#\n\n# Module Functions\n\n# ^^^^^^^^^^^^^^^^\n\n#\n\n# .. command:: ExternalData_Expand_Arguments\n\n#\n\n#   The ``ExternalData_Expand_Arguments`` function evaluates ``DATA{}``\n\n#   references in its arguments and constructs a new list of arguments::\n\n#\n\n#     ExternalData_Expand_Arguments(\n\n#       <target>   # Name of data management target\n\n#       <outVar>   # Output variable\n\n#       [args...]  # Input arguments, DATA{} allowed\n\n#       )\n\n#\n\n#   It replaces each ``DATA{}`` reference in an argument with the full path of\n\n#   a real data file on disk that will exist after the ``<target>`` builds.\n\n#\n\n# .. command:: ExternalData_Add_Test\n\n#\n\n#   The ``ExternalData_Add_Test`` function wraps around the CMake\n\n#   :command:`add_test` command but supports ``DATA{}`` references in\n\n#   its arguments::\n\n#\n\n#     ExternalData_Add_Test(\n\n#       <target>   # Name of data management target\n\n#       ...        # Arguments of add_test(), DATA{} allowed\n\n#       )\n\n#\n\n#   It passes its arguments through ``ExternalData_Expand_Arguments`` and then\n\n#   invokes the :command:`add_test` command using the results.\n\n#\n\n# .. command:: ExternalData_Add_Target\n\n#\n\n#   The ``ExternalData_Add_Target`` function creates a custom target to\n\n#   manage local instances of data files stored externally::\n\n#\n\n#     ExternalData_Add_Target(\n\n#       <target>   # Name of data management target\n\n#       )\n\n#\n\n#   It creates custom commands in the target as necessary to make data\n\n#   files available for each ``DATA{}`` reference previously evaluated by\n\n#   other functions provided by this module.\n\n#   Data files may be fetched from one of the URL templates specified in\n\n#   the ``ExternalData_URL_TEMPLATES`` variable, or may be found locally\n\n#   in one of the paths specified in the ``ExternalData_OBJECT_STORES``\n\n#   variable.\n\n#\n\n# Module Variables\n\n# ^^^^^^^^^^^^^^^^\n\n#\n\n# The following variables configure behavior.  They should be set before\n\n# calling any of the functions provided by this module.\n\n#\n\n# .. variable:: ExternalData_BINARY_ROOT\n\n#\n\n#   The ``ExternalData_BINARY_ROOT`` variable may be set to the directory to\n\n#   hold the real data files named by expanded ``DATA{}`` references.  The\n\n#   default is ``CMAKE_BINARY_DIR``.  The directory layout will mirror that of\n\n#   content links under ``ExternalData_SOURCE_ROOT``.\n\n#\n\n# .. variable:: ExternalData_CUSTOM_SCRIPT_<key>\n\n#\n\n#   Specify a full path to a ``.cmake`` custom fetch script identified by\n\n#   ``<key>`` in entries of the ``ExternalData_URL_TEMPLATES`` list.\n\n#   See `Custom Fetch Scripts`_.\n\n#\n\n# .. variable:: ExternalData_LINK_CONTENT\n\n#\n\n#   The ``ExternalData_LINK_CONTENT`` variable may be set to the name of a\n\n#   supported hash algorithm to enable automatic conversion of real data\n\n#   files referenced by the ``DATA{}`` syntax into content links.  For each\n\n#   such ``<file>`` a content link named ``<file><ext>`` is created.  The\n\n#   original file is renamed to the form ``.ExternalData_<algo>_<hash>`` to\n\n#   stage it for future transmission to one of the locations in the list\n\n#   of URL templates (by means outside the scope of this module).  The\n\n#   data fetch rule created for the content link will use the staged\n\n#   object if it cannot be found using any URL template.\n\n#\n\n# .. variable:: ExternalData_NO_SYMLINKS\n\n#\n\n#   The real data files named by expanded ``DATA{}`` references may be made\n\n#   available under ``ExternalData_BINARY_ROOT`` using symbolic links on\n\n#   some platforms.  The ``ExternalData_NO_SYMLINKS`` variable may be set\n\n#   to disable use of symbolic links and enable use of copies instead.\n\n#\n\n# .. variable:: ExternalData_OBJECT_STORES\n\n#\n\n#   The ``ExternalData_OBJECT_STORES`` variable may be set to a list of local\n\n#   directories that store objects using the layout ``<dir>/%(algo)/%(hash)``.\n\n#   These directories will be searched first for a needed object.  If the\n\n#   object is not available in any store then it will be fetched remotely\n\n#   using the URL templates and added to the first local store listed.  If\n\n#   no stores are specified the default is a location inside the build\n\n#   tree.\n\n#\n\n# .. variable:: ExternalData_SERIES_PARSE\n\n#               ExternalData_SERIES_PARSE_PREFIX\n\n#               ExternalData_SERIES_PARSE_NUMBER\n\n#               ExternalData_SERIES_PARSE_SUFFIX\n\n#               ExternalData_SERIES_MATCH\n\n#\n\n#   See `Referencing File Series`_.\n\n#\n\n# .. variable:: ExternalData_SOURCE_ROOT\n\n#\n\n#   The ``ExternalData_SOURCE_ROOT`` variable may be set to the highest source\n\n#   directory containing any path named by a ``DATA{}`` reference.  The\n\n#   default is ``CMAKE_SOURCE_DIR``.  ``ExternalData_SOURCE_ROOT`` and\n\n#   ``CMAKE_SOURCE_DIR`` must refer to directories within a single source\n\n#   distribution (e.g.  they come together in one tarball).\n\n#\n\n# .. variable:: ExternalData_TIMEOUT_ABSOLUTE\n\n#\n\n#   The ``ExternalData_TIMEOUT_ABSOLUTE`` variable sets the download\n\n#   absolute timeout, in seconds, with a default of ``300`` seconds.\n\n#   Set to ``0`` to disable enforcement.\n\n#\n\n# .. variable:: ExternalData_TIMEOUT_INACTIVITY\n\n#\n\n#   The ``ExternalData_TIMEOUT_INACTIVITY`` variable sets the download\n\n#   inactivity timeout, in seconds, with a default of ``60`` seconds.\n\n#   Set to ``0`` to disable enforcement.\n\n#\n\n# .. variable:: ExternalData_URL_ALGO_<algo>_<key>\n\n#\n\n#   Specify a custom URL component to be substituted for URL template\n\n#   placeholders of the form ``%(algo:<key>)``, where ``<key>`` is a\n\n#   valid C identifier, when fetching an object referenced via hash\n\n#   algorithm ``<algo>``.  If not defined, the default URL component\n\n#   is just ``<algo>`` for any ``<key>``.\n\n#\n\n# .. variable:: ExternalData_URL_TEMPLATES\n\n#\n\n#   The ``ExternalData_URL_TEMPLATES`` may be set to provide a list of\n\n#   of URL templates using the placeholders ``%(algo)`` and ``%(hash)``\n\n#   in each template.  Data fetch rules try each URL template in order\n\n#   by substituting the hash algorithm name for ``%(algo)`` and the hash\n\n#   value for ``%(hash)``.  Alternatively one may use ``%(algo:<key>)``\n\n#   with ``ExternalData_URL_ALGO_<algo>_<key>`` variables to gain more\n\n#   flexibility in remote URLs.\n\n#\n\n# Referencing Files\n\n# ^^^^^^^^^^^^^^^^^\n\n#\n\n# Referencing Single Files\n\n# \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\n\n#\n\n# The ``DATA{}`` syntax is literal and the ``<name>`` is a full or relative path\n\n# within the source tree.  The source tree must contain either a real\n\n# data file at ``<name>`` or a \"content link\" at ``<name><ext>`` containing a\n\n# hash of the real file using a hash algorithm corresponding to ``<ext>``.\n\n# For example, the argument ``DATA{img.png}`` may be satisfied by either a\n\n# real ``img.png`` file in the current source directory or a ``img.png.md5``\n\n# file containing its MD5 sum.\n\n#\n\n# Multiple content links of the same name with different hash algorithms\n\n# are supported (e.g. ``img.png.sha256`` and ``img.png.sha1``) so long as\n\n# they all correspond to the same real file.  This allows objects to be\n\n# fetched from sources indexed by different hash algorithms.\n\n#\n\n#\n\n# Referencing File Series\n\n# \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\n\n#\n\n# The ``DATA{}`` syntax can be told to fetch a file series using the form\n\n# ``DATA{<name>,:}``, where the ``:`` is literal.  If the source tree\n\n# contains a group of files or content links named like a series then a\n\n# reference to one member adds rules to fetch all of them.  Although all\n\n# members of a series are fetched, only the file originally named by the\n\n# ``DATA{}`` argument is substituted for it.  The default configuration\n\n# recognizes file series names ending with ``#.ext``, ``_#.ext``, ``.#.ext``,\n\n# or ``-#.ext`` where ``#`` is a sequence of decimal digits and ``.ext`` is\n\n# any single extension.  Configure it with a regex that parses ``<number>``\n\n# and ``<suffix>`` parts from the end of ``<name>``::\n\n#\n\n#  ExternalData_SERIES_PARSE = regex of the form (<number>)(<suffix>)$\n\n#\n\n# For more complicated cases set::\n\n#\n\n#  ExternalData_SERIES_PARSE = regex with at least two () groups\n\n#  ExternalData_SERIES_PARSE_PREFIX = <prefix> regex group number, if any\n\n#  ExternalData_SERIES_PARSE_NUMBER = <number> regex group number\n\n#  ExternalData_SERIES_PARSE_SUFFIX = <suffix> regex group number\n\n#\n\n# Configure series number matching with a regex that matches the\n\n# ``<number>`` part of series members named ``<prefix><number><suffix>``::\n\n#\n\n#  ExternalData_SERIES_MATCH = regex matching <number> in all series members\n\n#\n\n# Note that the ``<suffix>`` of a series does not include a hash-algorithm\n\n# extension.\n\n#\n\n# Referencing Associated Files\n\n# \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\n\n#\n\n# The ``DATA{}`` syntax can alternatively match files associated with the\n\n# named file and contained in the same directory.  Associated files may\n\n# be specified by options using the syntax\n\n# ``DATA{<name>,<opt1>,<opt2>,...}``.  Each option may specify one file by\n\n# name or specify a regular expression to match file names using the\n\n# syntax ``REGEX:<regex>``.  For example, the arguments::\n\n#\n\n#  DATA{MyData/MyInput.mhd,MyInput.img}                   # File pair\n\n#  DATA{MyData/MyFrames00.png,REGEX:MyFrames[0-9]+\\\\.png} # Series\n\n#\n\n# will pass ``MyInput.mha`` and ``MyFrames00.png`` on the command line but\n\n# ensure that the associated files are present next to them.\n\n#\n\n# Referencing Directories\n\n# \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\n\n#\n\n# The ``DATA{}`` syntax may reference a directory using a trailing slash and\n\n# a list of associated files.  The form ``DATA{<name>/,<opt1>,<opt2>,...}``\n\n# adds rules to fetch any files in the directory that match one of the\n\n# associated file options.  For example, the argument\n\n# ``DATA{MyDataDir/,REGEX:.*}`` will pass the full path to a ``MyDataDir``\n\n# directory on the command line and ensure that the directory contains\n\n# files corresponding to every file or content link in the ``MyDataDir``\n\n# source directory.  In order to match associated files in subdirectories,\n\n# specify a ``RECURSE:`` option, e.g. ``DATA{MyDataDir/,RECURSE:,REGEX:.*}``.\n\n#\n\n# Hash Algorithms\n\n# ^^^^^^^^^^^^^^^\n\n#\n\n# The following hash algorithms are supported::\n\n#\n\n#  %(algo)     <ext>     Description\n\n#  -------     -----     -----------\n\n#  MD5         .md5      Message-Digest Algorithm 5, RFC 1321\n\n#  SHA1        .sha1     US Secure Hash Algorithm 1, RFC 3174\n\n#  SHA224      .sha224   US Secure Hash Algorithms, RFC 4634\n\n#  SHA256      .sha256   US Secure Hash Algorithms, RFC 4634\n\n#  SHA384      .sha384   US Secure Hash Algorithms, RFC 4634\n\n#  SHA512      .sha512   US Secure Hash Algorithms, RFC 4634\n\n#\n\n# Note that the hashes are used only for unique data identification and\n\n# download verification.\n\n#\n\n# .. _`ExternalData Custom Fetch Scripts`:\n\n#\n\n# Custom Fetch Scripts\n\n# ^^^^^^^^^^^^^^^^^^^^\n\n#\n\n# When a data file must be fetched from one of the URL templates\n\n# specified in the ``ExternalData_URL_TEMPLATES`` variable, it is\n\n# normally downloaded using the :command:`file(DOWNLOAD)` command.\n\n# One may specify usage of a custom fetch script by using a URL\n\n# template of the form ``ExternalDataCustomScript://<key>/<loc>``.\n\n# The ``<key>`` must be a C identifier, and the ``<loc>`` must\n\n# contain the ``%(algo)`` and ``%(hash)`` placeholders.\n\n# A variable corresponding to the key, ``ExternalData_CUSTOM_SCRIPT_<key>``,\n\n# must be set to the full path to a ``.cmake`` script file.  The script\n\n# will be included to perform the actual fetch, and provided with\n\n# the following variables:\n\n#\n\n# .. variable:: ExternalData_CUSTOM_LOCATION\n\n#\n\n#   When a custom fetch script is loaded, this variable is set to the\n\n#   location part of the URL, which will contain the substituted hash\n\n#   algorithm name and content hash value.\n\n#\n\n# .. variable:: ExternalData_CUSTOM_FILE\n\n#\n\n#   When a custom fetch script is loaded, this variable is set to the\n\n#   full path to a file in which the script must store the fetched\n\n#   content.  The name of the file is unspecified and should not be\n\n#   interpreted in any way.\n\n#\n\n# The custom fetch script is expected to store fetched content in the\n\n# file or set a variable:\n\n#\n\n# .. variable:: ExternalData_CUSTOM_ERROR\n\n#\n\n#   When a custom fetch script fails to fetch the requested content,\n\n#   it must set this variable to a short one-line message describing\n\n#   the reason for failure.\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Expand all arguments as a single string to preserve escaped semicolons.\n",
+        "Line" : 323,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Store custom script configuration.\n",
+        "Line" : 338,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Store custom algorithm name to URL component maps.\n",
+        "Line" : 365,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Store configuration for use by build-time script.\n",
+        "Line" : 385,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Set a \"_ExternalData_FILE_${file}\" variable for each output file to avoid\n\n# duplicate entries within this target.  Set a directory property of the same\n\n# name to avoid repeating custom commands with the same output in this directory.\n\n# Repeating custom commands with the same output across directories or across\n\n# targets in the same directory may be a race, but this is likely okay because\n\n# we use atomic replacement of output files.\n\n#\n\n# Use local data first to prefer real files over content links.\n",
+        "Line" : 391,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Custom commands to copy or link local data.\n",
+        "Line" : 400,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Custom commands to fetch remote data.\n",
+        "Line" : 426,
+        "CharPositionInLine" : 2
+      },
+      "9" : {
+        "Text" : "# Users care about the data file, so hide the hash/timestamp file.\n",
+        "Line" : 442,
+        "CharPositionInLine" : 10
+      },
+      "10" : {
+        "Text" : "# The hash/timestamp file is the output from the build perspective.\n\n# List the real file as a second output in case it is a broken link.\n\n# The files must be listed in this order so CMake can hide from the\n\n# make tool that a symlink target may not be newer than the input.\n",
+        "Line" : 444,
+        "CharPositionInLine" : 10
+      },
+      "11" : {
+        "Text" : "# Run the data fetch/update script.\n",
+        "Line" : 449,
+        "CharPositionInLine" : 10
+      },
+      "12" : {
+        "Text" : "# Update whenever the object hash changes.\n",
+        "Line" : 455,
+        "CharPositionInLine" : 10
+      },
+      "13" : {
+        "Text" : "# Custom target to drive all update commands.\n",
+        "Line" : 463,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Replace DATA{} references with real arguments.\n",
+        "Line" : 468,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# This list expansion un-escapes semicolons in list element values so we\n\n# must re-escape them below anywhere a new list expansion will occur.\n",
+        "Line" : 472,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Re-escape in-value semicolons before expansion in foreach below.\n",
+        "Line" : 476,
+        "CharPositionInLine" : 6
+      },
+      "17" : {
+        "Text" : "# Split argument into DATA{}-pieces and other pieces.\n",
+        "Line" : 478,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Compose output argument with DATA{}-pieces replaced.\n",
+        "Line" : 480,
+        "CharPositionInLine" : 6
+      },
+      "19" : {
+        "Text" : "# Replace this DATA{}-piece with a file path.\n",
+        "Line" : 484,
+        "CharPositionInLine" : 10
+      },
+      "20" : {
+        "Text" : "# No replacement needed for this piece.\n",
+        "Line" : 488,
+        "CharPositionInLine" : 10
+      },
+      "21" : {
+        "Text" : "# No replacements needed in this argument.\n",
+        "Line" : 493,
+        "CharPositionInLine" : 6
+      },
+      "22" : {
+        "Text" : "# Re-escape in-value semicolons in resulting list.\n",
+        "Line" : 496,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Private helper interface\n",
+        "Line" : 503,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Separate data path from the options.\n",
+        "Line" : 558,
+        "CharPositionInLine" : 2
+      },
+      "25" : {
+        "Text" : "# Interpret trailing slashes as directories.\n",
+        "Line" : 563,
+        "CharPositionInLine" : 2
+      },
+      "26" : {
+        "Text" : "# Convert to full path.\n",
+        "Line" : 570,
+        "CharPositionInLine" : 2
+      },
+      "27" : {
+        "Text" : "# Convert to relative path under the source tree.\n",
+        "Line" : 578,
+        "CharPositionInLine" : 2
+      },
+      "28" : {
+        "Text" : "# Handle in-source builds gracefully.\n",
+        "Line" : 602,
+        "CharPositionInLine" : 2
+      },
+      "29" : {
+        "Text" : "# Entries external to the source tree.\n\n# Entries internal to the source tree.\n",
+        "Line" : 611,
+        "CharPositionInLine" : 19
+      },
+      "30" : {
+        "Text" : "# Process options.\n",
+        "Line" : 616,
+        "CharPositionInLine" : 2
+      },
+      "31" : {
+        "Text" : "# Regular expression to match associated files.\n",
+        "Line" : 622,
+        "CharPositionInLine" : 4
+      },
+      "32" : {
+        "Text" : "# Activate series matching.\n",
+        "Line" : 626,
+        "CharPositionInLine" : 6
+      },
+      "33" : {
+        "Text" : "# Activate recursive matching in directories.\n",
+        "Line" : 629,
+        "CharPositionInLine" : 6
+      },
+      "34" : {
+        "Text" : "# Specific associated file.\n",
+        "Line" : 632,
+        "CharPositionInLine" : 6
+      },
+      "35" : {
+        "Text" : "# Load a whole file series.\n",
+        "Line" : 650,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# Load listed/matching associated files in the directory.\n",
+        "Line" : 654,
+        "CharPositionInLine" : 6
+      },
+      "37" : {
+        "Text" : "# Load the named data file.\n",
+        "Line" : 665,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# Load listed/matching associated files.\n",
+        "Line" : 668,
+        "CharPositionInLine" : 6
+      },
+      "39" : {
+        "Text" : "# Make the series available in the build tree.\n",
+        "Line" : 689,
+        "CharPositionInLine" : 4
+      },
+      "40" : {
+        "Text" : "# The whole series is in the source tree.\n",
+        "Line" : 696,
+        "CharPositionInLine" : 4
+      },
+      "41" : {
+        "Text" : "# Associated files lie in the same directory.\n",
+        "Line" : 702,
+        "CharPositionInLine" : 2
+      },
+      "42" : {
+        "Text" : "# Find files named explicitly.\n",
+        "Line" : 719,
+        "CharPositionInLine" : 2
+      },
+      "43" : {
+        "Text" : "# Find files matching the given regular expressions.\n",
+        "Line" : 726,
+        "CharPositionInLine" : 2
+      },
+      "44" : {
+        "Text" : "# Match only the named data by itself.\n",
+        "Line" : 737,
+        "CharPositionInLine" : 2
+      },
+      "45" : {
+        "Text" : "# Configure series parsing and matching.\n",
+        "Line" : 743,
+        "CharPositionInLine" : 2
+      },
+      "46" : {
+        "Text" : "# Parse the base, number, and extension components of the series.\n",
+        "Line" : 776,
+        "CharPositionInLine" : 2
+      },
+      "47" : {
+        "Text" : "# Glob files that might match the series.\n\n# Then match base, number, and extension.\n",
+        "Line" : 790,
+        "CharPositionInLine" : 2
+      },
+      "48" : {
+        "Text" : "# matches\n",
+        "Line" : 812,
+        "CharPositionInLine" : 43
+      },
+      "49" : {
+        "Text" : "# not staged obj\n",
+        "Line" : 813,
+        "CharPositionInLine" : 63
+      },
+      "50" : {
+        "Text" : "# 0 works around negative number bug in older CMake\n",
+        "Line" : 824,
+        "CharPositionInLine" : 12
+      },
+      "51" : {
+        "Text" : "#-----------------------------------------------------------------------------\n\n# Private script mode interface\n",
+        "Line" : 855,
+        "CharPositionInLine" : 0
+      },
+      "52" : {
+        "Text" : "# Create a temporary file first.\n",
+        "Line" : 871,
+        "CharPositionInLine" : 2
+      },
+      "53" : {
+        "Text" : "# Create a symbolic link.\n",
+        "Line" : 877,
+        "CharPositionInLine" : 4
+      },
+      "54" : {
+        "Text" : "# Use relative path if files are close enough.\n",
+        "Line" : 880,
+        "CharPositionInLine" : 6
+      },
+      "55" : {
+        "Text" : "# Create a copy.\n",
+        "Line" : 890,
+        "CharPositionInLine" : 4
+      },
+      "56" : {
+        "Text" : "# Atomically create/replace the real destination.\n",
+        "Line" : 898,
+        "CharPositionInLine" : 2
+      },
+      "57" : {
+        "Text" : "# Search all object stores for an existing object.\n",
+        "Line" : 967,
+        "CharPositionInLine" : 2
+      },
+      "58" : {
+        "Text" : "# Search all object stores for an existing object.\n",
+        "Line" : 980,
+        "CharPositionInLine" : 2
+      },
+      "59" : {
+        "Text" : "# Download object to the first store.\n",
+        "Line" : 992,
+        "CharPositionInLine" : 2
+      },
+      "60" : {
+        "Text" : "# Verify downloaded object.\n",
+        "Line" : 1024,
+        "CharPositionInLine" : 6
+      },
+      "61" : {
+        "Text" : "# Check if file already corresponds to the object.\n",
+        "Line" : 1115,
+        "CharPositionInLine" : 2
+      },
+      "62" : {
+        "Text" : "# Touch the file to convince the build system it is up to date.\n",
+        "Line" : 1127,
+        "CharPositionInLine" : 4
+      },
+      "63" : {
+        "Text" : "# Atomically update the hash/timestamp file to record the object referenced.\n",
+        "Line" : 1133,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 64
+    },
+    "CMake/FindNumPy.cmake" : {
+      "ObjectId" : "c911d7909ab674f9f60b273695e320ba20560a3e",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#.rst:\n\n# FindNumPy\n\n#\n\n# Find the include directory for numpy/arrayobject.h\n\n#\n\n# Result Variables\n\n# ^^^^^^^^^^^^^^^^\n\n#\n\n# This module sets the following variables:\n\n#\n\n# ``NUMPY_FOUND``\n\n# True, if the system has NumPy.\n\n# ``NUMPY_INCLUDE_DIR``\n\n# The directory with numpy/arrayobject.h\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set NUMPY_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 16,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "CMake/FindPythonInterp.cmake" : {
+      "ObjectId" : "38f7b71ee3e434118bbd79561ff077ad7b39204d",
+      "LastModified" : "2018-02-13T19:00:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - Find python interpreter\n\n# This module finds if Python interpreter is installed and determines where the\n\n# executables are. This code sets the following variables:\n\n#\n\n#  PYTHONINTERP_FOUND         - Was the Python executable found\n\n#  PYTHON_EXECUTABLE          - path to the Python interpreter\n\n#\n\n#  PYTHON_VERSION_STRING      - Python version found e.g. 2.5.2\n\n#  PYTHON_VERSION_MAJOR       - Python major version found e.g. 2\n\n#  PYTHON_VERSION_MINOR       - Python minor version found e.g. 5\n\n#  PYTHON_VERSION_PATCH       - Python patch version found e.g. 2\n\n#\n\n#  Python_ADDITIONAL_VERSIONS - list of additional Python versions to search for\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#=============================================================================\n\n# Copyright 2005-2010 Kitware, Inc.\n\n# Copyright 2011 Bjoern Ricks <bjoern.ricks@gmail.com>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Search for the current active python version first\n",
+        "Line" : 60,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Set up the versions we know about, in the order we will search. Always add\n\n# the user supplied additional versions to the front.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Search for newest python version if python executable isn't found\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# determine python version string\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set PYTHONINTERP_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 115,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 7
+    },
+    "CMake/FindSphinx.cmake" : {
+      "ObjectId" : "62c85d9bbed889fe0d73fe6ce40372d6d554df4e",
+      "LastModified" : "2018-02-13T19:00:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# - This module looks for Sphinx\n\n# Find the Sphinx documentation generator\n\n#\n\n# This modules defines\n\n#  SPHINX_EXECUTABLE\n\n#  SPHINX_FOUND\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Target dependencies can be optionally listed at the end.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "CMake/ITKDoxygen.cmake" : {
+      "ObjectId" : "9ba0dc2cd2885d24301dbbd89ca455c7c3917903",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/ITKDoxygenTAG.cmake" : {
+      "ObjectId" : "fc451463d10cb13ba3970e0e6cf1c334104fddf6",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/ITKDoxygenXML.cmake" : {
+      "ObjectId" : "33c99abd28d60f670044710374887a0fcb7d73b6",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "CMake/ITKExamplesExternalData.cmake" : {
+      "ObjectId" : "e8059577e98d532d82edd3ce935c8b2916ab11e5",
+      "LastModified" : "2018-02-13T19:00:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Use ExternalData_OBJECT_STORES from environment as default.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "1" : {
+        "Text" : "# Local data store populated by the ITK pre-commit hook\n",
+        "Line" : 20,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Data published on GitHub Pages\n",
+        "Line" : 29,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Data published on Girder\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Tell ExternalData commands to transform raw files to content links.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "CMake/ITKExamplesMacros.cmake" : {
+      "ObjectId" : "b15ae386f0fda4ee402c6c3174eee8cb2d6cf15e",
+      "LastModified" : "2018-09-26T17:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# A high level target that the individual targets depend on.\n\n#add_custom_target( CreateTarballs ALL\n\n#  ${CMAKE_COMMAND} -E echo \"Done creating individual example tarballs...\"\n\n#)\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Macro for adding an example.\n\n#\n\n# Most of the CMake logic for the example should live in the examples\n\n# CMakeLists.txt.  That file should be standalone for building the example.\n\n# This macro is intended to be instantiated in the CMakeLists.txt one directory\n\n# above where the example exists.  It does things like creating the example\n\n# tarball's in the example output directory, and custom targets for building\n\n# the Sphinx documentation for an individual example.  The Sphinx target will be\n\n# called ${example_name}Doc.\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Process the example's CMakeLists.txt\n",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Macro if the corresponding module is enabled when ITK was built\n\n# Pass in the module directory path.  Also pass the module name as the second\n\n# argument if it is different than ITK${_dir}.\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Creates a test that compares the output image of an example to its baseline\n\n# image.\n\n#\n\n# Usage:\n\n# compare_to_baseline(\n\n#   [TEST_NAME myAwesomeExampleBaselineComparison1] // This argument is optional and meant\n\n#                                                   // to be used when there would be several\n\n#                                                   // baseline comparison tests based on one given\n\n#                                                   // example. By default TEST_NAME is\n\n#                                                   // ${EXAMPLE_NAME}TestBaselineComparison.\n\n#\n\n#   EXAMPLE_NAME myAwesomeExampleName\n\n#\n\n#   BASELINE_PREFIX myBaselineImagePrefix\n\n#\n\n#   [TEST_IMAGE myAwesomeExampleOutputImagePrefix.png] // This argument is optional and meant\n\n#                                                      // to be used when there would be several\n\n#                                                      // baseline comparison tests based on one given\n\n#                                                      // example.\n\n#\n\n#   [OPTIONS myListOfOptions]        // Options to pass to ImageCompareCommand.\n\n#\n\n#   [DEPENDS myListOfDependencies]   // Other tests that the comparison test will\n\n#                                    // depend on. By default, the dependency is assumed\n\n#                                    // to be ${EXAMPLE_NAME}Test. For Python, the comparison\n\n#                                    // test is added automatically. It is expected that\n\n#                                    // the default corresponding Python test is named\n\n#                                    // ${EXAMPLE_NAME}TestPython.\n\n# )\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Add the comparison for the Python test output\n\n# Use the same baseline image as for the c++ output\n",
+        "Line" : 150,
+        "CharPositionInLine" : 4
+      },
+      "6" : {
+        "Text" : "# Depend on the Python test.\n",
+        "Line" : 159,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 7
+    },
+    "CMakeLists.txt" : {
+      "ObjectId" : "ebbfb4985c0c4f51d5694c898001184358c78a36",
+      "LastModified" : "2018-09-26T17:55:30Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "## Only policies introduced after the cmake_minimum_required\n\n## version need to explicitly be set to NEW.\n",
+        "Line" : 3,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : "#3.10.0 Define ``file(GENERATE)`` behavior for relative paths.\n\n#3.10.0 Let ``AUTOMOC`` and ``AUTOUIC`` process ``GENERATED`` files.\n\n#3.12.0 `find_package()`` uses ``<PackageName>_ROOT`` variables.\n",
+        "Line" : 5,
+        "CharPositionInLine" : 12
+      },
+      "2" : {
+        "Text" : "# To get the ITK version.  Optional if we are building as an ITK module.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Tests are added with add_test() can be run with the 'ctest' command line program.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# ExternalData setup.  We use the CMake ExternalData features to download binary\n\n# files from a configurable location(s) -- including the local filesystem -- to\n\n# avoid storing the potentially large files in the Git history.\n",
+        "Line" : 59,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# The CMake magic to download the data.\n",
+        "Line" : 63,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# By default we copy all the content links in the source tree to their\n\n# corresponding locations in the binary tree.\n",
+        "Line" : 79,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# Use the same Python interpreter as ITK to run the tests.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Build the documentation?\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# -------------------------------------------------------------------------\n\n# Check to make sure the submodules are available\n",
+        "Line" : 116,
+        "CharPositionInLine" : 2
+      },
+      "10" : {
+        "Text" : "# The UPDATING_SUBMODULES variable can be set to prevent CMake from running\n\n# 'git submodule update' when attempting change the commit a submodule points\n\n# to.\n",
+        "Line" : 119,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "# -------------------------------------------------------------------------\n",
+        "Line" : 135,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# We must also duplicate the source tree since the images need to be present\n\n# with the source.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 2
+      },
+      "13" : {
+        "Text" : "# For unknown reasons, this was the only effective way to ensure ITKExamplesData\n\n# was built before build_html.\n",
+        "Line" : 149,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# A high level target that the individual targets depend on.\n",
+        "Line" : 163,
+        "CharPositionInLine" : 2
+      },
+      "15" : {
+        "Text" : "# Builds the documentation.\n",
+        "Line" : 176,
+        "CharPositionInLine" : 2
+      },
+      "16" : {
+        "Text" : "# Build the PDF with pdflatex\n",
+        "Line" : 217,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# Needs to be executed twice to get table of contents.\n",
+        "Line" : 222,
+        "CharPositionInLine" : 6
+      },
+      "18" : {
+        "Text" : "# Build the example executables?\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 19
+    },
+    "CTestConfig.cmake" : {
+      "ObjectId" : "53522dbc33804ecf078a4d2d59f8a01cd73fea70",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Documentation/CMakeLists.txt" : {
+      "ObjectId" : "016765d1aba75571645796bc0f1160a4ca565893",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Documentation/Download/CMakeLists.txt" : {
+      "ObjectId" : "5758ad8057576d278c4b125793d3320cc6f438fd",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Formatting/CMakeLists.txt" : {
+      "ObjectId" : "e8c308a54d80574bce6f2c850ce03a48776810a3",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Superbuild/CMakeLists.txt" : {
+      "ObjectId" : "9ab9c171a9cd6ac4e98f644e1b107db15a53802f",
+      "LastModified" : "2018-09-26T17:55:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Superbuild/External-ITK.cmake" : {
+      "ObjectId" : "26bd51a3132c692a9a5b696750e29bf5f52c9c5a",
+      "LastModified" : "2019-04-09T18:59:52Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------------------------------\n\n# Get and build itk\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Superbuild/External-OpenCV.cmake" : {
+      "ObjectId" : "1a688960a5f414fb57391055ddf5a35316a7a92e",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------------------------------\n\n# Get and build OpenCV\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Superbuild/External-Python.cmake" : {
+      "ObjectId" : "af75b176f4408086ebf10aaa6cd45ef9c60d94ee",
+      "LastModified" : "2018-09-26T17:55:30Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Superbuild/External-VTK.cmake" : {
+      "ObjectId" : "2e30866211cd5a3ef91d361b533a74e85f9f28c9",
+      "LastModified" : "2018-02-13T19:00:35Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------------------------------\n\n# Get and build vtk\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Superbuild/External-zlib.cmake" : {
+      "ObjectId" : "1d12e8ead9aa64b20ba6b1aacf348b4936fb3e5a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#---------------------------------------------------------------------------\n\n# Get and build zlib. This is required by the Python build and it is re-used\n\n# by ITK and VTK.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "Superbuild/Superbuild.cmake" : {
+      "ObjectId" : "c139a94131bd08c9136fafd6007199e1d2e5f87d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Compute -G arg for configuring external projects with the same CMake generator:\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Used by ITK, VTK, -- always build it.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# ITK\n",
+        "Line" : 115,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 3
+    },
+    "Utilities/CMakeLists.txt" : {
+      "ObjectId" : "adfa53ed6a1f99a14b2a039d1c60a63a45956d70",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "Utilities/Dashboard/itkexamples_common.cmake" : {
+      "ObjectId" : "6b764d66c9a1a1a3f04cf5d3fb349df6d3267bb3",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ITK Examples Common Dashboard Script\n\n#\n\n# This script contains basic dashboard driver code common to all\n\n# clients.\n\n#\n\n# Put this script in a directory such as \"~/Dashboards/Scripts\" or\n\n# \"c:/Dashboards/Scripts\".  Create a file next to this script, say\n\n# 'my_dashboard.cmake', with code of the following form:\n\n#\n\n#   # Client maintainer: me@mydomain.net\n\n#   set(CTEST_SITE \"machine.site\")\n\n#   set(CTEST_BUILD_NAME \"Platform-Compiler\")\n\n#   set(CTEST_BUILD_CONFIGURATION Debug)\n\n#   set(CTEST_CMAKE_GENERATOR \"Unix Makefiles\")\n\n#   get_filename_component(CTEST_DASHBOARD_ROOT \"${CTEST_SCRIPT_DIRECTORY}/dashboard_tests\" ABSOLUTE)\n\n#   include(${CTEST_SCRIPT_DIRECTORY}/itkexamples_common.cmake)\n\n#\n\n# Then run a scheduled task (cron job) with a command line such as\n\n#\n\n#   ctest -S ~/Dashboards/Scripts/my_dashboard.cmake -V\n\n#\n\n# By default the source and build trees will be placed in the path\n\n# \"../My Tests/\" relative to your script location.\n\n#\n\n# The following variables may be set before including this script\n\n# to configure it:\n\n#\n\n#   dashboard_model           = Nightly | Experimental | Continuous\n\n#   dashboard_loop            = Repeat until N seconds have elapsed\n\n#   dashboard_root_name       = Change name of \"My Tests\" directory\n\n#   dashboard_source_name     = Name of source directory (ITKExamples)\n\n#   dashboard_binary_name     = Name of binary directory (ITKExamples-build)\n\n#   dashboard_data_name       = Name of ExternalData store (ExternalData)\n\n#   dashboard_cache           = Initial CMakeCache.txt file content\n\n#   dashboard_do_coverage     = True to enable coverage (ex: gcov)\n\n#   dashboard_do_memcheck     = True to enable memcheck (ex: valgrind)\n\n#   dashboard_no_clean        = True to skip build tree wipeout\n\n#   dashboard_superbuild      = True to use the Superbuild\n\n#   dashboard_upload_documentation = Upload the HTML .zip to the dashboard\n\n#   (requires BUILD_DOCUMENTATION=ON in the dashboard cache)\n\n#   CTEST_UPDATE_COMMAND      = path to svn command-line client\n\n#   CTEST_BUILD_FLAGS         = build tool arguments (ex: -j2)\n\n#   CTEST_TEST_TIMEOUT        = Per-test timeout length\n\n#   CTEST_TEST_ARGS           = ctest_test args (ex: PARALLEL_LEVEL 4)\n\n#   CMAKE_MAKE_PROGRAM        = Path to \"make\" tool to use\n\n#\n\n# Options to configure builds from experimental git repository:\n\n#   dashboard_git_url      = Custom git clone url\n\n#   dashboard_git_branch   = Custom remote branch to track\n\n#   dashboard_git_crlf     = Value of core.autocrlf for repository\n\n#\n\n# The following macros will be invoked before the corresponding\n\n# step if they are defined:\n\n#\n\n#   dashboard_hook_init       = End of initialization, before loop\n\n#   dashboard_hook_start      = Start of loop body, before ctest_start\n\n#   dashboard_hook_build      = Before ctest_build\n\n#   dashboard_hook_test       = Before ctest_test\n\n#   dashboard_hook_coverage   = Before ctest_coverage\n\n#   dashboard_hook_memcheck   = Before ctest_memcheck\n\n#   dashboard_hook_submit     = Before ctest_submit\n\n#   dashboard_hook_end        = End of loop body, after ctest_submit\n\n#\n\n# For Makefile generators the script may be executed from an\n\n# environment already configured to use the desired compilers.\n\n# Alternatively the environment may be set at the top of the script:\n\n#\n\n#   set(ENV{CC}  /path/to/cc)   # C compiler\n\n#   set(ENV{CXX} /path/to/cxx)  # C++ compiler\n\n#   set(ENV{FC}  /path/to/fc)   # Fortran compiler (optional)\n\n#   set(ENV{LD_LIBRARY_PATH} /path/to/vendor/lib) # (if necessary)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#==========================================================================\n\n#\n\n#   Copyright Insight Software Consortium\n\n#\n\n#   Licensed under the Apache License, Version 2.0 (the \"License\");\n\n#   you may not use this file except in compliance with the License.\n\n#   You may obtain a copy of the License at\n\n#\n\n#          http://www.apache.org/licenses/LICENSE-2.0.txt\n\n#\n\n#   Unless required by applicable law or agreed to in writing, software\n\n#   distributed under the License is distributed on an \"AS IS\" BASIS,\n\n#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\n#   See the License for the specific language governing permissions and\n\n#   limitations under the License.\n\n#\n\n#==========================================================================*/\n",
+        "Line" : 73,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Select the top dashboard directory.\n",
+        "Line" : 97,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Select the model (Nightly, Experimental, Continuous).\n",
+        "Line" : 105,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Default to a Debug build.\n",
+        "Line" : 113,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Choose CTest reporting mode.\n",
+        "Line" : 122,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Launchers work only with Makefile generators.\n",
+        "Line" : 124,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# The setting is ignored by CTest < 2.8 so we need no version test.\n",
+        "Line" : 127,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Configure testing.\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# Select Git source to use.\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "#if(\"${dashboard_model}\" STREQUAL \"Nightly\")\n\n#  set(dashboard_git_branch nightly-master)\n\n#else()\n",
+        "Line" : 142,
+        "CharPositionInLine" : 2
+      },
+      "11" : {
+        "Text" : "#endif()\n",
+        "Line" : 146,
+        "CharPositionInLine" : 2
+      },
+      "12" : {
+        "Text" : "# Look for a GIT command-line client.\n",
+        "Line" : 156,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Select a source directory name.\n",
+        "Line" : 165,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Select a build directory name.\n",
+        "Line" : 174,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Select a data store.\n",
+        "Line" : 183,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Delete source tree if it is incompatible with current VCS.\n",
+        "Line" : 192,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "# Support initial checkout if necessary.\n",
+        "Line" : 203,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# Have \"git clone -b <branch>\" option.\n",
+        "Line" : 210,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# No \"git clone -b <branch>\" option.\n",
+        "Line" : 214,
+        "CharPositionInLine" : 4
+      },
+      "20" : {
+        "Text" : "# Generate an initial checkout script.\n",
+        "Line" : 219,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# CTest delayed initialization is broken, so we put the\n\n# CTestConfig.cmake info here.\n",
+        "Line" : 246,
+        "CharPositionInLine" : 2
+      },
+      "22" : {
+        "Text" : "#-----------------------------------------------------------------------------\n",
+        "Line" : 255,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "# Send the main script as a note.\n",
+        "Line" : 257,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Check for required variables.\n",
+        "Line" : 263,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# Print summary information.\n",
+        "Line" : 274,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# Git does not update submodules by default so they appear as local\n\n# modifications in the work tree.  CTest 2.8.2 does this automatically.\n\n# To support CTest 2.8.0 and 2.8.1 we wrap Git in a script.\n",
+        "Line" : 292,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# Avoid non-ascii characters in tool output.\n",
+        "Line" : 309,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# Helper macro to write the initial cache.\n",
+        "Line" : 312,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# Start with a fresh build tree.\n",
+        "Line" : 334,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# CTest 2.6 crashes with message() after ctest_test.\n",
+        "Line" : 354,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# Start a new submission.\n",
+        "Line" : 372,
+        "CharPositionInLine" : 2
+      },
+      "32" : {
+        "Text" : "# Always build if the tree is fresh.\n",
+        "Line" : 378,
+        "CharPositionInLine" : 2
+      },
+      "33" : {
+        "Text" : "# Look for updates.\n",
+        "Line" : 386,
+        "CharPositionInLine" : 2
+      },
+      "34" : {
+        "Text" : "# checkout on first iteration only\n",
+        "Line" : 388,
+        "CharPositionInLine" : 30
+      },
+      "35" : {
+        "Text" : "# Initial configure needs ITK_BUILD_ALL_MODULES ON to gather full dependency\n\n# information for *.Project.xml and topological sorting for correct build\n\n# order in *.SubProjects.cmake.\n\n#\n",
+        "Line" : 392,
+        "CharPositionInLine" : 4
+      },
+      "36" : {
+        "Text" : "# Block further messages\n",
+        "Line" : 432,
+        "CharPositionInLine" : 29
+      },
+      "37" : {
+        "Text" : "# Delay until at least 5 minutes past START_TIME\n",
+        "Line" : 453,
+        "CharPositionInLine" : 4
+      },
+      "38" : {
+        "Text" : "# Not continuous, so we are done.\n",
+        "Line" : 459,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 39
+    },
+    "itk-module.cmake" : {
+      "ObjectId" : "19d345e6eb78a8d1f67b0f7a963ee28fdf348f66",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Bridge/CMakeLists.txt" : {
+      "ObjectId" : "8f443b3cef5de2ab289013cbdcfe226586ae27b1",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Bridge/VtkGlue/CMakeLists.txt" : {
+      "ObjectId" : "9f13c88d41d692aa8d086ebf7fc944a8f7f16f20",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Bridge/VtkGlue/ConvertAnRGBitkImageTovtkImageData/CMakeLists.txt" : {
+      "ObjectId" : "658a0654519286b4981f849402ee9e5abddc1bbb",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Bridge/VtkGlue/ConvertAnitkImageTovtkImageData/CMakeLists.txt" : {
+      "ObjectId" : "784c648cc697a5a2b5b47bdb2645b7b130b3411a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Bridge/VtkGlue/ConvertRGBvtkImageDataToAnitkImage/CMakeLists.txt" : {
+      "ObjectId" : "3b6143dae6f5f6c18c3481bdac8afb497cb55e42",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Bridge/VtkGlue/ConvertvtkImageDataToAnitkImage/CMakeLists.txt" : {
+      "ObjectId" : "304ec6f49bbc67a5efceaf3bfaccbf0f83e80401",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Since we use vtkImageMagnitude\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/CMakeLists.txt" : {
+      "ObjectId" : "bf59b6e4fe8f2beac489e53b5a3d25623bd8ad31",
+      "LastModified" : "2019-04-12T19:52:02Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# To avoid linker issues.\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Set here the proper version of Python required to be able to build\n\n# tarballs for each example\n",
+        "Line" : 25,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# For comparing example outputs to their regression baseline's.\n",
+        "Line" : 38,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/Compatibility/CMakeLists.txt" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "1970-01-01T00:00:00Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/CMakeLists.txt" : {
+      "ObjectId" : "7d95290504e6ab09d1bd9ab31a36b233dbd51945",
+      "LastModified" : "2016-05-02T22:16:59Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/AddOffsetToIndex/CMakeLists.txt" : {
+      "ObjectId" : "1025605b676d088d6e684204dd06d0e87726acbc",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ApplyAFilterOnlyToASpecifiedRegionOfAnImage/CMakeLists.txt" : {
+      "ObjectId" : "132a30799ef4f8e5a416ea0d5581dedaafd5c0d1",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/BoundingBoxOfAPointSet/CMakeLists.txt" : {
+      "ObjectId" : "e26d1a239ead5873dd7c66a4da7e8fcc29b4eb36",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/BuildAHelloWorldProgram/CMakeLists.txt" : {
+      "ObjectId" : "e5a35805ce25249c9357a7308b385c6a27d87e8e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CMakeLists.txt" : {
+      "ObjectId" : "ff9f9648132b1e0fef8866dc3f7a8a70c79ce832",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# ConceptChecking\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/Core/Common/ComputeTimeBetweenPoints/CMakeLists.txt" : {
+      "ObjectId" : "93381e44056d3230c79361327770529139c682d2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ConceptCheckingIsFloatingPoint/CMakeLists.txt" : {
+      "ObjectId" : "ef629d15d70f2f2cd6917e5dfab32c05ab8fdfe2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ConceptCheckingIsSameDimension/CMakeLists.txt" : {
+      "ObjectId" : "f56562575da81dc3b9ed508d6a6cf82fc4a6a920",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ConceptCheckingIsSameType/CMakeLists.txt" : {
+      "ObjectId" : "bb151cb40ebbd61eb6ba0f99c37a97eeb3000490",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CovariantVectorDotProduct/CMakeLists.txt" : {
+      "ObjectId" : "ba0ec9e0cb6454ff09055f651463104558741a08",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CovariantVectorNorm/CMakeLists.txt" : {
+      "ObjectId" : "fe562f715e16fedc0befaf7b437e928c6051e257",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateABackwardDifferenceOperator/CMakeLists.txt" : {
+      "ObjectId" : "906770ab3c00dcf44de3f4f312e87597766b757c",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateACovariantVector/CMakeLists.txt" : {
+      "ObjectId" : "5ed0c56450ab491f5f34048bf547faa32607b80e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAFixedArray/CMakeLists.txt" : {
+      "ObjectId" : "7330968dfe5cee64d8aa399ff121871b56c81799",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAIndex/CMakeLists.txt" : {
+      "ObjectId" : "a4ddab55c238500cdaaf506f43296d98ede3118f",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAPointSet/CMakeLists.txt" : {
+      "ObjectId" : "74f453a03eae485c02d66cd22ec29366f498898a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateASize/CMakeLists.txt" : {
+      "ObjectId" : "8fd3153081dd06f0f1db63e9f9a21729e42b2a5c",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAVector/CMakeLists.txt" : {
+      "ObjectId" : "92437dbb73b1e8f786c733a86b2e596d8a15d003",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAnImage/CMakeLists.txt" : {
+      "ObjectId" : "15c5ad3cd5e6401ca687f9c10c9442374c212ca6",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAnImageOfVectors/CMakeLists.txt" : {
+      "ObjectId" : "49cc63709b840fb15ad50d552d9f3f96806dea98",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAnImageRegion/CMakeLists.txt" : {
+      "ObjectId" : "aa368015e1f30914acd85d48f8e1f5795bfa19d9",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAnRGBImage/CMakeLists.txt" : {
+      "ObjectId" : "e97a14887c6447203319dd12046d1846e0e9ff7c",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/CreateAnother/CMakeLists.txt" : {
+      "ObjectId" : "341a57faaeed0dbf797cc846a041789353de6261",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/DistanceBetweenPoints/CMakeLists.txt" : {
+      "ObjectId" : "7c181f403860116d58d32a5a0965599effedc0c1",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/DoDataParallelThreading/CMakeLists.txt" : {
+      "ObjectId" : "4a47df11ee1f4e981cb88d52d2878bf6c30006dc",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/DuplicateAnImage/CMakeLists.txt" : {
+      "ObjectId" : "fdcf4bc922a8895fc86787a0b6fe242a147a53e8",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/FilterAndParallelizeImageRegion/CMakeLists.txt" : {
+      "ObjectId" : "439cfbfc46de291890da9eccde6c45b5fad992f1",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/GetImageSize/CMakeLists.txt" : {
+      "ObjectId" : "ad8a965423f7270f300a4623249827a0ddedba0d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/GetNameOfClass/CMakeLists.txt" : {
+      "ObjectId" : "f8ac5171db7f52519dd1952d7d85bf2b5d94571d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/GetTypeBasicInformation/CMakeLists.txt" : {
+      "ObjectId" : "7203410cc9003d8cdd7809040f4365c89018ed0d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ImageRegionIntersection/CMakeLists.txt" : {
+      "ObjectId" : "2bd60133d2ffd1592e56b278467a72cb328b31a5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ImageRegionOverlap/CMakeLists.txt" : {
+      "ObjectId" : "1a0ff7fe497e521d20d0893bf367f70e2d20bccb",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ImportPixelBufferIntoAnImage/CMakeLists.txt" : {
+      "ObjectId" : "25e2026e197e56f81b3453c6381fe41ac34592fe",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/IsPixelInsideRegion/CMakeLists.txt" : {
+      "ObjectId" : "a4d6e67c9e055ef71838a0950caff9127be168c2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/IterateOnAVectorContainer/CMakeLists.txt" : {
+      "ObjectId" : "392d74695b5e6a946d5609c68ec8233ed113c96a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/IterateOverARegionWithAShapedNeighborhoodIterator/CMakeLists.txt" : {
+      "ObjectId" : "cb0539c7589deea08e8958a7acb0e643f364f7c6",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/MersenneTwisterRandomIntegerGenerator/CMakeLists.txt" : {
+      "ObjectId" : "e86ab2118ccd863dfe0b4058ede917c6d4b0c155",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/MersenneTwisterRandomNumberGenerator/CMakeLists.txt" : {
+      "ObjectId" : "e6760f32916aa2d11f42b5f2f083d34cea9259d3",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ObserveAnEvent/CMakeLists.txt" : {
+      "ObjectId" : "4b2e93f3404c03a283d50ad20c6e45b33b9a0675",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ReRunPipelineWithChangingLargestPossibleRegion/CMakeLists.txt" : {
+      "ObjectId" : "e95f651a447a0fd29026eb4808c16935bc9ba68b",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ReadAPointSet/CMakeLists.txt" : {
+      "ObjectId" : "3e5666489f32bd913325ea13819bd66ecab0ecbe",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/ReadWriteVectorImage/CMakeLists.txt" : {
+      "ObjectId" : "28df82d108079b14658fc4732f04c27b0afe4748",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/SetPixelValueInOneImage/CMakeLists.txt" : {
+      "ObjectId" : "0dfd6e87b5cb2c98a948c0410b833670a3a2aabd",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/StreamAPipeline/CMakeLists.txt" : {
+      "ObjectId" : "5fbaede421b5540a4d996a80ac224341cfa44fd4",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/TraceMemoryBetweenPoints/CMakeLists.txt" : {
+      "ObjectId" : "231c270fe868c0bf794f2ac53222d5c2c9d8c6c2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/TryCatchException/CMakeLists.txt" : {
+      "ObjectId" : "654259e73fd364f2c84baba9e256684277a15f26",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/UseParallelizeImageRegion/CMakeLists.txt" : {
+      "ObjectId" : "4dcd3ebca898cf7b16f362512cff34d0eccd1cf2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Common/WatchAFilter/CMakeLists.txt" : {
+      "ObjectId" : "5e4e27e6f027601c23ba5512f30eb99e38740836",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Mesh/CMakeLists.txt" : {
+      "ObjectId" : "909eed98b60ea36fa63e8fe98124b739af62f3a0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#compare_to_baseline( ExtractIsoSurface Output )\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#compare_to_baseline( TranslateOneMesh Output )\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/Core/Mesh/ConvertTriangleMeshToBinaryImage/CMakeLists.txt" : {
+      "ObjectId" : "12c7bc0aae1c2d868834fd1dd27ec7329266490e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Mesh/ExtractIsoSurface/CMakeLists.txt" : {
+      "ObjectId" : "ab901320ac7020894581af8fa5526149f510f3b8",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Mesh/TranslateOneMesh/CMakeLists.txt" : {
+      "ObjectId" : "33fecec50729ea22402d2962a269dc8ec00a32ec",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/QuadEdgeMesh/CMakeLists.txt" : {
+      "ObjectId" : "1eaa95b68f75a68e0687e589cb0cea5ebbfe5aba",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/QuadEdgeMesh/CreateTriangularQuadEdgeMesh/CMakeLists.txt" : {
+      "ObjectId" : "f845ccee7c835ee3960049016255aed371b5fe24",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/QuadEdgeMesh/CutMesh/CMakeLists.txt" : {
+      "ObjectId" : "f80914b691157b39dc02a8de85595ed66c95da81",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/QuadEdgeMesh/ExtractVertexOnMeshBoundaries/CMakeLists.txt" : {
+      "ObjectId" : "4ac9f846af55372a2957d10519608c34e9e0979e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/QuadEdgeMesh/GetListOfFacesAroundAGivenVertex/CMakeLists.txt" : {
+      "ObjectId" : "3a787bfd80e7ff01605e6f4f90f7ca73f24469b0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/QuadEdgeMesh/PrintVertexNeighbors/CMakeLists.txt" : {
+      "ObjectId" : "7c5e89ff8adb1d646c7629c3ef49dc220138e9ca",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/TestKernel/CMakeLists.txt" : {
+      "ObjectId" : "c4c60033e23da1b9b8e6d9b7912110aa04c8daff",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/TestKernel/GenerateRandomImage/CMakeLists.txt" : {
+      "ObjectId" : "7a4aacae351fe0c60bd215011099aa5277449db2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Transform/ApplyAffineTransformFromHomogeneousMatrixAndResample/CMakeLists.txt" : {
+      "ObjectId" : "57739a444ea181b096db77cc34c88e336d5b097a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Transform/CMakeLists.txt" : {
+      "ObjectId" : "d44093c46f666490131a27a11100f5dd6fd18271",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Transform/CopyACompositeTransform/CMakeLists.txt" : {
+      "ObjectId" : "bd99e07c03941931bfc5ac97e4df61f1d650a17c",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Transform/CopyANonCompositeTransform/CMakeLists.txt" : {
+      "ObjectId" : "c334ed568490064c2264f23650d6c1830199fbba",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Core/Transform/TranslateImage/CMakeLists.txt" : {
+      "ObjectId" : "af8106c06171250e9ed99eac88160d3a6dd908fd",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/External/CMakeLists.txt" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AnisotropicSmoothing/CMakeLists.txt" : {
+      "ObjectId" : "0dc23db678b5710130a35b34c1094b7d0c365c57",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AnisotropicSmoothing/ComputeCurvatureAnisotropicDiffusion/CMakeLists.txt" : {
+      "ObjectId" : "e064df174dabfdd622ec4c3e485276f69dd284f2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AnisotropicSmoothing/ComputeCurvatureFlow/CMakeLists.txt" : {
+      "ObjectId" : "536f25b1e76bfe368d7348cf05c0fef7f6a432c6",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AnisotropicSmoothing/ComputeGradientAnisotropicDiffusion/CMakeLists.txt" : {
+      "ObjectId" : "e9a4cc9d53f7fcad0a5714dc5f9dc4e8ec17f7a3",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AnisotropicSmoothing/ComputePeronaMalikAnisotropicDiffusion/CMakeLists.txt" : {
+      "ObjectId" : "854d91aad97ec52090fd523ac5bed21fb4028761",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AntiAlias/CMakeLists.txt" : {
+      "ObjectId" : "d86c354f4051208cc88145068eebe34e5f485e55",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/AntiAlias/SmoothBinaryImageBeforeSurfaceExtraction/CMakeLists.txt" : {
+      "ObjectId" : "5d7281f84d44ab28f911a267218b469d5f189b08",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/BinaryMathematicalMorphology/CMakeLists.txt" : {
+      "ObjectId" : "1357023552fbf5a5b7263689b13a5d7da0b3d7aa",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/BinaryMathematicalMorphology/DilateABinaryImage/CMakeLists.txt" : {
+      "ObjectId" : "5a207b732316271355f6ed6adaf4ae4548afa5b0",
+      "LastModified" : "2019-02-11T22:18:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/BinaryMathematicalMorphology/ErodeABinaryImage/CMakeLists.txt" : {
+      "ObjectId" : "af9a5f0383553402a0a8f24ec3a1eaed5a71a144",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/CMakeLists.txt" : {
+      "ObjectId" : "efcf07e679d779092ab7264aecfdaedabc7d08e1",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Colormap/ApplyAColorMapToAnImage/CMakeLists.txt" : {
+      "ObjectId" : "686e6abe0cf4afecfcbf5cf8ead11a7300186374",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Colormap/CMakeLists.txt" : {
+      "ObjectId" : "65f6443e9fe45440b7e402941b0b59a9fdf9a499",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Colormap/CreateACustomColorMap/CMakeLists.txt" : {
+      "ObjectId" : "fbb91483456e22cf28f2b22b44e481f1f82fef40",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FFT/CMakeLists.txt" : {
+      "ObjectId" : "001a065889d4b8ecd752225a970f8199915d479d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FFT/ComputeForwardFFT/CMakeLists.txt" : {
+      "ObjectId" : "d4532caa22e7cc9bf25c378e6861eb522139b2e7",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FFT/ComputeImageSpectralDensity/CMakeLists.txt" : {
+      "ObjectId" : "453e95265218bf991d771fbbb821ad9486ba3b85",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FFT/FilterImageInFourierDomain/CMakeLists.txt" : {
+      "ObjectId" : "b0c7efb182fd6769575fa194eb39178751e70f97",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FastMarching/CMakeLists.txt" : {
+      "ObjectId" : "a0bbf40e6227d539f85e04ea4afeb7d7dfa5844c",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FastMarching/ComputeGeodesicDistanceOnMesh/CMakeLists.txt" : {
+      "ObjectId" : "d74a8ff1278891a01e46d59bde1c6a30eca3dede",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/FastMarching/CreateDistanceMapFromSeeds/CMakeLists.txt" : {
+      "ObjectId" : "ceac0a019a5c99bdf0ff4a91c9bdfee97d851a2f",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageCompare/CMakeLists.txt" : {
+      "ObjectId" : "3c1d1d8f00f46bba9ef2459ad2e4e31ad9dcb891",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageCompare/CombineTwoImagesWithCheckerBoardPattern/CMakeLists.txt" : {
+      "ObjectId" : "e29b9376698f29ca66de0dcf6e557dc264674621",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFeature/CMakeLists.txt" : {
+      "ObjectId" : "0a0aa9b0668a9016c7222f8905809f018d50d10f",
+      "LastModified" : "2019-02-11T22:18:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFeature/ComputeLaplacian/CMakeLists.txt" : {
+      "ObjectId" : "33b579a5480edffd4baa6da652253e54f63f86f8",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFeature/DetectEdgesWithCannyFilter/CMakeLists.txt" : {
+      "ObjectId" : "b7410bf5132228ec90d565fb6da1cb40a926d83e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFeature/LaplacianRecursiveGaussianImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "febdc92bb54504db7c4e0de6619f1eed6e60091c",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFeature/SegmentBloodVessels/CMakeLists.txt" : {
+      "ObjectId" : "94d443f247d123d73dfbf12862b3608c73b6e912",
+      "LastModified" : "2019-02-11T22:18:26Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFeature/SobelEdgeDetectionImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "4139f70d71297c210a0f9f94b3808f5367cd5266",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFilterBase/CMakeLists.txt" : {
+      "ObjectId" : "1c1a9b3db528df05aa3f7072eba444013737c551",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFilterBase/CastAnImageToAnotherType/CMakeLists.txt" : {
+      "ObjectId" : "0b8329f0fb0e4a72a66aa6b43c9e8d0befc3f64e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFusion/CMakeLists.txt" : {
+      "ObjectId" : "9eac851cc121438c6446d94001d4d2c1c38557b5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageFusion/OverlayLabelMapOnTopOfAnImage/CMakeLists.txt" : {
+      "ObjectId" : "59e75a9bf35f41ac6221c176064bb77ef3d9c1fc",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGradient/ApplyGradientRecursiveGaussian/CMakeLists.txt" : {
+      "ObjectId" : "508838dbc8abcf87b0ffe0a887b0bf969cceb1a8",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGradient/ApplyGradientRecursiveGaussianWithVectorInput/CMakeLists.txt" : {
+      "ObjectId" : "684733d4905cd956f655dcb03b7eb986d4b71c01",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGradient/CMakeLists.txt" : {
+      "ObjectId" : "c6bdb5a3cef193422a0725181e31c40522106bb5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGradient/ComputeGradientMagnitude/CMakeLists.txt" : {
+      "ObjectId" : "c31964cbae2880c7c97da26e2ad86c77173fc11a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGradient/ComputeGradientMagnitudeRecursiveGaussian/CMakeLists.txt" : {
+      "ObjectId" : "9a305c9c7a67347f34b43fdc19e0c02bb71c42c5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/AppendTwo3DVolumes/CMakeLists.txt" : {
+      "ObjectId" : "375ce9c3e65b32b2b1b0e660809ee2dcb3f2e622",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/CMakeLists.txt" : {
+      "ObjectId" : "b62152fab8b95fad39a141eb5df420b5391d8b34",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# There is currently an issue with the TileImageFilter SetDefaultPixelValue in\n\n# the Python wrapping. See https://issues.itk.org/jira/browse/ITK-3422\n\n#compare_to_baseline(\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#EXAMPLE_NAME Create3DVolume\n\n#BASELINE_PREFIX OutputBaseline\n",
+        "Line" : 25,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "#)\n",
+        "Line" : 27,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "src/Filtering/ImageGrid/ChangeImageOriginSpacingOrDirection/CMakeLists.txt" : {
+      "ObjectId" : "25b59a0f696a82e4abfb11872235b1bb767fed88",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/Create3DVolume/CMakeLists.txt" : {
+      "ObjectId" : "0e20bbaaebe1d8879e636514443b264032a0af9e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/ExtractRegionOfInterestInOneImage/CMakeLists.txt" : {
+      "ObjectId" : "9458fcb45eefe00e8240d64578a9c7769355437f",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/FlipAnImageOverSpecifiedAxes/CMakeLists.txt" : {
+      "ObjectId" : "d47d0f757c621501e94f074cbe433ab4d6908776",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/PadAnImageByMirroring/CMakeLists.txt" : {
+      "ObjectId" : "740fca701f5ef6fc09c7b225d34213882359d033",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/PadAnImageWithAConstant/CMakeLists.txt" : {
+      "ObjectId" : "25cfc147a19a59eefe5a029c80065032301db438",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/PasteImageIntoAnotherOne/CMakeLists.txt" : {
+      "ObjectId" : "eeefb0eb97664860251cf81f6dca9195faf3961a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/PermuteAxesOfAnImage/CMakeLists.txt" : {
+      "ObjectId" : "4109665cedcdc2ab7e976383101a37ade1718440",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/ProcessA2DSliceOfA3DImage/CMakeLists.txt" : {
+      "ObjectId" : "938bfbbe918c1a5060081916cd68b920f96571d0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# slice number\n",
+        "Line" : 26,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 1
+    },
+    "src/Filtering/ImageGrid/ResampleAVectorImage/CMakeLists.txt" : {
+      "ObjectId" : "fcf34008feb23999318477de4faca70344e60ba4",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/ResampleAnImage/CMakeLists.txt" : {
+      "ObjectId" : "9f7f6b12060f7a159dc320bc33bcec36f46e42ec",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/UpsampleOrDownsampleScalarImage/CMakeLists.txt" : {
+      "ObjectId" : "c7c1261055ff83fae7d4f49b5427813a6520c543",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageGrid/WarpAnImageUsingADeformationField/CMakeLists.txt" : {
+      "ObjectId" : "75f4777d571a2d0e83ba2023dd5bb9b863b153c4",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/ApplyAtanImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "bea399605756407c130c0ecc7575c4dd6fb5894b",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/ApplyCosImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "e67fffeb21fab28953596fc9a6e58747c3a3db39",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/ApplyExpNegativeImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "38ab4dba69abb795db0199ff99e71a5cb108bc1e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/ApplySinImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "c5afdd303dd436ca6eacbdc5eee7d4eedda7ac1b",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/CMakeLists.txt" : {
+      "ObjectId" : "6a54c7c176b6b926f6a91e4c481aa59cd97b682a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/ComputeSigmoid/CMakeLists.txt" : {
+      "ObjectId" : "6b1bdf969446507e8522bd51f7368f82a98b2575",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/ConvertRGBImageToGrayscaleImage/CMakeLists.txt" : {
+      "ObjectId" : "bd1e8d92c89a44c5134cdc49ea67bb9753796569",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/MultiplyImageByScalar/CMakeLists.txt" : {
+      "ObjectId" : "b8f4024a0d420e40d830e97201efead4f8b6eb7b",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/MultiplyTwoImages/CMakeLists.txt" : {
+      "ObjectId" : "e0f4b3c8f404434eef633ee18e94de9073f54a3d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageIntensity/RescaleAnImage/CMakeLists.txt" : {
+      "ObjectId" : "b29826547e4e5d7c1627efc8e7a5be7b9ff16c87",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageStatistics/AdaptiveHistogramEqualizationImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "747d42e1ee7faf6408d5b96970f18cd6d5790033",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageStatistics/ApplyAccumulateImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "e13084051543b7759f25d99967707835ae5f9ece",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/ImageStatistics/CMakeLists.txt" : {
+      "ObjectId" : "fa160bbb79fba78a4c68bb9991955de674d97416",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/LabelMap/ApplyMorphologicalClosingOnAllLabelObjects/CMakeLists.txt" : {
+      "ObjectId" : "53abd8dc0ecf1ef34bce9f84f3d9c7f85a3eb86f",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/LabelMap/ApplyMorphologicalClosingOnSpecificLabelObject/CMakeLists.txt" : {
+      "ObjectId" : "87999b59b16081d73b930e3d085c88de83a453d6",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/LabelMap/CMakeLists.txt" : {
+      "ObjectId" : "f1db4dd47387fc180f91c9af6de81c1cc82d9ac4",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/LabelMap/ExtractGivenLabelObject/CMakeLists.txt" : {
+      "ObjectId" : "f9d71a83fcc27baccae65ecd8583f55120c69762",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/LabelMap/MaskOneImageGivenLabelMap/CMakeLists.txt" : {
+      "ObjectId" : "741a2fe18000e9c4a34ae4f08b0bc0fea6845e5d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/LabelMap/RemoveHolesNotConnectedToImageBoundaries/CMakeLists.txt" : {
+      "ObjectId" : "e4c985f409231505b6a56a0b8670f324cd7a56aa",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/MathematicalMorphology/CMakeLists.txt" : {
+      "ObjectId" : "8b58527d377f1b22f8eb11b023319c56ac16fe35",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/MathematicalMorphology/CreateABinaryBallStructuringElement/CMakeLists.txt" : {
+      "ObjectId" : "dc83e027d749b6f004e014fb0bfe1c9f4b5b0a6d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/MathematicalMorphology/DilateAGrayscaleImage/CMakeLists.txt" : {
+      "ObjectId" : "d8fa480fb511f719f9efe9a449ebc23618df3596",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/MathematicalMorphology/ErodeAGrayscaleImage/CMakeLists.txt" : {
+      "ObjectId" : "fb4bee94b7e3fcf4408e521586db056bdf1469f7",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/QuadEdgeMeshFiltering/CMakeLists.txt" : {
+      "ObjectId" : "63b6382df3b140d6caa20a36634d6af169ddabf1",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# add_example( CleanQuadEdgeMesh )\n\n# compare_to_baseline( CleanQuadEdgeMesh Output)\n",
+        "Line" : 2,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# compare_to_baseline( DelaunayConformEdgeFlipping Output)\n",
+        "Line" : 5,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "src/Filtering/QuadEdgeMeshFiltering/CleanQuadEdgeMesh/CMakeLists.txt" : {
+      "ObjectId" : "6a26866ddcd591d59f0bb35b9f91c841e7a909fa",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/QuadEdgeMeshFiltering/ComputeNormalsOfAMesh/CMakeLists.txt" : {
+      "ObjectId" : "5b9da6917e570e3a82b511ed7a75fe3048595057",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/QuadEdgeMeshFiltering/ComputePlanarParameterizationOfAMesh/CMakeLists.txt" : {
+      "ObjectId" : "6e2d413fff20816161e3d2692a82ecccf22d34b7",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/QuadEdgeMeshFiltering/DelaunayConformEdgeFlipping/CMakeLists.txt" : {
+      "ObjectId" : "8fedf909e2c7e896eb4923d81fbe0344ec9bc324",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Smoothing/ApplyMeanFilter/CMakeLists.txt" : {
+      "ObjectId" : "db76a9e7fd9a25fb61c108f2ebd9002dd1277a97",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Smoothing/ApplyMedianFilter/CMakeLists.txt" : {
+      "ObjectId" : "b5fb357e30d64bc5d6b61b2d5395bca90e2c6bc4",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Smoothing/BlurringAnImageUsingABinomialKernel/CMakeLists.txt" : {
+      "ObjectId" : "fccae989de79002640c544fb4ff972aa9d1462b5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Smoothing/CMakeLists.txt" : {
+      "ObjectId" : "2150098a8384a54ff8f8cbbc77381a7b413083e2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Smoothing/MedianFilteringOfAnRGBImage/CMakeLists.txt" : {
+      "ObjectId" : "bde60d9790d237e353723a4c9469b2b0799fcf04",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Smoothing/SmoothWithRecursiveGaussian/CMakeLists.txt" : {
+      "ObjectId" : "fc99df903f30fbbb6abca08baae51b0abf3df295",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Thresholding/CMakeLists.txt" : {
+      "ObjectId" : "1497da33ef8bafdd8c5f3df630a4dd36b347db3a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Temporarily disabled until Python packages are updated\n\n#add_example( ThresholdAnImageUsingOtsu )\n\n#compare_to_baseline( EXAMPLE_NAME ThresholdAnImageUsingOtsu BASELINE_PREFIX OutputBaseline)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/Filtering/Thresholding/ThresholdAnImage/CMakeLists.txt" : {
+      "ObjectId" : "9ad41c3f8f70086fef43be99eafc8d61f52d49e0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Thresholding/ThresholdAnImageUsingBinary/CMakeLists.txt" : {
+      "ObjectId" : "a90fa84075b45b608c443875c2fe540d0c94a0d8",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Filtering/Thresholding/ThresholdAnImageUsingOtsu/CMakeLists.txt" : {
+      "ObjectId" : "0480adcf2a35d18ac1d89cb3f9b2908995564080",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/GPU/CMakeLists.txt" : {
+      "ObjectId" : "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/CMakeLists.txt" : {
+      "ObjectId" : "1fe53e6e66d497f27791cddaafcd5a4105d7296f",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/GDCM/CMakeLists.txt" : {
+      "ObjectId" : "aee3a964074b32bb579f7d0e367b07c4a836c349",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/GDCM/ReadDICOMSeriesAndWrite3DImage/CMakeLists.txt" : {
+      "ObjectId" : "4f042d7b3356faa08b9463eab703294fd13fe6b2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/ImageBase/CMakeLists.txt" : {
+      "ObjectId" : "59c50576f12510d475f3ea6b51d3f1658fc261c5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# IO Factories\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/IO/ImageBase/ConvertFileFormats/CMakeLists.txt" : {
+      "ObjectId" : "22d91cd066764b57af35e269de3f892e03b85f9d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/ImageBase/CreateAListOfFileNames/CMakeLists.txt" : {
+      "ObjectId" : "9d44d0956591474eb51e64dcb13198312cf6c73a",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/ImageBase/GenerateSlicesFromVolume/CMakeLists.txt" : {
+      "ObjectId" : "4a8f227de52c35b33391323d27cb6d111d3330e2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/ImageBase/ReadAnImage/CMakeLists.txt" : {
+      "ObjectId" : "1148a84ed5db9cb544280253101123fa7a5763b5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/ImageBase/ReadUnknownImageType/CMakeLists.txt" : {
+      "ObjectId" : "75862010856498b0edbbfd34a04b7ade2348c1bb",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/ImageBase/RegisterIOFactories/CMakeLists.txt" : {
+      "ObjectId" : "9fbbacbedd4414df4e42434258e7a3d5d76fbf72",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Registering the IO classes manually is usually not necessary,\n\n# unless this variable is set before calling\n\n#   \"include( ${ITK_USE_FILE} )\"\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "src/IO/ImageBase/WriteAnImage/CMakeLists.txt" : {
+      "ObjectId" : "d43e83bba0fdc5c81efd896baf4c1d72d8283428",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/Mesh/CMakeLists.txt" : {
+      "ObjectId" : "16f530329870ab68421771931db1a7eaaa80586f",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/Mesh/ReadMesh/CMakeLists.txt" : {
+      "ObjectId" : "262e9f1e58012eac4ac9e8fe66e3879d2a7c3dd2",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/TIFF/CMakeLists.txt" : {
+      "ObjectId" : "d24a4ca700d30fd8278e86bff1f0acd7af922885",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/IO/TIFF/WriteATIFFImage/CMakeLists.txt" : {
+      "ObjectId" : "d5c02cdfd4afa9b799646b8adcfd2dd635dc38d5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Nonunit/CMakeLists.txt" : {
+      "ObjectId" : "c85a523883ce416bf95e2b3b5b4571ed2edb5a8b",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Nonunit/Review/CMakeLists.txt" : {
+      "ObjectId" : "4cc68cd2478a5a1b4ac0f539e78dc41b5582a8e3",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Nonunit/Review/SegmentBloodVesselsWithMultiScaleHessianBasedMeasure/CMakeLists.txt" : {
+      "ObjectId" : "257bcc43bdbdd71010a74e12dca0a47bbe030830",
+      "LastModified" : "2019-03-04T19:24:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Numerics/CMakeLists.txt" : {
+      "ObjectId" : "88743e474219c3a95d9b06e4c92ee90859e5f5b5",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Numerics/Statistics/CMakeLists.txt" : {
+      "ObjectId" : "f6eccb8e687a179782cc5a81d176505264e0ca3e",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Numerics/Statistics/ComputeHistogramFromGrayscaleImage/CMakeLists.txt" : {
+      "ObjectId" : "d44e9bcb2f5c0ff6a9750687676ed8504944373d",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Numerics/Statistics/HistogramCreationAndBinAccess/CMakeLists.txt" : {
+      "ObjectId" : "d9ed4807aed405540b995262574faea453074bd0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Registration/CMakeLists.txt" : {
+      "ObjectId" : "2945502af7ec421519df3df5b8c34e365c1f80c7",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Registration/Common/CMakeLists.txt" : {
+      "ObjectId" : "a0f2a53172c1d9ae487a000bffec3c3beea36524",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Registration/Common/Perform2DTranslationRegistrationWithMeanSquares/CMakeLists.txt" : {
+      "ObjectId" : "6555276d5d575e423c140d0dbf3027b49d15db05",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Registration/Common/PerformMultiModalityRegistrationWithMutualInformation/CMakeLists.txt" : {
+      "ObjectId" : "7342fcb52362a754b02dc445fcc42ca8d15e7414",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Registration/Metricsv4/CMakeLists.txt" : {
+      "ObjectId" : "4053c7148a4aac317ffc0dad38b07a13fce1a3bd",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Registration/Metricsv4/PerformRegistrationOnVectorImages/CMakeLists.txt" : {
+      "ObjectId" : "61dca0a57f86ca774164b047933611055e445b33",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/CMakeLists.txt" : {
+      "ObjectId" : "d101cc94ecb5767d8465ff0e821ab722b20297e0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LabelVoting/CMakeLists.txt" : {
+      "ObjectId" : "2245aaf807459418080f38bf6c94659900041b27",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LabelVoting/IterativeHoleFilling/CMakeLists.txt" : {
+      "ObjectId" : "6a55f462ae38f7f822e3c9e678b6916940df6118",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSets/CMakeLists.txt" : {
+      "ObjectId" : "3d544476a072f49933dc6712d32d4c3da76fffaa",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSets/SegmentWithGeodesicActiveContourLevelSet/CMakeLists.txt" : {
+      "ObjectId" : "2cc30482b15e70cc2856a82c82d9cecd6913b2cd",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/CMakeLists.txt" : {
+      "ObjectId" : "c7baadbdd5bc5c60570030957a3b9f03490cb6d6",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeEvolvingDense2DLevelSetAsElevationMap/CMakeLists.txt" : {
+      "ObjectId" : "75ef426717692b3c569549efb0964f8257071d53",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeEvolvingDense2DLevelSetZeroSet/CMakeLists.txt" : {
+      "ObjectId" : "d8b63dc246c76f08c80fbaa3703c285b80d039b1",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeStaticDense2DLevelSetAsElevationMap/CMakeLists.txt" : {
+      "ObjectId" : "0778f0e192655cb9a5a5e27cfdb0f1f88d42abb3",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeStaticDense2DLevelSetZeroSet/CMakeLists.txt" : {
+      "ObjectId" : "85c2a02ff0998cb5532b9d708662592c527e5522",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeStaticMalcolm2DLevelSetLayers/CMakeLists.txt" : {
+      "ObjectId" : "972c8ee01f75b872e5417fe9ead7d30d39468605",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeStaticShi2DLevelSetLayers/CMakeLists.txt" : {
+      "ObjectId" : "c766f22a42385d303c8a5e4b9cb56c62233621a0",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/LevelSetsv4Visualization/VisualizeStaticWhitaker2DLevelSetLayers/CMakeLists.txt" : {
+      "ObjectId" : "b8af9baaa2efc3f7767a87aff39817f0a3be34ed",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/Watersheds/CMakeLists.txt" : {
+      "ObjectId" : "7bb837408126815f924929348692cf75ce25a9ba",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Segmentation/Watersheds/SegmentWithWatershedImageFilter/CMakeLists.txt" : {
+      "ObjectId" : "c0c70fe63645c669488b585d3052c45ec7ec1341",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Video/BridgeOpenCV/CMakeLists.txt" : {
+      "ObjectId" : "43cad8d8b532d4e90f289864ad2991b3fcef4766",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Video/BridgeOpenCV/ConvertAnITKGrayScaleImageToCVMat/CMakeLists.txt" : {
+      "ObjectId" : "c4e21fdb1b0e828fda947762db0b4a97c66ebbfe",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "src/Video/CMakeLists.txt" : {
+      "ObjectId" : "ce09fe52db07c55eeb3c786edd014c7161af98ec",
+      "LastModified" : "2018-09-28T03:16:22Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 240
+  },
+  "ElapsedTime" : 1088
+}

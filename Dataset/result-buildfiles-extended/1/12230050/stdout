@@ -1,0 +1,370 @@
+{
+  "Repository" : "12230050",
+  "Revision" : "HEAD",
+  "ObjectId" : "b2414208ecd8011ac819da04e820014a797a28a9",
+  "CommitTime" : "2019-04-15T19:52:34Z",
+  "Files" : {
+    "Makefile" : {
+      "ObjectId" : "5a36043d990bc20aa7888a3a198fd836ce0adac3",
+      "LastModified" : "2019-03-18T20:58:03Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "# INC_DIR must be a relative path\n",
+        "Line" : 14,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Magic dependencies (see <http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/#tldr>)\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# We don't ask for -fopenmp here because how we get it can depend on the compiler\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Use pkg-config to find Cairo and all the libs it uses\n",
+        "Line" : 36,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# We may need libraries from Macports\n\n# TODO: where does Homebrew keep libraries?\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Use /opt/local/lib if present\n",
+        "Line" : 44,
+        "CharPositionInLine" : 8
+      },
+      "6" : {
+        "Text" : "# Use /usr/local/lib if present.\n",
+        "Line" : 49,
+        "CharPositionInLine" : 8
+      },
+      "7" : {
+        "Text" : "# Use /usr/local/include as system-level (to avoid overriding our Protobuf) if present.\n\n# One might expect this to already be there but see https://github.com/vgteam/vg/issues/2133\n",
+        "Line" : 54,
+        "CharPositionInLine" : 8
+      },
+      "8" : {
+        "Text" : "# Our compiler might be clang that lacks -fopenmp support.\n\n# Sniff that\n",
+        "Line" : 59,
+        "CharPositionInLine" : 4
+      },
+      "9" : {
+        "Text" : "# The compiler complained about fopenmp instead of its nonsense input file.\n\n# We need to use the hard way of getting OpenMP not bundled with the compiler.\n\n# The compiler only needs to do the preprocessing\n",
+        "Line" : 62,
+        "CharPositionInLine" : 8
+      },
+      "10" : {
+        "Text" : "# Use /opt/local/lib/libomp if present, because Macports installs libomp there.\n\n# Brew is supposed to put it somewhere the compiler can find it by default.\n",
+        "Line" : 68,
+        "CharPositionInLine" : 12
+      },
+      "11" : {
+        "Text" : "# And we need to find the includes. Homebrew puts them in the normal place\n\n# but Macports hides them in \"libomp\"\n",
+        "Line" : 71,
+        "CharPositionInLine" : 12
+      },
+      "12" : {
+        "Text" : "# We also need to link it\n",
+        "Line" : 76,
+        "CharPositionInLine" : 8
+      },
+      "13" : {
+        "Text" : "# And we need to find the includes. Homebrew puts them in the normal place but macports hides them in \"libomp\"\n",
+        "Line" : 78,
+        "CharPositionInLine" : 8
+      },
+      "14" : {
+        "Text" : "# We are not running on OS X\n\n# We can also have a normal Unix rpath\n",
+        "Line" : 85,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# Make sure to allow backtrace access to all our symbols, even those which are not exported.\n\n# Absolutely no help in a static build.\n",
+        "Line" : 88,
+        "CharPositionInLine" : 4
+      },
+      "16" : {
+        "Text" : "# We want to link against the elfutils libraries\n",
+        "Line" : 92,
+        "CharPositionInLine" : 4
+      },
+      "17" : {
+        "Text" : "# We get OpenMP the normal way, using whatever the compiler knows about\n",
+        "Line" : 95,
+        "CharPositionInLine" : 4
+      },
+      "18" : {
+        "Text" : "# These libs need to come after libdw if used, because libdw depends on them\n",
+        "Line" : 99,
+        "CharPositionInLine" : 0
+      },
+      "19" : {
+        "Text" : "# Sometimes we need to filter the assembler output. The assembler can run during\n\n# ./configure scripts, compiler calls, or $(MAKE) calls (other than $(MAKE)\n\n# install). So we just stick $(FILTER) at the end of all such commands.\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "# We need to apply a filter to all our build command output. This discards\n\n# all the assembler warnings which can overwhelm Travis log storage.\n",
+        "Line" : 106,
+        "CharPositionInLine" : 4
+      },
+      "21" : {
+        "Text" : "# For the filter to work and not just swallow errors we also need to turn on\n\n# pipefail in the shell\n",
+        "Line" : 109,
+        "CharPositionInLine" : 4
+      },
+      "22" : {
+        "Text" : "# No filter\n",
+        "Line" : 113,
+        "CharPositionInLine" : 4
+      },
+      "23" : {
+        "Text" : "# needed to build rocksdb without weird assembler options\n",
+        "Line" : 117,
+        "CharPositionInLine" : 28
+      },
+      "24" : {
+        "Text" : "# TODO: configure RPATH-equivalent on OS X for finding libraries without environment variables at runtime\n",
+        "Line" : 118,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# RocksDB's dependecies depend on whether certain compression libraries\n\n# happen to be installed on the build system. Define a lazy macro to\n\n# detect these from its self-configuration. It has to be lazy because\n\n# the configuration (make_config.mk) won't exist until after RocksDB\n\n# is built by this Makefile.\n",
+        "Line" : 120,
+        "CharPositionInLine" : 0
+      },
+      "26" : {
+        "Text" : "# When building statically, we need to tell the linker not to bail if it sees multiple definitions.\n\n# libc on e.g. our Jenkins host does not define malloc as weak, so tcmalloc can't override it in a static build.\n\n# TODO: Why did this problem only begin to happen when libvw was added?\n",
+        "Line" : 128,
+        "CharPositionInLine" : 0
+      },
+      "27" : {
+        "Text" : "# These are put into libvg. Grab everything except main.\n",
+        "Line" : 133,
+        "CharPositionInLine" : 0
+      },
+      "28" : {
+        "Text" : "# And all the algorithms\n",
+        "Line" : 135,
+        "CharPositionInLine" : 0
+      },
+      "29" : {
+        "Text" : "# And all the IO logic\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "30" : {
+        "Text" : "# These aren't put into libvg, but they provide subcommand implementations for the vg bianry\n",
+        "Line" : 140,
+        "CharPositionInLine" : 0
+      },
+      "31" : {
+        "Text" : "# These aren't put into libvg. But they do go into the main vg binary to power its self-test.\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "32" : {
+        "Text" : "# Dependencies that go into libvg's archive\n\n# These go in libvg but come from dependencies\n",
+        "Line" : 176,
+        "CharPositionInLine" : 0
+      },
+      "33" : {
+        "Text" : "# These are libraries that we need to build before we link vg.\n\n# It would be nice to dump their contents into libvg to make it stand-alone.\n\n# But that requires fancy ar scripting.\n\n# If you just pass them to ar it puts the library *file* in libvg where nothing can read it.\n",
+        "Line" : 185,
+        "CharPositionInLine" : 0
+      },
+      "34" : {
+        "Text" : "# On non-Mac (i.e. Linux), where ELF binaries are used, pull in libdw which\n\n# backward-cpp will use.\n",
+        "Line" : 214,
+        "CharPositionInLine" : 4
+      },
+      "35" : {
+        "Text" : "# common dependencies to build before all vg src files\n",
+        "Line" : 223,
+        "CharPositionInLine" : 0
+      },
+      "36" : {
+        "Text" : "# We have system-level deps to install\n",
+        "Line" : 254,
+        "CharPositionInLine" : 0
+      },
+      "37" : {
+        "Text" : "# And we have submodule deps to build\n",
+        "Line" : 258,
+        "CharPositionInLine" : 0
+      },
+      "38" : {
+        "Text" : "# Hack to use gshuf or shuf as appropriate to the platform when testing\n",
+        "Line" : 268,
+        "CharPositionInLine" : 0
+      },
+      "39" : {
+        "Text" : "# Make sure we have protoc built, and the protobuf lib\n",
+        "Line" : 276,
+        "CharPositionInLine" : 0
+      },
+      "40" : {
+        "Text" : "# remove annoying large alloc messages from tcmalloc\n",
+        "Line" : 286,
+        "CharPositionInLine" : 0
+      },
+      "41" : {
+        "Text" : "# We clear out the include/htslib/* headers because they may be cached and out of date and confuse the build.\n\n# Also we build after libdeflate so it can be used\n",
+        "Line" : 344,
+        "CharPositionInLine" : 0
+      },
+      "42" : {
+        "Text" : "# We tell the vcflib build to use our own htslib\n",
+        "Line" : 350,
+        "CharPositionInLine" : 0
+      },
+      "43" : {
+        "Text" : "#$(INC_DIR)/Variant.h\n",
+        "Line" : 375,
+        "CharPositionInLine" : 0
+      },
+      "44" : {
+        "Text" : "# When building raptor we need to make sure to pre-generate and fix up the lexer\n",
+        "Line" : 391,
+        "CharPositionInLine" : 0
+      },
+      "45" : {
+        "Text" : "# To build libvw we need to point it at our Boost, but then configure decides\n\n# it needs to build vwdll, which depends on codecvt, which isn't actually\n\n# shipped in the GCC 4.9 STL. So we hack vwdll AKA libvw_c_wrapper out of the\n\n# build.\n\n# Also, autogen.sh looks for Boost in the system, and who knows what it will do\n\n# if it doesn't find it, so let it fail.\n",
+        "Line" : 398,
+        "CharPositionInLine" : 0
+      },
+      "46" : {
+        "Text" : "# We can't build elfutils from Git without \"maintainer mode\".\n\n# There are some release-only headers or something that it complains it can't find otherwise.\n\n# We also don't do a normal make and make install here because we don't want to build and install all the elfutils binaries and libasm.\n",
+        "Line" : 437,
+        "CharPositionInLine" : 0
+      },
+      "47" : {
+        "Text" : "# We don't need to hack the build to point at our htslib because sublinearLS gets its htslib from the include flags we set\n",
+        "Line" : 455,
+        "CharPositionInLine" : 0
+      },
+      "48" : {
+        "Text" : "# Auto-git-versioning\n",
+        "Line" : 459,
+        "CharPositionInLine" : 0
+      },
+      "49" : {
+        "Text" : "# We need to scope this variable here\n",
+        "Line" : 461,
+        "CharPositionInLine" : 0
+      },
+      "50" : {
+        "Text" : "# Decide if .git exists and needs to be watched\n",
+        "Line" : 463,
+        "CharPositionInLine" : 0
+      },
+      "51" : {
+        "Text" : "# If so, try and make a git version file\n",
+        "Line" : 465,
+        "CharPositionInLine" : 1
+      },
+      "52" : {
+        "Text" : "# Just use the version file we have, if any\n",
+        "Line" : 468,
+        "CharPositionInLine" : 1
+      },
+      "53" : {
+        "Text" : "# Build a real git version file.\n\n# If it's not the same as the old one, replace the old one.\n\n# If it is the same, do nothing and don't rebuild dependent targets.\n",
+        "Line" : 472,
+        "CharPositionInLine" : 0
+      },
+      "54" : {
+        "Text" : "# Make sure the version file exists, if we weren't given one in our tarball\n",
+        "Line" : 480,
+        "CharPositionInLine" : 0
+      },
+      "55" : {
+        "Text" : "# Build an environment version file with this phony target.\n\n# If it's not the same as the old one, replace the old one.\n\n# If it is the same, do nothing and don't rebuild dependent targets.\n",
+        "Line" : 488,
+        "CharPositionInLine" : 0
+      },
+      "56" : {
+        "Text" : "# The way to get the actual file is to maybe replace it.\n",
+        "Line" : 499,
+        "CharPositionInLine" : 0
+      },
+      "57" : {
+        "Text" : "###################################\n\n## VG source code compilation begins here\n\n####################################\n",
+        "Line" : 502,
+        "CharPositionInLine" : 0
+      },
+      "58" : {
+        "Text" : "########################\n\n## Pattern Rules\n\n########################\n",
+        "Line" : 522,
+        "CharPositionInLine" : 0
+      },
+      "59" : {
+        "Text" : "# Define a default rule for building objects from CPP files\n\n# Depend on the .d file so we rebuild if dependency info is missing/deleted\n\n# Make sure to touch the .o file after the compiler finishes so it is always newer than the .d file\n\n# Use static pattern rules so the dependency files will not be ignored if the output exists\n\n# See <https://stackoverflow.com/a/34983297>\n",
+        "Line" : 526,
+        "CharPositionInLine" : 0
+      },
+      "60" : {
+        "Text" : "# Protobuf stuff builds into its same directory\n",
+        "Line" : 547,
+        "CharPositionInLine" : 0
+      },
+      "61" : {
+        "Text" : "# Use a fake rule to build .d files, so we don't complain if they don't exist.\n",
+        "Line" : 551,
+        "CharPositionInLine" : 0
+      },
+      "62" : {
+        "Text" : "# Don't delete them.\n",
+        "Line" : 558,
+        "CharPositionInLine" : 0
+      },
+      "63" : {
+        "Text" : "# Use no implicit rules\n",
+        "Line" : 561,
+        "CharPositionInLine" : 0
+      },
+      "64" : {
+        "Text" : "###################################\n\n## VG source code compilation ends here\n\n####################################\n",
+        "Line" : 564,
+        "CharPositionInLine" : 0
+      },
+      "65" : {
+        "Text" : "# run .pre-build before we make anything at all.\n",
+        "Line" : 581,
+        "CharPositionInLine" : 0
+      },
+      "66" : {
+        "Text" : "# for rebuilding just vg\n",
+        "Line" : 584,
+        "CharPositionInLine" : 0
+      },
+      "67" : {
+        "Text" : "# lru_cache is never built because it is header-only.\n\n# bash-tap is never built either.\n",
+        "Line" : 623,
+        "CharPositionInLine" : 1
+      },
+      "CommentCount" : 68
+    },
+    "doc/paper/Makefile" : {
+      "ObjectId" : "a51706ca71d259a6f4b627d35839e8d772c1a35b",
+      "LastModified" : "2016-03-11T17:25:33Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    },
+    "test/Makefile" : {
+      "ObjectId" : "5ae913873f117e268dcf27fd3f2ee6f9f6977046",
+      "LastModified" : "2018-09-20T20:59:16Z",
+      "FileType" : "MAKEFILE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "MAKEFILE" : 3
+  },
+  "ElapsedTime" : 3514
+}

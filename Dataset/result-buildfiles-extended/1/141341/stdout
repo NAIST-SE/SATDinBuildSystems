@@ -1,0 +1,698 @@
+{
+  "Repository" : "141341",
+  "Revision" : "HEAD",
+  "ObjectId" : "236e2815b966533dfc3d335a573bf02e26fd7ed4",
+  "CommitTime" : "2018-02-22T20:43:17Z",
+  "Files" : {
+    "CloudCoder/build.xml" : {
+      "ObjectId" : "e050447cf17bf0c40e8aaad852bbe08c89a6d66e",
+      "LastModified" : "2015-12-07T18:35:19Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Arguments to gwtc and devmode targets ",
+        "Line" : 3,
+        "CharPositionInLine" : 49
+      },
+      "1" : {
+        "Text" : " Configure path to GWT SDK ",
+        "Line" : 6,
+        "CharPositionInLine" : 37
+      },
+      "2" : {
+        "Text" : "\n  <property name=\"gwt.sdk\" location=\"/home/dhovemey/linux/java/eclipse-indigo/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201201120043-rel-r37/gwt-2.4.0\" />\n  ",
+        "Line" : 9,
+        "CharPositionInLine" : 6
+      },
+      "3" : {
+        "Text" : " Read CloudCoder global configuration properties. ",
+        "Line" : 11,
+        "CharPositionInLine" : 60
+      },
+      "4" : {
+        "Text" : " libs used by the webapp ",
+        "Line" : 15,
+        "CharPositionInLine" : 36
+      },
+      "5" : {
+        "Text" : " CloudCoder libs ",
+        "Line" : 18,
+        "CharPositionInLine" : 28
+      },
+      "6" : {
+        "Text" : " GWT stuff ",
+        "Line" : 25,
+        "CharPositionInLine" : 22
+      },
+      "7" : {
+        "Text" : " Add any additional server libs that need to be copied ",
+        "Line" : 36,
+        "CharPositionInLine" : 67
+      },
+      "8" : {
+        "Text" : " Ensure that CloudCoder model library is built. ",
+        "Line" : 39,
+        "CharPositionInLine" : 58
+      },
+      "9" : {
+        "Text" : " Ensure that CloudCoder model classes persistence library is built. ",
+        "Line" : 44,
+        "CharPositionInLine" : 78
+      },
+      "10" : {
+        "Text" : " Ensure that the CloudCoder model classes JSON serialization library is built. ",
+        "Line" : 49,
+        "CharPositionInLine" : 89
+      },
+      "11" : {
+        "Text" : " Ensure that the builder submission queue library is built. ",
+        "Line" : 54,
+        "CharPositionInLine" : 70
+      },
+      "12" : {
+        "Text" : " Ensure that builder submission queue servlet context listener library is built. ",
+        "Line" : 59,
+        "CharPositionInLine" : 91
+      },
+      "13" : {
+        "Text" : "\n  <target name=\"javac-model\" description=\"Compile shared model classes to bytecode\">\n    <mkdir dir=\"war/WEB-INF/classes\"/>\n    <javac\n        srcdir=\"src\"\n        includes=\"org/cloudcoder/app/shared/model/**.java\"\n        encoding=\"utf-8\"\n        destdir=\"war/WEB-INF/classes\"\n        source=\"1.5\" target=\"1.5\" nowarn=\"true\"\n        debug=\"true\" debuglevel=\"lines,vars,source\"/>\n    <copy todir=\"war/WEB-INF/classes\">\n      <fileset dir=\"src\" excludes=\"**/*.java\"/>\n    </copy>\n  </target>\n  ",
+        "Line" : 93,
+        "CharPositionInLine" : 6
+      },
+      "14" : {
+        "Text" : "\n      \t\tAlso compile shared model classes in CloudCoderModelClasses\n      \t",
+        "Line" : 101,
+        "CharPositionInLine" : 11
+      },
+      "15" : {
+        "Text" : " add jvmarg -Xss16M or similar if you see a StackOverflowError ",
+        "Line" : 107,
+        "CharPositionInLine" : 77
+      },
+      "16" : {
+        "Text" : " Additional arguments like -style PRETTY or -logLevel DEBUG ",
+        "Line" : 112,
+        "CharPositionInLine" : 74
+      },
+      "17" : {
+        "Text" : " Additional arguments like -style PRETTY or -logLevel DEBUG ",
+        "Line" : 131,
+        "CharPositionInLine" : 74
+      },
+      "18" : {
+        "Text" : "\nTest targets suppressed because -junit argument was not specified when running webAppCreator.\n\n  <target name=\"javac.tests\" depends=\"javac\" description=\"Compiles test code\">\n    <javac srcdir=\"test\" includes=\"**\" encoding=\"utf-8\"\n      source=\"1.5\" target=\"1.5\" nowarn=\"true\"\n      destdir=\"war/WEB-INF/classes\"\n      debug=\"true\" debuglevel=\"lines,vars,source\">\n      <classpath location=\"path_to_the_junit_jar\"/>\n      <classpath refid=\"project.class.path\"/>\n    </javac>\n  </target>\n  \n  <target name=\"test.dev\" depends=\"javac.tests\" description=\"Run development mode tests\">\n    <mkdir dir=\"reports/htmlunit.dev\" />\n    <junit fork=\"yes\" printsummary=\"yes\" haltonfailure=\"yes\">\n      <jvmarg line=\"-Xmx256m\" />\n      <sysproperty key=\"gwt.args\" value=\"-standardsMode -logLevel WARN\" />\n      <sysproperty key=\"java.awt.headless\" value=\"true\" />\n      <classpath>\n        <pathelement location=\"src\" />\n        <pathelement location=\"test\" />\n        <path refid=\"project.class.path\" />\n        <pathelement location=\"${gwt.sdk}/validation-api-1.0.0.GA.jar\" />\n        <pathelement location=\"${gwt.sdk}/validation-api-1.0.0.GA-sources.jar\" />\n        <pathelement location=\"path_to_the_junit_jar\" />\n      </classpath>\n      <batchtest todir=\"reports/htmlunit.dev\" >\n        <fileset dir=\"test\" >\n          <include name=\"**/*Test.java\" />\n        </fileset>\n      </batchtest>\n      <formatter type=\"plain\" />\n      <formatter type=\"xml\" />\n    </junit>\n  </target>\n\n  <target name=\"test.prod\" depends=\"javac.tests\" description=\"Run production mode tests\">\n    <mkdir dir=\"reports/htmlunit.prod\" />\n    <junit fork=\"yes\" printsummary=\"yes\" haltonfailure=\"yes\">\n      <jvmarg line=\"-Xmx256m\" />\n      <sysproperty key=\"gwt.args\" value=\"-prod -standardsMode -logLevel WARN -standardsMode -out www-test\" />\n      <sysproperty key=\"java.awt.headless\" value=\"true\" />\n      <classpath>\n        <pathelement location=\"src\" />\n        <pathelement location=\"test\" />\n        <path refid=\"project.class.path\" />\n        <pathelement location=\"${gwt.sdk}/validation-api-1.0.0.GA.jar\" />\n        <pathelement location=\"${gwt.sdk}/validation-api-1.0.0.GA-sources.jar\" />\n        <pathelement location=\"path_to_the_junit_jar\" />\n      </classpath>\n      <batchtest todir=\"reports/htmlunit.prod\" >\n        <fileset dir=\"test\" >\n          <include name=\"**/*Test.java\" />\n        </fileset>\n      </batchtest>\n      <formatter type=\"plain\" />\n      <formatter type=\"xml\" />\n    </junit>\n  </target>\n\n  <target name=\"test\" description=\"Run development and production mode tests\">\n    <antcall target=\"test.dev\" />\n    <antcall target=\"test.prod\" />\n  </target>\n",
+        "Line" : 213,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "\n  \t\tHaving the wrong versions of the gwt*.jar files seems to cause\n  \t\tgwtc to fail in mysterious ways.\n  \t",
+        "Line" : 228,
+        "CharPositionInLine" : 7
+      },
+      "CommentCount" : 20
+    },
+    "CloudCoderBuilder2/build.xml" : {
+      "ObjectId" : "3ad1fcd0b64fc994d968d7ff973d45c2566cbc43",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Read CloudCoder global configuration properties. ",
+        "Line" : 10,
+        "CharPositionInLine" : 59
+      },
+      "1" : {
+        "Text" : " Name of the single executable jarfile used for deployment. ",
+        "Line" : 13,
+        "CharPositionInLine" : 69
+      },
+      "2" : {
+        "Text" : " make sure model classes jar file is built ",
+        "Line" : 35,
+        "CharPositionInLine" : 55
+      },
+      "3" : {
+        "Text" : " make sure model classes JSON conversion jar file is built ",
+        "Line" : 40,
+        "CharPositionInLine" : 71
+      },
+      "4" : {
+        "Text" : "\n\t\tDepending on whether or not this is a distribution build, decide\n\t\twhich cloudcoder.properties to use (dummy or real) and\n\t\twhether or not a keystore should be included (no for dist builds.)\n\t",
+        "Line" : 58,
+        "CharPositionInLine" : 5
+      },
+      "5" : {
+        "Text" : "\n\t\tTarget to build a \"distribution\" jarfile containing a dummy cloudcoder.properties file\n\t\tand no keystore. \n\t",
+        "Line" : 78,
+        "CharPositionInLine" : 5
+      },
+      "6" : {
+        "Text" : " Set distBuild property. ",
+        "Line" : 80,
+        "CharPositionInLine" : 35
+      },
+      "7" : {
+        "Text" : " Ensure that the dummy properties file exists. ",
+        "Line" : 83,
+        "CharPositionInLine" : 57
+      },
+      "8" : {
+        "Text" : " Now we can call the normal jar target. ",
+        "Line" : 88,
+        "CharPositionInLine" : 50
+      },
+      "9" : {
+        "Text" : "\n\t\tBuild a single executable jarfile.\n\t",
+        "Line" : 94,
+        "CharPositionInLine" : 5
+      },
+      "10" : {
+        "Text" : " Include keystore for secure communications with webapp. ",
+        "Line" : 105,
+        "CharPositionInLine" : 68
+      },
+      "11" : {
+        "Text" : " Inlcude cloudcoder configuration properties (cloudcoder.properties) ",
+        "Line" : 108,
+        "CharPositionInLine" : 80
+      },
+      "12" : {
+        "Text" : " Clean everything (including projects on which this target depends ",
+        "Line" : 125,
+        "CharPositionInLine" : 76
+      },
+      "CommentCount" : 13
+    },
+    "CloudCoderBuilderWebService/build.xml" : {
+      "ObjectId" : "84a20d4858b0b79087f9543974e312603c661d3b",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Copy classes  from the bin directory. ",
+        "Line" : 50,
+        "CharPositionInLine" : 50
+      },
+      "1" : {
+        "Text" : " Copy classes and other files from required libraries and Jetty. ",
+        "Line" : 53,
+        "CharPositionInLine" : 76
+      },
+      "2" : {
+        "Text" : " Copy Jetty single-file-deployment support code. ",
+        "Line" : 56,
+        "CharPositionInLine" : 60
+      },
+      "3" : {
+        "Text" : " Include the model classes. ",
+        "Line" : 59,
+        "CharPositionInLine" : 39
+      },
+      "4" : {
+        "Text" : " Include the model classes JSON serialization support. ",
+        "Line" : 62,
+        "CharPositionInLine" : 66
+      },
+      "5" : {
+        "Text" : " Include web service util classes. ",
+        "Line" : 65,
+        "CharPositionInLine" : 46
+      },
+      "6" : {
+        "Text" : " Include the submission queue classes. ",
+        "Line" : 68,
+        "CharPositionInLine" : 50
+      },
+      "7" : {
+        "Text" : " Include the submission queue servlet context listener classes. ",
+        "Line" : 71,
+        "CharPositionInLine" : 75
+      },
+      "8" : {
+        "Text" : " Include libraries needed for JSON serialization. ",
+        "Line" : 74,
+        "CharPositionInLine" : 61
+      },
+      "9" : {
+        "Text" : " Include cloudcoder configuration properties (cloudcoder.properties) ",
+        "Line" : 77,
+        "CharPositionInLine" : 80
+      },
+      "10" : {
+        "Text" : " Include keystore for secure communication between builder and builder web service. ",
+        "Line" : 82,
+        "CharPositionInLine" : 95
+      },
+      "11" : {
+        "Text" : " Include log4j.properties ",
+        "Line" : 85,
+        "CharPositionInLine" : 37
+      },
+      "12" : {
+        "Text" : " Include a Manifest specifying the Main-Class to start/control/shutdown the builder web service. ",
+        "Line" : 90,
+        "CharPositionInLine" : 108
+      },
+      "CommentCount" : 13
+    },
+    "CloudCoderDataAnalysis/build.xml" : {
+      "ObjectId" : "5066c942d2ee886156ae57df44df5873cb736c4d",
+      "LastModified" : "2016-03-22T19:04:05Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " make sure model classes JSON conversion jar file is built ",
+        "Line" : 18,
+        "CharPositionInLine" : 71
+      },
+      "1" : {
+        "Text" : " Copy all non-source files as resources. ",
+        "Line" : 42,
+        "CharPositionInLine" : 51
+      },
+      "2" : {
+        "Text" : " Include dependencies (but without any META-INF files) ",
+        "Line" : 65,
+        "CharPositionInLine" : 66
+      },
+      "3" : {
+        "Text" : " Include cloudcoder.properties ",
+        "Line" : 68,
+        "CharPositionInLine" : 42
+      },
+      "4" : {
+        "Text" : " Include keystores ",
+        "Line" : 71,
+        "CharPositionInLine" : 30
+      },
+      "5" : {
+        "Text" : " Clean this target and all depended-on targets. ",
+        "Line" : 89,
+        "CharPositionInLine" : 57
+      },
+      "CommentCount" : 6
+    },
+    "CloudCoderHealthMonitor/build.xml" : {
+      "ObjectId" : "22afe0f095cc41a81a293da6c4231943f8244f35",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Read CloudCoder global configuration properties. ",
+        "Line" : 10,
+        "CharPositionInLine" : 59
+      },
+      "1" : {
+        "Text" : " Name of the single executable jarfile used for deployment. ",
+        "Line" : 13,
+        "CharPositionInLine" : 69
+      },
+      "2" : {
+        "Text" : " make sure model classes jar file is built ",
+        "Line" : 34,
+        "CharPositionInLine" : 55
+      },
+      "3" : {
+        "Text" : " make sure model classes JSON conversion jar file is built ",
+        "Line" : 39,
+        "CharPositionInLine" : 71
+      },
+      "4" : {
+        "Text" : "\n\t\tTarget to create a cloudcoder.properties file with just the\n\t\thealth monitor properties.  This avoids unnecessarily exposing\n\t\tusernames/passwords associated with the webapp, etc.\n\t",
+        "Line" : 57,
+        "CharPositionInLine" : 5
+      },
+      "5" : {
+        "Text" : "\n\t\tBuild a single executable jarfile.\n\t",
+        "Line" : 70,
+        "CharPositionInLine" : 5
+      },
+      "6" : {
+        "Text" : " Include cloudcoder configuration properties (cloudcoder.properties),\n\t\t\t\tbut just the ones that are actually needed by the health monitor ",
+        "Line" : 82,
+        "CharPositionInLine" : 73
+      },
+      "7" : {
+        "Text" : " Clean everything (including projects on which this target depends ",
+        "Line" : 99,
+        "CharPositionInLine" : 76
+      },
+      "CommentCount" : 8
+    },
+    "CloudCoderJetty/build.xml" : {
+      "ObjectId" : "c1b254ffed41cf617a7c930cd4ca196ab66b734b",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n\t\tTarget to build deps.jar, which is a single jarfile containing the\n\t\tcontents of all of the Jetty jarfiles and the logging jarfiles.\n\t\tThe single-jarfile deployable apps will include the contents\n\t\t(minus the signing information).\n\t\t\n\t\tTODO: should prune out Jetty libraries that we don't\n\t\tactually need.\n\t",
+        "Line" : 23,
+        "CharPositionInLine" : 5
+      },
+      "CommentCount" : 1
+    },
+    "CloudCoderLoadTester/build.xml" : {
+      "ObjectId" : "ad39e46d411a4bfa15c084968bf9b2f7e732a787",
+      "LastModified" : "2017-01-26T13:30:55Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " for RPC service interfaces ",
+        "Line" : 13,
+        "CharPositionInLine" : 39
+      },
+      "1" : {
+        "Text" : " Copy all non-source files as resources. ",
+        "Line" : 40,
+        "CharPositionInLine" : 51
+      },
+      "2" : {
+        "Text" : " Include cloudcoder.properties ",
+        "Line" : 61,
+        "CharPositionInLine" : 42
+      },
+      "3" : {
+        "Text" : " Clean this target and all depended-on targets. ",
+        "Line" : 77,
+        "CharPositionInLine" : 57
+      },
+      "CommentCount" : 4
+    },
+    "CloudCoderModelClasses/build.xml" : {
+      "ObjectId" : "f1c10a94138aa281718b497555f05e42f4d723e2",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " name of jar file to create ",
+        "Line" : 3,
+        "CharPositionInLine" : 37
+      },
+      "CommentCount" : 1
+    },
+    "CloudCoderModelClassesJSON/build.xml" : {
+      "ObjectId" : "ec7407ba043c13eb6a3728bf5263f38aeb893cae",
+      "LastModified" : "2018-01-24T17:46:18Z",
+      "FileType" : "ANT",
+      "CommentCount" : 0
+    },
+    "CloudCoderModelClassesPersistence/build.xml" : {
+      "ObjectId" : "8ef7c506ea533b440461accddee2e970cee357f1",
+      "LastModified" : "2018-01-24T17:46:18Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Include the sample exercises. ",
+        "Line" : 32,
+        "CharPositionInLine" : 42
+      },
+      "CommentCount" : 1
+    },
+    "CloudCoderRepository/build.xml" : {
+      "ObjectId" : "db88c3da9f507a23528be5533203520f114cffab",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "CommentCount" : 0
+    },
+    "CloudCoderRepositoryWebServer/build.xml" : {
+      "ObjectId" : "4e0a7abc944c0c0d07cf8684162567a692e08a90",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Filename of JSTL jarfile. ",
+        "Line" : 4,
+        "CharPositionInLine" : 36
+      },
+      "1" : {
+        "Text" : " Copy classes  from the bin directory. ",
+        "Line" : 47,
+        "CharPositionInLine" : 50
+      },
+      "2" : {
+        "Text" : " Copy classes and other files from required libraries and Jetty. ",
+        "Line" : 50,
+        "CharPositionInLine" : 76
+      },
+      "3" : {
+        "Text" : " Copy Jetty single-file-deployment support code. ",
+        "Line" : 53,
+        "CharPositionInLine" : 60
+      },
+      "4" : {
+        "Text" : " Include the repository webapp.\n\t\t\t     However, exclude the slf4j jars, since Jetty will already have\n\t\t\t     them on its classpath, and we don't want two copies. ",
+        "Line" : 58,
+        "CharPositionInLine" : 65
+      },
+      "5" : {
+        "Text" : " Include the model classes jar file in webapp's WEB-INF/lib. ",
+        "Line" : 64,
+        "CharPositionInLine" : 72
+      },
+      "6" : {
+        "Text" : " Include the model classes persistence jar file in webapp's WEB-INF/lib. ",
+        "Line" : 69,
+        "CharPositionInLine" : 84
+      },
+      "7" : {
+        "Text" : " Include the model classes JSON serialization jar file in the webapp's WEB-INF/lib. ",
+        "Line" : 74,
+        "CharPositionInLine" : 95
+      },
+      "8" : {
+        "Text" : " Include web service util jarfile. ",
+        "Line" : 79,
+        "CharPositionInLine" : 46
+      },
+      "9" : {
+        "Text" : " Include JSTL taglib jarfile. ",
+        "Line" : 84,
+        "CharPositionInLine" : 41
+      },
+      "10" : {
+        "Text" : " Include owasp-java-html-sanitizer and associated jarfiles. ",
+        "Line" : 89,
+        "CharPositionInLine" : 71
+      },
+      "11" : {
+        "Text" : " Include cloudcoder configuration properties (cloudcoder.properties) ",
+        "Line" : 97,
+        "CharPositionInLine" : 80
+      },
+      "12" : {
+        "Text" : " Include log4j.properties ",
+        "Line" : 102,
+        "CharPositionInLine" : 37
+      },
+      "13" : {
+        "Text" : " Include a Manifest specifying the Main-Class to start/control/shutdown the webapp. ",
+        "Line" : 107,
+        "CharPositionInLine" : 95
+      },
+      "CommentCount" : 14
+    },
+    "CloudCoderSubmissionQueue/build.xml" : {
+      "ObjectId" : "d3497b05ee124a871e6a8074621adcb5a37e6d4c",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " make sure model classes jar file is built ",
+        "Line" : 11,
+        "CharPositionInLine" : 55
+      },
+      "CommentCount" : 1
+    },
+    "CloudCoderSubmissionQueueServletContextListener/build.xml" : {
+      "ObjectId" : "42f3336ba6409d303b4ba51c216b3209e85c067f",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " make sure model classes jar file is built ",
+        "Line" : 13,
+        "CharPositionInLine" : 55
+      },
+      "1" : {
+        "Text" : " make sure submission queue jar file is built ",
+        "Line" : 18,
+        "CharPositionInLine" : 55
+      },
+      "CommentCount" : 2
+    },
+    "CloudCoderWebServer/build.xml" : {
+      "ObjectId" : "956145dfba861076f2fe738001f82baff8cf302f",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : " Read CloudCoder global configuration properties. ",
+        "Line" : 9,
+        "CharPositionInLine" : 59
+      },
+      "1" : {
+        "Text" : " Name of the deployable jarfile to run the webapp. ",
+        "Line" : 12,
+        "CharPositionInLine" : 60
+      },
+      "2" : {
+        "Text" : " Target to build the webapp. ",
+        "Line" : 41,
+        "CharPositionInLine" : 38
+      },
+      "3" : {
+        "Text" : " Target to build model classes library. ",
+        "Line" : 46,
+        "CharPositionInLine" : 49
+      },
+      "4" : {
+        "Text" : " Target to build model classes persistence library. ",
+        "Line" : 51,
+        "CharPositionInLine" : 61
+      },
+      "5" : {
+        "Text" : " Target to build model classes JSON serialization library. ",
+        "Line" : 56,
+        "CharPositionInLine" : 68
+      },
+      "6" : {
+        "Text" : " Ensure that the builder submission queue library is built. ",
+        "Line" : 61,
+        "CharPositionInLine" : 69
+      },
+      "7" : {
+        "Text" : " Ensure that the builder submission queue library servlet context listener is built. ",
+        "Line" : 66,
+        "CharPositionInLine" : 94
+      },
+      "8" : {
+        "Text" : " Target to build the CloudCoder Jetty library. ",
+        "Line" : 71,
+        "CharPositionInLine" : 56
+      },
+      "9" : {
+        "Text" : "\n\t\tDepending on whether or not this is a distribution build, decide\n\t\twhich cloudcoder.properties to use (dummy or real) and\n\t\twhether or not a keystore should be included (no for dist builds.)\n\t",
+        "Line" : 80,
+        "CharPositionInLine" : 5
+      },
+      "10" : {
+        "Text" : " for gwt-2.5.0, we need requestfactory-server.jar:\n\t\t\tsee: http://code.google.com/p/google-web-toolkit/issues/detail?id=7527 ",
+        "Line" : 98,
+        "CharPositionInLine" : 78
+      },
+      "11" : {
+        "Text" : "\n\t\tTarget to build a \"distribution\" jarfile containing a dummy cloudcoder.properties file\n\t\tand no keystore. \n\t",
+        "Line" : 110,
+        "CharPositionInLine" : 5
+      },
+      "12" : {
+        "Text" : " Set distBuild property. ",
+        "Line" : 112,
+        "CharPositionInLine" : 35
+      },
+      "13" : {
+        "Text" : " Ensure that the dummy properties file exists. ",
+        "Line" : 115,
+        "CharPositionInLine" : 57
+      },
+      "14" : {
+        "Text" : " Now we can call the normal jar target. ",
+        "Line" : 120,
+        "CharPositionInLine" : 50
+      },
+      "15" : {
+        "Text" : "\n\t\tTarget to build a single deployable jarfile containing both\n\t\tthe webapp (and required libraries) and Jetty (the web server).\n\t",
+        "Line" : 127,
+        "CharPositionInLine" : 5
+      },
+      "16" : {
+        "Text" : "\n\t\t\tBuild single deployable jarfile containing our launcher code,\n\t\t\tall requried libraries, and the webapp.  Note that signatures\n\t\t\tmust be removed from the libraries.\n\t\t",
+        "Line" : 134,
+        "CharPositionInLine" : 6
+      },
+      "17" : {
+        "Text" : " Copy classes  from the bin directory. ",
+        "Line" : 136,
+        "CharPositionInLine" : 50
+      },
+      "18" : {
+        "Text" : " Copy classes and other files from required libraries and Jetty. ",
+        "Line" : 139,
+        "CharPositionInLine" : 76
+      },
+      "19" : {
+        "Text" : " Copy Jetty single-file-deployment support code. ",
+        "Line" : 142,
+        "CharPositionInLine" : 60
+      },
+      "20" : {
+        "Text" : " Include the webapp.\n\t\t\t     However, exclude the slf4j jars, since Jetty will already have\n\t\t\t     them on its classpath, and we don't want two copies. ",
+        "Line" : 147,
+        "CharPositionInLine" : 65
+      },
+      "21" : {
+        "Text" : " Include the model classes jar file in webapp's WEB-INF/lib. ",
+        "Line" : 153,
+        "CharPositionInLine" : 72
+      },
+      "22" : {
+        "Text" : " Include the model classes persistence jar file in webapp's WEB-INF/lib. ",
+        "Line" : 158,
+        "CharPositionInLine" : 84
+      },
+      "23" : {
+        "Text" : " Include the model classes JSON serialization jar file in the webapp's WEB-INF/lib. ",
+        "Line" : 163,
+        "CharPositionInLine" : 95
+      },
+      "24" : {
+        "Text" : " Libraries needed for JSON serialization should already be in\n\t\t\t\tthe war/WEB-INF/lib directory of the webapp, so there's no need\n\t\t\t\tto include them explicitly. ",
+        "Line" : 170,
+        "CharPositionInLine" : 36
+      },
+      "25" : {
+        "Text" : " Include the submission queue jar file in the webapp's WEB-INF/lib. ",
+        "Line" : 172,
+        "CharPositionInLine" : 79
+      },
+      "26" : {
+        "Text" : " Include the submission queue servlet context listener jar file in the webapp's WEB-INF/lib. ",
+        "Line" : 177,
+        "CharPositionInLine" : 104
+      },
+      "27" : {
+        "Text" : " Include GWT requestfactory-server.jar if needed. ",
+        "Line" : 182,
+        "CharPositionInLine" : 61
+      },
+      "28" : {
+        "Text" : " Include keystore for secure communications with builder. ",
+        "Line" : 185,
+        "CharPositionInLine" : 69
+      },
+      "29" : {
+        "Text" : " Include cloudcoder configuration properties (cloudcoder.properties) ",
+        "Line" : 190,
+        "CharPositionInLine" : 80
+      },
+      "30" : {
+        "Text" : " Include the VERSION file ",
+        "Line" : 195,
+        "CharPositionInLine" : 37
+      },
+      "31" : {
+        "Text" : " Include a Manifest specifying the Main-Class to start/control/shutdown the webapp. ",
+        "Line" : 200,
+        "CharPositionInLine" : 95
+      },
+      "32" : {
+        "Text" : " Now we can delete deps.jar. ",
+        "Line" : 206,
+        "CharPositionInLine" : 39
+      },
+      "33" : {
+        "Text" : " Clean this target and all depended-on targets. ",
+        "Line" : 218,
+        "CharPositionInLine" : 57
+      },
+      "CommentCount" : 34
+    },
+    "CloudCoderWebServiceUtil/build.xml" : {
+      "ObjectId" : "a012a80f19eacd1bc8a6400bc04441da28d73b6c",
+      "LastModified" : "2014-07-02T17:34:53Z",
+      "FileType" : "ANT",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "ANT" : 16
+  },
+  "ElapsedTime" : 2903
+}

@@ -1,0 +1,401 @@
+{
+  "Repository" : "1500664",
+  "Revision" : "HEAD",
+  "ObjectId" : "b94f43072ae6939f2918578192571b0cb04b3a30",
+  "CommitTime" : "2019-03-10T12:22:20Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "af5bb0a8b7c25b27360503790a8176da224efea7",
+      "LastModified" : "2018-12-20T19:47:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Qt5's qt5_use_modules need 2.8.9+\n\n# On win32, we need QtMain linking, which means 2.8.11+\n\n# EL7 ships 2.8.11, Debian 8 ships 3.0.2, and Ubuntu 14.04 LTS has 2.8.12\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Silence warnings in TrojitaOption.cmake; we are fine with only doing the\n\n# expansion by hand\n",
+        "Line" : 11,
+        "CharPositionInLine" : 4
+      },
+      "2" : {
+        "Text" : "# We make use of CMAKE_CXXFLAGS_DEBUG...\n",
+        "Line" : 17,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# we don't really care\n",
+        "Line" : 22,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# If you aren't using and old Linux with an old GCC and old CMake, please just upgrade.\n",
+        "Line" : 27,
+        "CharPositionInLine" : 4
+      },
+      "5" : {
+        "Text" : "# Set a default build type if none was specified. This was shamelessly stolen\n\n# from VTK's cmake setup because these guys produce both CMake and a project that\n\n# manipulates this variable, and the web is full of posts where people say that\n\n# it is apparently evil to just set the build type in a way an earlier version of\n\n# this patch did. Oh, and the location of this check/update matters, apparently.\n\n#\n\n# Yes, this is just plain crazy.\n",
+        "Line" : 34,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Set the possible values of build type for cmake-gui\n",
+        "Line" : 44,
+        "CharPositionInLine" : 4
+      },
+      "7" : {
+        "Text" : "# Add support for Mingw RC compiler\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# When manipulating CXXFLAGS, we put the user's CXXFLAGS *after* that so that they take priority.\n",
+        "Line" : 150,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# See below for some reationale for these optimizations\n",
+        "Line" : 152,
+        "CharPositionInLine" : 4
+      },
+      "10" : {
+        "Text" : "# We have no information about the warnings and their usefullness. Reports are welcome.\n\n# We might enable warnings on MSVC in future.\n",
+        "Line" : 155,
+        "CharPositionInLine" : 4
+      },
+      "11" : {
+        "Text" : "# -Werror is not a default for sanity reasons (one cannot know what warnings a future compiler\n\n# might bring along), but it's a default in debug mode. The idea is that developers should care\n\n# about a warning-free build, and that this is easier than messing with yet another configure option.\n",
+        "Line" : 158,
+        "CharPositionInLine" : 4
+      },
+      "12" : {
+        "Text" : "# Also see CMP0043...\n",
+        "Line" : 162,
+        "CharPositionInLine" : 4
+      },
+      "13" : {
+        "Text" : "# Optimizations are enabled unconditionally because they make a big difference in the speed of the\n\n# resulting binaries, and that it is better to allow an opt-out from them by adjusting CXXFLAGS through\n\n# an env var at cmake time if needed.\n\n# The reason for not manipulating just CMAKE_CXX_FLAGS_DEBUG is that unrecognized build types (\"DebugFull\")\n\n# should still benefit from these optimizations. Yup, it would be even better if CMake did a sane thing\n\n# and warned when users set an unrecognized and unused build type, but that just isn't the case.\n",
+        "Line" : 164,
+        "CharPositionInLine" : 4
+      },
+      "14" : {
+        "Text" : "# Build warnings are useful tools (and Trojita should be warning-free anyway), enable them on all\n\n# configurations. They are warnings, not errors.\n",
+        "Line" : 172,
+        "CharPositionInLine" : 4
+      },
+      "15" : {
+        "Text" : "# The following is required so that the moc_*.cpp and ui_*.h are found\n",
+        "Line" : 178,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# We're using C++11's threading features (std::async in particular), and that requires \"some threading\". With GCC and\n\n# Clang, this is implemented through the -pthread build flag. Without using these bits, linking fails on Fedora 23,\n\n# and this is apparently a slightly different failure than the Kf5::Gpgmepp-pthread one in commit\n\n# 12e41101070f7073caec653185c0504763672ee7.\n\n#\n\n# Apparently, there's been various methods on how to enable this in the most-cmakeish-way throughout the years, with\n\n# cmake-3.1+ supporting some magic linking via the Threads::Threads option on a per-library basis. However, I am not\n\n# really looking into that wonderful fun of mixing -pthread and non-pthread translation units, so let's use a big\n\n# hammer and set it unconditionally on platforms which use it anyway.\n\n#\n\n# And because we also support MinGW and its `windres` compiler, we have to avoid passing -pthread to *that* thing, so,\n\n# well, let's cheat and put it into the CXXFLAGS.\n",
+        "Line" : 187,
+        "CharPositionInLine" : 2
+      },
+      "17" : {
+        "Text" : "# Make sure that plugins not export all symbols, only that which are explicitly marked\n",
+        "Line" : 202,
+        "CharPositionInLine" : 0
+      },
+      "18" : {
+        "Text" : "# The ModelWatcher is another debugging aid\n",
+        "Line" : 480,
+        "CharPositionInLine" : 4
+      },
+      "19" : {
+        "Text" : "# The ModelTest is only needed when debugging manually\n",
+        "Line" : 517,
+        "CharPositionInLine" : 0
+      },
+      "20" : {
+        "Text" : "## ClearText password plugin\n",
+        "Line" : 657,
+        "CharPositionInLine" : 0
+      },
+      "21" : {
+        "Text" : "## QtKeyChain plugin\n",
+        "Line" : 662,
+        "CharPositionInLine" : 0
+      },
+      "22" : {
+        "Text" : "## AbookAddressbook plugin\n",
+        "Line" : 669,
+        "CharPositionInLine" : 0
+      },
+      "23" : {
+        "Text" : "## AkonadiAddressbook plugin\n",
+        "Line" : 706,
+        "CharPositionInLine" : 0
+      },
+      "24" : {
+        "Text" : "# Generate file static_plugins.h.in\n",
+        "Line" : 731,
+        "CharPositionInLine" : 0
+      },
+      "25" : {
+        "Text" : "# The following is needed for the LineEdit widget within the .ui files.\n\n# The ${path_DesktopGui} is needed so that the generated ui_*.h file can find the headers of the custom widgets\n",
+        "Line" : 745,
+        "CharPositionInLine" : 4
+      },
+      "26" : {
+        "Text" : "# On Windows build a real Win32 GUI application without console window\n\n# On other platforms WIN32 flag is ignored\n",
+        "Line" : 750,
+        "CharPositionInLine" : 4
+      },
+      "27" : {
+        "Text" : "# FIXME: it would be nice to depend on the contents of keys/, but in my testing it produces Makefiles\n\n# which suffer from races (the keygen.sh is run multiple times in parallel within the CI environment).\n\n# I wasn't able to track down the root cause behind this; it affected all cmake versions within the CI\n\n# as of Feb 2016, which is 3.1.something up to 3.3.something.\n",
+        "Line" : 848,
+        "CharPositionInLine" : 6
+      },
+      "28" : {
+        "Text" : "# Check if we are on Windows\n",
+        "Line" : 875,
+        "CharPositionInLine" : 10
+      },
+      "29" : {
+        "Text" : "# Check if we are using the Visual Studio compiler 2010\n",
+        "Line" : 876,
+        "CharPositionInLine" : 15
+      },
+      "30" : {
+        "Text" : "# Because of linker errors (see http://stackoverflow.com/questions/5625884/conversion-of-stdwstring-to-qstring-throws-linker-error)\n",
+        "Line" : 877,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 31
+    },
+    "cmake/FindMakeNSIS.cmake" : {
+      "ObjectId" : "c9e26d00dee59fdf25505ca6781f79acf4950163",
+      "LastModified" : "2015-01-07T09:31:33Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/FindMimetic.cmake" : {
+      "ObjectId" : "533119d2aacb3e60a5c8ab0ebcb8b15acd96fab9",
+      "LastModified" : "2016-03-04T00:14:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (C) 2014-2015 Stephan Platz <trojita@paalsteek.de>\n\n#\n\n# This file is part of the Trojita Qt IMAP e-mail client,\n\n# http://trojita.flaska.net/\n\n#\n\n# This program is free software; you can redistribute it and/or\n\n# modify it under the terms of the GNU General Public License as\n\n# published by the Free Software Foundation; either version 2 of\n\n# the License or (at your option) version 3 or any later version\n\n# accepted by the membership of KDE e.V. (or its successor approved\n\n# by the membership of KDE e.V.), which shall act as a proxy\n\n# defined in Section 14 of version 3 of the license.\n\n#\n\n# This program is distributed in the hope that it will be useful,\n\n# but WITHOUT ANY WARRANTY; without even the implied warranty of\n\n# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\n# GNU General Public License for more details.\n\n#\n\n# You should have received a copy of the GNU General Public License\n\n# along with this program.  If not, see <http://www.gnu.org/licenses/>.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# - Try to find the mimetic library\n\n# Once done this will define\n\n#  MIMETIC_FOUND - System has MIMETIC\n\n#  MIMETIC_INCLUDE_DIRS - The MIMETIC include directories\n\n#  MIMETIC_LIBRARIES - The libraries needed to use MIMETIC\n\n#  MIMETIC_DEFINITIONS - Compiler switches required for using MIMETIC\n",
+        "Line" : 22,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set MIMETIC_FOUND to TRUE\n\n# if all listed variables are TRUE\n",
+        "Line" : 44,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "cmake/FindQt5LinguistForTrojita.cmake" : {
+      "ObjectId" : "4dc96735902a804f1bde43e75125d9430c7e7d9a",
+      "LastModified" : "2016-03-04T00:14:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# check for lupdate and lrelease: we can't\n\n# do it using qmake as it doesn't have\n\n# QMAKE_LUPDATE and QMAKE_LRELEASE variables :(\n\n#\n\n#  I18N_LANGUAGE - if not empty, wraps only chosen language\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# QT5_WRAP_TS(outfiles infiles ...)\n\n# outfiles receives .qm generated files from\n\n# .ts files in arguments\n\n# a target lupdate is created for you\n\n# update/generate your translations files\n\n# example: QT5_WRAP_TS(foo_QM ${foo_TS})\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# a target to manually run lupdate\n\n#ADD_CUSTOM_TARGET(lupdate\n",
+        "Line" : 82,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "#COMMAND ${QT_LUPDATE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR} -ts ${ARGN}\n\n#WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}\n",
+        "Line" : 84,
+        "CharPositionInLine" : 20
+      },
+      "4" : {
+        "Text" : "#)\n",
+        "Line" : 86,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# QT_WRAP_PO(outfiles infiles ...)\n\n# outfiles receives .qm generated files from\n\n# .po files in arguments\n\n# example: QT5_WRAP_PO(foo_TS ${foo_PO})\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# PO files are foo-en_GB.po not foo_en_GB.po like Qt expects\n",
+        "Line" : 109,
+        "CharPositionInLine" : 6
+      },
+      "7" : {
+        "Text" : "# lconvert from PO to TS and then run lupdate to generate the correct strings\n\n# finally run lrelease as used above\n",
+        "Line" : 133,
+        "CharPositionInLine" : 8
+      },
+      "CommentCount" : 8
+    },
+    "cmake/FindRagelForTrojita.cmake" : {
+      "ObjectId" : "162ae7c4c6d075468121bb6e00edfac7c6bc3273",
+      "LastModified" : "2016-03-04T00:14:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/SanitizedDesktopFile.cmake" : {
+      "ObjectId" : "b9302d2d45defb9bbfb658ab9aa63209c17701f1",
+      "LastModified" : "2016-03-04T00:14:27Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "cmake/TrojitaNSIS.cmake" : {
+      "ObjectId" : "5a0eba29eba52f23bfd31f752cf1a226ae2c340c",
+      "LastModified" : "2016-06-14T13:07:42Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create NSIS Installer, check for all dependent DLL libraries and include them into Installer\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "### Generate list of files for inclusion into installer ###\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# reading the LOCATION property\n",
+        "Line" : 6,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# Include trojita executable\n",
+        "Line" : 10,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Include trojita icon\n",
+        "Line" : 15,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Prepare a list of all Qt plugins which are needed.\n\n# We need a hardcoded list of plugin types because I'm too lazy to find out how to work with associative arrays/hashmaps in cmake.\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "6" : {
+        "Text" : "# Qt doesn't really link with OpenSSL, but loads it during runtime, which means that our objdump won't find the DLL names.\n\n# Of course, the library names are provided through the .dll.a convention, and I'm too lazy to write code which converts\n\n# them to just DLLs, so we support either passing them explicitly, or we require CMake 4.4 and its OpenSSL imported targets.\n\n# The reason for this is that we only have cmake-3.3 in the CI so far.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# We don't have trojita.exe at CMake time yet, so we have to take a look at all the stuff which we know is going to be needed.\n\n# I could probably write some CMake code to handle this, but sorry, that's ETOOCOMPLEX for me. Instead, I chose to write this\n\n# ugly beast and to swear each time in future when the list of libraries which Trojita links against gets extended, and someone\n\n# forgets to update *this* hardcoded list. Patches which improve this are very welcome.\n",
+        "Line" : 61,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# convert from one-file-per-line into a cmake list\n",
+        "Line" : 89,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "# because mingw-bundledlls filters out the name of the libraries which were passed on the command line\n",
+        "Line" : 92,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# ...and here we go!\n",
+        "Line" : 95,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Include be.contacts executable\n",
+        "Line" : 102,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Include common library for plugins\n",
+        "Line" : 106,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# Include all shared plugins\n",
+        "Line" : 112,
+        "CharPositionInLine" : 0
+      },
+      "14" : {
+        "Text" : "# Include additional files\n",
+        "Line" : 119,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Generate list of install files\n",
+        "Line" : 123,
+        "CharPositionInLine" : 0
+      },
+      "16" : {
+        "Text" : "# Generate list of uninstall files\n",
+        "Line" : 143,
+        "CharPositionInLine" : 0
+      },
+      "17" : {
+        "Text" : "### Generate installer ###\n",
+        "Line" : 167,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 18
+    },
+    "cmake/TrojitaOption.cmake" : {
+      "ObjectId" : "ed99e952a6d5e2842dd00df55a7619cb63e9c202",
+      "LastModified" : "2016-03-04T00:14:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Based on CMakeDependentOption.cmake\n\n#=============================================================================\n\n# Copyright 2006-2009 Kitware, Inc.\n\n# Copyright 2013 Pali Rohár <pali.rohar@gmail.com>\n\n#\n\n# Distributed under the OSI-approved BSD License (the \"License\");\n\n# see accompanying file Copyright.txt for details.\n\n#\n\n# This software is distributed WITHOUT ANY WARRANTY; without even the\n\n# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n# See the License for more information.\n\n#=============================================================================\n\n# (To distribute this file outside of CMake, substitute the full\n\n#  License text for the above reference.)\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# trojita_string_option(option description default depends force [options...])\n",
+        "Line" : 18,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# trojita_option(option description default [depends])\n",
+        "Line" : 47,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# trojita_plugin_option(option description [depends] [STATIC])\n",
+        "Line" : 54,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# trojita_add_plugin(target type [sources...])\n",
+        "Line" : 86,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# trojita_find_package(package version url description purpose [options...])\n",
+        "Line" : 109,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 6
+    },
+    "cmake/TrojitaVersion.cmake" : {
+      "ObjectId" : "6074f675a4e10b00442bd262d3726d74194e32af",
+      "LastModified" : "2016-03-04T00:14:27Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Windows resources using four 16bit integers as version number, so prepare these numbers in VERNUMX variables from VERSION\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 9
+  },
+  "ElapsedTime" : 1508
+}

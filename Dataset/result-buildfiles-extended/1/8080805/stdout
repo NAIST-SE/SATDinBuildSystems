@@ -1,0 +1,893 @@
+{
+  "Repository" : "8080805",
+  "Revision" : "HEAD",
+  "ObjectId" : "2e3a85eb29e0cc3bad910093656bc2196f9e96ae",
+  "CommitTime" : "2019-04-19T01:29:48Z",
+  "Files" : {
+    "CMakeLists.txt" : {
+      "ObjectId" : "982e17020e8165a123f5889d0e9cd73b88b5e740",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Package information\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Name the top level directories\n",
+        "Line" : 24,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Add root dir so qualified includes work. E.g. #include \"thrift/compiler/$x.h\"\n",
+        "Line" : 28,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Set directory of the Find$x.cmake files to properly include dependencies\n",
+        "Line" : 32,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# for in-fbsource builds\n",
+        "Line" : 35,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# For shipit-transformed builds\n",
+        "Line" : 37,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# Find required dependencies\n",
+        "Line" : 41,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "#Force static lib in msvc\n",
+        "Line" : 44,
+        "CharPositionInLine" : 32
+      },
+      "8" : {
+        "Text" : "#1.54.0 or greater\n",
+        "Line" : 47,
+        "CharPositionInLine" : 24
+      },
+      "9" : {
+        "Text" : "# Provide an option to control the -std argument for the C++ compiler.\n\n# We don't use CMAKE_CXX_STANDARD since it requires at least CMake 3.8\n\n# to support C++17.\n",
+        "Line" : 55,
+        "CharPositionInLine" : 0
+      },
+      "10" : {
+        "Text" : "# Enable modular builds\n",
+        "Line" : 68,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Find required dependencies for thrift/compiler\n",
+        "Line" : 82,
+        "CharPositionInLine" : 0
+      },
+      "12" : {
+        "Text" : "# Find required dependencies for thrift/lib\n",
+        "Line" : 98,
+        "CharPositionInLine" : 0
+      },
+      "13" : {
+        "Text" : "# https://cmake.org/cmake/help/v3.9/module/FindThreads.html\n",
+        "Line" : 109,
+        "CharPositionInLine" : 2
+      },
+      "14" : {
+        "Text" : "# Add the test dependencies\n\n# To run tests: `make test`\n",
+        "Line" : 134,
+        "CharPositionInLine" : 0
+      },
+      "15" : {
+        "Text" : "# Create a generalized function for tests\n",
+        "Line" : 147,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 16
+    },
+    "ThriftLibrary.cmake" : {
+      "ObjectId" : "bd4f32f9c465fb7dbe0b005d910f8e11d6cd2ff1",
+      "LastModified" : "2019-03-13T15:47:40Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Requirements:\n\n# Please provide the following two variables before using these macros:\n\n#   ${THRIFT1} - path/to/bin/thrift1\n\n#   ${THRIFT_TEMPLATES} - path/to/include/thrift/templates\n\n#   ${THRIFTCPP2} - path/to/lib/thriftcpp2\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#\n\n# thrift_object\n\n# This creates a object that will contain the source files and all the proper\n\n# dependencies to generate and compile thrift generated files\n\n#\n\n# Params:\n\n#   @file_name - The name of the thrift file\n\n#   @services  - A list of services that are declared in the thrift file\n\n#   @language  - The generator to use (cpp or cpp2)\n\n#   @options   - Extra options to pass to the generator\n\n#   @file_path - The directory where the thrift file lives\n\n#   @output_path - The directory where the thrift objects will be built\n\n#   @include_prefix - The last part of output_path, relative include prefix\n\n#\n\n# Output:\n\n#  A object file named `${file-name}-${language}-obj` to include into your\n\n#  project's library\n\n#\n\n# Notes:\n\n# If any of the fields is empty, it is still required to provide an empty string\n\n#\n\n# Usage:\n\n#   thrift_object(\n\n#     #file_name\n\n#     #services\n\n#     #language\n\n#     #options\n\n#     #file_path\n\n#     #output_path\n\n#     #include_prefix\n\n#   )\n\n#   add_library(somelib $<TARGET_OBJECTS:${file_name}-${language}-obj> ...)\n\n#\n",
+        "Line" : 9,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# thrift_library\n\n# Same as thrift object in terms of usage but creates the library instead of\n\n# object so that you can use to link against your library instead of including\n\n# all symbols into your library\n\n#\n\n# Params:\n\n#   @file_name - The name of the thrift file\n\n#   @services  - A list of services that are declared in the thrift file\n\n#   @language  - The generator to use (cpp or cpp2)\n\n#   @options   - Extra options to pass to the generator\n\n#   @file_path - The directory where the thrift file lives\n\n#   @output_path - The directory where the thrift objects will be built\n\n#   @include_prefix - The last part of output_path, relative include prefix\n\n#\n\n# Output:\n\n#  A library file named `${file-name}-${language}` to link against your\n\n#  project's library\n\n#\n\n# Notes:\n\n# If any of the fields is empty, it is still required to provide an empty string\n\n#\n\n# Usage:\n\n#   thrift_library(\n\n#     #file_name\n\n#     #services\n\n#     #language\n\n#     #options\n\n#     #file_path\n\n#     #output_path\n\n#     #include_prefix\n\n#   )\n\n#   add_library(somelib ...)\n\n#   target_link_libraries(somelibe ${file_name}-${language} ...)\n\n#\n",
+        "Line" : 75,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "#\n\n# bypass_source_check\n\n# This tells cmake to ignore if it doesn't see the following sources in\n\n# the library that will be installed. Thrift files are generated at compile\n\n# time so they do not exist at source check time\n\n#\n\n# Params:\n\n#   @sources - The list of files to ignore in source check\n\n#\n",
+        "Line" : 137,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "#\n\n# thrift_generate\n\n# This is used to codegen thrift files using the thrift compiler\n\n# Params:\n\n#   @file_name - The name of tge thrift file\n\n#   @services  - A list of services that are declared in the thrift file\n\n#   @language  - The generator to use (cpp, cpp2 or py3)\n\n#   @options   - Extra options to pass to the generator\n\n#   @output_path - The directory where the thrift file lives\n\n#\n\n# Output:\n\n#  file-language-target     - A custom target to add a dependenct\n\n#  ${file-language-HEADERS} - The generated Header Files.\n\n#  ${file-language-SOURCES} - The generated Source Files.\n\n#\n\n# Notes:\n\n# If any of the fields is empty, it is still required to provide an empty string\n\n#\n\n# When using file_language-SOURCES it should always call:\n\n#   bypass_source_check(${file_language-SOURCES})\n\n# This will prevent cmake from complaining about missing source files\n\n#\n",
+        "Line" : 154,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Prefix\n",
+        "Line" : 186,
+        "CharPositionInLine" : 42
+      },
+      "6" : {
+        "Text" : "# Options\n\n# One Value args\n",
+        "Line" : 187,
+        "CharPositionInLine" : 7
+      },
+      "7" : {
+        "Text" : "# Multi-value args\n",
+        "Line" : 189,
+        "CharPositionInLine" : 33
+      },
+      "CommentCount" : 8
+    },
+    "build/fbcode_builder/CMake/FindGMock.cmake" : {
+      "ObjectId" : "7a785044a0c5f3b5251f8a90559ac04681d6c967",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# Find libgmock\n\n#\n\n#  LIBGMOCK_DEFINES     - List of defines when using libgmock.\n\n#  LIBGMOCK_INCLUDE_DIR - where to find gmock/gmock.h, etc.\n\n#  LIBGMOCK_LIBRARIES   - List of libraries when using libgmock.\n\n#  LIBGMOCK_FOUND       - True if libgmock found.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 10,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Explicitly set to empty string if not found to avoid it being\n\n# set to NOTFOUND and breaking compilation\n",
+        "Line" : 18,
+        "CharPositionInLine" : 4
+      },
+      "3" : {
+        "Text" : "# The GTEST_LINKED_AS_SHARED_LIBRARY macro must be set properly on Windows.\n\n#\n\n# There isn't currently an easy way to determine if a library was compiled as\n\n# a shared library on Windows, so just assume we've been built against a\n\n# shared build of gmock for now.\n",
+        "Line" : 51,
+        "CharPositionInLine" : 4
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBGMOCK_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 59,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 5
+    },
+    "build/fbcode_builder/CMake/FindGflags.cmake" : {
+      "ObjectId" : "246ceacdd091fed1a7850d6e3d4cff92c6f8383a",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# Find libgflags.\n\n# There's a lot of compatibility cruft going on in here, both\n\n# to deal with changes across the FB consumers of this and also\n\n# to deal with variances in behavior of cmake itself.\n\n#\n\n# Since this file is named FindGflags.cmake the cmake convention\n\n# is for the module to export both GFLAGS_FOUND and Gflags_FOUND.\n\n# The convention expected by consumers is that we export the\n\n# following variables, even though these do not match the cmake\n\n# conventions:\n\n#\n\n#  LIBGFLAGS_INCLUDE_DIR - where to find gflags/gflags.h, etc.\n\n#  LIBGFLAGS_LIBRARY     - List of libraries when using libgflags.\n\n#  LIBGFLAGS_FOUND       - True if libgflags found.\n\n#\n\n# We need to be able to locate gflags both from an installed\n\n# cmake config file and just from the raw headers and libs, so\n\n# test for the former and then the latter, and then stick\n\n# the results together and export them into the variables\n\n# listed above.\n\n#\n\n# For forwards compatibility, we export the following variables:\n\n#\n\n#  gflags_INCLUDE_DIR - where to find gflags/gflags.h, etc.\n\n#  gflags_TARGET / GFLAGS_TARGET / gflags_LIBRARIES\n\n#                     - List of libraries when using libgflags.\n\n#  gflags_FOUND       - True if libgflags found.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Already in cache, be silent\n",
+        "Line" : 32,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Re-export the config-specified libs with our local names\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# cmake module compat\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# handle the QUIETLY and REQUIRED arguments and set LIBGFLAGS_FOUND to TRUE if\n\n# all listed variables are TRUE\n",
+        "Line" : 57,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# cmake module compat\n",
+        "Line" : 61,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# compat with some existing FindGflags consumers\n",
+        "Line" : 63,
+        "CharPositionInLine" : 2
+      },
+      "7" : {
+        "Text" : "# Compat with the gflags CONFIG based detection\n",
+        "Line" : 66,
+        "CharPositionInLine" : 2
+      },
+      "8" : {
+        "Text" : "# Compat with the gflags CONFIG based detection\n",
+        "Line" : 76,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 9
+    },
+    "build/fbcode_builder/CMake/FindGlog.cmake" : {
+      "ObjectId" : "a589b2e37d31af883b59096005474a4e01416833",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# - Try to find Glog\n\n# Once done, this will define\n\n#\n\n# GLOG_FOUND - system has Glog\n\n# GLOG_INCLUDE_DIRS - the Glog include directories\n\n# GLOG_LIBRARIES - link these to use Glog\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "build/fbcode_builder/CMake/FindLibEvent.cmake" : {
+      "ObjectId" : "dd11ebd8435d7d475d78855d2baa2e2009299ea4",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# - Find LibEvent (a cross event library)\n\n# This module defines\n\n# LIBEVENT_INCLUDE_DIR, where to find LibEvent headers\n\n# LIBEVENT_LIB, LibEvent libraries\n\n# LibEvent_FOUND, If false, do not try to use libevent\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Re-export the config under our own names\n",
+        "Line" : 16,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# Somewhat gross, but some vcpkg installed libevents have a relative\n\n# `include` path exported into LIBEVENT_INCLUDE_DIRS, which triggers\n\n# a cmake error because it resolves to the `include` dir within the\n\n# folly repo, which is not something cmake allows to be in the\n\n# INTERFACE_INCLUDE_DIRECTORIES.  Thankfully on such a system the\n\n# actual include directory is already part of the global include\n\n# directories, so we can just skip it.\n",
+        "Line" : 18,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Unfortunately, with a bare target name `event`, downstream consumers\n\n# of the package that depends on `Libevent` located via CONFIG end\n\n# up exporting just a bare `event` in their libraries.  This is problematic\n\n# because this in interpreted as just `-levent` with no library path.\n\n# When libevent is not installed in the default installation prefix\n\n# this results in linker errors.\n\n# To resolve this, we ask cmake to lookup the full path to the library\n\n# and use that instead.\n",
+        "Line" : 31,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Allow reading the LOCATION property\n",
+        "Line" : 41,
+        "CharPositionInLine" : 4
+      },
+      "CommentCount" : 5
+    },
+    "build/fbcode_builder/CMake/FindPCRE.cmake" : {
+      "ObjectId" : "32ccb372536f92a3b983baf2f8b4641823a19ea4",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "build/fbcode_builder/CMake/ThriftCppLibrary.cmake" : {
+      "ObjectId" : "2613e888a4f36da9b37aa006dad6e8d2187f3c96",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Copyright (c) Facebook, Inc. and its affiliates.\n\n# NOTE: If you change this file, fbcode/fboss/github/ThriftCppLibrary.cmake also\n\n# needs to be changed.  TODO: this should be handled via shipit.\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Parse the arguments\n",
+        "Line" : 5,
+        "CharPositionInLine" : 2
+      },
+      "2" : {
+        "Text" : "# CMake 3.12 is finally getting a list(JOIN) function, but until then\n\n# treating the list as a string and replacing the semicolons is good enough.\n",
+        "Line" : 41,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Compute the list of generated files\n",
+        "Line" : 45,
+        "CharPositionInLine" : 2
+      },
+      "4" : {
+        "Text" : "# Emit the rule to run the thrift compiler\n",
+        "Line" : 73,
+        "CharPositionInLine" : 2
+      },
+      "5" : {
+        "Text" : "# Now emit the library rule to compile the sources\n",
+        "Line" : 96,
+        "CharPositionInLine" : 2
+      },
+      "CommentCount" : 6
+    },
+    "thrift/CMakeLists.txt" : {
+      "ObjectId" : "0ba06ff7d96a13dcaf6d5da36348f3779ea40bec",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Install thrift/compiler\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Install thrift/lib\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Install CMake package configuration files for thrift\n",
+        "Line" : 11,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "thrift/cmake/FindCython.cmake" : {
+      "ObjectId" : "d292daa35d31545fdceb90f9c369c71cfb1c81df",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find Cython\n\n#\n\n# This module sets the following variables:\n\n# - Cython_FOUND\n\n# - CYTHON_EXE\n\n# - CYTHON_VERSION_STRING\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/cmake/FindGMock.cmake" : {
+      "ObjectId" : "2f05e20934447968c897a9f9fac0acbc31a553b3",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find GMock\n\n#\n\n# This will define:\n\n# GMOCK_FOUND\n\n# GMOCK_INCLUDE_DIRS\n\n# GMOCK_LIBRARIES\n\n# GMOCK_MAIN_LIBRARIES\n\n# GMOCK_BOTH_LIBRARIES\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/cmake/FindMstch.cmake" : {
+      "ObjectId" : "6f447a6e8bf6ab53d729af63ba34644320ecbe3e",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Find Cpp Mustache (Mstch)\n\n#\n\n# This will define:\n\n# MSTCH_FOUND\n\n# MSTCH_INCLUDE_DIRS\n\n# MSTCH_LIBRARIES\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/cmake/FindZlib.cmake" : {
+      "ObjectId" : "316d74482a39fbf15e9508b1d460e53f1e192ff6",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# - Try to find Facebook zstd library\n\n# This will define\n\n# ZLIB_FOUND\n\n# ZLIB_INCLUDE_DIR\n\n# ZLIB_LIBRARIES\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# For some reason ZLIB_FOUND is never marked as TRUE\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 2
+    },
+    "thrift/cmake/FindZstd.cmake" : {
+      "ObjectId" : "b73d6a1b7131901b6c03adcb8ad4c6194ab7b745",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#\n\n# - Try to find Facebook zstd library\n\n# This will define\n\n# ZSTD_FOUND\n\n# ZSTD_INCLUDE_DIR\n\n# ZSTD_LIBRARIES\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/compiler/CMakeLists.txt" : {
+      "ObjectId" : "1ff9d6d8b748aa8f3c0c83c72074857c74d01259",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set the compiler directory\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Override default install path for `make install` step\n",
+        "Line" : 4,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Compile Flex and Bison files and tie their dependencies\n",
+        "Line" : 7,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# build compiler/parse\n",
+        "Line" : 19,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# build the base libraries\n",
+        "Line" : 30,
+        "CharPositionInLine" : 0
+      },
+      "5" : {
+        "Text" : "# Some versions of flex emit `register` storage qualifiers,\n\n# so let's just suppress that warning.\n",
+        "Line" : 50,
+        "CharPositionInLine" : 2
+      },
+      "6" : {
+        "Text" : "# build compiler/lib\n",
+        "Line" : 64,
+        "CharPositionInLine" : 0
+      },
+      "7" : {
+        "Text" : "# build compiler/generate\n",
+        "Line" : 78,
+        "CharPositionInLine" : 0
+      },
+      "8" : {
+        "Text" : "# Force compiler_generators linking (compiler will optimize it out otherwise)\n",
+        "Line" : 96,
+        "CharPositionInLine" : 0
+      },
+      "9" : {
+        "Text" : "#MSVC WHOLEARCHIVE is set after exe\n",
+        "Line" : 98,
+        "CharPositionInLine" : 43
+      },
+      "10" : {
+        "Text" : "# Create the thrift compiler binary\n",
+        "Line" : 114,
+        "CharPositionInLine" : 0
+      },
+      "11" : {
+        "Text" : "# Force compiler_generators linking (compiler will optimize it out otherwise)\n",
+        "Line" : 131,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 12
+    },
+    "thrift/example/CMakeLists.txt" : {
+      "ObjectId" : "203bd23cfb4fafe29c99cd9bc79842726d7ec8ca",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "thrift/example/cpp2/CMakeLists.txt" : {
+      "ObjectId" : "27974c6de73ccfafe52632fd573d7510622e1ee5",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "thrift/example/if/CMakeLists.txt" : {
+      "ObjectId" : "53d472aeb9192a53d400525393ec1519fe6767d7",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Example to test linking\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#file_name\n",
+        "Line" : 5,
+        "CharPositionInLine" : 13
+      },
+      "2" : {
+        "Text" : "#services\n",
+        "Line" : 6,
+        "CharPositionInLine" : 25
+      },
+      "3" : {
+        "Text" : "#language\n",
+        "Line" : 7,
+        "CharPositionInLine" : 9
+      },
+      "4" : {
+        "Text" : "#options\n",
+        "Line" : 8,
+        "CharPositionInLine" : 5
+      },
+      "5" : {
+        "Text" : "#file_path\n\n#output_path\n",
+        "Line" : 9,
+        "CharPositionInLine" : 23
+      },
+      "6" : {
+        "Text" : "#include_prefix\n",
+        "Line" : 11,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 7
+    },
+    "thrift/lib/CMakeLists.txt" : {
+      "ObjectId" : "0745dab69d88078b8f07a1f48659cf141d488de7",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "thrift/lib/android_lite/build.xml" : {
+      "ObjectId" : "20754630272656f3f4e0960054bee0a495067c9b",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "ANT",
+      "0" : {
+        "Text" : "\n Licensed to the Apache Software Foundation (ASF) under one\n or more contributor license agreements. See the NOTICE file\n distributed with this work for additional information\n regarding copyright ownership. The ASF licenses this file\n to you under the Apache License, Version 2.0 (the\n \"License\"); you may not use this file except in compliance\n with the License. You may obtain a copy of the License at\n\n   http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing,\n software distributed under the License is distributed on an\n \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n KIND, either express or implied. See the License for the\n specific language governing permissions and limitations\n under the License.\n",
+        "Line" : 19,
+        "CharPositionInLine" : 4
+      },
+      "1" : {
+        "Text" : " <copy file=\"${thrift.root}/NOTICE\" tofile=\"${build}/META-INF/NOTICE.txt\"/> ",
+        "Line" : 73,
+        "CharPositionInLine" : 88
+      },
+      "CommentCount" : 2
+    },
+    "thrift/lib/cpp/CMakeLists.txt" : {
+      "ObjectId" : "e44687036a22ce34a2ee0c4588281c40a446b335",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "thrift/lib/cpp2/CMakeLists.txt" : {
+      "ObjectId" : "785d2e1bbd18c243e8dac92ddaaba4d1bd4aba5e",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Set the cpp2 directory\n",
+        "Line" : 3,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "#######\n\n# CMAKE variables only have local/subdirectory scope\n\n# So even though this is defined in ../thrift/CMakeLists.txt as a variable\n\n# it's not accessible here and silently defaults to \"\"\n\n#\n\n# Using global properties gets around this; probably better to restructure\n\n# the directories/files to avoid this type of hack\n\n#\n",
+        "Line" : 8,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Replicate all the cpp target sources, so they are ensured to be position\n\n# independent code as required to create a shared library\n",
+        "Line" : 138,
+        "CharPositionInLine" : 2
+      },
+      "3" : {
+        "Text" : "# Install includes\n",
+        "Line" : 200,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "thrift/lib/cpp2/transport/rsocket/CMakeLists.txt" : {
+      "ObjectId" : "b01bbdff07e9dd5fd9961acbf6ed8cffb64dd9d4",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#file_name\n",
+        "Line" : 3,
+        "CharPositionInLine" : 11
+      },
+      "1" : {
+        "Text" : "#services\n",
+        "Line" : 4,
+        "CharPositionInLine" : 5
+      },
+      "2" : {
+        "Text" : "#language\n",
+        "Line" : 5,
+        "CharPositionInLine" : 9
+      },
+      "3" : {
+        "Text" : "#options\n",
+        "Line" : 6,
+        "CharPositionInLine" : 5
+      },
+      "4" : {
+        "Text" : "#file_path\n\n#output_path\n",
+        "Line" : 7,
+        "CharPositionInLine" : 32
+      },
+      "5" : {
+        "Text" : "#include_prefix\n",
+        "Line" : 9,
+        "CharPositionInLine" : 38
+      },
+      "CommentCount" : 6
+    },
+    "thrift/lib/d/thrift/test/Makefile.am" : {
+      "ObjectId" : "ff4bd4641d0db7e57b81012181b346e5e9c9d9c0",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "AUTOMAKE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Thrift compiler rules\n",
+        "Line" : 21,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# The actual test targets.\n\n# There just must be some way to reassign a variable without warnings in\n\n# Automake...\n",
+        "Line" : 43,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Certificate generation targets (for the SSL tests).\n\n# Currently, we just assume that the \"openssl\" tool is on the path, could be\n\n# replaced by a more elaborate mechanism.\n",
+        "Line" : 100,
+        "CharPositionInLine" : 0
+      },
+      "4" : {
+        "Text" : "# Tests ran as part of make check.\n",
+        "Line" : 117,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 5
+    },
+    "thrift/lib/java/pom.xml" : {
+      "ObjectId" : "b90877fc8b28e725de2d2de08014c49e080351b3",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAVEN",
+      "0" : {
+        "Text" : "\n    Below we disable compiling the tests, since they depends on generated\n    files which are outside of the reach of maven.\n    BUCK, on the other hand, is still compiling and executing the tests\n  ",
+        "Line" : 42,
+        "CharPositionInLine" : 6
+      },
+      "CommentCount" : 1
+    },
+    "thrift/lib/ocaml/Makefile" : {
+      "ObjectId" : "6abeee71f5af4a98a25d74196f146461420732be",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/lib/ocaml/src/Makefile" : {
+      "ObjectId" : "42ec8dbdb20e0b9b578b6b94bb8c0d307a0de073",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/lib/py3/CMakeLists.txt" : {
+      "ObjectId" : "c9fb1e9c6b44b22d96bbd28ad4bb123f2b0c9655",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "# Create tree of symbolic links in structure required for successful\n\n# compliation by Cython.\n\n#   - must be in path named same as extension\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Arguments:\n\n#   name of the extension - e.g. thrift\n\n#   sources...\n",
+        "Line" : 6,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Shared library targets for each Cython module, to avoid conficts targets\n\n# named <dir>-<dir>-<module>-py3\n",
+        "Line" : 51,
+        "CharPositionInLine" : 0
+      },
+      "3" : {
+        "Text" : "# Install Folly Python Bindings using Python setuptools\n",
+        "Line" : 90,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 4
+    },
+    "thrift/lib/py3/test/CMakeLists.txt" : {
+      "ObjectId" : "ae98f3ecd06980a9ccc760e48d71ad8abbf9794f",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "CommentCount" : 0
+    },
+    "thrift/lib/thrift/CMakeLists.txt" : {
+      "ObjectId" : "07972f5154d24ea4f4999f6e7b076f4dc9762e66",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "CMAKE",
+      "0" : {
+        "Text" : "#file_name\n",
+        "Line" : 2,
+        "CharPositionInLine" : 15
+      },
+      "1" : {
+        "Text" : "#services\n",
+        "Line" : 3,
+        "CharPositionInLine" : 5
+      },
+      "2" : {
+        "Text" : "#language\n",
+        "Line" : 4,
+        "CharPositionInLine" : 9
+      },
+      "3" : {
+        "Text" : "#options\n",
+        "Line" : 5,
+        "CharPositionInLine" : 14
+      },
+      "4" : {
+        "Text" : "#file_path\n\n#output_path\n",
+        "Line" : 6,
+        "CharPositionInLine" : 32
+      },
+      "5" : {
+        "Text" : "#include_prefix\n",
+        "Line" : 8,
+        "CharPositionInLine" : 22
+      },
+      "6" : {
+        "Text" : "#file_name\n",
+        "Line" : 12,
+        "CharPositionInLine" : 11
+      },
+      "7" : {
+        "Text" : "#services\n",
+        "Line" : 13,
+        "CharPositionInLine" : 5
+      },
+      "8" : {
+        "Text" : "#language\n",
+        "Line" : 14,
+        "CharPositionInLine" : 9
+      },
+      "9" : {
+        "Text" : "#options\n",
+        "Line" : 15,
+        "CharPositionInLine" : 5
+      },
+      "10" : {
+        "Text" : "#file_path\n\n#output_path\n",
+        "Line" : 16,
+        "CharPositionInLine" : 32
+      },
+      "11" : {
+        "Text" : "#include_prefix\n",
+        "Line" : 18,
+        "CharPositionInLine" : 22
+      },
+      "12" : {
+        "Text" : "#file_name\n",
+        "Line" : 22,
+        "CharPositionInLine" : 16
+      },
+      "13" : {
+        "Text" : "#services\n",
+        "Line" : 23,
+        "CharPositionInLine" : 5
+      },
+      "14" : {
+        "Text" : "#language\n",
+        "Line" : 24,
+        "CharPositionInLine" : 9
+      },
+      "15" : {
+        "Text" : "#options\n",
+        "Line" : 25,
+        "CharPositionInLine" : 5
+      },
+      "16" : {
+        "Text" : "#file_path\n\n#output_path\n",
+        "Line" : 26,
+        "CharPositionInLine" : 32
+      },
+      "17" : {
+        "Text" : "#include_prefix\n",
+        "Line" : 28,
+        "CharPositionInLine" : 22
+      },
+      "CommentCount" : 18
+    },
+    "thrift/test/erl/Makefile" : {
+      "ObjectId" : "2126037227f50a88555d2fd3ec1df0bfc185ce0b",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/test/ocaml/Makefile" : {
+      "ObjectId" : "a543ce5873f8d4839732d544078e6c1de7ee761f",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/test/ocaml/client/Makefile" : {
+      "ObjectId" : "c20db41454b8af56b7e3cf732319298278fc160d",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/test/ocaml/server/Makefile" : {
+      "ObjectId" : "4f4dcde560b355de1853d9e73cad42dfca3d28c9",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 1
+    },
+    "thrift/test/perl/Makefile" : {
+      "ObjectId" : "e007c91e23e90a3ac71908f186d8b1b5d564878c",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Default target is everything\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tools\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "thrift/test/php/Makefile" : {
+      "ObjectId" : "fd29de247be312a5246dd049befd437c8608abd8",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "MAKEFILE",
+      "0" : {
+        "Text" : "#\n\n# Licensed to the Apache Software Foundation (ASF) under one\n\n# or more contributor license agreements. See the NOTICE file\n\n# distributed with this work for additional information\n\n# regarding copyright ownership. The ASF licenses this file\n\n# to you under the Apache License, Version 2.0 (the\n\n# \"License\"); you may not use this file except in compliance\n\n# with the License. You may obtain a copy of the License at\n\n#\n\n#   http://www.apache.org/licenses/LICENSE-2.0\n\n#\n\n# Unless required by applicable law or agreed to in writing,\n\n# software distributed under the License is distributed on an\n\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n\n# KIND, either express or implied. See the License for the\n\n# specific language governing permissions and limitations\n\n# under the License.\n\n#\n",
+        "Line" : 1,
+        "CharPositionInLine" : 0
+      },
+      "1" : {
+        "Text" : "# Default target is everything\n",
+        "Line" : 20,
+        "CharPositionInLine" : 0
+      },
+      "2" : {
+        "Text" : "# Tools\n",
+        "Line" : 23,
+        "CharPositionInLine" : 0
+      },
+      "CommentCount" : 3
+    },
+    "thrift/test/rb/Makefile.am" : {
+      "ObjectId" : "b19fcde95c4a3362c855e67b458f8d3289f45c91",
+      "LastModified" : "2019-04-18T16:34:51Z",
+      "FileType" : "AUTOMAKE",
+      "CommentCount" : 0
+    }
+  },
+  "FileTypes" : {
+    "CMAKE" : 25,
+    "MAKEFILE" : 8,
+    "AUTOMAKE" : 2,
+    "ANT" : 1,
+    "MAVEN" : 1
+  },
+  "ElapsedTime" : 3307
+}
