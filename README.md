@@ -36,13 +36,13 @@ Technical Debt is a metaphor used to describe the situation in which long-term s
 	* `result-buildfiles-extended` - dataset shared by [Hata et al.](10.1109/ICSE.2019.00123).
 	* `comments_with_no_keywords.csv` - list of Maven comments that are not identified as SATD by the keyword-basedapproach.
 	* `384_samples_comments_with_no_keywords.csv` - list of sample Maven comments that are not identified as SATD by the keyword-basedapproach.
-	* `survey.pdf` - survey material for section 6 DEVELOPER FEEDBACK.
 * `Scripts` - a directory of Scripts.
 	* `README.md` - a readme file for Scripts directory.
 	* `parallel_categories_diagram.ipynb` - the parallel categories diagram among location, reason, and purpose.
 	* `identify_SATD_comments.py` - the script which is used to detect SATD comments.
 * `POM_files_used_in_paper` - a directory of POM files that used in paper. Filename represents the link to orginal POM file shown in the paper.
 * `LICENSE` - [CC0 1.0 Universal.](https://creativecommons.org/publicdomain/zero/1.0/)
+* `survey.pdf` - survey material for section 6 DEVELOPER FEEDBACK.
 * `README.md` - this file.
 ## Authors
 - Tao Xiao
