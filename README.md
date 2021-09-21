@@ -43,9 +43,10 @@ Technical Debt is a metaphor used to describe the situation in which long-term s
 * `POM_files_used_in_paper` - a directory of POM files that used in paper. Filename represents the link to orginal POM file shown in the paper.
 * `LICENSE` - [CC0 1.0 Universal.](https://creativecommons.org/publicdomain/zero/1.0/)
 * `survey.pdf` - survey material for section 6 DEVELOPER FEEDBACK.
+* `survey_result.csv` - survey result of section 6 DEVELOPER FEEDBACK.
 * `README.md` - this file.
 ## Authors
-- Tao Xiao
+- [Tao Xiao](https://tao-xiao.github.io/)
 - [Dong Wang](https://dong-w.github.io/)
 - [Shane McIntosh](http://shanemcintosh.org/)
 - [Hideaki Hata](https://hideakihata.github.io/)
