@@ -30,10 +30,10 @@ Technical Debt is a metaphor used to describe the situation in which long-term s
 		* `Submitting approach` - the approach to report SATD comment to the developers.
 		* `Pull request/Issue link` - the hyperlink where we report SATD comment.
 		* `Status` - the current status of the pull request or issue.
-	* `keywords_list.txt` - our adopated list of SATD keywords which are merged from [Huang et al.](https://doi.org/10.1007/s10664-017-9522-4) and [Potdar and Shihab](10.1109/ICSME.2014.31).
+	* `keywords_list.txt` - our adopated list of SATD keywords which are merged from [Huang et al.](https://doi.org/10.1007/s10664-017-9522-4) and [Potdar and Shihab](https://doi.org/10.1109/ICSME.2014.31).
 	* `revision_list.csv` - the list of HEAD revisions extract from DP1.
-	* `3out.csv` - the list of repositores ID and name from [Hata et al.](10.1109/ICSE.2019.00123).
-	* `result-buildfiles-extended` - dataset shared by [Hata et al.](10.1109/ICSE.2019.00123).
+	* `3out.csv` - the list of repositores ID and name from [Hata et al.](https://doi.org/10.1109/ICSE.2019.00123).
+	* `result-buildfiles-extended` - dataset shared by [Hata et al.](https://doi.org/10.1109/ICSE.2019.00123).
 	* `comments_with_no_keywords.csv` - list of Maven comments that are not identified as SATD by the keyword-basedapproach.
 	* `384_samples_comments_with_no_keywords.csv` - list of sample Maven comments that are not identified as SATD by the keyword-basedapproach.
 * `Scripts` - a directory of Scripts.
